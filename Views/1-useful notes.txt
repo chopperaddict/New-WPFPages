@@ -1,0 +1,759 @@
+=================================================
+// how to call new Dapper Db Load options
+
+// args is int[3] = min, max, total records
+// UseSort and Useconditions are for the ORDER BY and WHERE clauses (if required)
+// they do NOT need these words in them , but remove them if found !!!
+// Equally Args[2] should not contain * but again will be removed
+
+			if ( UseAsyncLoading )
+			{
+				bool result = await DapperSupport . GetMultiBankCollectionAsync ( bvm ,
+					"" ,																	// Buffer for sqlcommand, cos you can send one in if preffered which overrides everything else
+					"Bankaccount" ,													// Actual SQL DBNAME to load
+					UseSort . IsChecked == true ? OrderString . Text : "" ,			// Sort conditions (1 or more ,with commas between)
+					UseConditions . IsChecked == true ? Conditions . Text : "" ,    //Limiter condition (AcType >= 3 etc )
+					true ,																 // Trigger notifications (Always  does send if using Async methods)
+					"DAPPERTESTING" ,											 // Caller Id 
+					args
+				);
+			}
+			else
+			{
+				bvm = DapperSupport . GetMultiBankCollection ( bvm ,
+				"" ,
+				"Bankaccount" ,
+				UseSort . IsChecked == true ? OrderString . Text : "" ,
+				UseConditions . IsChecked == true ? Conditions . Text : "" ,
+				false ,
+				"DAPPERTESTING" ,
+				args
+					);
+
+=================================================
+How to copy a db to a new one
+
+Select * into NEWDB from OLDDB
+
+//Results in a new Db fully populated
+
+=================================================
+
+	// This STOPS all those infuriating binding debug messages from appearing
+	// Add it to any window you do not want these messages to show in
+	System . Diagnostics . PresentationTraceSources . DataBindingSource . Switch . Level = System . Diagnostics . SourceLevels . Critical;
+
+=================================================
+// How  to use DataGridColumns  from and x:Array in seperate file
+
+	// Load the selected set of columns, params are (Datagrid name, Array  required)
+	
+	DataGridUtilities . LoadDataGridColumns ( BankGrid , "DGColumns3" );
+
+		// We must also clear our "loaded" columns, or else it stopsworking
+		ObservableCollection<DataGridColumn> dgc = BankGrid.Columns;
+		dgc . Clear ( );
+
+=================================================
+
+	// Templates that support  AP color control
+		
+	*** Class DataGridColorCtrlAp ***
+	   CellStyle :  BankAccountGridStyle
+	   CellStyle :  NWSuppliersGridStyle
+	   CellStyle : NWSuppliersGridStyle
+
+	*** Class ListboxColorCtrlAP ***
+	ItemContainerStyle : DataGridColorControlTemplate2
+	ItemContainerStyle : ListBoxColorControlTemplate
+
+=================================================
+// Howto split grids etc
+
+		<GridSplitter 
+				Background="Blue" 
+				Height="15"
+				HorizontalAlignment="Stretch"	 
+				ResizeDirection="Rows"
+				ResizeBehavior="BasedOnAlignment"/>
+
+=================================================
+
+		/// How to access ListBox (or ListView) current record's data from c# using PreviewMouse event
+		private void ListBox_OnPreviewMouseDown ( object sender , MouseButtonEventArgs e )
+		{
+			var item = ItemsControl.ContainerFromElement(sender as ListBox, e.OriginalSource as DependencyObject) as ListBoxItem;
+			if ( item != null )
+			{
+				// ListBox item clicked - do some cool things here
+			}
+		}
+		or in xaml :
+
+	<ListBox.ItemContainerStyle>
+		<Style TargetType="{x:Type ListBoxItem}">
+			<EventSetter Event="PreviewMouseLeftButtonUp" Handler="ListBox_OnPreviewMouseDown"/>
+			<EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBox_OnPreviewMouseUp"/>
+			<EventSetter Event="PreviewDragEnter" Handler="ListBox_OnPreviewDragEnter"/>
+		</Style>
+	</ListBox.ItemContainerStyle>
+
+
+=================================================
+
+// How to change fillter conditions on the fly
+
+	string arg = changefiltertype.Text;
+	if ( arg == "ACTYPE" )
+		BankviewerView . Filter = new Predicate<object> ( Actypefiltermethod );
+	viewer.Refresh();
+
+	// You  need relevant Methods matching the condition you want it tested against  eg:
+
+	private bool Actypefiltermethod ( object obj )
+	{
+		BankAccountViewModel bvm = obj as BankAccountViewModel;
+		Console . WriteLine ( $"Testing  for {bvm . AcType} == {ActypeFiltervalue} as AcType" );
+		return bvm . AcType == ActypeFiltervalue;
+	}
+
+=================================================
+
+// How to use an Action<T>
+/// Type is Void, args = up to 16
+
+	// Testing Action<T> : takes x arguments, but MUST NOT return anything
+	Action<object, string, int> Myaction;
+	Myaction = output;
+	
+	//Implementation :-
+
+	private void output (object obj, string str, int i)
+	{
+			//do Something ----
+	}
+	
+	To use it in a Lambda expression :-
+
+=================================================
+
+//How to use a Func
+
+
+=================================================
+
+// How to check for an existing data View and if one is available, use it rather than loading form Db via SQL
+// This is very much faster then reloading the data...
+
+	//Here we have a CollectionView declared in BankAccountViewModel that we update as neccessary from this program
+
+	   			if ( BankAccountViewModel . BankCollectionView != null )
+			{
+				if ( BankAccountViewModel . BankCollectionView . IsEmpty == false )
+				{
+					BankviewerView = BankAccountViewModel . BankCollectionView;
+					}
+					else
+					{
+						** load from SQL
+						BankViewcollection = e . DataSource as BankCollection;
+						// Get the View for this Db collection
+						BankviewerView = CollectionViewSource . GetDefaultView ( BankViewcollection );
+						//Add this View to our Views Collection - WORKS !!!
+						BankAccountViewModel . BankCollectionView = BankviewerView;
+					}
+
+=================================================
+
+	// This STOPS all those infuriating "Failed Binding"" debug messages from appearing
+	System . Diagnostics . PresentationTraceSources . DataBindingSource . Switch . Level = System . Diagnostics . SourceLevels . Critical;
+
+=================================================
+
+//How  to Implement Filtering on a Db Collection using the Filter provided by the CollectionView 
+// This can be used to implement the classic "Data Changes" as you type into a field
+
+// Initial Setup when we get the Db Datato create the View
+			
+			// Declare the CollectionView
+			public CollectionView TestBankviewerView { get; set; }
+
+			// Once we have the data available :
+			// Get the default Collections View as our default ItemSource () (TestBankCollection is a CollectionView)
+
+			TestBankcollection = e .DataSource as TestBankCollection;
+			TestBankviewerView = CollectionViewSource .GetDefaultView ( TestBankcollection ) as CollectionView;
+			//Assign Collection to the datagrid
+			this .BankGrid .ItemsSource = TestBankcollection;
+			//Set the fillter we want up
+			TestBankviewerView .Filter = new Predicate<object> ( ( obj ) => FilterBankData ( obj as BankAccountViewModel ) );
+			// Clear DataGrid down and assign new (Filtered) data to it
+			this .BankGrid .ItemsSource = null;
+			this .BankGrid .Items .Clear ( );
+			this .BankGrid .ItemsSource = TestBankviewerView;
+			// Filtering completed
+
+		//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^//
+		// THESE TWO FUNCTIONS LIVE TOGETHER AND HANDLE FILTERING OF A COLLECTION VIEW
+
+		/// <summary>
+		/// This is the CRUCIAL method that updates the grid whenever we change its content
+		/// which changes the content of the CollectonView we have assigned to our DataGrid's ItemsSource
+		/// so we just Refresh() of the CollectionView to update the grid with JUST the  data matching our filter condition
+
+		It is triggered by setting the TextBox Property TextChanged="filter_TextChanged"
+
+		private void filter_TextChanged ( object sender , TextChangedEventArgs e )
+		{
+			if ( BankGrid .ItemsSource != null )
+				TestBankviewerView .Refresh ( );
+		}
+
+		/// <summary>
+		/// This is the Filter method logic to filter BankAccount CustNo into a Datagrid
+		/// This checks that the data in  the Collectionview ONLY matches if it Contains the text for the filter.Text field
+		/// but it can be as complex as you like as long as it returns a bool
+
+		private bool FilterBankData ( BankAccountViewModel bvm )
+		{
+			string input = bvm.CustNo.ToString();
+			string  srchtxt = filter .Text;
+			if ( bvm == null ) return false;
+			bool b = input.Contains(srchtxt );
+			return b;
+		}
+
+		// Now all data will comply with the condition set above
+
+=================================================
+
+// How to add  a Custom control to be found in a Custom Control Library (Remote method)
+
+xmlns:Analogclock="clr-namespace:MyAnalogClock;assembly=MyAnalogClock"  
+
+// How to add  a Custom control to be found in local project
+
+xmlns:analogclock="clr-namespace:WPFPages.Analogclock"
+
+=================================================
+
+//How to access template contents from C#
+// You can read values to store them in local variables using this method
+
+              public override void OnApplyTemplate ( )
+                {
+                        base . OnApplyTemplate ( );
+
+                        if ( Template != null )
+                        {
+                                var v = this . GetTemplateChild ( "RectBtn" );
+                        }
+
+				 UpdateStates(false); // Not sure what this does ?
+                        return;
+                }
+
+		    // HOW to Select a template - Maybe (works too)
+
+			CustomersDbDataTemplateSelector cdb = new CustomersDbDataTemplateSelector();
+			cdb.SelectTemplate(object o, Dependencyobject dp)
+
+			M$$ Example is :
+
+			public class TaskListDataTemplateSelector : DataTemplateSelector
+			{
+				public override DataTemplate SelectTemplate(object item, DependencyObject container)
+				{
+					FrameworkElement element = container as FrameworkElement;
+
+					// Task is the particular value to let you select the requiired Template element 
+					if (element != null && item != null && item is Task)
+					{
+					    Task taskitem = item as Task;
+
+					    if (taskitem.Priority == 1)
+						  return
+							element.FindResource("importantTaskTemplate") as DataTemplate;
+					    else
+						  return
+							element.FindResource("myTaskTemplate") as DataTemplate;
+					}
+
+					return null;
+				  }
+		    }
+
+		    To use this 
+		    We can then declare the TaskListDataTemplateSelector as a resource:
+
+			<Window.Resources>
+			<local:TaskListDataTemplateSelector x:Key="myDataTemplateSelector"/>
+			</Window.Resources>
+
+			and then in our xaml :
+
+			<ListBox Width="400" Margin="10"
+					ItemsSource="{Binding Source={StaticResource myTodoList}}"
+					ItemTemplateSelector="{StaticResource myDataTemplateSelector}">
+			</ListBox>
+
+=================================================
+
+// How to add standard Edit menu options to any menu
+
+             <MenuItem
+					Command="ApplicationCommands.Copy"
+                    CommandParameter="This is text to be copied"
+	                    Template="{StaticResource MenuItemCtrlTemplate1}"/>
+
+              <MenuItem
+					Command="ApplicationCommands.Paste"
+                    CommandParameter="This is text to be copied"
+	                   Template="{StaticResource MenuItemCtrlTemplate1}"/>
+
+					   etc..........
+
+=================================================
+// How to make a call using Dispatcher class ( This is for Menu commands as an example)
+// it calls a special STATIC class that holds ALL the actual functionality for all menu Commands
+
+			Dispatcher.Invoke( () => {
+				MenuCommands .Hello_Executed ( e .Parameter );
+					});
+=================================================
+
+How to use my DataGrid "Styles" with any DataGrid
+
+//Bankaccount/Customer Db DATAGRID CUSTOMISATION
+//BankGrid styles etc are in "\DataGridStyles\BankDatagridStyleTemplate.xaml"
+//CustomerGrid styles etc are in "\DataGridStyles\CustomerDatagridStyleTemplate.xaml"
+//NorthWest Db styles etc are in "\DataGridStyles\NWStyleTemplate.xaml""
+
+//These provide a standard set of row colors for mouseover = no and mouseover = yes
+//for these type of datagrids
+
+//use this in datagrid properties :
+CellStyle="{StaticResource xxxtypeGridStyle}">
+
+=================================================
+
+// MENU CUSTOMISATON
+//How to use the Menu Attached Propertes in "MenuAttachedProperties.cs"
+
+      <Menu
+		Height="30"
+		HorizontalAlignment="Left"
+		HorizontalContentAlignment="Stretch"
+		local:MenuAttachedProperties.MenuItemSelectedBackground="{StaticResource Orange4}"
+		local:MenuAttachedProperties.MenuItemBackground="{StaticResource Red0}"
+		local:MenuAttachedProperties.MenuItemForeground="{StaticResource White0}"
+		local:MenuAttachedProperties.MenuSelectedForeground="{StaticResource Black0}"
+		local:MenuAttachedProperties.MenuFontSize="12"
+		local:MenuAttachedProperties.MenuFontWeight="Normal"
+		local:MenuAttachedProperties.MenuItemBorderColor="{StaticResource Blue2}"
+		local:MenuAttachedProperties.MenuItemBorderThickness="1"
+		local:MenuAttachedProperties.MenuItemHeight ="30"
+		local:MenuAttachedProperties.MenuItemMargin="2"
+		Background="Transparent"
+		Grid.Column="1" 
+		BorderThickness="3"
+		BorderBrush="{StaticResource Black1}"
+		Width="810">
+
+	//Add this the link to  the ControlTemplate (in "\Dicts\Menus.xaml") to each menuItems you want to be handled. 
+	Template="{StaticResource MenuItemCtrlTemplate1}"/>
+
+=================================================
+
+LISTBOX/LISTVIEW CUSTOMISATON - GLOBAL STYLE/TEMPLATE
+
+how to use my GLOBAL color control styles (in ListBoxColorAP.CS) and NWOrder/NWCustomer Db DataTemplates (in NWDataTemplates) with
+any ListBox/ListView in the system
+
+ Set these 2 properties in the LISTBOX section of the cntrol declaration
+
+ItemContainerStyle="{DynamicResource ListBoxColorControlTemplate}"
+ItemTemplate="{StaticResource NwCustomersDataTemplate1}"
+Then the AP defines the following color control properties as AP's
+
+ Brush Background
+ Brush BackgroundColor 
+ double FontSize
+ double FontWeight
+ Brush Foreground 
+ double ItemHeight
+ Brush MouseoverBackground
+ Brush MouseoverForeground 
+ Brush MouseoverSelectedBackground
+ Brush MouseoverSelectedForeground
+ Brush SelectionBackground
+ Brush SelectionForeground
+ 
+=================================================
+There are various generic DataTemplates in NWDataTemplates.xaml
+
+These are all For NorthWest Database
+Currently only Orders and Customers are defined.
+
+=================================================
+how to access Attached properties
+
+Where AP is a seperate file located in the viewModels Folder (declared as "models" in the xaml file, 
+and is containing various Attached Properties such as 'test' used here.
+
+Method 1 :
+Text="{Binding (models:AP.test), RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"           
+
+Method 2 :
+Text="{Binding (local:AP.test), RelativeSource={RelativeSource TemplatedParent}}"
+
+=================================================
+
+And also how to set the AP value's from code Where AP is a seperate file 
+located in the viewModels Folder (declared as "models" in the xaml file, 
+               
+               models:AP.MouseoverForeground="{StaticResource Black0}"
+
+=================================================
+
+// how to control listbox/view/datagrid etc
+        <ListBox x:Name="lv1"
+                        SelectionMode="Single"
+                        ItemsSource="{Binding nwc}"
+                        SelectedItem="{Binding nwcustomer}"
+                        VirtualizingPanel.IsVirtualizing="True"
+                        
+                        // Important links ...in Resource section !
+                        ItemTemplate="{DynamicResource DataTemplate1}" 
+                        ItemContainerStyle="{DynamicResource ListBoxItemStyle1}">
+                        />
+
+                        eg:
+        <Style x:Key="ListBoxItemStyle1" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                    <Border x:Name="Bd" SnapsToDevicePixels="true">
+                                          
+                                          <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                          <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                      <Condition Property="IsMouseOver" Value="False"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Blue6}"/>
+                                          </MultiTrigger>
+                                 </ControlTemplate.Triggers>
+                                 more ....
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+=================================================
+
+//How to pass a Dp or other variable/property value  as a parameter to a converter by adding XPath=property to the converter clause
+
+Height="{Binding Height, ElementName=Innergrid, Converter={StaticResource AddTopOffset}, XPath=TextTopMargin}"
+
+=================================================
+
+//How to call a converter from c#
+
+			//Converter name is SetTextTopOffset 
+			SetTextTopOffset conv = new SetTextTopOffset ( );
+			Thickness t = ButtonText . Margin; 
+			t.Top =Convert.ToInt32(conv . Convert ( t.Top, typeof(int), TextTopMargin, CultureInfo.CurrentCulture ));
+			ButtonText . Margin = t;
+
+=================================================
+
+            /// How to pass a click event thru to end user of any UserControl
+            / Must declare the event
+            public event RoutedEventHandler Click;
+
+		//Setup handler to handle click event  from UserControl
+		Click += new RoutedEventHandler ( Threedbtn_Click );
+
+            private void OnClick ( object sender, MouseButtonEventArgs e )
+            {
+                    if ( this . Click != null )
+                    {
+                            this . Click ( this, e );
+                    }
+            }
+
+		// In the usercontrol, add this code :
+		 public event RoutedEventHandler Click;                
+             
+		 // This passes the Click event (from ThreeDeeBtnControl) on to user windows
+                private void OnButtonClick ( object sender, RoutedEventArgs e )
+                {
+                        if ( this . Click != null )
+                        {
+                                this . Click ( this, e );
+                        }
+                }
+
+		   and call it from the Click= property of the button or why.
+
+=================================================
+
+// How to access main dependencies reliably
+
+ScaleX="{Binding TextWidthScale, RelativeSource={RelativeSource FindAncestor,	AncestorType=local:ThreeDeeBtnControl}}"/>
+
+=================================================
+
+// how  to use transform....
+
+								<Rectangle
+										Height="44"  Width="120" 
+										Canvas.Left="290" 
+										Canvas.Top="32" 
+										Fill="{StaticResource Red3}">
+										<Rectangle.RenderTransform>
+											<TransformGroup>
+												<ScaleTransform/>
+												<SkewTransform x:Name="TestSkew" AngleX="15" AngleY="5"/>
+												<RotateTransform x:Name="testRotate" Angle="10"/>
+												<TranslateTransform x:Name="TestTranslate" X="12" Y="23"/>
+											</TransformGroup>
+										</Rectangle.RenderTransform>
+										<Rectangle.Style>
+											<Style TargetType="Rectangle">
+												<Style.Triggers>
+													<Trigger Property="IsMouseOver" Value="True">
+														<Setter Property="Opacity" Value="0.35"/>
+													</Trigger>
+
+												</Style.Triggers>
+											</Style>
+										</Rectangle.Style>
+
+									</Rectangle>
+
+=================================================
+
+how to modify any control in line in XAML
+
+		<xxxControl.Style>
+				<Style TargetType="Rectangle">
+					<Style.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Opacity" Value="0.35"/>
+						</Trigger>
+					</Style.Triggers>
+				</Style>
+			</Rectangle.Style>
+
+			//You can use this format almost anywhere to change any Dependency Poperty
+//			SetValue ( $$owner$$.BtnTextProperty, "here ya go !" );
+
+/Allows control to Override default properties, & lets DP objects be inherited
+OverridesDefaultStyle=True
+
+=================================================
+
+<!--Set up a data context pointing to Bank data for our Listview i the tab control-->
+can be used most anywhere in XAML code
+
+<Canvas.DataContext>
+	<datamodel:BankAccountViewModel/>
+</Canvas.DataContext>
+
+=================================================
+
+		<!--// How to pass value parameters to a Multi Converter, so ThreeDeeBtnControl is accessible in the Converter-->
+			<local:ThreeDeeBtnControl.Width>
+				<MultiBinding Converter="{StaticResource WidthMultiConverter}">
+					<Binding />
+					<Binding Path="TextSize" ElementName="DisplayWindow"/>
+					<Binding Path="FontDecoration" ElementName="DisplayWindow"/>
+				</MultiBinding>
+			</local:ThreeDeeBtnControl.Width>
+
+=================================================
+
+        //You can use this format almost anywhere to change a Dependency Poperty
+
+                 SetValue ( xxxxxxProperty, "here ya go !" );
+
+=================================================
+
+            // How to access a DP in a converter
+            needs :
+            using System . Windows;
+            
+            DependencyObject dpo = new DependencyObject ( );
+            object  dobj = dpo . GetValue ( ImgButton . ImgWidthProperty );
+            double offset = System.Convert.ToDouble(dobj);
+
+=================================================
+
+	<Grid x:Name="BtnGrid"
+			VerticalAlignment="Stretch"
+			HorizontalAlignment="Stretch" 
+			MouseEnter="Control_MouseEnter"
+			MouseLeave="Control_MouseLeave" Margin="0,0,41,77" 
+				>
+		<!--<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="158*"/>
+			<ColumnDefinition Width="217*"/>
+			<ColumnDefinition Width="126*"/>
+			<ColumnDefinition Width="18*"/>
+		</Grid.ColumnDefinitions>-->
+		<Border x:Name="ActiveBorder"
+				CornerRadius="8"
+				BorderThickness="{Binding Path=BtnBorderWidth, ElementName=ImageButton}"
+				BorderBrush="{Binding Path=BtnBorderColor, ElementName=ImageButton}"
+				MouseEnter="Control_MouseEnter"
+				MouseLeave="Control_MouseLeave" 
+				Margin="0,0,-41,-75"
+				MouseLeftButtonDown="RectBtn_MouseLeftButtonDown">
+			<!--#region transforms etc-->
+
+			<Border.RenderTransform>
+				<TransformGroup>
+					<ScaleTransform ScaleX="1" ScaleY="1"/>
+					<SkewTransform/>
+					<RotateTransform/>
+					<TranslateTransform X="0" Y="0"/>
+				</TransformGroup>
+			</Border.RenderTransform>
+
+			<Border.Effect>
+
+				<!--// This uses ALL options-->
+
+				<DropShadowEffect 						
+							Color="{Binding Path=ShadowBlurColor, ElementName=ImageButton}"
+							Opacity="{Binding Path=ShadowOpacity, ElementName=ImageButton}"
+							ShadowDepth="{Binding Path=ShadowBlurSize, ElementName=ImageButton}"
+							BlurRadius="{Binding Path=ShadowBlurRadius, ElementName=ImageButton}"
+							RenderingBias="Quality"						
+							Direction="49"/>
+			</Border.Effect>
+
+			<!--#endregion-->
+
+		</Border>
+		<!--<Viewbox x:Name="vbox"
+				   Panel.ZIndex="2"
+				Stretch="Fill" Margin="0,0,0,0">-->
+
+		<Grid x:Name="Innergrid"
+				Width="560"
+			MouseEnter="Control_MouseEnter"
+			MouseLeave="Control_MouseLeave" Margin="0,3,-41,-77" HorizontalAlignment="Left" 
+			
+			>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="{Binding Width, ElementName=Innergrid}"/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<StackPanel
+				Orientation="Horizontal"
+				Height="{Binding Height, ElementName=Innergrid}"
+				Width="{Binding Width, ElementName=Innergrid}"
+				>
+				<!--Height="{Binding ImageHeight, ElementName=ImageButton}"-->
+				<Image x:Name="ImgName" 
+					Opacity="1"
+					MouseEnter="Control_MouseEnter"
+					MouseLeave="Control_MouseLeave" 
+					Visibility="Visible"
+					LayoutUpdated="ImgName_LayoutUpdated"
+					Source ="pack://application:,,,/icons/cloud.png" 
+				 Margin="0,0,0,0" 
+									/>
+				<!--Width="{Binding Path=Width, ElementName=Innergrid, Converter={StaticResource resetTextWidth}, XPath=ImageWidth}"-->
+				<TextBlock x:Name="ButtonText"
+				     Panel.ZIndex="5"
+				     Background="Beige"
+				     HorizontalAlignment="Center"
+					MouseEnter="Control_MouseEnter"
+					MouseLeave="Control_MouseLeave" 
+				     TextAlignment="Center"
+					Text="{Binding Path=ImgBtnText, ElementName=ImageButton}"
+					TextWrapping="Wrap"
+					Loaded="Textblock_change"
+					Foreground="{Binding Path=BtnForeground, ElementName=ImageButton}"					
+					FontSize="{Binding Path=BtnTextSize, ElementName=ImageButton}" 
+					Margin="0,5,2,5" 
+					SizeChanged="TextWidthChanged" 
+					LayoutUpdated="layoutchanged" 
+				     Width="365" 
+				     RenderTransformOrigin="0.747,0.519" 
+					      />
+
+			</StackPanel>
+		</Grid>
+	</Grid>
+
+=================================================
+
+How to Sort data on multiple fields using the Linq
+
+                // This creates a Dictionary containing ONLY the fields specified in the 1st section
+            var Customers = NwCustomers6 . AsEnumerable ( ) . GroupBy ( d => new
+            {
+                    d . Country,
+                    d.City
+            } )
+            . Select ( gg => new
+            {
+                    Country = gg . Key . Country,
+                    _City = gg.Key.City,
+                    //pcode = gg.Key.PostalCode
+            })
+            . ToList ( );
+
+
+            // By here, I have a list of countries + Cities alone in no particular order
+            //so organise theentire Db into ordered sequence by Countries and then Cities
+
+            //Create new List<objects> for our sorted output
+            ObservableCollection<nwcustomer> NwCust = new ObservableCollection<nwcustomer> ( );
+
+            foreach ( var country in Customers )
+            {
+                    foreach ( var item in NwCustomers6 )
+                    {
+                            if ( item . Country == country . Country )
+                            {
+                                    foreach ( var city in item.Country)
+                                    {
+                                                        NwCust . Add ( item );
+                                                    //Console . WriteLine ( $"{item . Country}, {item . City}, {item . CompanyName}" );
+                                    }
+                                }
+                    }
+            }
+                        
+            // We now have a list arranged by City's inside Country's
+
+=================================================
+
+How   to bind items in c#
+
+        private void SetUpListbox ( )
+        {
+                this.Background = new SolidColorBrush (Colors.LightGray);
+                Binding binding = new Binding ( "Background" );
+                binding . Source = lbcontrol.Background;
+                lbcontrol . SetBinding ( BackgroundProperty, binding );
+
+                this . Foreground = new SolidColorBrush ( Colors . Black );
+                Binding binding2 = new Binding ( "Foreground" );
+                binding2 . Source = lbcontrol . Foreground;
+                lbcontrol . SetBinding ( ForegroundProperty, binding2 );
+        }
+=================================================
+
+

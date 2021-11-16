@@ -1,0 +1,44 @@
+﻿<Window x:Class="WPFPages.AnalogClockHost"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  mc:Ignorable="d"
+	xmlns:Analogclock="clr-namespace:MyAnalogClock;assembly=MyAnalogClock"  
+	  WindowStartupLocation="CenterScreen"
+        Title="Analog Clock Host" Height="250" Width="250">
+
+	<!--xmlns:Analogclock="clr-namespace:MyAnalogClock"-->
+
+	<Window.Resources>
+		<!--<custom:AnalogClock  x:Key="analogclock"/>-->
+	</Window.Resources>
+	<!--OLD VERSION-->
+	<Grid  x:Name="Clock">
+
+		<Analogclock:AnalogClock x:Name="analogclock"		
+			HourHandColor="{StaticResource Orange0}"
+			MinuteHandColor="{StaticResource Green0}"
+			SecondsHandColor="{StaticResource Red0}"
+			Background="{StaticResource Yellow0}"
+			HourHandThickness="5"
+			MinuteHandThickness="2"
+			SecondsHandThickness="1" 
+			HourHandLength="-60"
+			MinuteHandLength="-75"
+			PreviewKeyDown="AnalogClock_PreviewKeyDown"
+			
+			SecondHandLength="-85" 
+			Height="221"
+			Width="242"
+			ShowSeconds="true"
+			AnalogBackground="Black"
+			AnalogForeground="White" 
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center" Margin="0,2,0,-4" 
+			/>
+
+
+	</Grid>
+</Window>
+ 

@@ -1,0 +1,2283 @@
+﻿<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:conv="clr-namespace:WPFPages.Converts"
+    xmlns:userctrl="clr-namespace:WPFPages.UserControls"
+    xmlns:data="clr-namespace:WPFPages.Views"
+      xmlns:local="clr-namespace:WPFPages.Views"
+      xmlns:Treedata="clr-namespace:WPFPages.ViewModels"
+      x:Class="WPFPages.Views.AnimationTest"
+      mc:Ignorable="d"
+      x:Name="AnimWin"
+      Height="590" Width="648"
+      MinHeight="510" MinWidth="590"
+      Loaded="AnimWin_Loaded"
+      WindowStartupLocation="CenterScreen"
+      WindowStyle="ThreeDBorderWindow">
+
+      <Window.Resources>
+            <!--Needed to move text block down to force it to center the text in the border-->
+
+
+            <!--<userctrl:RectangleControl
+		x:Key="ImageBtn" />-->
+            <conv:TextWidthMinus10Percent x:Key="ReduceTextwidthConverter" />
+            <conv:ResourceToBrushConverter x:Key="Resource2BrushConv" />
+            <conv:MoveTextblockToTop x:Key="moveTextblockToTop" />
+            <userctrl:ShadowLabelControl x:Key="ShadowTextControl" />
+            <userctrl:ShadowLabelControl x:Key="ShadowTextConlistviewtrol" />
+            <userctrl:ImgButton x:Key="ImgControl" />
+            <userctrl:SharedGrid x:Key="Sharedgrid" />
+            <Treedata:TopLevel x:Key="toplevel"/>
+            <Treedata:MidLevel x:Key="midlevel"/>
+            <Treedata:BaseLevel x:Key="baselevel"/>
+            <Treedata:TreeviewDataModel x:Key="treeview"/>
+
+            <!--#region Colors/Brushes-->
+
+            <LinearGradientBrush x:Key="Greenbackground" StartPoint="0.5,1" EndPoint="0.5,0">
+                  <GradientStop Offset="0" Color="#FF00FF00" />
+                  <GradientStop Offset="1" Color="#99006000" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Yellowbackground" StartPoint="0.5,1" EndPoint="0.5,0">
+                  <GradientStop Offset="0" Color="#FFFFEF00" />
+                  <GradientStop Offset="1" Color="#FFFF9B00" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Bluebackground" StartPoint="0.5,1" EndPoint="0.5,0">
+                  <GradientStop Offset="0" Color="#FF12B1FF" />
+                  <GradientStop Offset="1" Color="#E5555BCD" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Orangebackground" StartPoint="0.5,1" EndPoint="0.5,0">
+                  <GradientStop Offset="0" Color="#FFFFBC41" />
+                  <GradientStop Offset="1" Color="#FFFF8841" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="Magentabackground" StartPoint="0.5,1" EndPoint="0.5,0">
+                  <GradientStop Offset="0" Color="#FFFF92FF" />
+                  <GradientStop Offset="1" Color="#FFFF33D6" />
+            </LinearGradientBrush>
+            <!--Good example of a dummy "Dome" button-->
+            <RadialGradientBrush x:Key="localMultiYellowRadial" GradientOrigin="0.5,0.20" Center="0.5,0.5" RadiusX="0.8" RadiusY=".8">
+                  <GradientStop Offset="0.0" Color="#FDFFFFD3" />
+                  <GradientStop Offset="0.2" Color="#FDFEFF00" />
+                  <GradientStop Offset="0.5" Color="#FDE7E71A" />
+                  <GradientStop Offset="0.4" Color="#FCDADB17" />
+                  <GradientStop Offset="0.7" Color="#a3A28B1A" />
+                  <GradientStop Offset="0.9" Color="#FDA2A21A" />
+            </RadialGradientBrush>
+
+            <!--Good example of a dummy "Dome" button-->
+            <RadialGradientBrush x:Key="localMultiGreenRadial" GradientOrigin="0.5,0.20" Center="0.5,0.5" RadiusX="0.8" RadiusY="0.8">
+                  <GradientStop Offset="0.0" Color="#FE00FC00" />
+                  <GradientStop Offset="0.2" Color="#FE00AF00" />
+                  <GradientStop Offset="0.5" Color="#FC3E963F" />
+                  <GradientStop Offset="0.4" Color="#DD00AF00" />
+                  <GradientStop Offset="0.7" Color="#BC3E503F" />
+                  <GradientStop Offset="0.9" Color="#FC3E6C3F" />
+            </RadialGradientBrush>
+
+            <!--Good example of a dummy "Dome" button-->
+            <RadialGradientBrush x:Key="localMultiRedRadial" GradientOrigin="0.5,0.20" Center="0.5,0.5" RadiusX="0.8" RadiusY="0.8">
+                  <GradientStop Offset="0.0" Color="#FCFFD4D3" />
+                  <GradientStop Offset="0.2" Color="#AAFD4C49" />
+                  <GradientStop Offset="0.5" Color="#8BD40000" />
+                  <GradientStop Offset="0.4" Color="#AFFD4C49" />
+                  <GradientStop Offset="0.7" Color="#5CDC1717" />
+                  <GradientStop Offset="0.9" Color="#AAFD4C49" />
+            </RadialGradientBrush>
+            <!--#endregion-->
+
+            <!--#region Button Border Menu StoryBoards-->
+
+            <!--*** Slide complete Canvas Right almost out of view***-->
+            <Storyboard x:Key="SlideStackPanelRight">
+                  <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="RectbuttonStackPanel">
+                        <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="175" />
+                  </DoubleAnimationUsingKeyFrames>
+                  <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" Storyboard.TargetName="RectbuttonStackPanel">
+                        <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="445" />
+                  </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
+
+            <!--*** Slide complete Canvas Left into View***-->
+
+            <Storyboard x:Key="SlideStackPanelLeft">
+                  <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="RectbuttonStackPanel">
+                        <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0" />
+                  </DoubleAnimationUsingKeyFrames>
+                  <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" Storyboard.TargetName="RectbuttonStackPanel">
+                        <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="5" />
+                  </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
+
+            <Storyboard x:Key="ShowLeftMenu">
+                  <DoubleAnimation Duration="0:0:0.30" From="0" To="145" Storyboard.TargetName="SlideOutMenu" Storyboard.TargetProperty="Width"
+					     FillBehavior="HoldEnd" />
+            </Storyboard>
+            <Storyboard x:Key="HideLeftMenu">
+                  <DoubleAnimation Duration="0:0:0.40" From="145" To="0" Storyboard.TargetName="SlideOutMenu" Storyboard.TargetProperty="Width" FillBehavior="HoldEnd" />
+            </Storyboard>
+
+            <Storyboard x:Key="FadeInMenu">
+                  <DoubleAnimation Duration="0:0:0.30" From="0.0" To="1.0" Storyboard.TargetName="LeftMenuTogglePanel" Storyboard.TargetProperty="Opacity" FillBehavior="HoldEnd" />
+                  <!--<DoubleAnimation Duration="0:0:0.40" From="0.0" To="1.0" Storyboard.TargetName="Tb1" Storyboard.TargetProperty="Opacity" FillBehavior="HoldEnd" />-->
+            </Storyboard>
+            <Storyboard x:Key="FadeOutMenu">
+                  <DoubleAnimation Duration="0:0:0.20" From="1.0" To="0.5" Storyboard.TargetName="LeftMenuTogglePanel" Storyboard.TargetProperty="Opacity" FillBehavior="HoldEnd" />
+                  <!--<DoubleAnimation Duration="0:0:0.40" From="1.0" To="0.5" Storyboard.TargetName="Tb1" Storyboard.TargetProperty="Opacity" FillBehavior="HoldEnd" />-->
+            </Storyboard>
+
+            <!--#endregion-->
+
+            <!--#region styles-->
+
+            <Style x:Key="RectStyle1" TargetType="{x:Type Rectangle}">
+                  <!--<Style.Resources>
+                        <TextBlock x:Key="Tb1"
+					     Text="Menu"
+					     FontSize="25"
+					     Foreground="{StaticResource White0}"
+					     Panel.ZIndex="2" />
+                  </Style.Resources>-->
+            </Style>
+
+            <Style x:Key="MenuTextBlockStyle1"  TargetType="{x:Type TextBlock}">
+                  <!--<Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="False">
+                              <Setter Property="Margin" Value="0 0 0 0" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                              <Setter Property="Margin" Value="0 0 0 0" />
+                        </Trigger>
+                  </Style.Triggers>-->
+            </Style>
+
+
+            <Style x:Key="ListBoxStyle1" TargetType="ListBox">
+                  <!--<Setter Property="Background" Value="Fuchsia"/>
+                  <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="False">
+                              <Setter Property="Background" Value="{StaticResource Cyan4}" />
+                              <Setter Property="Foreground" Value="{StaticResource Black0}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                              <Setter Property="Background" Value="{StaticResource Blue0}" />
+                              <Setter Property="Foreground" Value="{StaticResource Red0}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                              <Setter Property="Background" Value="{StaticResource Blue2}" />
+                              <Setter Property="Foreground" Value="{StaticResource Magenta1}" />
+                        </Trigger>
+                  </Style.Triggers>-->
+            </Style>
+
+            <Style x:Key="LbItemstyle" TargetType="ListBoxItem">
+                  <!--<Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="False">
+                              <Setter Property="Background" Value="{StaticResource Cyan4}" />
+                              <Setter Property="Foreground" Value="{StaticResource Black0}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                              <Setter Property="Background" Value="{StaticResource Blue0}" />
+                              <Setter Property="Foreground" Value="{StaticResource White0}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                              <Setter Property="Background" Value="{StaticResource Blue2}" />
+                              <Setter Property="Foreground" Value="{StaticResource White0}" />
+                        </Trigger>
+                  </Style.Triggers>-->
+            </Style>
+
+            <!--====================button  style============================-->
+
+            <Style x:Key="BtnAsLabel" TargetType="{x:Type Button}">
+                  <Style.Resources>
+                        <DataTemplate x:Key="ButtonLabelTtemplate">
+                              <Grid>
+                                    <Border
+							Height="25"
+							Width="120"
+							BorderBrush="Black"
+							BorderThickness="2"
+							UseLayoutRounding="True" />
+                                    <TextBlock
+							Panel.ZIndex="1"
+							FontSize="{Binding TextSize}"
+							FontStyle="{Binding FontDecoration}"
+							Foreground="{Binding BtnTextColor}"
+							Height="{Binding TextHeight}"
+							OverridesDefaultStyle="True"
+							Width="{Binding TextWidth}"
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+							TextAlignment="Center"
+							Text="{Binding BtnText, ElementName=RectangularButton}">
+                                          <TextBlock.Effect>
+                                                <DropShadowEffect
+								ShadowDepth="{Binding TextShadowSize, ElementName=RectangularButton}"
+								Direction="{Binding TextShadowDirection, ElementName=RectangularButton}"
+								Color="{Binding ShadowColor, ElementName=RectangularButton}"
+								Opacity="{Binding TextShadowOpacity, ElementName=RectangularButton}"
+								BlurRadius="{Binding TextShadowRadius, ElementName=RectangularButton}" />
+                                          </TextBlock.Effect>
+                                    </TextBlock>
+                              </Grid>
+                        </DataTemplate>
+                  </Style.Resources>
+            </Style>
+
+            <!--#endregion-->
+
+            <!--#region Templates-->
+
+            <!--#region UNUSED ListboxItem template-->
+            <!--<ControlTemplate  x:Key="lbs1" TargetType="ListBoxItem">
+                  <Border
+                        DataContext="{Binding nwcustomer}">
+                        <StackPanel Orientation="Horizontal">
+                              <TextBlock
+                              Text="{Binding CustomerId}"
+                              Background="Transparent"
+                              FontSize="12"
+                              Margin="5 0 5 0"
+                              HorizontalAlignment="Left"
+                              TextAlignment="Center" />
+                              <TextBlock Text="{Binding CompanyName}"
+                              Background="Transparent"
+                              FontSize="12"
+                              HorizontalAlignment="Center"
+                              TextAlignment="Center" />
+                              <TextBlock Text="{Binding ContactName}"
+                              Background="Transparent"
+                              FontSize="12"
+                              Margin="5 0 5 0"
+                              HorizontalAlignment="Right"
+                              TextAlignment="Center" />
+                        </StackPanel>
+                  </Border>
+                  <ControlTemplate.Triggers>
+                        <MultiDataTrigger>
+                              <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="false" />
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+                              </MultiDataTrigger.Conditions>
+                              <MultiDataTrigger.Setters>
+                                    <Setter Property="Background" Value="{StaticResource Green2}" />
+                                    <Setter Property="Foreground" Value="{StaticResource White0}" />
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="FontStyle" Value="Normal" />
+                                    -->
+            <!--<Setter Property="BorderBrush" Value="White" />-->
+            <!--
+                              </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                              <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="false" />
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="true" />
+                              </MultiDataTrigger.Conditions>
+                              <MultiDataTrigger.Setters>
+                                    <Setter Property="Background" Value="{StaticResource Green2}" />
+                                    <Setter Property="Foreground" Value="{StaticResource Black0}" />
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="FontStyle" Value="Normal" />
+                                    -->
+            <!--<Setter Property="BorderBrush" Value="White" />-->
+            <!--
+                              </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                              <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="true" />
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+                              </MultiDataTrigger.Conditions>
+                              <MultiDataTrigger.Setters>
+                                    <Setter Property="Background" Value="{StaticResource Blue0}" />
+                                    <Setter Property="Foreground" Value="{StaticResource White0}" />
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="FontStyle" Value="Normal" />
+                                    -->
+            <!--<Setter Property="BorderBrush" Value="White" />-->
+            <!--
+                              </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                              <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="True" />
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                              </MultiDataTrigger.Conditions>
+                              <MultiDataTrigger.Setters>
+                                    <Setter Property="Background" Value="{StaticResource Red0}" />
+                                    <Setter Property="Foreground" Value="{StaticResource Magenta1}" />
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="FontStyle" Value="Normal" />
+                                    -->
+            <!--<Setter Property="BorderBrush" Value="White" />-->
+            <!--
+                              </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                  </ControlTemplate.Triggers>
+            </ControlTemplate>-->
+            <!--#endregion-->
+
+            <DataTemplate x:Key="DataTemplate1">
+                  <Border x:Name="_border">
+                        <StackPanel Orientation="Horizontal">
+
+                              <TextBlock
+                                    Text="{Binding CustomerId}"
+                                    FontSize="12"
+                                    Margin="5 0 5 0"
+                                    HorizontalAlignment="Left"
+                                    TextAlignment="Center"/>
+
+                              <TextBlock Text="{Binding CompanyName}"
+                                    FontSize="12"
+                                    HorizontalAlignment="Center"
+                                    TextAlignment="Center" />
+
+                              <TextBlock Text="{Binding ContactName}"
+                                    FontSize="12"
+                                    Margin="5 0 5 0"
+                                    HorizontalAlignment="Right"
+                                    TextAlignment="Center" />
+
+                        </StackPanel>
+                  </Border>
+            </DataTemplate>
+
+            <DataTemplate x:Key="DataTemplate2" >
+                  <Border x:Name="_border">
+                        <StackPanel Orientation="Horizontal"
+                              DataContext="{StaticResource treeview}">
+                              <ContentControl Content="{Binding TopLine}">
+                                    <ContentControl.ContentTemplate>
+                                          <DataTemplate>
+                                                <Grid>
+                                                      <TextBlock                                    
+                                                      Text="{Binding TopIndex, ElementName=toplevel}"
+                                                      FontSize="12"
+                                                      Margin="5 0 5 0"
+                                                      Foreground="{StaticResource Black0}"
+                                                      HorizontalAlignment="Left"
+                                                      TextAlignment="Center"/>
+                                                      <TextBlock
+                                                      Text="{Binding TopLine, ElementName=toplevel}"
+                                                      FontSize="12"
+                                                      Margin="5 0 5 0"
+                                                      Foreground="{StaticResource Black0}"
+                                                      HorizontalAlignment="Left"
+                                                      TextAlignment="Center"/>
+                                                </Grid>
+                                          </DataTemplate>
+                                    </ContentControl.ContentTemplate>
+
+                              </ContentControl>
+                        </StackPanel>
+                  </Border>
+            </DataTemplate>
+
+            <!--// Default Listbox template //-->
+            <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#FF5A0FFF"/>
+            <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#FF1C26DA"/>
+            <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#FFFD2600"/>
+            <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#FF8E0300"/>
+            <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#FFFD2600"/>
+            <SolidColorBrush x:Key="Item.SelectedActive.Foreground" Color="#FF8EFEFE"/>
+            <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FFFD2600"/>
+
+            <Style x:Key="ListBoxItemStyle1" TargetType="{x:Type ListBoxItem}">
+                  <Setter Property="SnapsToDevicePixels" Value="True"/>
+                  <Setter Property="Padding" Value="4,1"/>
+                  <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                  <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                  <Setter Property="Background" Value="Transparent"/>
+                  <Setter Property="BorderBrush" Value="Transparent"/>
+                  <Setter Property="BorderThickness" Value="0"/>
+                  <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+                  <Setter Property="Template">
+                        <Setter.Value>
+                              <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                    <Border x:Name="Bd" 
+                                            BorderBrush="{TemplateBinding BorderBrush}" 
+                                            BorderThickness="{TemplateBinding BorderThickness}" 
+                                            Background="{TemplateBinding Background}" 
+                                            Padding="{TemplateBinding Padding}" 
+                                            SnapsToDevicePixels="true">
+
+                                          <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                          <MultiTrigger>
+                                                <!--// Working-->
+                                                <!--NO MOUSEOVER+ NOT SELECTED-->
+                                                <MultiTrigger.Conditions>
+                                                      <Condition Property="IsMouseOver" Value="False"/>
+                                                      <Condition Property="IsSelected" Value="False"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Blue6}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource Black0}"/>
+                                                <Setter Property="Height" Value="20"/>
+                                          </MultiTrigger>
+
+                                          <!--// Working-->
+                                          <!--MOUSEOVER+ NOT SELECTED-->
+                                          <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                      <Condition Property="IsMouseOver" Value="True"/>
+                                                      <Condition Property="IsSelected" Value="False"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Red0}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource Yellow2}"/>
+                                                <Setter Property="Height" Value="20"/>
+                                          </MultiTrigger>
+
+                                          <!--// Working-->
+                                          <!--MOUSEOVER and is SELECTED-->
+                                          <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                      <!--<Condition Property="Selector.IsSelectionActive" Value="False"/>-->
+                                                      <Condition Property="IsMouseOver" Value="True"/>
+                                                      <Condition Property="IsSelected" Value="True"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Blue0}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource White0}"/>
+                                                <Setter Property="Height" Value="26"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                          </MultiTrigger>
+
+                                          <!--// Working-->
+                                          <!--NO MOUSE but is  SELECTED-->
+                                          <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                      <!--<Condition Property="Selector.IsSelectionActive" Value="False"/>-->
+                                                      <Condition Property="IsMouseOver" Value="False"/>
+                                                      <Condition Property="IsSelected" Value="True"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Magenta0}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource White0}"/>
+                                                <Setter Property="Height" Value="20"/>
+                                          </MultiTrigger>
+                                          <!--<Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                          </Trigger>-->
+                                    </ControlTemplate.Triggers>
+                              </ControlTemplate>
+                        </Setter.Value>
+                  </Setter>
+            </Style>
+
+            <Style x:Key="ListViewItemStyle1" TargetType="{x:Type ListViewItem}">
+                  <Setter Property="SnapsToDevicePixels" Value="True"/>
+                  <Setter Property="Padding" Value="4,1"/>
+                  <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                  <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                  <Setter Property="Background" Value="Transparent"/>
+                  <Setter Property="BorderBrush" Value="Transparent"/>
+                  <Setter Property="BorderThickness" Value="0"/>
+                  <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+                  <Setter Property="Template">
+                        <Setter.Value>
+                              <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Border x:Name="Bd" 
+                                            BorderBrush="{TemplateBinding BorderBrush}" 
+                                            BorderThickness="{TemplateBinding BorderThickness}" 
+                                            Background="{TemplateBinding Background}" 
+                                            Padding="{TemplateBinding Padding}" 
+                                            SnapsToDevicePixels="true">
+
+                                          <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                          <MultiTrigger>
+                                                <!--// Working-->
+                                                <!--NO MOUSEOVER+ NOT SELECTED-->
+                                                <MultiTrigger.Conditions>
+                                                      <Condition Property="IsMouseOver" Value="False"/>
+                                                      <Condition Property="IsSelected" Value="False"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Blue6}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource Black0}"/>
+                                                <Setter Property="Height" Value="20"/>
+                                          </MultiTrigger>
+
+                                          <!--// Working-->
+                                          <!--MOUSEOVER+ NOT SELECTED-->
+                                          <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                      <Condition Property="IsMouseOver" Value="True"/>
+                                                      <Condition Property="IsSelected" Value="False"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Red0}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource Yellow2}"/>
+                                                <Setter Property="Height" Value="20"/>
+                                          </MultiTrigger>
+
+                                          <!--// Working-->
+                                          <!--MOUSEOVER and is SELECTED-->
+                                          <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                      <!--<Condition Property="Selector.IsSelectionActive" Value="False"/>-->
+                                                      <Condition Property="IsMouseOver" Value="True"/>
+                                                      <Condition Property="IsSelected" Value="True"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Blue0}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource White0}"/>
+                                                <Setter Property="Height" Value="26"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                          </MultiTrigger>
+
+                                          <!--// Working-->
+                                          <!--NO MOUSE but is  SELECTED-->
+                                          <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                      <!--<Condition Property="Selector.IsSelectionActive" Value="False"/>-->
+                                                      <Condition Property="IsMouseOver" Value="False"/>
+                                                      <Condition Property="IsSelected" Value="True"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Magenta0}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource White0}"/>
+                                                <Setter Property="Height" Value="20"/>
+                                          </MultiTrigger>
+                                          <!--<Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                          </Trigger>-->
+                                    </ControlTemplate.Triggers>
+                              </ControlTemplate>
+                        </Setter.Value>
+                  </Setter>
+            </Style>
+
+
+            <!--#region Default Listbox template-->
+            <!--// Default templaste forListBox-->
+
+            <!--#endregion-->
+
+      </Window.Resources>
+
+      <Window.DataContext>
+            <data:nwcustomer />
+            <!--<Treedata:treedata/>-->
+      </Window.DataContext>
+
+      <!--START OF FUNCTIONALITY-->
+
+      <Grid x:Name="MasterGrid"
+			UseLayoutRounding="True">
+
+            <!--#region Left Slide menu permanent button-->
+            <Canvas x:Name="LeftslidingMenuMarker"
+				  Grid.Row="0"
+				  Grid.Column="0"
+				  Background="Transparent"
+				  Height="160"
+				   Panel.ZIndex="10"
+				  Width="46"
+				  HorizontalAlignment="Left"
+				  VerticalAlignment="Top"
+				  Visibility="Visible">
+                  <Border  x:Name="Tb1"
+						Canvas.Top="55"
+						Canvas.Left="0"
+						Background="Red"
+						MouseLeftButtonDown="Tb1_MouseLeftButtonDown"
+						MouseEnter="SlideMenu_mouseEnter"
+						Height="128"
+						UseLayoutRounding="True"
+						Panel.ZIndex="10"
+						Width="35"
+						CornerRadius="12">
+                        <TextBlock x:Name="LeftMenuTogglePanel"
+							Background="Transparent"
+							Height="130"
+							Width="17"
+							Margin="10,5,8,-7"
+							FontFamily="Verdana"
+							TextWrapping="Wrap"
+							MouseEnter="SlideMenu_mouseEnter"
+							MouseLeftButtonDown="Tb1_MouseLeftButtonDown"
+							Text=" ME NU"
+							FontSize="20"
+							Foreground="{StaticResource White0}"
+							Panel.ZIndex="11"
+							Opacity="0.4"
+							UseLayoutRounding="True"
+                                          VerticalAlignment="Top">
+                              <TextBlock.RenderTransform>
+                                    <TransformGroup>
+                                          <ScaleTransform ScaleX="1.0" ScaleY="0.7" />
+                                          <SkewTransform />
+                                          <RotateTransform Angle="0" />
+                                          <TranslateTransform X="0" Y="0" />
+                                    </TransformGroup>
+                              </TextBlock.RenderTransform>
+                        </TextBlock>
+                  </Border>
+            </Canvas>
+            <!--#endregion Left Slide menu permanent button-->
+
+            <!--#region Main grid setup -->
+            <Grid x:Name="InnerGrid"
+				  Height="{Binding Height, ElementName=MasterGrid}"
+				  Width="{Binding Width, ElementName=MasterGrid}"                  
+				  Background="{StaticResource Gray3}" 
+                        Margin="0,-2,-4,0" 
+                        RenderTransformOrigin="0.5,0.5"
+				Visibility="Visible">
+                  <Grid.RenderTransform>
+                        <TransformGroup>
+                              <ScaleTransform />
+                              <SkewTransform />
+                              <RotateTransform />
+                              <TranslateTransform />
+                        </TransformGroup>
+                  </Grid.RenderTransform>
+
+                  <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" SharedSizeGroup="Col0" />
+                        <ColumnDefinition Width="200"  SharedSizeGroup="Col1"/>
+                  </Grid.ColumnDefinitions>
+
+                  <Image x:Name="OpenButton"
+					      Source="/WPFPages;component/Icons/Right-arrow.png" 
+					      ToolTip="Click to Hide the menu bar"
+					      MouseLeftButtonDown="Image_MouseLeftButtonDown"
+					      RenderTransformOrigin="14.6,1.9"                         
+					      Visibility="Visible" Margin="164,6,10,529" Grid.Column="1" />
+
+                  <!--#endregion-->
+
+                  <!--#region Slide out from left menu-->
+                  <!--mostly Shadow labels-->
+                  <StackPanel x:Name="SlideOutMenu"
+					Visibility="Hidden"
+
+					HorizontalAlignment="Left"
+					Orientation="Vertical"
+					Grid.Row="0"
+					Grid.Column="0"
+					Panel.ZIndex="10"
+					Width="146"
+					Background="{StaticResource Black5}"
+                              Canvas.Top="12"
+                              Canvas.Left="189"
+                              Margin="-1,-1,0,-2">
+
+                        <Border Height="10" />
+
+                        <userctrl:ShadowLabelControl
+					x:Name="Menu0"
+					Background="{DynamicResource Green8}"
+					CornerRadius="0"
+					BorderPadding="1"
+					BorderColor="{DynamicResource Orange1}"
+					BorderThickness="1"
+					BorderShadowColor="White"
+					FontStyle="Normal"
+					FontFamily="Garamonde"
+					FontWeight="Bold"
+					
+                              BtnText="Hide Menu"
+					BtnTextColor="{DynamicResource Black1}"
+
+                              BtnColorDown="{DynamicResource Green3}"
+					BtnTextColorDown="{DynamicResource Yellow0}"
+					MouseLeftButtonDown="Tb1_MouseLeftButtonDown"
+					MouseoverColor="{DynamicResource Green3}"
+
+					TextShadowSize="3"
+					TextShadowDirection="330"
+					TextShadowColor="White"
+                              ShadowDownColor="{StaticResource ClrRed8}"
+					TextShadowOpacity="0.9"
+					BorderShadowBlurSize="0"
+
+					TextSize ="20"
+                              TextTop="6"
+	                        TextHeightScale="1"
+                              TextWidthScale="1"
+                              
+					Width="135"
+					Margin="6,0,5,0"
+					UseLayoutRounding="True"
+                              RenderTransformOrigin="0.5,0.5" Height="44" />
+
+                        <userctrl:ShadowLabelControl
+					x:Name="MenuOpen"
+					Background="{DynamicResource White5}"
+					MouseoverColor="{DynamicResource Green3}"
+					CornerRadius="0"
+					BorderPadding="1"
+					BorderColor="{DynamicResource Orange1}"
+					BorderThickness="1"
+					FontStyle="Normal"
+					FontFamily="Garamonde"
+					FontWeight="Bold"
+
+                              BtnText="Hide Menu Bars below..."
+                              BtnTextColor="Red"
+                              
+
+					TextSize ="18"
+                              TextTop="0"
+	                        TextHeightScale="1"
+                              TextWidthScale="1"
+
+                              BtnColorDown="{DynamicResource Blue5}"
+					BtnTextColorDown="{DynamicResource Black0}"
+
+					TextShadowSize="2"
+					TextShadowDirection="330"
+					TextShadowColor="White"
+					TextShadowOpacity="0.9"
+					TextShadowBlurSize="1"
+					Width="Auto"
+
+					Margin="6,0,5,0"
+                              Height="54"
+					UseLayoutRounding="True"
+					MouseLeftButtonDown="MenuOpen_Click"
+                              RenderTransformOrigin="0.5,0.5" />
+                        <userctrl:ShadowLabelControl
+					x:Name="Menu1"
+					BorderPadding="1"
+					BorderColor="{DynamicResource Orange1}"
+					BorderThickness="0"
+					BtnColorDown="{DynamicResource Blue5}"
+					BtnTextColorDown="{DynamicResource Black0}"
+					CornerRadius="0"
+					Background="{DynamicResource Green6}"
+					LinearBackground="{DynamicResource HeaderBorderBrushGreen}"
+					LinearBackgroundDown="{DynamicResource HeaderBorderBrushYellow}"
+                              UseStandardBackground="False"
+
+                              BtnText="{Binding Menu1Text, ElementName=AnimWin, FallbackValue=Image Buttons}"
+					BtnTextColor="{DynamicResource Blue0}"
+                              TextSize="14"
+                              TextTop="6"
+
+                              FontStyle="Normal"
+					FontFamily="Garamonde"
+					FontWeight="Bold"
+
+                              UseLayoutRounding="True"
+					MouseLeftButtonDown="Menu1_Click"
+					MouseoverColor="{DynamicResource Green8}"
+
+					RenderTransformOrigin="0.5,0.5"
+
+					Width="135"
+					TextShadowSize="3"
+					TextShadowDirection="330"
+					TextShadowColor="White"
+					TextShadowOpacity="0.9"
+					TextShadowBlurSize="0"
+
+					Margin="6,0,4,0" Height="40" />
+
+                        <userctrl:ShadowLabelControl
+					x:Name="Menu2"
+					BorderPadding="1"
+					BorderColor="{DynamicResource Orange1}"
+					BorderThickness="0"
+					BtnText="{Binding Menu2Text, ElementName=AnimWin, FallbackValue=Expander Demo}"
+					BtnTextColor="{DynamicResource White1}"
+					BtnColorDown="{DynamicResource Blue5}"
+					BtnTextColorDown="{DynamicResource Black0}"
+					LinearBackground="{DynamicResource HeaderBorderBrushGreen}"
+					LinearBackgroundDown="{DynamicResource HeaderBorderBrushYellow}"
+                              UseStandardBackground="False"
+					CornerRadius="0"
+					Background="Cyan"
+					FontStyle="Normal"
+					FontFamily="Garamonde"
+					FontWeight="Bold"
+					UseLayoutRounding="True"
+					MouseLeftButtonDown="Menu2_Click"
+					MouseoverColor="{DynamicResource Green8}"
+                              TextSize="11"
+                              TextTop="6"
+
+					RenderTransformOrigin="0.5,0.5"
+
+					Width="135"
+					TextShadowSize="1.5"
+					TextShadowDirection="330"
+					TextShadowColor="Red"
+					TextShadowOpacity="0.9"
+					TextShadowBlurSize="1"	
+                              Margin="6,0,5,0" 
+                              Height="40" />
+
+                        <userctrl:ShadowLabelControl
+					x:Name="Menu3"
+					BorderPadding="1"
+					BorderColor="{DynamicResource Orange1}"
+					BorderThickness="0"
+					BtnText="{Binding Menu3Text, ElementName=AnimWin, FallbackValue=Panel 3}"
+					BtnTextColor="{DynamicResource Black1}"
+					BtnColorDown="{DynamicResource Blue5}"
+					BtnTextColorDown="{DynamicResource Black0}"
+					LinearBackground="{DynamicResource HeaderBorderBrushGreen}"
+					LinearBackgroundDown="{DynamicResource HeaderBorderBrushYellow}"
+                              UseStandardBackground="False"
+					CornerRadius="0"
+					Background="Cyan"
+					FontStyle="Normal"
+					FontFamily="Garamonde"
+					FontWeight="Bold"
+					UseLayoutRounding="True"
+					MouseLeftButtonDown="Menu3_Click"
+					MouseoverColor="{DynamicResource Green8}"
+
+					RenderTransformOrigin="0.5,0.5"
+
+					Width="135"
+					TextShadowSize="2.5"
+					TextShadowDirection="330"
+					TextShadowColor="White"
+					TextShadowOpacity="0.9"
+					TextShadowBlurSize="1"
+
+					TextSize ="14"
+                              TextTop="6"
+
+				Margin="6,0,4,0" Height="40" />
+
+                        <userctrl:ShadowLabelControl
+					x:Name="Menu4"
+					BorderPadding="1"
+					BorderColor="{DynamicResource Orange1}"
+					BorderThickness="0"
+					BtnText="{Binding Menu4Text, ElementName=AnimWin, FallbackValue=Tab Control Panel}"
+					BtnTextColor="{DynamicResource White0}"
+					BtnColorDown="{DynamicResource Blue5}"
+					BtnTextColorDown="{DynamicResource Black0}"
+					CornerRadius="0"
+					
+                              Background="Cyan"
+					LinearBackground="{DynamicResource HeaderBorderBrushGreen}"
+					LinearBackgroundDown="{DynamicResource HeaderBorderBrushYellow}"
+                              UseStandardBackground="False"
+
+                              FontStyle="Normal"
+					FontFamily="Garamonde"
+					FontWeight="Bold"
+					UseLayoutRounding="True"
+					MouseLeftButtonDown="Menu4_Click"
+					MouseoverColor="{DynamicResource Cyan4}"
+
+					RenderTransformOrigin="0.5,0.5"
+
+					Width="135"
+					
+                              TextTop="6"
+					TextSize ="14"
+
+                              TextShadowSize="3"
+					TextShadowDirection="330"
+					TextShadowColor="{StaticResource ClrRed5}"
+					TextShadowOpacity="0.9"
+					TextShadowBlurSize="0"                         
+				Margin="7,0,4,0" Height="40" />
+
+                        <!--Text="{Binding Menu5Text, ElementName=AnimWin, FallbackValue=12345 67890 panel}"-->
+                        <userctrl:ShadowLabelControl
+					x:Name="Menu5"
+					BorderPadding="1"
+					BorderColor="{DynamicResource Orange1}"
+					BorderThickness="0"
+					BtnText="{Binding Menu5Text, ElementName=AnimWin, FallbackValue=3D Button Panel}"
+					BtnTextColor="{DynamicResource White0}"
+					BtnColorDown="{DynamicResource Blue5}"
+					BtnTextColorDown="{DynamicResource Yellow2}"
+					LinearBackground="{DynamicResource HeaderBorderBrushGreen}"
+					LinearBackgroundDown="{DynamicResource HeaderBorderBrushYellow}"
+                              UseStandardBackground="False"
+
+                              RectCorner="22"
+					Background="Cyan"
+					FontStyle="Normal"
+					FontFamily="Garamonde"
+					FontWeight="Bold"
+					UseLayoutRounding="True"
+					MouseLeftButtonDown="Menu5_Click"
+					MouseoverColor="{DynamicResource Cyan4}"
+
+					RenderTransformOrigin="0.5,0.5"
+                              Height="40"
+                              
+					TextSize ="14"
+                              TextTop="6"
+
+                              Width="Auto"
+					TextShadowSize="2"
+					TextShadowDirection="330"
+					TextShadowColor="Red"
+					TextShadowOpacity="0.9"
+					TextShadowBlurSize="0"
+                              Margin="7,0,5,0"  />
+
+                        <userctrl:ShadowLabelControl
+					x:Name="Menu6"
+					BorderPadding="1"
+					BorderColor="{DynamicResource Orange1}"
+					BorderThickness="1"
+					CornerRadius="2"
+                              BorderShadowBlurSize="0"
+                              BorderShadowColor="LightGreen"
+                              BorderShadowDepth="0"
+                              BorderShadowDirection="310"
+
+					LinearBackground="{DynamicResource HeaderBorderBrushGreen}"
+					LinearBackgroundDown="{DynamicResource HeaderBorderBrushYellow}"
+                              UseStandardBackground="False"
+					Background="{StaticResource HeaderBorderBrushGreen}"
+					FontStyle="Normal"
+					FontFamily="Garamonde"
+					FontWeight="Bold"
+					Height="40"
+					BtnColorDown="{DynamicResource Blue5}"
+					MouseLeftButtonDown="Menu6_Click"
+					MouseoverColor="{DynamicResource Yellowbackground}"
+					RenderTransformOrigin="0.5,0.5"
+
+					BtnTextColor="{DynamicResource White0}"
+					BtnTextColorDown="{DynamicResource Black0}"
+					BtnText="{Binding Menu6Text, ElementName=AnimWin, FallbackValue=Experiments}"
+
+					TextSize ="16"
+                              TextTop="6"
+
+					Width="135"
+                              TextShadowSize="2"
+					TextShadowDirection="330"
+					TextShadowColor="#FEFF0007"
+					TextShadowOpacity="1"
+					TextShadowBlurSize="0"
+
+					UseLayoutRounding="True"
+      				
+                />
+
+                        <userctrl:ShadowLabelControl
+					x:Name="Menu7"
+					BorderPadding="1"
+					BorderColor="{DynamicResource Orange1}"
+					BorderThickness="1"
+					BtnText="{Binding Menu7Text, ElementName=AnimWin, FallbackValue=Unused Panel}"
+                              TextSize="14"
+					BtnTextColor="{DynamicResource Gray4}"
+					BtnColorDown="{DynamicResource Blue5}"
+					BtnTextColorDown="{DynamicResource Black0}"
+					CornerRadius="0"
+					Background="Cyan"
+					LinearBackground="{DynamicResource HeaderBorderBrushGreen}"
+					LinearBackgroundDown="{DynamicResource HeaderBorderBrushYellow}"
+                              UseStandardBackground="False"
+
+                              TextTop="8"
+                              FontStyle="Normal"
+					FontFamily="Garamonde"
+					FontWeight="Bold"
+					Height="48"
+					UseLayoutRounding="True"
+					MouseLeftButtonDown="Menu7_Click"
+					MouseoverColor="{DynamicResource Cyan4}"
+
+					RenderTransformOrigin="0.5,0.5"
+					TextShadowSize="3"
+					TextShadowDirection="330"
+					TextShadowColor="{StaticResource ClrWhite4}"
+					TextShadowOpacity="0.9"
+					TextShadowBlurSize="0" Margin="6,0"
+                          />
+                        <userctrl:ShadowLabelControl Margin="7,0,6,0" Width="Auto" Height="34"/>
+
+                  </StackPanel>
+
+                  <!--#endregion-->
+
+                  <!--#region panel1 (ImgButton test)Canvas -->
+                  <Grid x:Name="Panel1"
+					  Height="{Binding Height, ElementName=InnerGrid}"
+					  Width="{Binding Width, ElementName=InnerGrid}"
+					UseLayoutRounding="True"
+					Visibility="Hidden">
+
+                        <Canvas x:Name="Panel1Canvas"
+						Background="{StaticResource Gray3}"
+						Grid.Column="0"
+						Grid.ColumnSpan="1"
+						Panel.ZIndex="0"
+						UseLayoutRounding="True"
+						Height="{Binding Height, ElementName=Panel1}"
+						Width="{Binding Width, ElementName=Panel1}">
+
+                              <userctrl:ImgButton x:Name="ImageTest1"
+                                    Canvas.Left="127" Canvas.Top="4"
+                                    BackColor="{StaticResource Red5}"
+
+                                    ShadowDirection="40"
+                                    ShadowColor="Black"
+                                    ShadowBlurRadius="10"                                    
+                                    ShadowSize="4"
+                                    ShadowOpacity="1"
+                                    
+                                    ImgSource="/Icons/mailbox-receive-message.png"  
+         					ImageLeftOffset="5"
+                                    ImageTopOffset="0"
+						ImgWidth="57"
+                                    
+                                    BtnText="Yah boo sucks, jumps around but does not display correctly most of the time either..."
+                                    TextTopOffset="0"
+						TextTopPadding="1"
+                                    TextWidthPadding="24"                                    
+
+
+                                    TextSize="14"
+                                    TextWrap="Wrap"                                    
+                                    
+                                    TextShadowColor="{StaticResource ClrWhite5}"
+                                    TextShadowDirection="40"
+                                    TextShadowSize="2"
+                                    TextShadowRadius="1"
+                                    TextShadowOpacity="1"
+                                    
+                                    
+                                    Cornerradius="18" 
+                                    Height="93" Width="342"
+                                    BtnTextColor="{StaticResource White0}"
+                                   />
+                              <userctrl:ImgButton x:Name="ImageTest1_Copy"
+                                    Canvas.Left="128" Canvas.Top="100"
+                                    BackColor="{StaticResource Cyan4}"
+
+                                    ShadowDirection="40"
+                                    ShadowColor="{StaticResource ClrCyan0}"
+                                    ShadowBlurRadius="10"                                    
+                                    ShadowSize="4"
+                                    ShadowOpacity="1"
+                                    
+                                    ImgSource="/Icons/message.png"  
+        					ImageLeftOffset="5"
+                                    ImageTopOffset="-4"
+						ImgWidth="57"
+                                   
+                                    BtnText="Yah boo sucks, jumps around but does not display correctly most of the time either..."
+                                    TextTopPadding="1"
+                                    TextSize="14"
+                                    TextWrap="Wrap"   
+                                    TextWidthPadding="15"
+                                    
+                                    TextShadowColor="DarkGreen"
+                                    TextShadowDirection="40"
+                                    TextShadowSize="2"
+                                    TextShadowRadius="4"
+                                    TextShadowOpacity="1"
+                                    
+                                    
+                                    Cornerradius="18" 
+                                    Height="86" Width="314"
+                                    BtnTextColor="{StaticResource White0}"
+                                   />
+                              <userctrl:ImgButton x:Name="ImageTest1_Copy1"
+                                    Canvas.Left="167" Canvas.Top="187"
+                                    BackColor="{StaticResource Magenta0}"
+
+                                    Height="111"
+                                    Width="241"
+						Cornerradius="10"
+						BtnText="123456789 abcdefg hijklm nopqrst uvwxyz"
+						BtnTextColor="White"
+                                    
+                                    ShadowColor="{StaticResource BackgroundColor1}"
+                                    ShadowDirection="363"
+                                    ShadowSize="5"
+                                    ShadowOpacity="0.9"
+                                    ShadowBlurRadius="18"
+                                    
+						TextSize="12"
+						TextTopPadding="2"
+                                    TextWidthPadding="10"                                    
+
+						ImageLeftOffset="-10"
+                                    ImageTopOffset="0"
+						ImgWidth="57"
+
+                                    TextWrap="Wrap"
+						TextShadowColor="Red"
+						TextShadowSize="3"
+						TextShadowRadius="2"
+						ImgSource="/Icons/phone-wifi2.png"
+  						RenderTransformOrigin="0.5,0.5" 
+                                    
+                                        />
+                              <userctrl:ImageButton Canvas.Left="133" Canvas.Top="318"
+                                    Background="{StaticResource Green8}"
+                                    ShadowDirection="40"
+                                    ShadowColor="DarkGray"
+                                    ShadowBlurRadius="10"                                    
+                                    ShadowDepth="4"
+                                    ShadowOpacity="1"
+                                    
+                                    Source="/icons/Cloud.png"  
+						ImgWidth="57"
+                                    
+                                    Text="Yah boo sucks, jumps around but does not display correctly most of the time either..."
+                                    FontSize="14"
+                                    CornerRadius="18" 
+                                   
+                                    Foreground="{StaticResource Black0}" Height="174" Width="295"                                                    />
+                        </Canvas>
+                  </Grid>
+                  <!--#endregion-->
+
+                  <!--#region panel2 (Expanders etc)Canvas -->
+                  <Grid x:Name="Panel2"                        
+					  Height="{Binding Height, ElementName=InnerGrid}"
+					  Width="{Binding Width, ElementName=InnerGrid}"
+					Visibility="Hidden">
+
+                        <Canvas x:Name="Panel2Canvas"
+						Background="{StaticResource Gray3}"
+						Grid.Column="0"
+						Grid.ColumnSpan="1"
+						Height="{Binding Height, ElementName=Panel2}"
+						Panel.ZIndex="0"
+						Width="{Binding Width, ElementName=Panel2}"
+						Visibility="Visible">
+                              <Grid
+                                    Background="lightgray"
+                                    Canvas.Left="102"
+                                    Canvas.Top="487"
+                                    Width="380"
+                                    Height="69">
+
+                                    <TextBlock
+						      Background="Aqua"
+						      Foreground="Red"
+						      Text="Std TextBlock, Wrap On,H+V alignment=Center "
+						      FontSize="16"
+                                          TextWrapping="Wrap"
+						      TextAlignment="Center"
+						      VerticalAlignment="Center"
+                                          HorizontalAlignment="Center"
+
+						      Height="53"
+						      Width="188" Margin="12,12,180,4" />
+                              </Grid>
+                              <Expander x:Name="expander"
+                                              Height="44" Width="404"
+                                              IsExpanded="False"
+                                              Background="{StaticResource Cyan3}"
+                                              AllowDrop="True"
+                                              BorderBrush="{StaticResource Blue2}"
+                                              BorderThickness="2"
+                                              Padding="5"
+                                              Expanded="expander_Expanded"
+                                              Collapsed="expander_Collapsed"
+                                              Panel.ZIndex="1"
+                                              VerticalAlignment="Top"
+                                              Canvas.Left="68" Canvas.Top="26">
+                                    <Expander.Header>
+                                          <TextBlock
+                                                      Background="{StaticResource Blue2}"
+                                                      Foreground="{StaticResource White0}"
+                                                      HorizontalAlignment="Center"
+                                                      TextAlignment="Center"
+                                                      FontSize="16"
+                                                      Height="25"
+                                                      Width="317"
+                                                      Text="DataGrid" />
+                                    </Expander.Header>
+
+                                    <Grid
+                                          DataContext="{Binding NwCust}"
+                                          Grid.Row="1"
+                                                Height="67"
+                                                VerticalAlignment="Top">
+
+                                          <StackPanel Orientation="Vertical">
+
+                                                <ComboBox x:Name="cb3"
+                                                          DisplayMemberPath="ContactName"
+                                                            Height="29" Width="250"  Margin="70,0"
+                                                          Loaded="cb3_Loaded"
+                                                          VerticalAlignment="Top" />
+
+                                                <ComboBox x:Name="cb4"
+                                                          DisplayMemberPath="CompanyName"
+                                                          Loaded="cb4_Loaded"
+                                                      Height="29" Width="250"  Margin="0,10" VerticalAlignment="Top" />
+                                          </StackPanel>
+                                          <DataGrid x:Name="dg1"
+                                                Margin="-1,75,1,-122" />
+                                    </Grid>
+                              </Expander>
+
+                              <Expander x:Name="expander2"                                  
+                                    IsExpanded="True"
+                                    Background="{StaticResource Cyan3}"
+                                    AllowDrop="True"
+                                    BorderBrush="{StaticResource Blue2}"
+                                    BorderThickness="2"
+                                    Padding="5"
+                                    Expanded="expander2_Expanded"
+                                    Collapsed="expander2_Collapsed"
+                                    Panel.ZIndex="1"
+                                    VerticalAlignment="Top"
+                                    Canvas.Left="67" 
+                                    Canvas.Top="86" 
+                                    Height="250"
+                                    Width="405">
+                                    <Expander.Header>
+                                          <TextBlock
+                                                Background="{StaticResource Blue2}"
+                                                Foreground="{StaticResource White0}"
+                                                HorizontalAlignment="Center"
+                                                TextAlignment="Center"
+                                                FontSize="16"
+                                                Height="25"
+                                                Width="317"
+                                                Text="ListView" />
+                                    </Expander.Header>
+
+                                    <Grid x:Name="grid1"
+                                          Grid.Row="1"
+                                          Grid.RowSpan="1" 
+                                          Height="196"
+                                          VerticalAlignment="Top" Margin="0,0,10,0">
+
+                                          <StackPanel Orientation="Vertical" 
+                                                      Height="{Binding Path=Height, ElementName=grid1}"
+                                                      Margin="0,-4,0,1">
+
+                                                <ComboBox x:Name="cb1"
+                                                     DisplayMemberPath="CustomerId"
+                                                     Height="29"
+                                                      SelectionChanged="cb_SelectionChanged"
+                                                      Width="250"
+                                                      Margin="70,0"
+                                                      VirtualizingPanel.IsVirtualizing="True"
+                                                          SelectedIndex="0"
+                                                      Loaded="cb1_Loaded"
+                                                      VerticalAlignment="Top">
+                                                </ComboBox>
+
+                                                <ComboBox x:Name="cb2"
+
+                                                     DisplayMemberPath="ContactName"
+                                                     Height="29"
+                                                      Width="250"
+                                                      SelectionChanged="cb_SelectionChanged"
+                                                          
+                                                      SelectedIndex="0"
+                                                      VirtualizingPanel.IsVirtualizing="True"
+                                                      Margin="0,10"
+                                                      Loaded="cb2_Loaded"
+                                                      VerticalAlignment="Top">
+                                                </ComboBox>
+
+                                                <ListBox x:Name="lv1"
+                                                      SelectionMode="Single"
+                                                      ItemsSource="{Binding nwc}"
+                                                      SelectedItem="{Binding nwcustomer}"
+                                                      VirtualizingPanel.IsVirtualizing="True"
+                                                      SelectionChanged="lv1_Selected"
+                                                      OverridesDefaultStyle="False"
+                                                      Height="112"
+                                                         Loaded="lv1_Loaded"
+                                                      Margin="0,0,0,0"  ItemTemplate="{DynamicResource DataTemplate1}" 
+                                                      ItemContainerStyle="{DynamicResource ListBoxItemStyle1}">
+                                                      />
+
+
+                                                      <!--//ItemsPanel defines container for items. It can be StackPanel, Wrapanel, Grid, etc-->
+                                                      <ListBox.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                  <StackPanel IsItemsHost="True" Orientation="Vertical"/>
+                                                            </ItemsPanelTemplate>
+                                                      </ListBox.ItemsPanel>
+                                                </ListBox>
+                                          </StackPanel>
+                                    </Grid>
+                              </Expander>
+                              <userctrl:SharedGrid
+                                    Height="76" Width="379" Canvas.Left="72" Canvas.Top="362"/>
+                        </Canvas>
+                  </Grid>
+
+                  <!--#endregion-->
+
+                  <!--#region panel3 (More Experiments) Canvas -->
+
+                  <Grid x:Name="Panel3"
+					  Height="{Binding Height, ElementName=InnerGrid}"
+					  Width="{Binding Width, ElementName=InnerGrid}"
+					Visibility="Hidden">
+
+                        <Canvas x:Name="Panel3Canvas"
+						Background="{StaticResource Gray3}"
+						Grid.Column="0"
+						Grid.ColumnSpan="1"
+						Height="{Binding Height, ElementName=Panel3}"
+						Panel.ZIndex="0"
+						Width="{Binding Width, ElementName=Panel3}"
+                                    >
+                              <ListView x:Name="Tree1"
+                                    Height="256" Width="398" 
+                                    Canvas.Left="52" Canvas.Top="22"
+                                    ItemTemplate="{DynamicResource DataTemplate2}" 
+                                    ItemContainerStyle="{DynamicResource ListViewItemStyle1}">
+
+                                    <!--<ListView.ItemTemplate>
+                                          <DataTemplate>
+                                                <TextBlock
+                                                      Width="200"
+                                                      Height="25"
+                                                      FontSize="18"
+                                                      Text="{Binding line1}"
+                                                      Foreground="{StaticResource White1}">
+                                                   </TextBlock>
+                                          </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                    <ContentPresenter>
+
+                                    </ContentPresenter>-->
+
+                              </ListView>
+
+                        </Canvas>
+                  </Grid>
+
+                  <!--#endregion-->
+
+                  <!--#region panel4 (label/Image buttons)Experiments) Canvas -->
+
+                  <Grid x:Name="Panel4"
+					  Height="{Binding Height, ElementName=InnerGrid}"
+					  Width="{Binding Width, ElementName=InnerGrid}"
+					Visibility="Hidden">
+
+                        <Canvas x:Name="Panel4Canvas"
+						Background="{StaticResource Gray3}"
+						Grid.Column="0"
+						Grid.ColumnSpan="1"
+						Height="{Binding Height, ElementName=Panel4}"
+						Panel.ZIndex="0"
+						Width="{Binding Width, ElementName=Panel4}"
+                                    >
+
+                              <Button x:Name="Btn1"
+                                    Width="96" Height="42" Canvas.Left="317" Canvas.Top="394"
+                                      Content="Click me - UIElement"
+                                      Background="{StaticResource Blue0}"
+                                      Foreground="{StaticResource White1}"
+                                      Click="UiElement_Click" 
+                                      FontSize="24"/>
+
+                              <userctrl:ImgButton
+                                    Height="82"
+                                    Width="232"
+						Canvas.Left="147"
+						Canvas.Top="458"
+						
+						Cornerradius="10"
+						BackColor="{StaticResource HeaderBorderBrushGreen}"
+						BtnText="123456789 abcdefg hijklm nopqrst uvwxyz"
+						BtnTextColor="White"
+                                    
+                                    ShadowColor="{StaticResource BackgroundColor1}"
+                                    ShadowDirection="363"
+                                    ShadowSize="5"
+                                    ShadowOpacity="0.9"
+                                    ShadowBlurRadius="18"
+                                    
+						TextSize="12"
+						TextTopPadding="12"
+                                    TextWidthPadding="24"                                    
+
+						ImageLeftOffset="15"
+                                    ImageTopOffset="0"
+						ImgWidth="47"
+                                    
+                                    SkewX="-20"
+                                    SkewY="-8"
+
+                                    TextWrap="Wrap"
+						TextShadowColor="Red"
+						TextShadowSize="3"
+						TextShadowRadius="2"
+						ImgSource="/Icons/cloud.png"
+  						RenderTransformOrigin="0.5,0.5"                                     
+                                      />
+
+                              <userctrl:ShadowLabelControl 
+                                    Height="82" Width="184" 
+                                    Canvas.Left="98" Canvas.Top="80"
+                                    BtnText="12345 67890 abcdefg"  
+                                    BtnTextColor="Black"
+                                    TextSize="25"
+                                    MouseoverColor="{StaticResource Red3}"
+                                    BtnTextColorDown="{StaticResource White3}"
+                                    SkewX="10"
+                                    SkewY="15"
+                                    />
+
+
+                              <data:ThreeDeeBtnControl
+                                    Height="77" Width="135" Canvas.Left="153" Canvas.Top="279"   
+                                    FillTop="{StaticResource Green3}"
+                                    FillSide="{StaticResource Red5}"
+                                    FillHole="{StaticResource Black1}"
+                                    SkewX="-12"
+                                    SkewY="12"
+                                    />
+
+
+
+                              <userctrl:ShadowLabelControl Height="48" Width="132" Canvas.Left="145" Canvas.Top="379"
+                                    UseLayoutRounding="True"
+                                    Background="Lime"
+                                    BtnTextColor="Red"
+                                    BtnColorDown="DarkGray"
+                                    BtnTextColorDown="White"
+                                    BorderColor="Red"
+                                    BorderPadding="1"
+                                    BorderThickness="1"
+                                    CornerRadius="11"
+                                                           
+                                    TextLeftOffset="0"
+                                    Text="12345 67890"
+                                    TextTopOffset="0"
+                                    TextSize="20"
+                                    TextTop="7"                                    
+                                    TextWidth="0"                                                           
+
+                                    SkewX="10"
+                                                           SkewY="5"
+                                    BorderShadowDirection="310"
+                                    BorderShadowColor="Black"
+                                    BorderShadowBlurSize="3"
+                                    BorderShadowDepth="8"
+                                    BorderShadowOpacity="0.5"
+
+                                    TextShadowDirection="340"
+                                    TextShadowColor="Black"
+                                    TextShadowBlurSize="4"
+                                    TextShadowSize="2"
+                                    TextShadowOpacity="1" />
+
+                              <ToolBarTray  x:Name="Toolbar1"
+                                    Background="{StaticResource Red5}"
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Left"
+                                    Height="66"
+                                    VerticalAlignment="Top"
+                                    Width="391"
+                                    Canvas.Top="0" Canvas.Left="50">
+                                    <ToolBar
+                                          Height="25"
+                                          Width="125"
+                                          Band="1"
+                                          BandIndex="1" >
+                                          <Button Command="Cut"
+                                                  ToolBar.OverflowMode="AsNeeded"
+                                                  Height="25"
+                                                  Width="25"
+                                                  ToolTip="Cut selection to Windows Clipboard.">
+                                                <Image Source="/Icons/fax.png" />
+                                          </Button>
+                                          <Button
+                                                  ToolBar.OverflowMode="AsNeeded"
+                                                  Height="25"
+                                                  Width="25"
+                                                Command="Copy" ToolTip="Copy selection to Windows Clipboard.">
+                                                <Image Source="/Icons/message.png" />
+                                          </Button>
+                                          <Button
+                                                  ToolBar.OverflowMode="AsNeeded"
+                                                  Height="25"
+                                                  Width="25"
+                                                Command="Paste" ToolTip="Paste from Windows Clipboard.">
+                                                <StackPanel Orientation="Horizontal">
+                                                      <Image Source="/Icons/mailbox.png" />
+                                                      <TextBlock Margin="3,0,0,0"><Run Text="Paste" /></TextBlock>
+                                                </StackPanel>
+                                          </Button>
+                                    </ToolBar>
+
+                                    <ToolBar x:Name="toolBar"
+                                          Height="25"
+                                         Band="2"
+                                          BandIndex="2"
+                                          Width="144"
+                                         Padding="3" >
+                                          <Button x:Name="toolBtn1"
+                                                   Height="25"
+                                                  Width="25"
+                                               Background="{StaticResource Cyan5}"
+                                                Padding="5"
+                                                Margin="0 1 0 3"
+                                                  ToolBar.OverflowMode="AsNeeded"
+                                                Foreground="White">
+                                                <StackPanel  Orientation="Horizontal"
+                                                            HorizontalAlignment="Stretch"
+                                                            VerticalAlignment="Stretch" Height="40" Width="67">
+                                                      <Image Source="/icons/cloud.png" Height="25" />
+                                                      <TextBlock Text="Btn 1"
+                                                                       VerticalAlignment="Center"
+                                                                       Background="Transparent"
+                                                                       Padding="5" />
+                                                </StackPanel>
+                                          </Button>
+                                          <Separator />
+                                          <Button x:Name="ToolBtn2"
+                                                Padding="5"
+                                                 Height="25"
+                                                  Width="25"
+                                                  ToolBar.OverflowMode="AsNeeded"
+                                                Margin="10 1 0 0"
+                                                Background="{StaticResource Cyan5}"
+                                                Foreground="White">
+                                                <StackPanel  Orientation="Horizontal"
+                                                            HorizontalAlignment="Stretch"
+                                                            VerticalAlignment="Stretch" Height="40" Width="67">
+                                                      <Image Source="/icons/laptop-wifi.png" Height="25" />
+                                                      <TextBlock Text="Btn 2"
+                                                                       VerticalAlignment="Center"
+                                                                       Background="Transparent"
+                                                                       Padding="5" />
+                                                </StackPanel>
+                                          </Button>
+                                    </ToolBar>
+                              </ToolBarTray>
+                        </Canvas>
+                  </Grid>
+
+                  <!--#endregion-->
+
+                  <!--#region ThreeDButtonPanel-->
+
+                  <Grid x:Name="ThreeDButtonsPanel"
+					  Height="{Binding Height, ElementName=InnerGrid}"
+					  Width="{Binding Width, ElementName=InnerGrid}"
+					 Visibility="Hidden">
+
+                        <Canvas x:Name="LeftPanel"
+
+						Background="{StaticResource Gray3}"
+						Grid.Column="0"
+						Grid.ColumnSpan="1"
+						Height="{Binding Height, ElementName=ThreeDButtonsPanel}"
+						Panel.ZIndex="0"
+						Width="{Binding Width, ElementName=ThreeDButtonsPanel}"
+						>
+
+                              <!--<Image x:Name="myimage"
+							HorizontalAlignment="Left"
+							VerticalAlignment="Center"
+							Height="22"
+							Width="22"
+							Canvas.Left="613"
+							Canvas.Top="8"
+							MouseLeftButtonDown="Image_MouseLeftButtonDown"
+							Source="/Icons/left-arrow.png"
+							ToolTip="Click to Show the menu button bar"
+							Visibility="Hidden" />-->
+
+                              <!--#region 3dButtons only-->
+
+                              <data:ThreeDeeBtnControl    x:Name="ToolBtn1"
+							Grid.Column="0"
+							BorderWidth="0"
+							BtnBorder="{StaticResource Magenta0}"
+							BtnText="Press Button to set height -&gt;"
+							BtnTextColor="{StaticResource White0}"
+							BtnTextColorDown="{StaticResource Yellow0}"
+							Canvas.Left="151"
+							Canvas.Top="288"
+							MouseLeftButtonDown="DragEllipse"
+							MouseLeftButtonUp="DrqagEllipseStop"
+							MouseMove="Btn1_MouseMove"
+							Height="112"
+							FillHole="{DynamicResource Black2}"
+							FillSide="{StaticResource Red3}"
+							FillTop="{DynamicResource localMultiRedRadial}"
+							FontDecoration="Normal"
+							FontWeight="Bold"
+							Panel.ZIndex="1"
+							RotateAngle="0"
+							TextHeight="20"
+							TextHeightScale="1.5"
+							TextWidthScale="0.6"
+							Width="148" />
+                              <data:ThreeDeeBtnControl    x:Name="TestEllipse"
+							Canvas.Left="162"
+							Canvas.Top="206"
+							BorderWidth="0"
+							BtnBorder="{StaticResource Green7}"
+							BtnText="Debug Break "
+							BtnTextColor="{StaticResource White0}"
+							BtnTextColorDown="{StaticResource Yellow0}"
+      						FillHole="{StaticResource Black0}"
+							FillSide="{StaticResource Green6}"
+							FillTop="{DynamicResource localMultiGreenRadial}"
+							FillShadow="Red"
+							FontDecoration="Normal"
+							FontFamily="Comic sans MS"
+							FontWeight="Normal"
+							Height="65"
+							RotateAngle="20"
+							TextHeight="11"
+							TextHeightScale="1.0"
+							TextWidthScale="0.5"
+							Width="88" />
+
+                              <Button x:Name="Testbutton"
+							Height="26"  Width="90"
+							Canvas.Left="294"
+							Canvas.Top="5"
+							Background="{StaticResource Red3}"
+							Panel.ZIndex="1"
+							Foreground="White"
+							Content="testing only"
+							FontSize="18">
+                                    <Button.Template>
+                                          <ControlTemplate TargetType="{x:Type Button}" x:Name="ThreeDBtnTemplate">
+                                                <Rectangle
+										Height="44"  Width="120"
+										Canvas.Left="290"
+										Canvas.Top="32"
+										Fill="{StaticResource Red3}">
+                                                      <Rectangle.RenderTransform>
+                                                            <TransformGroup>
+                                                                  <ScaleTransform />
+                                                                  <SkewTransform x:Name="TestSkew" AngleX="15" AngleY="5" />
+                                                                  <RotateTransform x:Name="testRotate" Angle="5" />
+                                                                  <TranslateTransform x:Name="TestTranslate" X="42" Y="23" />
+                                                            </TransformGroup>
+                                                      </Rectangle.RenderTransform>
+                                                      <Rectangle.Style>
+                                                            <Style TargetType="{x:Type Rectangle}">
+                                                                  <Style.Triggers>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                              <Setter Property="Opacity" Value="0.15" />
+                                                                              <Setter Property="Fill" Value="Azure" />
+                                                                        </Trigger>
+                                                                  </Style.Triggers>
+                                                            </Style>
+                                                      </Rectangle.Style>
+                                                </Rectangle>
+                                          </ControlTemplate>
+                                    </Button.Template>
+                              </Button>
+
+                              <data:ThreeDeeBtnControl    x:Name="TestEllipse_Copy"
+						Canvas.Left="154"
+						Canvas.Top="26"
+						BorderWidth="0"
+						BtnBorder="{StaticResource Green7}"
+						BtnText="Smaller Button"
+						BtnTextColor="{StaticResource White0}"
+						BtnTextColorDown="{StaticResource Yellow0}"
+						FillHole="{StaticResource Black0}"
+						FillSide="{StaticResource Green6}"
+						FillTop="{DynamicResource HeaderBrushRed}"
+						FillShadow="Red"
+						FontDecoration="Normal"
+						FontFamily="Comic sans MS"
+						FontWeight="Normal"
+						Height="65"
+						RotateAngle="20"
+						TextHeight="15"
+						TextHeightScale="1.0"
+						TextWidthScale="0.9"
+						Width="125" />
+                              <data:ThreeDeeBtnControl    x:Name="Btn2_Copy"
+						BorderWidth="0"
+						BtnBorder="{StaticResource Black1}"
+						BtnText="Great bright Yellow Btn"
+						BtnTextColor="{StaticResource Red0}"
+						BtnTextColorDown="{StaticResource Red5}"
+						
+						BtnTextDown="Closing..."
+						FillSide="{StaticResource Orange2}"
+						FillTop="{DynamicResource localMultiYellowRadial}"
+						FillHole="{DynamicResource Black2}"
+						FontDecoration="Normal"
+						FontWeight="Bold"
+						Height="94"
+						Panel.ZIndex="1"
+						RotateAngle="0"
+
+						TextHeightScale="1.6"
+						TextWidthScale="1.5"
+						ToolTip="This will save the data to your hard disk ...."
+						TextHeight ="16"
+						Width="202"
+						Canvas.Left="208"
+						Canvas.Top="424"
+						RenderTransformOrigin="1.283,0.622" />
+                        </Canvas>
+
+                        <!--#endregion panel2 view-->
+                  </Grid>
+                  <!--#endregion-->
+
+                  <!--#region TabControlpanel view-->
+                  <Grid x:Name="TabControlPanel"
+					  Height="{Binding Height, ElementName=InnerGrid}"
+					  Width="{Binding Width, ElementName=InnerGrid}"
+					 Visibility="Visible">
+
+                        <Canvas x:Name="TabControlCanvas"
+						Background="{StaticResource Gray3}"
+						Grid.Column="0"
+						Grid.ColumnSpan="2"
+						  Panel.ZIndex="0"
+						Height="{Binding Height, ElementName=TabControlPanel}"
+						Width="{Binding Width, ElementName=TabControlPanel}"
+						Margin="0,0,170,0">
+                              <!--Set up data context pointing to Bank data for our Listview i the tab control-->
+
+                              <!--<Canvas.DataContext>
+						<datamodel:BankAccountViewModel />
+					</Canvas.DataContext>-->
+
+                              <Image x:Name="myimage2"
+							Height="22"
+							MouseLeftButtonDown="Image_MouseLeftButtonDown"
+							Source="/Icons/left-arrow.png"
+							ToolTip="Click to Show the menu button bar"
+							RenderTransformOrigin="2.769,0.893"
+							 Panel.ZIndex="11"
+							 Canvas.Left="614"
+							 Canvas.Top="8"
+							Visibility="Hidden" />
+
+                              <TabControl
+							x:Name="TabControl1"
+							Background="Bisque"
+							BorderThickness="1"
+							TabIndex="1"
+							TabStripPlacement="Top"
+							Canvas.Left="72"
+							Canvas.Top="119"
+							Height="372"
+							Width="360">
+
+                                    <TabControl.Resources>
+                                          <Style TargetType="{x:Type TabItem}">
+                                                <Setter Property="HeaderTemplate">
+                                                      <Setter.Value>
+                                                            <DataTemplate>
+                                                                  <ContentPresenter Content="{TemplateBinding Content}">
+                                                                        <ContentPresenter.LayoutTransform>
+                                                                              <RotateTransform Angle="0" />
+                                                                        </ContentPresenter.LayoutTransform>
+                                                                  </ContentPresenter>
+                                                            </DataTemplate>
+                                                      </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Padding" Value="3" />
+                                          </Style>
+                                    </TabControl.Resources>
+                                    <TabControl.BorderBrush>
+                                          <StaticResource ResourceKey="Red1" />
+                                    </TabControl.BorderBrush>
+                                    <TabItem x:Name="Tab1" Header="General1">
+                                          <StackPanel>
+                                                <Ellipse
+										Fill="{StaticResource HeaderBorderBrushGreen}"
+										Height="86"
+										Margin="18,0,17,0" />
+
+                                                <ContentPresenter x:Name="ContentSite"
+										    VerticalAlignment="Center"
+										    HorizontalAlignment="Center"
+										    ContentSource="Header"
+										    Margin="10,2" />
+
+                                                <Label Content="This is Tab 1"  HorizontalAlignment="Center" />
+
+                                                <Canvas>
+                                                      <ListView x:Name="lv2" Height="208" Width="330" Canvas.Left="11" Canvas.Top="4"
+                                                            SelectionMode="Single"
+                                                            ItemsSource="{Binding nwc}"
+                                                            SelectedItem="{Binding nwcustomer}"
+                                                            ItemTemplate="{DynamicResource DataTemplate1}" 
+                                                            ItemContainerStyle="{DynamicResource ListViewItemStyle1}">
+
+                                                              </ListView>
+                                                </Canvas>
+                                          </StackPanel>
+                                    </TabItem>
+                                    <TabItem Header="Selection ">
+                                          <Grid
+									Height="{Binding ActualHeight, ElementName=TabControl1}"
+									Width="{Binding ActualWidth, ElementName=TabControl1}">
+                                                <data:ThreeDeeBtnControl x:Name="Threed2"
+										Margin="6,18,12,240"
+										BorderWidth="0"
+										BtnBorder="{StaticResource Black1}"
+										BtnText="Toggle Panes"
+										BtnTextColor="{StaticResource White0}"
+										BtnTextColorDown="{StaticResource Yellow2}"
+										Click="Toggle_Click"
+										BtnTextDown="Closing..."
+										FillSide="{StaticResource Green5}"
+										FillTop="{StaticResource HeaderBorderBrushGreen}"
+										FillHole="{DynamicResource Black0}"
+										FontDecoration="Normal"
+										FontWeight="Bold"
+										Height="Auto"
+										Width="Auto"
+										RotateAngle="15"
+										TextHeightScale="1.2"
+										TextWidthScale="0.7"
+										ToolTip="This will save the data to your hard disk ...."
+										TextHeight ="18"
+										Grid.ColumnSpan="3" Grid.Column="1" />
+                                                <data:ThreeDeeBtnControl x:Name="Threed1"
+										Margin="0,259,29,29"
+										BorderWidth="0"
+										BtnBorder="{StaticResource Black1}"
+										BtnText="Close"
+										BtnTextColor="{StaticResource Red0}"
+										BtnTextColorDown="{StaticResource Red5}"
+										
+										BtnTextDown="Closing..."
+										FillSide="{StaticResource Orange2}"
+										FillTop="{DynamicResource localMultiYellowRadial}"
+										FillHole="{DynamicResource Black0}"
+										FontDecoration="Normal"
+										FontWeight="Bold"
+										Height="Auto"
+										Width="Auto"
+										RotateAngle="10"
+										TextHeightScale="1.2"
+										TextWidthScale="0.7"
+										ToolTip="This will save the data to your hard disk ...."
+										TextHeight ="18"
+										Grid.Column="4" />
+                                          </Grid>
+                                    </TabItem>
+
+                                    <TabItem Header="Another option">
+                                          <DockPanel>
+                                                <Button Background="CornflowerBlue"
+										  Content="here we go"
+										  DockPanel.Dock="Top"
+										  Height="43" />
+                                                <!--<Button Background="Azure" 	Content="there  we went"
+										  DockPanel.Dock="Right" Width="95" />-->
+                                                <Button Background="Coral"
+										  Content="and again"
+										  DockPanel.Dock="Left"
+										  Width="70" />
+                                                <Button Background="Green"
+										Content="and finally"
+										DockPanel.Dock="Bottom"
+										Height="42" />
+                                                <Button Background="Yellow"
+										  Margin="0,142,0,23"
+										  Width="95"
+										  Content="This is the middle"
+										  RenderTransformOrigin="0.5,0.5" />
+
+                                                <Label Margin="0,140,0,67"
+										 Width="92" Content="label only" />
+                                          </DockPanel>
+                                    </TabItem>
+                                    <TabItem Header="Page 4">
+                                          <Border x:Name="border8"
+							Background="Aqua" Margin="26,128,93,63"
+							BorderBrush="Red" BorderThickness="0,3,0,15"
+							UseLayoutRounding="True">
+                                                <TextBlock
+										Height="{Binding Height, ElementName=border8}"
+										Width="{Binding ActualWidth, ConverterParameter=20, Converter={StaticResource ReduceTextwidthConverter}, ElementName=border8}"
+										TextAlignment="Center"
+								TextWrapping="NoWrap"
+										Text="This is a textblock inside a border inside a TabControl inside a Canvas using a multiple value BorderThickness to achieve the Top/Bottom border lines"
+										VerticalAlignment="Center"
+										HorizontalAlignment="Center" />
+                                          </Border>
+                                    </TabItem>
+                              </TabControl>
+
+                              <data:ThreeDeeBtnControl    x:Name="Ellip1"
+							Grid.Column="0"
+							BorderWidth="0"
+							BtnBorder="{StaticResource Black1}"
+							BtnText="Great bright Yellow Btn"
+							BtnTextColor="{StaticResource Red0}"
+							BtnTextColorDown="{StaticResource Red5}"
+							
+							BtnTextDown="Closing..."
+							FillSide="{StaticResource Orange2}"
+							FillTop="{DynamicResource localMultiGreenRadial}"
+							FillHole="{DynamicResource Black2}"
+							FontDecoration="Normal"
+							FontWeight="Bold"
+							Height="72"
+						     Panel.ZIndex="1"
+							RotateAngle="0"
+							TextWidthScale="1"
+							ToolTip="This will save the data to your hard disk ...."
+							TextHeight ="12"
+							Width="338"
+							Canvas.Left="18"
+							Canvas.Top="18"
+						     />
+                        </Canvas>
+                  </Grid>
+                  <!--#endregion Tab Control panel1 view-->
+
+                  <!--#region Entire Right side( Rectangle buttons) Canvas-->
+
+                  <StackPanel x:Name="RectbuttonStackPanel"
+				Orientation="Vertical"
+				Height="{Binding Height, ElementName=InnerGrid}"
+				RenderTransformOrigin="-0.6,0.0"
+				HorizontalAlignment="Left"
+				Width="211" Margin="0,0,-11,0"
+				Panel.ZIndex="10"
+				Visibility="Hidden" Grid.Column="1">
+                        
+                        <StackPanel.RenderTransform>
+                              <TransformGroup>
+                                    <ScaleTransform />
+                                    <SkewTransform />
+                                    <RotateTransform />
+                                    <TranslateTransform />
+                              </TransformGroup>
+                        </StackPanel.RenderTransform>
+
+                        <!--#region Rectangle Buttons-->
+
+                        <Canvas x:Name="xRectbuttonStackPanel"
+					Background="{StaticResource Gray0}"
+					Margin="15,1,5,0" Grid.Column="1" 
+                              RenderTransformOrigin="0.5,0.5"
+                              Visibility="Visible">
+
+
+                              <Canvas.RenderTransform>
+                                    <TransformGroup>
+                                          <ScaleTransform />
+                                          <SkewTransform />
+                                          <RotateTransform />
+                                          <TranslateTransform />
+                                    </TransformGroup>
+                              </Canvas.RenderTransform>
+
+                              <!--// Holder for Close button image-->
+                              <Border
+							Grid.Column="1"
+							HorizontalAlignment="Left"
+							Width="19"
+							Background="Transparent"
+							Height="492"
+							UseLayoutRounding="True"
+							Canvas.Top="0" Canvas.Left="-1">
+                              </Border>
+                              <TextBlock x:Name="ScaleDimensions"
+							Canvas.Left="126"
+							Canvas.Top="40"
+							Text=""
+							HorizontalAlignment="Center"
+							Height="25"
+							VerticalAlignment="Center"
+							FontSize="12"
+						     FontWeight="Bold"
+							Foreground="{StaticResource ResourceKey=White0}"
+							Width="44" />
+
+                              <TextBlock x:Name="Scalelabel"
+							     Canvas.Left="52"
+							     Canvas.Top="11"
+							     Text="Scale (H/W) = : "
+							     HorizontalAlignment="Center"
+							     Height="25"
+							     VerticalAlignment="Center"
+							     Foreground="{StaticResource White0}"
+								Width="77" />
+
+                              <userctrl:RectangleControl    x:Name="TogglePanes"
+							BorderThickness="2"
+							BorderBrush="{DynamicResource Green7}"
+							Text="    Toggle Panes"
+							Foreground="{DynamicResource Black0}"
+							BtnTextColorDown="{DynamicResource White0}"
+                                          BtnDownThrow="1"
+							Canvas.Left="18"
+							Canvas.Top="26"
+                                          CornerRadius="15"
+							Background="Teal"
+							FontFamily="Garamonde"
+							FontWeight="Black"
+							Height="68"
+							MouseLeftButtonDown="Togglepanel"
+							MouseoverColor="{DynamicResource Green1}"
+
+							RenderTransformOrigin="0.5,0.5"
+							ShadowBlurColor="White"
+							ShadowOpacity="0.6"
+							ShadowBlurSize ="3"
+							ShadowBlurRadius="5"
+
+							TextShadowSize="2"
+							TextShadowDirection="330"
+							TextShadowColor="White"
+							TextShadowOpacity="0.9"
+							TextShadowRadius="1"
+
+							FontSize ="14"
+                                          TextLeftOffset="-8"
+							Width="160">
+
+
+                              </userctrl:RectangleControl>
+
+                              <userctrl:RectangleControl x:Name="TestRectangle"
+							Grid.Column="1"
+							Height="68"
+							Width="160"
+							BorderThickness="2"
+							BorderBrush="{DynamicResource Red5}"
+							Text="Increase Scale          Text Width"
+							Foreground="{DynamicResource Cyan5}"
+							BtnTextColorDown="{DynamicResource White0}"
+                                          CornerRadius="15"
+							FontDecoration="Normal"
+							FontFamily="Verdana"
+							FontWeight="Normal"
+							Background="{DynamicResource Red4}"
+							MouseLeftButtonDown="TextScaleUp"
+							MouseoverColor="{DynamicResource Red5}"
+
+							ShadowBlurColor="White"
+							ShadowOpacity="0.6"
+							ShadowBlurSize ="3"
+							ShadowBlurRadius="5"
+
+							TextShadowSize="1"
+							TextShadowDirection="330"
+							TextShadowColor="White"
+							TextShadowOpacity="1"
+							TextShadowRadius="0.4"
+                                                        
+
+							Panel.ZIndex="5"
+                                          TextLeftOffset="6"
+							FontSize="11"
+							Canvas.Left="20"
+							Canvas.Top="99">
+                                    <userctrl:RectangleControl.RenderTransform>
+                                          <TransformGroup>
+                                                <ScaleTransform />
+                                                <SkewTransform />
+                                                <RotateTransform />
+                                                <TranslateTransform />
+                                          </TransformGroup>
+                                    </userctrl:RectangleControl.RenderTransform>
+                              </userctrl:RectangleControl>
+
+                              <userctrl:RectangleControl    x:Name="TestRectangle_Copy"
+							Height="68"
+							Width="160"
+							BorderThickness="2"
+							BorderBrush="{DynamicResource Green8}"
+							Text="Decrease Scale           Text Width"
+							Foreground="{DynamicResource White0}"
+							BtnTextColorDown="{DynamicResource White0}"
+                                          CornerRadius="15"
+							FontDecoration="Bold"
+							FontFamily="Arial"
+							FontWeight="DemiBold"
+							Background="{DynamicResource Green6}"
+							MouseoverColor="{DynamicResource Green3}"
+							MouseLeftButtonDown="TextScaleDn"
+							RenderTransformOrigin="0.5,0.5"
+							ShadowDepth="2"
+							ShadowBlurColor="White"
+							ShadowOpacity="0.6"
+							ShadowBlurSize ="3"
+							ShadowBlurRadius="5"
+
+                                          TextShadowColor="Black"
+                                          TextShadowDirection="33"
+                                          TextShadowRadius="1"
+                                          FontSize="12"
+							Grid.Column="1"
+							Canvas.Left="18"
+							Canvas.Top="170" />
+
+                              <userctrl:RectangleControl    x:Name="TestRectangle_Copy1"
+							Grid.Column="1"
+							Height="68"
+							Width="160"
+							BorderThickness="1"
+							BorderBrush="{DynamicResource Black1}"
+							Text="    Increase Scale       Text Height"
+							Foreground="{DynamicResource Black0}"
+							BtnTextColorDown="{DynamicResource White0}"
+                                          CornerRadius="15"
+							FontDecoration="Normal"
+							FontFamily="Arial"
+							FontWeight="DemiBold"
+							Background="{DynamicResource Yellow1}"
+							MouseoverColor="{DynamicResource Yellow2}"
+							MouseLeftButtonDown="TextHeightScaleUp"
+							RenderTransformOrigin="0.5,0.5"
+							ShadowBlurColor="White"
+							ShadowOpacity="0.6"
+							ShadowBlurSize ="3"
+							ShadowBlurRadius="5"
+
+                                          TextShadowColor="Cyan"
+                                          TextShadowDirection="133"
+                                          TextShadowRadius="1"
+							TextShadowSize="1"
+                                          TextShadowOpacity="1"
+                                          
+                                          TextHeight="4"
+							FontSize="12"
+
+							Panel.ZIndex="5"
+							Canvas.Left="18"
+							Canvas.Top="246" />
+
+                              <userctrl:RectangleControl    x:Name="TestRectangle_Copy2"
+							Grid.Column="1"
+							Height="68"
+							Width="160"
+							BorderThickness="2"
+							BorderBrush="{DynamicResource Blue8}"
+							Text="Decrease Scale            Text Height "
+							Foreground="{DynamicResource White0}"
+							BtnTextColorDown="{DynamicResource White0}"
+                                          CornerRadius="15"
+							FontDecoration="Normal"
+							FontFamily="Garamonde"
+							FontWeight="Bold"
+							Background="{DynamicResource Blue4}"
+							MouseoverColor="{DynamicResource Orange4}"
+							MouseLeftButtonDown="TextHeightScaleDn"
+							RenderTransformOrigin="0.5,0.5"
+							ShadowBlurColor="White"
+							ShadowOpacity="0.6"
+							ShadowBlurSize ="3"
+							ShadowBlurRadius="5"
+							FontSize ="12"
+                                          TextLeftOffset="6"
+							TextShadowSize="5"
+							TextShadowDirection="330"
+							TextShadowColor="Black"
+							TextShadowOpacity="0.7"
+							TextShadowRadius="3"
+
+							Canvas.Left="20"
+							Canvas.Top="320" />
+
+                              <userctrl:RectangleControl    x:Name="TestRectangle_Copy4"
+							Height="68"
+							Width="160"
+							BorderThickness="2"
+							BorderBrush="{DynamicResource Blue2}"
+							Text="Unused..."
+							Foreground="{DynamicResource Yellow1}"
+							BtnTextColorDown="{DynamicResource White0}"
+                                          CornerRadius="15"
+							FontDecoration="Italic"
+							FontFamily="Garamonde"
+							FontWeight="DemiBold"
+							Background="{DynamicResource Blue4}"
+							MouseoverColor="{DynamicResource Blue1}"
+							RenderTransformOrigin="0.5,0.5"
+							ShadowBlurColor="White"
+							ShadowOpacity="0.6"
+							ShadowBlurSize ="3"
+							ShadowBlurRadius="5"
+
+							TextShadowSize="5"
+							TextShadowDirection="330"
+							TextShadowColor="Black"
+							TextShadowOpacity="1"
+							TextShadowRadius="3"
+
+							FontSize="11"
+							Canvas.Left="20"
+							Canvas.Top="392" />
+
+                              <userctrl:RectangleControl    x:Name="TestRectangle_Copy3"
+							Grid.Column="1"
+							Height="68"
+							Width="160"
+							BorderThickness="1.5"
+							BorderBrush="{DynamicResource White4}"
+							Text="Exit Window"
+							Foreground="{DynamicResource White0}"
+							BtnTextColorDown="{DynamicResource White3}"
+                                          CornerRadius="15"
+							FontDecoration="Italic"
+							FontFamily="Arial"
+							FontWeight="DemiBold"
+							Background="{DynamicResource Red1}"
+							MouseoverColor="{DynamicResource Green6}"
+							MouseLeftButtonDown="Exit_Window"
+							RenderTransformOrigin="0.5,0.5"
+
+							ShadowBlurColor="White"
+							ShadowOpacity="0.75"
+							ShadowBlurSize ="3"
+							ShadowBlurRadius="5"
+
+                                          TextShadowSize="2"
+							TextShadowDirection="130"
+							TextShadowColor="Cyan"
+							TextShadowOpacity="1"
+							TextShadowRadius="1"
+
+							Panel.ZIndex="5"
+							FontSize ="18"
+                                          TextHeight="4"
+							Canvas.Left="18"
+							Canvas.Top="466" />
+
+                              <!--#endregion-->
+
+
+                              <TextBox x:Name="TextSizeSettings"
+							Background="{Binding Background, ElementName=TestRectangle_Copy4}"
+							Foreground="{Binding Foreground, ElementName=TestRectangle_Copy4}"
+							Height="37"
+							Width="86"
+							FontSize="24"
+							Canvas.Left="56"
+							Canvas.Top="357"
+							Text=""
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+							Padding="14, 0"
+							Panel.ZIndex="5"
+							Visibility="Hidden" />
+                              <!--Right arrow for menu-->
+                              <!--left arrow for menu-->
+                        </Canvas>
+
+                        <!--#endregion-->
+
+                  </StackPanel>
+            </Grid>
+      </Grid>
+</Window>

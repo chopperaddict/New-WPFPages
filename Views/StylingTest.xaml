@@ -1,0 +1,693 @@
+﻿<Window x:Class="WPFPages.Views.Stylingtest"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:conv="clr-namespace:WPFPages.Converts"
+        xmlns:local="clr-namespace:WPFPages.Views"
+        xmlns:ctrl="clr-namespace:WPFPages.UserControls"
+        xmlns:views="clr-namespace:WPFPages.Views"
+        xmlns:attach="clr-namespace:WPFPages.ViewModels"
+        xmlns:templates="clr-namespace:WPFPages.DataTemplates"
+        xmlns:models="clr-namespace:WPFPages.ViewModels"
+        x:Name="storyboard"
+        Background="Cyan"
+        Loaded="storyboard_Loaded"   
+	  Closing="storyboard_Closing"
+        WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d"
+        Title="Styling tests" Height="866" Width="1692">
+
+      <Window.Resources>
+
+            <!--================================== GENERAL DEFINITIONS ========================================-->
+            <!--// Control /Command definitons-->
+            <!--<ctrl:ListBoxControl x:Key="lbcontrol"/>-->
+            <!--<cmd:BreakCommand x:Key="breakcommand2"/>-->
+
+            <!--// Data definitions-->
+            <local:NwOrderCollection x:Key="nwdata"/>
+            <local:nwcustomer x:Key="nwcust"/>
+            <conv:HexConvert x:Key="hexconvert"/>
+            <conv:DateOnlyConverter x:Key="dateconverter"/>
+            <conv:Date2UTCConverter x:Key="utcdateconverter"/>
+            <conv:DateTimeToShortDateConvertor x:Key="datetimetoDateConvertor"/>
+		<views:CustomersDbDataTemplateSelector x:Key="myCustDbDataTemplateSelector" />
+		<templates:CustomerDataTemplateSelector x:Key="TemplateSelector"/>
+		<!--===========================================================================================-->
+
+            <CollectionViewSource Source="{Binding}" x:Key="nwcustomerView">
+                  <CollectionViewSource.GroupDescriptions>
+                        <PropertyGroupDescription PropertyName="City" />
+                  </CollectionViewSource.GroupDescriptions>
+            </CollectionViewSource>
+
+            <LinearGradientBrush x:Key="Greenbackground" StartPoint="0.5,1" EndPoint="0.5,0">
+                  <GradientStop Offset="0" Color="#FF00FF00" />
+                  <GradientStop Offset="1" Color="#99006000" />
+            </LinearGradientBrush>
+
+            <!--// Template for Storyboard demo panel only -->
+            <ControlTemplate x:Key="MyControlTemplate" TargetType="{x:Type ContentControl}">
+                  <Border x:Name="outborder"
+                          Margin="0,0,0,-4"
+                          BorderBrush="{TemplateBinding BorderBrush}"
+                          BorderThickness="{TemplateBinding BorderThickness}"
+                          Background="{TemplateBinding Background}">
+                        <Border Name="innerBorder" Padding="10">
+                              <Border.Background>
+                                    <SolidColorBrush x:Name="outborderBackgroundBrush" Color="White" />
+                              </Border.Background>
+                              <Grid Name="contentPanel">
+                                    <Grid.Background>
+                                          <SolidColorBrush x:Name="contentPanelBrush" Color="White" />
+                                    </Grid.Background>
+                                    <ContentPresenter 
+                                            Margin="10" 
+                                            Content="{TemplateBinding  Content}" >
+                                          <ContentPresenter.Resources>
+                                                <SolidColorBrush x:Key="ContentForeground" Color="Black" />
+                                          </ContentPresenter.Resources>
+                                    </ContentPresenter>
+                              </Grid>
+                        </Border>
+                  </Border>
+                  <ControlTemplate.Triggers>
+
+                        <!--Event Trigger Example-->
+                        <EventTrigger RoutedEvent="Border.MouseEnter" SourceName="outborder">
+                              <BeginStoryboard>
+                                    <Storyboard>
+                                          <ColorAnimation
+                                                    Storyboard.TargetName="outborderBackgroundBrush"
+                                                    Storyboard.TargetProperty="Color"
+                                                    From="Black" To="{StaticResource ClrWhite0}"
+                                                    Duration="0:0:7" AutoReverse="True" />
+                                    </Storyboard>
+                              </BeginStoryboard>
+                        </EventTrigger>
+
+                        <Trigger Property="IsMouseOver" Value="True" SourceName="contentPanel">
+                              <!--This DOES change the text color as specified, Cannot seem to do it in StoryBoard-->
+                              <Trigger.Setters>
+                                    <Setter Property="TextBlock.Foreground" Value="{StaticResource White0}"/>
+                              </Trigger.Setters>
+                              <!--This handles the Background color change-->
+                              <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                          <Storyboard>
+                                                <ColorAnimation 
+                                                            Storyboard.TargetName="contentPanelBrush" 
+                                                            Storyboard.TargetProperty="Color"
+                                                            To="{StaticResource ClrGreen0}" Duration="0:0:1" />
+                                          </Storyboard>
+                                    </BeginStoryboard>
+                              </Trigger.EnterActions>
+                              <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                          <Storyboard>
+                                                <ColorAnimation 
+                                                      Storyboard.TargetName="contentPanelBrush" 
+                                                      Storyboard.TargetProperty="Color"
+                                                      To="White" Duration="0:0:1" />
+                                          </Storyboard>
+                                    </BeginStoryboard>
+                              </Trigger.ExitActions>
+                        </Trigger>
+                  </ControlTemplate.Triggers>
+
+            </ControlTemplate>
+
+
+      </Window.Resources>
+
+      <!--<Window.CommandBindings>
+            <CommandBinding Command="{StaticResource breakcommand2}" />
+      </Window.CommandBindings>
+
+      <Window.InputBindings>
+            <KeyBinding Key="F8" Modifiers="Ctrl" Command="{Binding Breakcommand2}"/>
+      </Window.InputBindings>-->
+
+
+      <Grid x:Name="Maingrid" Margin="0,12,7,7">
+            <Grid.ColumnDefinitions>
+                  <ColumnDefinition SharedSizeGroup="A" Width="559*"/>
+                  <ColumnDefinition SharedSizeGroup="A" Width="559*" />
+                  <ColumnDefinition SharedSizeGroup="A" Width="290*" />
+                  <ColumnDefinition Width="270*"/>
+            </Grid.ColumnDefinitions>
+
+
+            <!--// Demonstrates a ColorAnimation that is up in the ControlTemplate-->
+            <!--#region Simple Storyboard on border demo-->
+            <Border x:Name="outerborder"
+                  Grid.Column="0"
+                  HorizontalAlignment="Left" 
+                  Width="516" 
+                  Margin="0,0,0,750" 
+                  Background="HotPink"
+                  BorderThickness="1"
+                  BorderBrush="{StaticResource Black0}">
+                  <StackPanel x:Name="spanel1"
+                        Margin="-1,0,-1,-154"
+                               Width="{Binding ActualWidth, ElementName=outerborder}"
+                              HorizontalAlignment="Center" 
+                              Background="Transparent"
+                              MinWidth="300" 
+                             >
+                        <ContentControl Template="{StaticResource MyControlTemplate}"
+                               Height="59"
+                               Content="This demonstrates my 'Wrapped' ListView/ListBox controls" FontSize="15"  Margin="31,0,54,0" />
+                  </StackPanel>
+            </Border>
+            <!--#endregion-->
+
+            <!--#region Mouseover StoryBoard example-->
+
+            <!--Simple  Border that demonstrates Mouseover storyboard-->
+            <!--<Border x:Name="_border" 
+                        Grid.Column="2" Background="Lime" Margin="0,5,32,766" 
+                        RenderTransformOrigin="0.5,0.5"
+                        BorderBrush="Black"
+                        BorderThickness="2"
+                        HorizontalAlignment="Right" 
+                        Width="428">
+                  <TextBlock Text="Mouse over to trigger Color Animation" 
+                                   Foreground="Black"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Right"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   FontSize="24" Margin="0,0,5,-9" Width="413" Height="38">
+                  </TextBlock>
+                  <Border.Triggers>
+                        -->
+            <!--// These Actuall WORK !!!
+                              // Border background changes color using ColorAnimation
+                              // while opactiy goes to  0.4 and back to 1.0-->
+            <!--
+                        <EventTrigger RoutedEvent="Border.MouseEnter">
+                              <BeginStoryboard>
+                                    <Storyboard>
+                                          <ColorAnimation 
+                                                                Storyboard.TargetName="_border" 
+                                                                Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"                  
+                                                      To="Red" Duration="0:0:0.5"/>
+                                    </Storyboard>
+                              </BeginStoryboard>
+                              <BeginStoryboard>
+                                    <Storyboard>
+                                          <DoubleAnimation 
+                                                                Storyboard.TargetName="_border" 
+                                                                Storyboard.TargetProperty="(Border.Opacity)"
+                                                                         To="0.4" Duration="0:0:0.3"/>
+                                    </Storyboard>
+                              </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="Border.MouseLeave">
+                              <BeginStoryboard>
+                                    <Storyboard>
+                                          <ColorAnimation 
+                                                                Storyboard.TargetName="_border" 
+                                                                Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                                To="Lime" Duration="0:0:0.5"/>
+                                    </Storyboard>
+                              </BeginStoryboard>
+                              <BeginStoryboard>
+                                    <Storyboard>
+                                          <DoubleAnimation 
+                                                                Storyboard.TargetName="_border" 
+                                                                Storyboard.TargetProperty="(Border.Opacity)"
+                                                                         To="1.0" Duration="0:0:0.5"/>
+                                    </Storyboard>
+                              </BeginStoryboard>
+                        </EventTrigger>
+                  </Border.Triggers>
+            </Border>-->
+            <!--#endregion-->
+
+            <!--#region general stuff-->
+            <!--<ctrl:ShadowLabelControl Margin="3,2,358,750" Grid.Column="1"/>-->
+            <ctrl:ImageButton
+                  Background="{StaticResource Green5}" 
+                  Foreground="White"
+                   Source="/Icons/harddrive.png"
+                  ImgWidth="55"
+                  CornerRadius="10"
+                  Text="Drive C:\"
+                  Margin="26.5,-11,28.5,738" Grid.Column="2" Grid.ColumnSpan="1"/>
+		<!--FontSize="25"-->
+
+		<ctrl:ShadowLabelControl Margin="154,3,207,749" Grid.Column="1"
+                                     Background="{StaticResource Red5}"
+                                     BorderShadowDepth="5"
+                                     BorderShadowBlurSize="15"
+                                     TextShadowSize="2"
+                                     TextShadowColorDown="Black"
+                                     PreviewMouseDoubleClick="ShadowLabelControl_PreviewMouseDoubleClick"
+                                     BtnTextColorDown="{StaticResource White0}"
+                                     BtnTextDown="Mouse over"
+                                     />
+
+            <local:ThreeDeeBtnControl x:Name="Threedbtn"
+                  Margin="369,5,7,741" Grid.Column="1"
+                  FillTop="{StaticResource HeaderBrushGreen}"
+                  FillSide="{StaticResource Green9}"
+                  BtnText="Sort Gray List"
+                  PressedHoleHeight="8"
+                  BtnTextColorDown="White"
+                  Click="Threedbtn_Click"
+                  BtnTextColor="{StaticResource White0}"/>
+
+            <!--#endregion-->
+
+            <!--./ This is ALL that is required to display my Wrapped Listbox Usercontrol-->
+            <!--// Plus you define a DATATEMPLATE in Resources that is passed to the "GroupedDataTemplate" 
+                  Dependency property, which then uses it as the ListBoxItem Template-->
+            <!--// Plus you set the "GroupedItemsSource" DP  to the relevant Itemsource-->
+            <!--// See the "Loaded" methods for how to load the relevant data-->
+
+            <!--#region Data Displays-->
+
+            <!--#region ListBoxes-->
+
+            <!--NW Orders ListBox-->
+            <ListBox x:Name="LView1" 
+                        Loaded="LView1_Loaded"
+                     ItemContainerStyle="{StaticResource ListBoxColorControlTemplate}"
+                        ItemTemplate="{StaticResource NwordersDataTemplate1}"               
+                        Grid.Column="1"
+                       
+                        AllowDrop="True"                               
+
+                        local:ListboxColorCtrlAP.ItemHeight="18"                         
+                        FontSize="14"
+                        FontWeight="Normal"
+                        views:ListboxColorCtrlAP.FontWeightSelected="DemiBold" 
+                        FontStyle="Italic"
+                                 
+                        views:ListboxColorCtrlAP.Foreground="{StaticResource Black0}"
+                        views:ListboxColorCtrlAP.Background="{StaticResource Blue5}"
+                        views:ListboxColorCtrlAP.MouseoverForeground="{StaticResource Black0}"
+                        views:ListboxColorCtrlAP.MouseoverBackground="{StaticResource Cyan5}"                        
+                        views:ListboxColorCtrlAP.SelectionForeground="{StaticResource White0}"
+                        views:ListboxColorCtrlAP.SelectionBackground="{StaticResource Cyan0}"                                 
+                        views:ListboxColorCtrlAP.MouseoverSelectedForeground="{StaticResource White0}"                        
+                        views:ListboxColorCtrlAP.MouseoverSelectedBackground="{StaticResource Red5}"
+                        ItemsSource="{Binding nwdata}" Margin="18,78,32,514">
+
+                  <ListBox.Effect>
+                        <DropShadowEffect ShadowDepth="25" Color="{StaticResource ClrBlue3}" BlurRadius="50"/>
+                  </ListBox.Effect>
+            </ListBox>
+
+
+            <!--NW Customers Db ListBox -->
+            <ListBox x:Name="LView2"
+                Loaded="LView2_Loaded"
+                  ItemContainerStyle="{StaticResource ListBoxColorControlTemplate}"
+                  ItemTemplate="{StaticResource NwCustomersDataTemplate5}"
+                  ItemsSource="{Binding nwdata}"
+                  RenderTransformOrigin="0.5, 0.5"
+                  Margin="19,81,22,515" 
+                  AllowDrop="True"                               
+                  views:DataGridColorCtrlAp.BorderBrush="Red"
+                  views:ListboxColorCtrlAP.BorderThickness="2"
+                  views:ListboxColorCtrlAP.Foreground="{StaticResource Black0}"
+                  views:ListboxColorCtrlAP.Background="{StaticResource Magenta6}"        
+                     
+                  views:ListboxColorCtrlAP.MouseoverForeground="{StaticResource Black0}"
+                  views:ListboxColorCtrlAP.MouseoverBackground="{StaticResource Orange2}"   
+                     
+                  views:ListboxColorCtrlAP.MouseoverSelectedForeground="Yellow"
+                  views:ListboxColorCtrlAP.MouseoverSelectedBackground="Black"   
+                     
+                  views:ListboxColorCtrlAP.SelectionBackground="Blue"
+                  views:ListboxColorCtrlAP.SelectionForeground="White"     
+                     
+                  views:ListboxColorCtrlAP.FontWeight="Normal"
+                  views:ListboxColorCtrlAP.ItemHeight="20"
+                  views:ListboxColorCtrlAP.FontSize="13" Grid.Column="2" Grid.ColumnSpan="2" >
+                  <ListBox.Effect>
+                        <DropShadowEffect ShadowDepth="25" Color="{StaticResource ClrMagenta2}" BlurRadius="60"/>
+                  </ListBox.Effect>
+            </ListBox>
+
+            <!--#endregion ListBoxes-->
+
+            <!--#region ListViews-->
+            <ListBox x:Name="LView3"
+                        Loaded="LView3_Loaded"
+                        ItemContainerStyle="{StaticResource ListBoxColorControlTemplate}"
+                        ItemTemplate="{StaticResource CustomersDbTemplate1}"
+                        Margin="24,368,47,264" 
+                        AllowDrop="True"                               
+                        RenderTransformOrigin="0.5, 0.5"
+
+                        PreviewDragEnter="Customer_PreviewDragEnter"
+                        PreviewMouseLeftButtonUp="Customer_PreviewMouseLeftButtonup"
+                        PreviewMouseMove="bankgrid_PreviewMouseMove"
+                        PreviewMouseLeftButtonDown="Customer_PreviewMouseLeftButtondown"
+
+                     
+                        views:ListboxColorCtrlAP.BorderThickness="1"
+                        views:ListboxColorCtrlAP.BorderBrush="{StaticResource Blue0}"
+
+                        views:ListboxColorCtrlAP.FontWeight="Normal"
+                        views:ListboxColorCtrlAP.ItemHeight="20"
+                        views:ListboxColorCtrlAP.FontSize="14"
+                                  
+                        views:ListboxColorCtrlAP.Foreground="{StaticResource White0}"
+                        views:ListboxColorCtrlAP.Background="{StaticResource Green4}"
+
+                        views:ListboxColorCtrlAP.MouseoverForeground="{StaticResource Black0}"
+                        views:ListboxColorCtrlAP.MouseoverBackground="{StaticResource Magenta8}"
+
+                        views:ListboxColorCtrlAP.SelectionForeground="{StaticResource White0}"
+                        views:ListboxColorCtrlAP.SelectionBackground="{StaticResource Cyan0}"
+                         
+                        views:ListboxColorCtrlAP.MouseoverSelectedForeground="Black"
+                        views:ListboxColorCtrlAP.MouseoverSelectedBackground="Yellow" Grid.ColumnSpan="2">
+                  <ListBox.RenderTransform>
+                        <RotateTransform Angle="360"
+                                         CenterX="0.5"
+                                         CenterY="0.5"                                         
+                                         />
+
+                  </ListBox.RenderTransform>
+
+		</ListBox>
+
+		
+            <ListView  x:Name="LView4"  Margin="3,74,29,514" 
+                  Loaded="LView4_Loaded"
+                  ItemContainerStyle="{StaticResource ListBoxColorControlTemplate}"
+                        ItemTemplate="{StaticResource NwCustomersDataTemplate5}"
+                        ItemsSource="{Binding  Source={StaticResource nwcustomerView}}"
+                       views:ListboxColorCtrlAP.BorderBrush="Red"
+                       views:ListboxColorCtrlAP.BorderThickness="5"
+                        views:ListboxColorCtrlAP.SelectionForeground="{StaticResource White0}"
+                        views:ListboxColorCtrlAP.SelectionBackground="{StaticResource Cyan0}" 
+                       AllowDrop="True">
+
+                  <ListView.Effect>
+                        <!--<BlurEffect Radius="0" />-->
+                        <DropShadowEffect ShadowDepth="25" Color="Red" BlurRadius="20"/>
+                  </ListView.Effect>
+            </ListView>
+            <!--#endregion ListViews-->
+
+            <!--#region BankDb-->
+
+            <!--ItemContainerStyle="{StaticResource   DataGridColorControlTemplate}"-->
+            <DataGrid x:Name="BankGrid"
+                  Margin="526,368,14,264" Grid.Column="1"
+                  AutoGenerateColumns="False"
+                  CellStyle="{StaticResource BankAccountGridStyle}"                      
+                  PreviewDragEnter="bankgrid_PreviewDragEnter"
+                     PreviewMouseLeftButtonUp="bankgrid_PreviewMouseLeftButtonup"
+                    PreviewMouseMove="bankgrid_PreviewMouseMove"
+                    PreviewMouseLeftButtonDown="bankgrid_PreviewMouseLeftButtondown"
+                   
+                  views:DataGridColorCtrlAp.Background="{StaticResource Blue5}"
+                  views:DataGridColorCtrlAp.Foreground="{StaticResource Black0}"                  
+                  views:DataGridColorCtrlAp.BackgroundMouseover="{StaticResource Blue0}"
+                      
+                  views:DataGridColorCtrlAp.BackgroundSelected="{StaticResource Red5}" 
+
+                  Loaded="DataGrid_Loaded" 
+			Grid.ColumnSpan="3">
+
+			<!--#region Templated datagrid columns-->
+
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Header="Id" Width="40"
+									x:Name="ID5"
+									    SortMemberPath="Id" >
+					<DataGridTemplateColumn.CellTemplate >
+						<DataTemplate >
+							<TextBlock 
+									Text="{Binding Id}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+						</DataTemplate >
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn >
+
+				<DataGridTextColumn Header="Customer #" Binding="{Binding CustNo, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+				</DataGridTextColumn>
+				<DataGridTextColumn Header="Bank #" Width="80" 
+								    SortMemberPath="BankNo"
+									Binding ="{Binding BankNo, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus}">
+				</DataGridTextColumn>
+				<DataGridTextColumn Header="Type" Width="40" 
+								    SortMemberPath="AcType"
+									Binding="{Binding AcType, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus}"/>
+				<DataGridTextColumn Header="Balance" Width="90" 
+									SortMemberPath="Balance"									
+									Binding="{Binding Balance, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus,
+									StringFormat='£ ##,###,###.00'}"/>
+				<DataGridTextColumn Header="Interest" Width="60" 
+									SortMemberPath="IntRate"
+									Binding="{Binding IntRate, Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus,
+									StringFormat='0.00'}"/>
+
+				<!--the next 2 show 2 ways to format a date - 1 a Converter the other a direct Format string-->
+				<DataGridTemplateColumn Header="Open Date" Width="80" SortMemberPath="ODate">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Path=ODate,
+								StringFormat='dd/MM/yyyy'}"  	 									
+								     HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+					<DataGridTemplateColumn.CellEditingTemplate>
+						<DataTemplate>
+							<DatePicker SelectedDate="{Binding Path=ODate, 
+								StringFormat='dd/MM/yyyy',
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+							</DatePicker>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellEditingTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Close Date" Width="80" SortMemberPath="CDate">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Path=CDate, 
+									StringFormat='dd/MM/yyyy'}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+					<DataGridTemplateColumn.CellEditingTemplate>
+						<DataTemplate>
+							<DatePicker SelectedDate="{Binding Path=CDate, 
+								StringFormat='dd/MM/yyyy',
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellEditingTemplate>
+				</DataGridTemplateColumn>
+
+			</DataGrid.Columns>
+			<!--#endregion Templated datagrid columns-->
+			
+			<!--#region bank Columns-->
+                         <!--loaded from x:Array template-->
+                  <!--#endregion bankfields-->
+
+            </DataGrid>
+            <!--#endregion BankDb-->
+
+            <!--#region Customers Db-->
+		
+		<!--Uses Attached properties to control colours via the CellStyle template that supports these-->
+            <DataGrid x:Name="CustGrid"
+                  Margin="18,585,14,3"
+                  AutoGenerateColumns="False"
+                  ItemTemplateSelector="{StaticResource TemplateSelector}"     
+                  CellStyle="{StaticResource BankAccountGridStyle}"
+                    PreviewDragEnter="bankgrid_PreviewDragEnter"
+                     PreviewMouseLeftButtonUp="bankgrid_PreviewMouseLeftButtonup"
+                    PreviewMouseMove="bankgrid_PreviewMouseMove"
+                    PreviewMouseLeftButtonDown="bankgrid_PreviewMouseLeftButtondown"
+			    
+                  views:DataGridColorCtrlAp.Background="{StaticResource Blue5}"
+                  views:DataGridColorCtrlAp.Foreground="{StaticResource Black0}"                  
+                  views:DataGridColorCtrlAp.BackgroundMouseover="{StaticResource Blue0}"
+                  views:DataGridColorCtrlAp.ForegroundMouseover="{StaticResource White0}"
+                  Loaded="CustGrid_Loaded" 
+			Grid.ColumnSpan="4">
+
+			<!--#region Templated datagrid columns-->
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Header="Id" Width="40"
+									    SortMemberPath="Id" >
+					<DataGridTemplateColumn.CellTemplate >
+						<DataTemplate >
+							<TextBlock 
+									Text="{Binding Id}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+						</DataTemplate >
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn >
+
+				<DataGridTextColumn Header="Customer #" Binding="{Binding CustNo, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+				</DataGridTextColumn>
+
+				<DataGridTextColumn Header="Bank #" Width="80" 
+								    SortMemberPath="BankNo"
+									Binding ="{Binding BankNo, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus}"
+									>
+				</DataGridTextColumn>
+
+				<DataGridTextColumn Header="Type" Width="40" 
+								    SortMemberPath="AcType"
+									Binding="{Binding AcType, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus}"/>
+
+				<DataGridTextColumn Header="Forename" Binding="{Binding FName, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+				</DataGridTextColumn>
+
+				<DataGridTextColumn Header="Surname" Binding="{Binding LName, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+				</DataGridTextColumn>
+
+				<DataGridTextColumn Header="Address 1" Binding="{Binding Addr1, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+				</DataGridTextColumn>
+
+				<DataGridTextColumn Header="Address 2" Binding="{Binding Addr2, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+				</DataGridTextColumn>
+
+
+				<DataGridTextColumn Header="Town" Binding="{Binding Town, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+				</DataGridTextColumn>
+
+				<DataGridTextColumn Header="County" Binding="{Binding County, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+				</DataGridTextColumn>
+
+				<DataGridTextColumn Header="Post Code" Binding="{Binding PCode, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+				</DataGridTextColumn>
+				<DataGridTextColumn Header="Phone" Binding="{Binding Phone, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+				</DataGridTextColumn>
+				<DataGridTextColumn Header="Cell" Binding="{Binding Mobile, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+				</DataGridTextColumn>
+
+				<DataGridTemplateColumn Header="Open Date" Width="80" SortMemberPath="ODate">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Path=ODate,
+								StringFormat='dd/MM/yyyy'}"  	 									
+								     HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+					<DataGridTemplateColumn.CellEditingTemplate>
+						<DataTemplate>
+							<DatePicker SelectedDate="{Binding Path=ODate, 
+								StringFormat='dd/MM/yyyy',
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+							</DatePicker>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellEditingTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Close Date" Width="80" SortMemberPath="CDate">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Path=CDate, 
+									StringFormat='dd/MM/yyyy'}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+					<DataGridTemplateColumn.CellEditingTemplate>
+						<DataTemplate>
+							<DatePicker SelectedDate="{Binding Path=CDate, 
+								StringFormat='dd/MM/yyyy',
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellEditingTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+
+			<!--#endregion Templated datagrid columns-->
+
+
+		</DataGrid>
+            <!--#endregion Customers Db-->
+
+            <!--#endregion Data Displays-->
+
+            <!--#region Textboxes-->
+            <TextBlock
+                  Text="Customers Db in controlled ListBox"
+                  Foreground="Red" 
+                  TextAlignment="Center"
+                  FontSize="22"
+                  Margin="264,328,349,452" Width="505" Grid.ColumnSpan="2"/>
+
+
+            <TextBlock
+                  Text="Customers Db in controlled DataGrid"
+                  Foreground="Red" 
+                  TextAlignment="Center"
+                  FontSize="22"
+                  Margin="554,548,59,232" Width="505" Grid.ColumnSpan="2"/>
+
+            <TextBlock
+                  Text="Bank Db in controlled DataGrid"
+                  Foreground="Red" 
+                  TextAlignment="Center"
+                  FontSize="22"
+                  Margin="12,331,42,449" Width="505" 
+                  Grid.Column="2" Grid.ColumnSpan="2"/>
+            <ctrl:ImageButton
+                  Background="{StaticResource Green5}" 
+                  Foreground="White"
+                  Source="C:\Downloads"
+                  ImgWidth="55"
+                  CornerRadius="10"
+                  FontSize="25"
+                  Text="Drive C:\Downloads"
+                  Margin="273.5,-8,51.5,735" Grid.Column="2" Grid.ColumnSpan="2"/>
+            <!--#endregion Textboxes-->
+       </Grid>
+</Window>

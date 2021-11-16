@@ -1,0 +1,114 @@
+
+
+// My Converters
+
+BtnWidthConverter 
+============
+Reduces width by 20 - mostly used for reducing width of text inside other controls
+
+Color2Hex
+======
+Returns a string containg color (I thnk with leading # eg "#FF1276FA")
+
+DateOnlyConverter
+============
+Convert a DateTime by returning the part before the 1st space ????
+
+DummyDebugConverter
+===============
+Useful converter that just halts current debugging using Debbugger.Break()
+
+HeaderToImageConverter
+================
+Specialist converter that returns both Text and image for The small/Large font toggle button on some Db viewers
+
+HexConvert
+=======
+Returns a decimal value as a Hex String eg: 255 = "FF"
+
+Actype2Name
+========
+Specialist converter that returns relevant Text word for eachAC type in BankSystem eg : AcType=1 : "Checking"
+
+DateTimeToShortStringConverter
+=====================
+Strips the Time part of a DateTime object & return Dateonly as a string
+
+DateTime2ShortDateConvertor
+===================
+Same as the above by just substringing the 1st 10 characters of the input string
+
+NumericString2ShortDateConverter
+======================
+Converts a string such as "31031944" and returns a Foratted Date as a string "31/03/1944" that can be easily converted to a DateTime
+
+Date2UTCConverter
+============
+Converts a date in a string ("31/03/1944" and returns it in UTC format as "1944.03.31")
+
+Int2BrushConverter
+============
+Specialist converter that accepts AcType as input and returns a preselected Brush for colouring rows of data etc in Grids mostly
+
+Resource2BrushConverter
+================
+Accepts a numeric value and calls GetDictionaryBrush() to return the specified Brush from the Dictionary usng standard FindResource("xxxx")
+Can get any defined brush in accessible namespaces
+
+UniversalValueConverter
+===============
+Very specialised converter for Banking system
+
+OpacityToDecimalConvert
+================
+Returns double value of value received 
+
+ReduceEllipseHeightConverter
+==================
+Reduces value received by 25 (used mostly for for ellipse height, but is generic)
+
+SalaryConvertor
+==========
+Convert a Decimal/double to a fully formatted Currency value eg 12356.7 = "£12,356.70"
+
+SelectedToYesNoConverter
+=================
+Converts bool to "Yes" or "No"
+
+TextLeftPositionConverter
+================
+Calculates a left offset position (Used for fitting textblocks that are on top of controls )
+
+TextVerticalPositionConverter
+==================
+As above, but is used inThreeDeeBtnControl to control height of hole depending on Height of the button
+
+HeightMultiConverter
+=============
+Not completed right now....
+
+TextWidthMinus10Percent
+================
+Clever conversion that is mostly used to reduce the width of a text control on top of another control so it fits despite the Horizontal... = Center""
+
+TextWidthMultiConverter
+===============
+Another unused specialised width converter
+
+ToggleBoolConverter
+=============
+Converts a bool to return "Visible" or "Hidden"
+
+ToggleVisibilityConverter
+===============
+Converts a bool to return "Visible" or "Hidden" - used for Visibilty toggling
+
+ValueToTextConverter
+==============
+Just return value as a string
+
+ValueToTextConverter
+==============
+Converts int ot string and Vice versa...
+
+

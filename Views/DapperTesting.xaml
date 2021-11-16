@@ -1,0 +1,536 @@
+﻿<Window x:Class="WPFPages.Views.DapperTesting"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFPages.Views"
+        xmlns:ctrl="clr-namespace:WPFPages.UserControls"
+        mc:Ignorable="d"
+	  
+	  Loaded="Window_Loaded"
+        Title="Dapper Db Testing using various Methods incl. M$SQL Stored Procedures" Height="917" Width="1200">
+	<Window.Background>
+		<LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+			<GradientStop Offset="0" Color="#FF1D4835" />
+			<GradientStop Offset="0.3" Color="#FF6B8E95" />
+			<GradientStop Offset="0.609" Color="#FF6B8E95" />
+			<GradientStop Offset="1" Color="#FF14A7C1" />
+			<!--<GradientStop Offset="0.542" Color="#FF1D4855" />-->
+			<GradientStop Offset="0" Color="#FF193A44" />
+		</LinearGradientBrush>
+	</Window.Background>
+	<Grid Background="Transparent" Margin="0,2,4,2">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="30"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="40"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="145"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="12"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="12"/>
+		</Grid.ColumnDefinitions>
+
+		<!--#region All DataGrids-->
+
+		<DataGrid  x:Name ="GenericGrid1" 
+		     CanUserAddRows="False"
+		     Grid.Column="1" 
+		     Grid.Row="1"
+			GotFocus="GenericGrid1_GotFocus"			     
+			Margin="5 5 5 5"
+			RowEditEnding="GenericGrid1_RowEditEnding"
+			CellStyle="{StaticResource BankAccountGridStyle}"/>
+
+		<DataGrid  x:Name ="GenericGrid2" 
+			CanUserAddRows="False"
+			CellStyle="{StaticResource CustomerGridStyle}"
+			GotFocus="GenericGrid2_GotFocus"			     
+			Grid.Column="1" 
+			Grid.Row="3"
+			Margin="5,5,5,19"
+			RowEditEnding="GenericGrid2_RowEditEnding"/>
+
+		<DataGrid  x:Name ="GenericGrid3" 
+			CanUserAddRows="False"
+			CellStyle="{StaticResource DetailsGridStyle}"
+			GotFocus="GenericGrid3_GotFocus"			     
+			Grid.Column="2" 
+			Grid.Row="1"
+			Margin="5 5 5 5"
+			RowEditEnding="GenericGrid3_RowEditEnding"/>
+
+		<DataGrid  x:Name ="UniversalGrid" 
+			AutoGenerateColumns="True"
+			Background="{StaticResource Green5}"
+			CanUserAddRows="False"
+			CellStyle="{StaticResource DetailsGridStyle}" 
+			GotFocus="UniversalGrid_GotFocus"			     
+			Grid.Column="1" 
+			Grid.ColumnSpan="2"
+			Grid.Row="1"
+			Margin="6,5,5,4"
+			Visibility="Collapsed"/>
+
+		<DataGrid  x:Name ="BankCombinedGrid" 
+			Background="{StaticResource Cyan5}"
+			CanUserAddRows="False"
+			CellStyle="{StaticResource CustomerGridStyle}" 
+			GotFocus="BankCombinedGrid_GotFocus"			     
+			Grid.Column="1" 
+			Grid.ColumnSpan="2"
+			Grid.Row="1"
+			Margin="6,5,5,4"
+			Visibility="Collapsed"/>
+		<!--#endregion All DataGrids-->
+
+		<!--#region All labels-->
+
+		<Label x:Name="label1" Content="Bank Db : " 
+			 FontSize="14"
+			 Foreground="{StaticResource White0}"
+			 HorizontalAlignment="Left" 
+			 Margin="10,-2,0,0" 
+			 VerticalAlignment="Top" 
+			 Grid.Column="1"
+			 Height="31"/>
+		<Label x:Name="CurrBank" Content="" 
+			 FontSize="14"
+			 Foreground="{StaticResource White0}"
+			 HorizontalAlignment="Left" 
+			 Margin="91,0,0,0" 
+			 VerticalAlignment="Center" 
+			 Grid.Column="1"
+			 Height="32" Width="115"/>
+		<Label x:Name="label2" Content="Customer Db : " 
+			 FontSize="14"
+			 Foreground="{StaticResource White0}"
+		     Grid.Column="1" 
+		     Grid.Row="2"
+			 HorizontalAlignment="Left" 
+			 VerticalAlignment="Center" 
+			 Height="26"/>
+		<Label x:Name="CurrCust" Content="" 
+			 FontSize="14"
+			 Foreground="{StaticResource White0}"
+		     Grid.Column="1" 
+		     Grid.Row="2"
+			 HorizontalAlignment="Left" 
+			 VerticalAlignment="Center" 
+			 Height="26" Margin="100,0,0,0" Width="146"/>
+		<Label x:Name="label3" Content="Details Db :" 
+			FontSize="14"
+			Foreground="{StaticResource White0}"
+		     Grid.Column="2"
+			 HorizontalAlignment="Left" 
+			 Margin="4,0,0,0" 
+			 VerticalAlignment="Center" 
+			 Height="34" Width="87" RenderTransformOrigin="0.5,0.5"/>
+		<Label x:Name="CurrDet" Content="" 
+			FontSize="14"
+			Foreground="{StaticResource White0}"
+		     Grid.Column="2"
+			 HorizontalAlignment="Left" 
+			 Margin="94,0,0,0" 
+			 VerticalAlignment="Center" 
+			 Height="34" Width="118" RenderTransformOrigin="0.5,0.5"/>
+		<!--#endregion All labels-->
+
+		<!--#region All Buttons-->
+
+
+		<Button x:Name="button4" 
+			Content="Close" 
+			Click="button4_Click"
+			FontSize="35" 
+			Grid.Column="2" 
+			Grid.Row="4"
+			Height="89" 
+			HorizontalAlignment="Left" 
+			Margin="410,51,0,0" 
+			VerticalAlignment="Top" 
+			Template="{StaticResource HorizontalGradientTemplateRed}"
+			Width="166"/>
+
+		<Button x:Name="button5" 
+			Click="button5_Click"
+			Content="Reload ALL Db's" 
+			FontSize="18" 
+			Grid.Column="2" 
+			Grid.Row="4"
+			HorizontalAlignment="Left" 
+			Height="68" 
+			Margin="410,-30,0,0" 
+			Template="{StaticResource HorizontalGradientTemplateGray}"
+			VerticalAlignment="Top" 
+			Width="166" Grid.RowSpan="2"/>
+		<!--#endregion All Buttons-->
+
+		<!--#region Data recovery options-->
+
+		<RadioButton x:Name="UseStdDapper" 
+			  Click="UseStdDapper_Click"
+			  Content="Use Standard A.D.O Query() Method (DbReader)" 
+			  FontSize="16"
+			  Foreground="{StaticResource White0}"
+			  Grid.Column="1"
+			  Grid.Row="4"
+			  HorizontalAlignment="Left" 
+			  Margin="8,-12,0,0" 
+			  VerticalAlignment="Top" Width="370" Height="29" Grid.RowSpan="2" />
+		<RadioButton x:Name="UseStoredProc" 
+			Click="UseStoredProc_Click"
+			Content="Use Dapper with Stored Procedure" 
+			FontSize="16"
+			Foreground="{StaticResource White0}"
+			Grid.Column="1"
+			Grid.Row="4"
+			HorizontalAlignment="Left" 
+			Margin="8,20,0,0" 
+			VerticalAlignment="Top" Width="265" Height="29" />
+		<RadioButton x:Name="UseDapperStoredProc" 
+			Click="UseDapperStoredProc_Click"
+			Content="Use Dapper Directly (No Stored Procedure)" 
+			FontSize="16"
+			Foreground="{StaticResource White0}"
+			Grid.Column="1" 
+			Grid.Row="4"
+			 HorizontalAlignment="Left" 
+			Margin="9,52,0,0" 
+			VerticalAlignment="Top" Width="325" Height="29"/>
+		<!--#endregion Data recovery options-->
+
+		<!--#region Data Entry fields-->
+		<TextBox x:Name="BankDb" 
+			Background="{StaticResource Cyan5}"
+			FontSize="18"
+			Grid.Column="2" 
+			Grid.Row="3" 
+			HorizontalAlignment="Left" 
+			TextAlignment="Center"
+			Margin="22,14,0,0" 
+			Text="BANKACCOUNT" 
+			TextWrapping="Wrap" 
+			VerticalAlignment="Top" 
+			Width="192" MouseEnter="BankDb_MouseEnter"/>
+		<TextBox x:Name="CustDb" 
+			Background="{StaticResource Cyan5}"
+			FontSize="18"
+			Grid.Column="2" 
+			HorizontalAlignment="Left" 
+			Margin="22,78,0,0" 
+			Grid.Row="3" 
+			Text="CUSTOMER" 
+			TextAlignment="Center"
+			TextWrapping="Wrap" 
+			VerticalAlignment="Top" 
+			Width="192" MouseEnter="CustDb_MouseEnter"/>
+		<TextBox x:Name="DetDb" 
+			Background="{StaticResource Cyan5}"
+			FontSize="18"
+			Grid.Column="2" 
+			HorizontalAlignment="Left" 
+			Margin="22,0,0,0" 
+			Grid.Row="3" 
+			Text="SECACCOUNTS" 
+			TextAlignment="Center"
+			TextWrapping="Wrap" 
+			VerticalAlignment="Center" 
+			Width="192" MouseEnter="DetDb_MouseEnter"
+			   KeyDown="DetDb_KeyDown"/>
+
+		<TextBox x:Name="MaxRecords" 
+			Background="{StaticResource Cyan5}"
+			FontSize="20"
+			Grid.Column="2" 
+			Grid.Row="3" 
+			HorizontalAlignment="Left" 
+			TextAlignment="Center"
+			Margin="507,14,0,0"   			
+			Text="" 
+			TextWrapping="Wrap" 
+			VerticalAlignment="Top" 
+			Width="72" MouseEnter="BankDb_MouseEnter"/>
+		<CheckBox x:Name="MaxRecordsToLoad" 
+			Click="MaxRecordsToLoad_Click"
+			Content="Limit Records loaded" 
+			FontSize="18"
+			Foreground="{StaticResource White0}"
+			Grid.Column="2" 
+			HorizontalAlignment="Left" 
+			Margin="315,17,0,0" 
+			Grid.Row="3" 
+			VerticalAlignment="Top"/>
+
+		<TextBox x:Name="OrderString" 
+			  Background="{StaticResource Cyan5}"
+			  FontSize="20"
+			  Grid.Column="2" 
+			  Grid.Row="3" 
+			  HorizontalAlignment="Left" 
+			  TextAlignment="Center"
+			  Margin="240,78,0,0" 
+			
+			  Text="CustNo, Bankno" 
+			  TextWrapping="Wrap" 
+			  VerticalAlignment="Top" 
+			  Width="339" MouseEnter="BankDb_MouseEnter"/>
+		<CheckBox x:Name="UseSort" 
+			Content="Use Sort option above" 
+			FontSize="18"
+			Foreground="{StaticResource White0}"
+			Grid.Column="2" 
+			HorizontalAlignment="Left" 
+			Margin="236,113,0,0" 
+			Grid.Row="3" 
+			VerticalAlignment="Top"/>
+
+		<TextBox x:Name="Conditions" 
+			Background="{StaticResource Cyan5}"
+			FontSize="20"
+			Grid.Column="2" 
+			Grid.Row="3" 
+			HorizontalAlignment="Left" 
+			TextAlignment="Center"
+			Margin="240,158,0,0" 				
+			Text=" where Actype >= 2" 
+			TextWrapping="Wrap" 
+			VerticalAlignment="Top" 
+			Width="339" MouseEnter="BankDb_MouseEnter"/>
+		<CheckBox x:Name="UseConditions" 
+			Content="Use Selection condition above" 
+			FontSize="18"
+			Foreground="{StaticResource White0}"
+			Grid.Column="2" 
+			HorizontalAlignment="Left" 
+			Margin="236,197,0,0" 
+			Grid.Row="3" 
+			VerticalAlignment="Top"/>
+		<Button x:Name="ReloadBank" 
+			  Content="Reload Bank Db" 
+			  FontSize="18" 			  
+			  Foreground="{StaticResource White2}"
+			  HorizontalAlignment="Left" 
+			  Click="ReloadBank_Click" 
+			  Grid.Row="4"
+			  Margin="14,-30,0,0" 
+			  VerticalAlignment="Top" 
+			  Height="50" 
+			  Width="364"
+			  Template="{StaticResource HorizontalGradientTemplateBlue}" Grid.Column="2" Grid.RowSpan="2"/>
+		<Button x:Name="ReloadCust" 
+			  Content="Reload Customer Db" 
+			  FontSize="18" 
+			  Foreground="{StaticResource White2}"
+			  HorizontalAlignment="Left" 
+			  Click="ReloadCust_Click" 
+			  Grid.Row="4"
+			  Margin="14,30,0,0" 
+			  VerticalAlignment="Top" 
+			  Height="50" 
+			  Width="364"
+			  Template="{StaticResource HorizontalGradientTemplateBlue}" Grid.Column="2"/>
+		<Button x:Name="ReloadDet" 
+			Content="Reload SecAccount Db" 
+			Click="ReloadDet_Click" 
+			FontSize="18" 
+			Foreground="{StaticResource White2}"
+			Grid.Column="2"
+			Grid.Row="4"
+			Height="50" 
+			HorizontalAlignment="Left" 
+			Margin="14,90,0,0" 
+			Template="{StaticResource HorizontalGradientTemplateBlue}" 
+			VerticalAlignment="Top" 
+			Width="364"/>
+		<TextBox x:Name="BankCount" 
+			Background="{StaticResource Blue0}"
+			FontSize="18" 
+			Foreground="{StaticResource White0}"
+			HorizontalAlignment="Left" 
+			   Grid.Column="1"
+			TextAlignment="Center"
+			Margin="505,0,0,0"   			
+			Text="123" 
+			TextWrapping="Wrap" 
+			VerticalAlignment="Center" 
+			Width="72" 
+			   Height="30"/>
+		<TextBox x:Name="DetCount" 
+			  Background="{StaticResource Blue0}"
+			  FontSize="18" 
+			  Foreground="{StaticResource ResourceKey=White0}"
+			  HorizontalAlignment="Left" 
+			  TextAlignment="Center"
+			  Margin="504,0,0,0"   			
+			  Text="123" 
+			  TextWrapping="Wrap" 
+			  VerticalAlignment="Center" 
+			  Width="72" 
+			  Height="28" Grid.Column="2"/>
+		<TextBox x:Name="CustCount" 
+			  Background="{StaticResource Blue0}"
+			  FontSize="18" 
+			  Foreground="{StaticResource ResourceKey=White0}"
+			  HorizontalAlignment="Left" 
+			  TextAlignment="Center"
+			  Margin="506,0,0,0"   			
+			  Text="123" 
+			  TextWrapping="Wrap" 
+			  VerticalAlignment="Center" 
+			  Width="72" 
+			  Height="29" 
+			   Grid.Column="1"
+			   Grid.Row="2"/>
+		<Label x:Name="label" 
+			 Content="Available SQL Db Access Methods" 
+			 FontSize="14"
+			 Foreground="{StaticResource White0}"
+			 FontWeight="Bold"
+			 HorizontalContentAlignment="Center"
+			 Background="{StaticResource Red5}"
+			 Grid.Column="2" 
+			 HorizontalAlignment="Left" 
+			 Margin="22,341,0,0" 
+			 Padding="0 6 0 0"
+			 Grid.Row="1" 
+			 VerticalAlignment="Top" 
+			 Width="286" 
+			 Height="31" Grid.RowSpan="2"/>
+		<TextBox x:Name="LoadTime" 
+			  Background="{StaticResource Blue0}"
+			  FontSize="18" 
+			  Foreground="{StaticResource ResourceKey=White0}"
+			  HorizontalAlignment="Left" 
+			  Margin="372,8,0,0"   			
+			  Grid.Column="2"
+			  Height="32" Grid.Row="2" 
+			  Text="milliseconds" 
+			  TextAlignment="Center"
+			  TextWrapping="Wrap" 
+			  VerticalAlignment="Top" 
+			  Width="206" />
+		<Border Margin="20,242,13,47" 
+			  Background="{StaticResource Blue2}" 
+			  Grid.Row="3" 
+			  Grid.Column="2" >
+			<CheckBox x:Name="UseAsync" 
+				Background="{StaticResource White0}"
+				Click="UseAsync_Click"
+				Content="Use ASYNC  Methods for Loading Db's" 
+				FontSize="21"
+				FontWeight="Bold"
+				Foreground="{StaticResource Red5}"
+				Grid.Column="2" 
+				Grid.Row="3" 
+				HorizontalAlignment="Left"  
+				Margin="94,0,0,0"
+				VerticalAlignment="Center" RenderTransformOrigin="-0.134,0.718" Width="413"/>
+		</Border>
+		<TextBox x:Name="ManualSelect" 
+			  Background="{StaticResource Cyan5}"
+			  FontSize="20"
+			  Grid.Column="1" 
+			  Grid.Row="4" 
+			  HorizontalAlignment="Left" 
+			  TextAlignment="Center"
+			  Margin="195,81,0,0" 	
+			   PreviewKeyDown="ManualSelect_PreviewKeyDown"
+			  
+			  Text=" Select ..." 
+			  TextWrapping="Wrap" 
+			  VerticalAlignment="Top" 
+			  Width="385" PreviewMouseDown="UseDapper_MouseEnter" Height="57"/>
+		<Button x:Name="UseManualDapper" 
+			  Click="UseSelectClause"  			  
+			  FontSize="18"
+			  Foreground="{StaticResource White0}"
+			  Grid.Column="1" 
+			  Grid.Row="4"
+			  HorizontalAlignment="Left" 
+			  IsEnabled="true"
+			  Margin="11,79,0,0" 
+			  Template="{StaticResource HorizontalGradientTemplateBlue}" 
+			  VerticalAlignment="Top" Width="171" Height="59">
+			<Button.Content>
+				<TextBlock x:Name="ManualBtnText"
+					Text="Create Manual  Command :-" 
+					     Foreground="{StaticResource Yellow0}"
+					     Height="50"
+					     Width="134" 
+					     TextWrapping="WrapWithOverflow"
+					     HorizontalAlignment="Center"
+					     VerticalAlignment="Top"/>
+			</Button.Content>
+		</Button>
+
+		<Button x:Name="button3"
+			Click="LoadMulti_Click"
+			Content="Load Multi A/c's" 
+			FontSize="16" 
+			Foreground="{StaticResource Yellow0}"
+			Grid.Column="1" 
+			Grid.Row="4"
+			Grid.RowSpan="2"
+			Height="36" 
+			HorizontalAlignment="Left" 
+			Margin="422,-10,0,0" 
+			Template="{StaticResource HorizontalGradientTemplateBlue}" 
+			VerticalAlignment="Top" 
+			Width="159"/>
+
+		<Button x:Name="CloseGenGridBtn" 
+			Click="CloseGenericWindow"
+			Content="Close Query Grid" 
+			FontSize="16" 
+			Foreground="Red"
+			Grid.Column="1" 
+			Grid.Row="4"
+			Grid.RowSpan="2"
+			Height="36" 
+			HorizontalAlignment="Left" 
+			Margin="420,34,0,0"  
+			Opacity="0.4"
+			Template="{StaticResource HorizontalGradientTemplateRed}"
+			VerticalAlignment="Top" 
+			Width="159"/>
+
+		<Label x:Name="DbLabel1" Content="Bank Db to load:" 
+			FontSize="14"
+			Foreground="{StaticResource White0}"
+			Grid.Column="2"
+			Height="30" 
+			HorizontalAlignment="Left" 
+			Margin="20,42,0,0" 
+			Grid.Row="3"
+			VerticalAlignment="Top" 
+			Width="184" />
+
+		<Label x:Name="DbLabel2" Content="Customer Db to load:" 
+			FontSize="14"
+			Foreground="{StaticResource White0}"
+			Grid.Column="2"
+			Height="30" 
+			HorizontalAlignment="Left" 
+			Margin="20,106,0,0" 
+			Grid.Row="3"
+			VerticalAlignment="Top" 
+			Width="184" />
+
+		<Label x:Name="DbLabel3" Content="Details Db to load:" 
+			FontSize="14"
+			Foreground="{StaticResource White0}"
+			Grid.Column="2"
+			Height="30" 
+			HorizontalAlignment="Left" 
+			Margin="20,185,0,0" 
+			Grid.Row="3"
+			VerticalAlignment="Top" 
+			Width="184" />
+		<!--#endregion Data Entry fields-->
+
+	</Grid>
+</Window>

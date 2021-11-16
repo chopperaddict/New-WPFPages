@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="WPFPages.UserControls.CloseReturnButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFPages"
+		 DataContext="{Binding RelativeSource={RelativeSource Self}}"
+		Height="70" Width="140"
+		 Loaded="CloseReturnBtn_Loaded"
+		 mc:Ignorable="d" 
+		   x:Name="CloseReturnBtn">
+
+	<UserControl.Resources>
+
+	</UserControl.Resources>
+
+	<!--//This user control works, and DOES allow the end designer to resize 
+				it as required while the control maintains the text positioning etc-->
+	<Grid x:Name="EllipseGrid"
+		>
+		<!--DataContext="{Binding RelativeSource={RelativeSource Self}}"-->
+		<!-- We place An ELLIPSE shaped button inside a one celled grid.
+			NB Use PreviewMouseDown="PreviewMouseDown_Click" 
+			to access the leftMouseDown anywhere a control does not 
+			support LeftMouseDown of any type -->
+
+		<!--This is how to create a pseudo Button shaped like an Ellipse with 
+			what appears to be normal Button.Content Text on top of it and normal 
+			Button functionality so that any styling of the Ellipse does not get 
+			intefered with by mousing over the TextBlock that contains the 
+			"Buttons" Text/Content Element-->
+		<!--NB to stop the TextBlock from intefering with the Ellipses 
+			MouseOver Event the Property ISHITTESTVISIBLE is set to FALSE
+			in it's enclosing StackPanel so that anything inside it does not receive 
+			any Interface events such as Mouse events-->
+		<!--Style="{StaticResource MyEllipse}"-->
+		<Ellipse x:Name="Ellipse9"	
+		     Height="{Binding Path=Height, ElementName=Ellipse9}"
+		     Width="{Binding Path=Width, ElementName=Ellipse9}"
+			     Stroke="{Binding Path=BorderColor, ElementName=CloseReturnBtn}"
+				StrokeThickness="{Binding Path=StrokeWidth, ElementName=CloseReturnBtn}"
+				PreviewMouseDown="CloseButton_Click"
+				MouseEnter="Ellipse9_MouseEnter"
+				MouseLeave="Ellipse9_MouseLeave"
+				Opacity="1"	 			   
+				Fill="{Binding Path=FillColor, ElementName=CloseReturnBtn}"
+				MouseMove="EllipseGrid_MouseMove"
+				HorizontalAlignment="Stretch"  
+				VerticalAlignment="Stretch"
+			   Visibility="Visible"
+			   >
+		</Ellipse>
+		<!--//Display the "Button Text"-->
+		<StackPanel 
+		     Height="{Binding Path=Height, ElementName=Ellipse9}"
+		     Width="{Binding Path=Width, ElementName=Ellipse9}"
+			IsHitTestVisible="False"
+			Background="Transparent"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center" >
+
+			<!--The Horizontal/Vertical settings keep the text in the centrer of the ellipse-->
+			<TextBlock x:Name="BtnText"
+				Foreground="{Binding Path=Foreground, ElementName=CloseReturnBtn}"
+				FontSize="{Binding Path=FontHeight, ElementName=CloseReturnBtn}"
+				FontFamily="Segoe Script"
+				HorizontalAlignment="Center"
+			     Text="{Binding ButtonText}"
+				VerticalAlignment="Center"
+			     Height="{Binding Path=Height, ElementName=Ellipse9}"
+			     Width="{Binding Path=Width, ElementName=Ellipse9}"
+				Padding="25" 
+				/>
+		</StackPanel>
+	</Grid>
+</UserControl>

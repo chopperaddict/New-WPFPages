@@ -1,0 +1,35 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:conv ="clr-namespace:WPFPages.Converts">
+
+	<DataTemplate x:Key="BankDataTemplate1">
+		<Border x:Name="BankDataTemplateBorder" Height="{Binding ItemHeight}">
+			<StackPanel Orientation="Horizontal" >
+				<TextBlock Text="{Binding Id}" Width="40" Height="{Binding ItemHeight}"  Padding="1" x:Name="Id"/>
+				<TextBlock Text="{Binding BankNo}" Width="65" Height="{Binding ItemHeight}" Padding="1" x:Name="BankNo"/>
+				<TextBlock Text="{Binding CustNo}" Width="65" Height="{Binding ItemHeight}" Padding="1" x:Name="CustNo"/>
+				<TextBlock Text="{Binding AcType}" Width="15" Height="{Binding ItemHeight}" Padding="1"  x:Name="AcType"/>
+				<TextBlock Text="{Binding Balance}"  Width="90" Height="{Binding ItemHeight}" Padding="1"  x:Name="Balance"/>
+				<TextBlock Text="{Binding IntRate}" Width="50" Height="{Binding ItemHeight}" Padding="1"  x:Name="IntRate"/>
+				<TextBlock Text="{Binding ODate, StringFormat=dd/MM/yyyy}" Width="90" Height="{Binding ItemHeight}" Padding="1"  x:Name="ODate"/>
+				<TextBlock Text="{Binding CDate, StringFormat=dd/MM/yyyy}" Width="90" Height="{Binding ItemHeight}" Padding="1"  x:Name="CDate"/>
+			</StackPanel>
+		</Border>
+	</DataTemplate>
+
+
+	<DataTemplate x:Key="BankDataTemplate2">
+		<Border x:Name="BankDataTemplateBorder" Height="{Binding ItemHeight}">
+			<StackPanel Orientation="Horizontal" >
+				<TextBlock Text="{Binding Id}" Width="40" Height="{Binding ItemHeight}"  Padding="1" x:Name="Id"/>
+				<TextBlock Text="{Binding CustNo}" Width="65" Height="{Binding ItemHeight}" Padding="1" x:Name="CustNo"/>
+				<TextBlock Text="{Binding BankNo}" Width="65" Height="{Binding ItemHeight}" Padding="1" x:Name="BankNo"/>
+				<TextBlock Text="{Binding AcType}" Width="15" Height="{Binding ItemHeight}" Padding="1"  x:Name="AcType"/>
+				<TextBlock Text="{Binding Balance}"  Width="90" Height="{Binding ItemHeight}" Padding="1"  x:Name="Balance"/>
+				<TextBlock Text="{Binding IntRate}" Width="50" Height="{Binding ItemHeight}" Padding="1"  x:Name="IntRate"/>
+				<!--<TextBlock Text="{Binding ODate, StringFormat=dd/MM/yyyy}" Width="90" Height="{Binding ItemHeight}" Padding="1"  x:Name="ODate"/>
+				<TextBlock Text="{Binding CDate, StringFormat=dd/MM/yyyy}" Width="90" Height="{Binding ItemHeight}" Padding="1"  x:Name="CDate"/>-->
+			</StackPanel>
+		</Border>
+	</DataTemplate>
+</ResourceDictionary>

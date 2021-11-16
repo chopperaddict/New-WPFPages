@@ -1,0 +1,173 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <!--Customers DataGrid Highlighting so that its easy to see what is selected even when the control is not focused-->
+    <!--This is far more simplistic than the Bank control Temlate-->
+    <Style x:Key="CustomerGridStyle" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+        <Style.Triggers>
+            <!--// Window IS FOCUSED-->
+            <!--// SELECTED row Background & Border-->
+            <!--<Trigger  Property="IsSelected" Value="true">
+                        <Setter Property="Background" Value="#FF1171E6" />
+                        <Setter Property="BorderBrush" Value="#FF72DBE0" />
+                        <Setter Property="Foreground" Value="{StaticResource White0}" />
+                        <Setter Property="FontWeight" Value="DemiBold" />
+                  </Trigger>-->
+
+
+            <!--//=======================================================================================//-->
+            <!--// Handle Background and Foreground colors of SELECTED row-->
+            <!--NO MOUSE  / NOT SELECTED -->
+            <!--// Handle Background and Foreground colors of NON SELECTED row-->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding AcType}" Value="1"/>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="False" />
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="false" />
+                    <!--<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsKeyboardFocusWithin}" Value="False" />-->
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Background" Value="{StaticResource Yellow3}" />
+                    <Setter Property="Foreground" Value="{StaticResource Black4}" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+
+            <!--NO MOUSE  / SELECTED TRUE-->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding AcType}" Value="1"/>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="True" />
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="false" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Background" Value="{StaticResource Red4}" />
+                    <Setter Property="Foreground" Value="{StaticResource White0}" />
+                    <Setter Property="FontWeight" Value="DemiBold" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+
+            <!--MOUSE  OVER / NOT SELECTED -->
+            <!--// Handle Foreground colors of NON SELECTED row-->
+            <!--// This sets text to Blue when mouseover of the UNFOCUSED WINDOW-->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding AcType}" Value="1"/>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="False" />
+                    <!--<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsKeyboardFocusWithin}" Value="False" />-->
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Background" Value="{StaticResource Orange2}" />
+                    <Setter Property="Foreground" Value="{StaticResource White0}" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+
+            <!-- MOUSE OVER / SELECTED TRUE-->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding AcType}" Value="1"/>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="true" />
+                    <!--<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsKeyboardFocusWithin}" Value="False" />-->
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="true" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Background" Value="{StaticResource Blue8}" />
+                    <Setter Property="Foreground" Value="{StaticResource Blue0}" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+
+            <!--//=======================================================================================//-->
+            <!--ACTYPE = 2-->
+            <!--NO MOUSE  / NOT SELECTED -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding AcType}" Value="2"/>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="False" />
+                    <!--<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsKeyboardFocusWithin}" Value="False" />-->
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Background" Value="{StaticResource Green7}" />
+                    <Setter Property="Foreground" Value="{StaticResource White0}" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+
+            <!--MOUSE  OVER / NOT SELECTED -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding AcType}" Value="2"/>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="False" />
+                    <!--<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsKeyboardFocusWithin}" Value="False" />-->
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Background" Value="{StaticResource Green5}" />
+                    <Setter Property="Foreground" Value="{StaticResource White0}" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+
+            <!--//=======================================================================================//-->
+            <!--NO MOUSE  / NOT SELECTED -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding AcType}" Value="3"/>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="False" />
+                    <!--<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsKeyboardFocusWithin}" Value="False" />-->
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Background" Value="{StaticResource Yellow2}" />
+                    <Setter Property="Foreground" Value="{StaticResource Red0}" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+
+            <!--MOUSE  OVER / NOT SELECTED -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding AcType}" Value="3"/>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="False" />
+                    <!--<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsKeyboardFocusWithin}" Value="False" />-->
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Background" Value="{StaticResource Orange4}" />
+                    <Setter Property="Foreground" Value="{StaticResource Red0}" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+
+
+            <!--//=======================================================================================//-->
+            <!--NO MOUSE  / NOT SELECTED -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding AcType}" Value="4"/>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="False" />
+                    <!--<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsKeyboardFocusWithin}" Value="False" />-->
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Background" Value="{StaticResource Magenta7}" />
+                    <Setter Property="Foreground" Value="{StaticResource Black0}" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+
+            <!--MOUSE  OVER / NOT SELECTED -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding AcType}" Value="4"/>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="False" />
+                    <!--<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsKeyboardFocusWithin}" Value="False" />-->
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Background" Value="{StaticResource Magenta4}" />
+                    <Setter Property="Foreground" Value="{StaticResource White0}" />
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+   
+        </Style.Triggers>
+    </Style>
+
+
+</ResourceDictionary>

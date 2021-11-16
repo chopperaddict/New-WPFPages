@@ -1,0 +1,968 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{10856B92-B1F5-4B31-815B-1D371C90A559}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>WPFPages</RootNamespace>
+    <AssemblyName>WPFPages</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>2</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>CS1520;CS0246;CS0103</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>WPFPages.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Dapper.2.0.90\lib\net461\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.SystemEvents, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Win32.SystemEvents.5.0.0\lib\net461\Microsoft.Win32.SystemEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero2" />
+    <Reference Include="SharedSizeCtrl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\SharedSizeCtrl.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Serialization" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WPFLibrary2021, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\ianch\repos\latest WpfPages\May17WPFPages-vs2022-1\bin\Debug\WPFLibrary2021.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="AnalogClockHost.xaml.cs">
+      <DependentUpon>AnalogClockHost.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Commands\Commands.cs" />
+    <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Commands\BreakCommand.cs" />
+    <Compile Include="Converts\Actype2Name.cs" />
+    <Compile Include="Converts\Addoffset.cs" />
+    <Compile Include="Converts\ApplyLeftOffset.cs" />
+    <Compile Include="Converts\BtnWidthConverter.cs" />
+    <Compile Include="Converts\CalculateLeftOffset.cs" />
+    <Compile Include="Converts\Color2Hex.cs" />
+    <Compile Include="Converts\Date2UTCConverter.cs" />
+    <Compile Include="Converts\DateTime2ShortDateConvertor.cs" />
+    <Compile Include="Converts\DateTimeToShortStringConverter.cs" />
+    <Compile Include="Converts\GetImageConverter.cs" />
+    <Compile Include="Converts\HexConvert.cs" />
+    <Compile Include="Converts\Int2BrushConverter.cs" />
+    <Compile Include="Converts\MoveTextblockToTop.cs" />
+    <Compile Include="Converts\MultiConverterTemplate.cs" />
+    <Compile Include="Converts\NumericString2ShortDateConverter.cs" />
+    <Compile Include="Converts\OpacityToDecimalConverter.cs" />
+    <Compile Include="Converts\PadImageBase.cs" />
+    <Compile Include="Converts\PadImgConverter.cs" />
+    <Compile Include="Converts\PadShadowLabelBorder.cs" />
+    <Compile Include="Converts\PadTextBlock.cs" />
+    <Compile Include="Converts\ReduceColumnWidthConverter.cs" />
+    <Compile Include="Converts\ReduceTextWidth.cs" />
+    <Compile Include="Converts\ResetTextWidth.cs" />
+    <Compile Include="Converts\Resource2BrushConverter.cs" />
+    <Compile Include="Converts\SetTextTopOffset.cs" />
+    <Compile Include="Converts\PadHeight.cs" />
+    <Compile Include="Converts\StringtoBrushConverter.cs" />
+    <Compile Include="Converts\StringtoColorConverter.cs" />
+    <Compile Include="Converts\TextLeftPositionConverter.cs" />
+    <Compile Include="Converts\TextToUpperConverter.cs" />
+    <Compile Include="Converts\TextWidthMinus10Percent.cs" />
+    <Compile Include="Converts\TextWidthMultiConverter.cs" />
+    <Compile Include="Converts\TextVerticalPositionConverter.cs" />
+    <Compile Include="Converts\ToggleBoolConverter.cs" />
+    <Compile Include="Converts\ToggleVisibilityConverter.cs" />
+    <Compile Include="Converts\UniversalValueConverter.cs" />
+    <Compile Include="DataTemplates\BankDataStyleTemplateSelector.cs" />
+    <Compile Include="DataTemplates\BankDataTemplateSelector.cs" />
+    <Compile Include="DataTemplates\CustomerDataTemplateSelector.cs" />
+    <Compile Include="FullWPFWindow1.xaml.cs">
+      <DependentUpon>FullWPFWindow1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MyStdConvertersClass.cs" />
+    <Compile Include="TemplateforWpfWindow.xaml.cs">
+      <DependentUpon>TemplateforWpfWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\APTestingControl.xaml.cs">
+      <DependentUpon>APTestingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ImgButton.xaml.cs">
+      <DependentUpon>ImgButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\RectangleControl.xaml.cs">
+      <DependentUpon>RectangleControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converts\ReduceEllipseHeightConverter.cs" />
+    <Compile Include="Converts\ValueToTextConverter.cs" />
+    <Compile Include="DataSet1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataSet1.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Commands\MyCommands.cs" />
+    <Compile Include="ExceptionHandlingSample.xaml.cs">
+      <DependentUpon>ExceptionHandlingSample.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NorthWind.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>NorthWind.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ShadowLabelControl.xaml.cs">
+      <DependentUpon>ShadowLabelControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\SharedGrid.xaml.cs">
+      <DependentUpon>SharedGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\NewImageButton.xaml.cs">
+      <DependentUpon>NewImageButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\BankCombined.cs" />
+    <Compile Include="ViewModels\DapperSupport.cs" />
+    <Compile Include="ViewModels\NWSupplier.cs" />
+    <Compile Include="ViewModels\NWSupplierCollection.cs" />
+    <Compile Include="Views\AboutBox.xaml.cs">
+      <DependentUpon>AboutBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DapperTesting.xaml.cs">
+      <DependentUpon>DapperTesting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DataGridColorCtrlAp.cs" />
+    <Compile Include="AttachedProperties\DataGridColumnsColorAP.cs" />
+    <Compile Include="Views\Bankaccount.xaml.cs">
+      <DependentUpon>Bankaccount.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DataGridUtilities.cs" />
+    <Compile Include="Views\FocusVisualTreeChanger.cs" />
+    <Compile Include="Views\GroupedAccounts.xaml.cs">
+      <DependentUpon>GroupedAccounts.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ItemsControlDemo.xaml.cs">
+      <DependentUpon>ItemsControlDemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ListboxColorCtrlAP.cs" />
+    <Compile Include="AttachedProperties\Ex.cs" />
+    <Compile Include="ViewModels\NwOrderCollection.cs" />
+    <Compile Include="ViewModels\NwOrderDesignCollection.cs" />
+    <Compile Include="ViewModels\ObservableObject.cs" />
+    <Compile Include="ViewModels\TreeviewDataModel.cs" />
+    <Compile Include="Views\AnimationTest.xaml.cs">
+      <DependentUpon>AnimationTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BackgroundDesigner.xaml.cs">
+      <DependentUpon>BackgroundDesigner.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ButtonTesting.xaml.cs">
+      <DependentUpon>ButtonTesting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ColorsSelector.xaml.cs">
+      <DependentUpon>ColorsSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DropDataGridData.xaml.cs">
+      <DependentUpon>DropDataGridData.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converts\DummyDebugConverter.cs" />
+    <Compile Include="Converts\HeaderToImageConverter.cs" />
+    <Compile Include="Views\GradientDisplay.xaml.cs">
+      <DependentUpon>GradientDisplay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HitControl.cs" />
+    <Compile Include="Views\MenuAttachedProperties.cs" />
+    <Compile Include="Views\MenuItem.cs" />
+    <Compile Include="Observable.cs" />
+    <Compile Include="Page0.xaml.cs" />
+    <Compile Include="Page1.xaml.cs" />
+    <Compile Include="ViewModels\LinqSupport.cs" />
+    <Compile Include="Views\AllEventArgs.cs" />
+    <Compile Include="Views\BankCollection.cs" />
+    <Compile Include="Views\CellEditControl.cs" />
+    <Compile Include="UserControls\CloseReturnButton.xaml.cs">
+      <DependentUpon>CloseReturnButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\CustCollection.cs" />
+    <Compile Include="Views\BankDbView.xaml.cs">
+      <DependentUpon>BankDbView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CustDbView.xaml.cs">
+      <DependentUpon>CustDbView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DataGridNavigation.cs" />
+    <Compile Include="Views\DelegateSelection.xaml.cs">
+      <DependentUpon>DelegateSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DetailCollection.cs" />
+    <Compile Include="Views\DetailsDbView.xaml.cs">
+      <DependentUpon>DetailsDbView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DragDropClient.xaml.cs">
+      <DependentUpon>DragDropClient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GetExportRecords.xaml.cs">
+      <DependentUpon>GetExportRecords.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\IDropable.cs" />
+    <Compile Include="Views\ImportDbData.cs" />
+    <Compile Include="Views\JsonSupport.cs" />
+    <Compile Include="Views\MoreTesting.xaml.cs">
+      <DependentUpon>MoreTesting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MousoverHandlers.cs" />
+    <Compile Include="Views\DetCollection.cs" />
+    <Compile Include="Converts\DateOnlyConverter.cs" />
+    <Compile Include="Converts\SalaryConvertor.cs" />
+    <Compile Include="Views\EventControl.cs" />
+    <Compile Include="Views\FileHandling.cs" />
+    <Compile Include="Views\Filtering.cs" />
+    <Compile Include="Views\GridViewer.cs" />
+    <Compile Include="Views\DataGridSupport.cs" />
+    <Compile Include="SQLDbSupport.cs" />
+    <Compile Include="TaskHandling.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="ViewModels\BankAccountViewModel.cs" />
+    <Compile Include="Views\DataGridHelper.cs" />
+    <Compile Include="Views\Flags.cs" />
+    <Compile Include="ViewModels\CustomerViewModel.cs" />
+    <Compile Include="Views\DataGridControl.cs" />
+    <Compile Include="ViewModels\DetailsViewModel.cs" />
+    <Compile Include="Views\LinqResults.cs" />
+    <Compile Include="Views\MainWindowViewModel.cs" />
+    <Compile Include="Views\NorthwindFullData.xaml.cs">
+      <DependentUpon>NorthwindFullData.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\NwCategory.cs" />
+    <Compile Include="ViewModels\NwCustomer.cs" />
+    <Compile Include="ViewModels\NwOrder.cs" />
+    <Compile Include="ViewModels\NwOrderDetails.cs" />
+    <Compile Include="ViewModels\NwProduct.cs" />
+    <Compile Include="Views\NwOrder_Compare.cs" />
+    <Compile Include="Views\CustomersDbDataTemplateSelector.cs" />
+    <Compile Include="Views\Progressbar.xaml.cs">
+      <DependentUpon>Progressbar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RowPopup.xaml.cs">
+      <DependentUpon>RowPopup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RunSearchPaths.xaml.cs">
+      <DependentUpon>RunSearchPaths.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectedNwDetails.xaml.cs">
+      <DependentUpon>SelectedNwDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converts\SelectedToYesNoConverter.cs" />
+    <Compile Include="Views\Setup.xaml.cs">
+      <DependentUpon>Setup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SQLHandlers.cs" />
+    <Compile Include="Views\StylingTest.xaml.cs">
+      <DependentUpon>StylingTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TestNWView.xaml.cs">
+      <DependentUpon>TestNWView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ViewFilter.cs" />
+    <Compile Include="Views\SupportMethods.cs" />
+    <Compile Include="Views\SysColors.xaml.cs">
+      <DependentUpon>SysColors.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TestBankCollection.cs" />
+    <Compile Include="Views\TestBankDbView.xaml.cs">
+      <DependentUpon>TestBankDbView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TestDetailsCollection.cs" />
+    <Compile Include="Views\TestDetailsDbView.xaml.cs">
+      <DependentUpon>TestDetailsDbView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ThreeDeeBtnControl.xaml.cs">
+      <DependentUpon>ThreeDeeBtnControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TreeView1.xaml.cs">
+      <DependentUpon>TreeView1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MultiviewListBoxViewers.xaml.cs">
+      <DependentUpon>MultiviewListBoxViewers.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ViewModelBase.cs" />
+    <Compile Include="Views\DbSelector.xaml.cs">
+      <DependentUpon>DbSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditDb.xaml.cs">
+      <DependentUpon>EditDb.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditEventArgs.cs" />
+    <Compile Include="Views\EventHandlers.cs" />
+    <Compile Include="Views\ExtensionMethods.cs" />
+    <Compile Include="Views\MultiViewer.xaml.cs">
+      <DependentUpon>MultiViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SQLFilter.xaml.cs">
+      <DependentUpon>SQLFilter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SqlDbViewer.xaml.cs">
+      <DependentUpon>SqlDbViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BlankPage.xaml.cs">
+      <DependentUpon>BlankPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Triggers.xaml.cs">
+      <DependentUpon>Triggers.xaml</DependentUpon>
+    </Compile>
+    <Page Include="AnalogClockHost.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataGridStyles\CustomerDatagridStyleTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataTemplates\BankAccountDataTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataTemplates\CustomersDataTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataTemplates\ListViewDataTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataTemplates\ListViewStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataTemplates\TextBlockStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\AppButtonsDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\DataGridColumns.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataTemplates\BankDataTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\BaseDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\ButtonsMaster.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataGridStyles\BankDatagridStyleTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\DGCellStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\DiagonalGradients.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\HorizontalGradients.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataGridStyles\NWStyleTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\ListBoxStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\MainMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\Menus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataTemplates\NWDataTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FullWPFWindow1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\ListBoxViewStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\StdMenuStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TemplateforWpfWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\APTestingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AboutBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\MenuStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\StylesDict.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ExceptionHandlingSample.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Page0.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Page1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Page2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\ImgButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\RectangleControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ShadowLabelControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\SharedGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\NewImageButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AnimationTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BackgroundDesigner.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\CloseReturnButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="Views\Bankaccount.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BankDbView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ButtonTesting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ColorsSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CustDbView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DapperTesting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DbSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DelegateSelection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DetailsDbView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DragDropClient.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DropDataGridData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditDb.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GetExportRecords.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GradientDisplay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GroupedAccounts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ItemsControlDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MoreTesting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MultiViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NorthwindFullData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Progressbar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RowPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RunSearchPaths.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SelectedNwDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Setup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SqlDbViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SQLFilter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\VerticalGradients.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BlankPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\BtnsDict.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\YTButtonStackPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Views\MainWindow.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Dicts\ButtonDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\ColorsDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dicts\TestDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewModels\StyledDatagridTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StylingTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="Views\SysColors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TestBankDbView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TestDetailsDbView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ThreeDeeBtnControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TestNWView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TreeView1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Triggers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MultiviewListBoxViewers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Resource Include="Icons\harddrive.png" />
+    <Resource Include="Icons\Networkdrive.png" />
+    <Resource Include="Icons\blue_download_alt_folder_12391.png" />
+    <Resource Include="Icons\files.png" />
+    <Resource Include="Icons\Documents1.png" />
+    <Resource Include="Icons\folder3.png" />
+    <Resource Include="Icons\folder2.png" />
+    <Resource Include="Icons\calls-record.png" />
+    <Resource Include="Icons\cloud.png" />
+    <Resource Include="Icons\cursor-arrow.png" />
+    <Resource Include="Icons\delete-text-message.png" />
+    <Resource Include="Icons\delete-text-message2.png" />
+    <Resource Include="Icons\Documents2.png" />
+    <Resource Include="Icons\download-to-laptop.png" />
+    <Resource Include="Icons\exhibitor_30px.png" />
+    <Resource Include="Icons\fax.png" />
+    <Resource Include="Icons\folder.gif" />
+    <Resource Include="Icons\Wrench.png" />
+    <Resource Include="Icons\laptop-wifi.png" />
+    <Resource Include="Icons\left-arrow.png" />
+    <Resource Include="Icons\loading againCapture.PNG" />
+    <Resource Include="Icons\magnify minus.png" />
+    <Resource Include="Icons\magnify plus.png" />
+    <Resource Include="Icons\mailbox-receive-message.png" />
+    <Resource Include="Icons\mailbox-receive-message2.png" />
+    <Resource Include="Icons\mailbox.png" />
+    <Resource Include="Icons\message.png" />
+    <Resource Include="Icons\minusnode.gif" />
+    <Resource Include="Icons\new-text-message.png" />
+    <Resource Include="Icons\new-text-message2.png" />
+    <Resource Include="Icons\openfolder.gif" />
+    <Resource Include="Icons\phone-lock.png" />
+    <Resource Include="Icons\phone-wifi.png" />
+    <Resource Include="Icons\phone-wifi2.png" />
+    <Resource Include="Icons\plusnode.gif" />
+    <Resource Include="Icons\python.gif" />
+    <Resource Include="Icons\receive-text-message.png" />
+    <Resource Include="Icons\received-calls.png" />
+    <Resource Include="Icons\red magnify.png" />
+    <Resource Include="Icons\right-arrow.png" />
+    <Resource Include="Icons\rss.png" />
+    <Resource Include="Icons\send-message.png" />
+    <Resource Include="Icons\send-message2.png" />
+    <Resource Include="Icons\send-text-message.png" />
+    <Resource Include="Icons\sent-calls.png" />
+    <Resource Include="Icons\show-text-message.png" />
+    <Resource Include="Icons\SMS.png" />
+    <Resource Include="Icons\SMS2.png" />
+    <Resource Include="Icons\SMS3.png" />
+    <Resource Include="Icons\symlink_directory_30px.png" />
+    <Resource Include="Icons\text-message.png" />
+    <Resource Include="Icons\wifi.png" />
+    <Resource Include="Icons\wifi2.png" />
+    <Resource Include="ViewModels\Icons\loading againCapture.PNG" />
+    <Resource Include="Views\1-Convert Specs.txt" />
+    <Resource Include="Views\1-useful notes.txt" />
+    <Resource Include="ViewModels\Icons\left-arrow.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="ViewModels\Icons\right-arrow.png" />
+    <Resource Include="ViewModels\Icons\cursor-arrow.png" />
+    <Resource Include="ViewModels\Icons\icons8-wrench-24.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="ViewModels\Icons\magnify minus.png" />
+    <Resource Include="ViewModels\Icons\magnify plus.png" />
+    <Resource Include="ViewModels\Icons\red magnify.png" />
+    <Resource Include="Views\red magnify.png" />
+    <Resource Include="ViewModels\Icons\folder.gif" />
+    <Resource Include="ViewModels\Icons\minusnode.gif" />
+    <Resource Include="ViewModels\Icons\openfolder.gif" />
+    <Resource Include="ViewModels\Icons\plusnode.gif" />
+    <Resource Include="ViewModels\Icons\python.gif" />
+    <Resource Include="ViewModels\Icons\rss.png" />
+    <Resource Include="Views\wifi.png" />
+    <Resource Include="Views\SMS3.png" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <None Include="DataSet1.xsc">
+      <DependentUpon>DataSet1.xsd</DependentUpon>
+    </None>
+    <None Include="DataSet1.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSet1.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="DataSet1.xss">
+      <DependentUpon>DataSet1.xsd</DependentUpon>
+    </None>
+    <None Include="Snippets\Propchanged.snippet" />
+    <None Include="ViewModels\Icons\calls-record.icns" />
+    <None Include="ViewModels\Icons\cloud.icns" />
+    <None Include="ViewModels\Icons\delete-text-message.icns" />
+    <None Include="ViewModels\Icons\delete-text-message2.icns" />
+    <None Include="ViewModels\Icons\download-to-laptop.icns" />
+    <None Include="ViewModels\Icons\fax.icns" />
+    <None Include="ViewModels\Icons\idle.icns" />
+    <None Include="ViewModels\Icons\laptop-wifi.icns" />
+    <None Include="ViewModels\Icons\mailbox-receive-message.icns" />
+    <None Include="ViewModels\Icons\mailbox-receive-message2.icns" />
+    <None Include="ViewModels\Icons\mailbox.icns" />
+    <None Include="ViewModels\Icons\message.icns" />
+    <None Include="ViewModels\Icons\new-text-message.icns" />
+    <None Include="ViewModels\Icons\new-text-message2.icns" />
+    <None Include="ViewModels\Icons\phone-lock.icns" />
+    <None Include="ViewModels\Icons\phone-wifi.icns" />
+    <None Include="ViewModels\Icons\phone-wifi2.icns" />
+    <None Include="ViewModels\Icons\receive-text-message.icns" />
+    <None Include="ViewModels\Icons\received-calls.icns" />
+    <None Include="ViewModels\Icons\rss.icns" />
+    <None Include="ViewModels\Icons\send-message.icns" />
+    <None Include="ViewModels\Icons\send-message2.icns" />
+    <None Include="ViewModels\Icons\send-text-message.icns" />
+    <None Include="ViewModels\Icons\sent-calls.icns" />
+    <None Include="ViewModels\Icons\show-text-message.icns" />
+    <None Include="ViewModels\Icons\SMS.icns" />
+    <None Include="ViewModels\Icons\SMS2.icns" />
+    <None Include="ViewModels\Icons\SMS3.icns" />
+    <None Include="ViewModels\Icons\text-message.icns" />
+    <None Include="ViewModels\Icons\wifi.icns" />
+    <None Include="ViewModels\Icons\wifi2.icns" />
+    <None Include="NorthWind.xsc">
+      <DependentUpon>NorthWind.xsd</DependentUpon>
+    </None>
+    <None Include="NorthWind.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>NorthWind.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="NorthWind.xss">
+      <DependentUpon>NorthWind.xsd</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Dependencies\" />
+    <Folder Include="Design\" />
+    <Folder Include="Properties\DataSources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\font-awesome.min.css" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
+    <Content Include="ian1.mdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ian1_log.ldf">
+      <DependentUpon>ian1.mdf</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="ViewModels\Icons\document-delete_48x48.png" />
+    <Resource Include="ViewModels\Icons\calls-record.png" />
+    <Resource Include="ViewModels\Icons\cloud.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="ViewModels\Icons\delete-text-message.png" />
+    <Resource Include="ViewModels\Icons\delete-text-message2.png" />
+    <Resource Include="ViewModels\Icons\download-to-laptop.png" />
+    <Resource Include="ViewModels\Icons\fax.png" />
+    <Resource Include="ViewModels\Icons\laptop-wifi.png" />
+    <Resource Include="ViewModels\Icons\mailbox-receive-message.png" />
+    <Resource Include="ViewModels\Icons\mailbox-receive-message2.png" />
+    <Resource Include="ViewModels\Icons\mailbox.png" />
+    <Resource Include="ViewModels\Icons\message.png" />
+    <Resource Include="ViewModels\Icons\new-text-message.png" />
+    <Resource Include="ViewModels\Icons\new-text-message2.png" />
+    <Resource Include="ViewModels\Icons\phone-lock.png" />
+    <Resource Include="ViewModels\Icons\phone-wifi.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="ViewModels\Icons\phone-wifi2.png" />
+    <Resource Include="ViewModels\Icons\receive-text-message.png" />
+    <Resource Include="ViewModels\Icons\received-calls.png" />
+    <Resource Include="Views\rss.png" />
+    <Resource Include="ViewModels\Icons\send-message.png" />
+    <Resource Include="ViewModels\Icons\send-message2.png" />
+    <Resource Include="ViewModels\Icons\send-text-message.png" />
+    <Resource Include="ViewModels\Icons\sent-calls.png" />
+    <Resource Include="ViewModels\Icons\show-text-message.png" />
+    <Resource Include="ViewModels\Icons\SMS.png" />
+    <Resource Include="ViewModels\Icons\SMS2.png" />
+    <Resource Include="ViewModels\Icons\SMS3.png" />
+    <Resource Include="ViewModels\Icons\text-message.png" />
+    <Resource Include="ViewModels\Icons\wifi.png" />
+    <Resource Include="ViewModels\Icons\wifi2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\ianch\source\repos\MyAnalogClock\MyAnalogClock.csproj">
+      <Project>{3100abc3-387b-45d0-961c-cd434f252d85}</Project>
+      <Name>MyAnalogClock</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

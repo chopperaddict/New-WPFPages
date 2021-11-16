@@ -1,0 +1,549 @@
+﻿<Window x:Class="WPFPages.Views.Bankaccount"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFPages.Views"
+        xmlns:templates="clr-namespace:WPFPages.DataTemplates"
+        mc:Ignorable="d"
+	  Background="LightCoral"
+	  Loaded="bankgrid_Loaded"
+	  x:Name="bankgrid"
+        Title="Bankaccount" Height="850" Width="850">
+
+	<!--This window host a ListBox and a datagrid using BankAccount 
+	data to test Tem[plate Switching from xaml
+	The ListBox works well, but the Templateselection for the DataGrid is not working yet-->
+
+	<Window.Resources>
+		<templates:BankDataTemplateSelector x:Key="TemplateSelector"/>
+		<templates:BankDataStyleTemplateSelector x:Key="TemplateStyleSelector"/>
+	</Window.Resources>
+
+	<Grid >
+
+		<!--RowStyleSelector="{StaticResource TemplateStyleSelector}"
+		**** needs more work on this ....**** -->
+		<Grid.RowDefinitions>
+			<RowDefinition Height="10" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="40" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="70" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="1.55*" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<DataGrid x:Name="BankGrid" 
+				AllowDrop="True"
+				AutoGenerateColumns="True" 
+				Background="Aquamarine" 
+				BorderBrush="{StaticResource Blue0}"
+				BorderThickness="2"
+				CellStyle="{StaticResource BankAccountGridStyle}"			    
+				Grid.Column="0"
+				Grid.ColumnSpan="2"
+				Grid.Row="1"
+				Margin="16,0,14,0"
+				Visibility="Visible" Grid.RowSpan="1" >
+
+			<DataGrid.ItemContainerStyle>
+				<Style TargetType="{x:Type DataGridRow}">
+					<EventSetter Event="PreviewMouseLeftButtonUp" Handler="DataGrid_OnPreviewMouseUp"/>
+					<EventSetter Event="PreviewMouseLeftButtonDown" Handler="DataGrid_PreviewMouseLeftButtonDown"/>
+					<EventSetter Event="PreviewMouseMove" Handler="DataGrid_PreviewMouseMove"/>
+					<EventSetter Event="Drop" Handler="DataGridRow_Drop"/>
+				</Style>
+			</DataGrid.ItemContainerStyle>
+
+			<!--#region Templated datagrid columns-->
+
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Header="Id" Width="40"
+									x:Name="ID5"
+									    SortMemberPath="Id" >
+					<DataGridTemplateColumn.CellTemplate >
+						<DataTemplate >
+							<TextBlock 
+									Text="{Binding Id}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+						</DataTemplate >
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn >
+
+				<DataGridTextColumn Header="Customer #" Binding="{Binding CustNo, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+				</DataGridTextColumn>
+				<DataGridTextColumn Header="Bank #" Width="80" 
+								    SortMemberPath="BankNo"
+									Binding ="{Binding BankNo, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus}">
+				</DataGridTextColumn>
+				<DataGridTextColumn Header="Type" Width="40" 
+								    SortMemberPath="AcType"
+									Binding="{Binding AcType, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus}"/>
+				<DataGridTextColumn Header="Balance" Width="90" 
+									SortMemberPath="Balance"									
+									Binding="{Binding Balance, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus,
+									StringFormat='£ ##,###,###.00'}"/>
+				<DataGridTextColumn Header="Interest" Width="60" 
+									SortMemberPath="IntRate"
+									Binding="{Binding IntRate, Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus,
+									StringFormat='0.00'}"/>
+
+				<!--the next 2 show 2 ways to format a date - 1 a Converter the other a direct Format string-->
+				<DataGridTemplateColumn Header="Open Date" Width="80" SortMemberPath="ODate">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Path=ODate,
+								StringFormat='dd/MM/yyyy'}"  	 									
+								     HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+					<DataGridTemplateColumn.CellEditingTemplate>
+						<DataTemplate>
+							<DatePicker SelectedDate="{Binding Path=ODate, 
+								StringFormat='dd/MM/yyyy',
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+							</DatePicker>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellEditingTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Close Date" Width="80" SortMemberPath="CDate">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Path=CDate, 
+									StringFormat='dd/MM/yyyy'}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+					<DataGridTemplateColumn.CellEditingTemplate>
+						<DataTemplate>
+							<DatePicker SelectedDate="{Binding Path=CDate, 
+								StringFormat='dd/MM/yyyy',
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellEditingTemplate>
+				</DataGridTemplateColumn>
+
+			</DataGrid.Columns>
+			<!--#endregion Templated datagrid columns-->
+
+		</DataGrid>
+
+		<!--PreviewDragEnter="ListBox_OnPreviewDragEnter"
+				DragEnter="ListBox_OnPreviewDragEnter"-->
+		<ListBox  x:Name="ListGrid"
+			     Background="{StaticResource Green8}"
+				BorderThickness="2"	
+				AllowDrop="True"
+				Grid.Column="0"
+				Grid.ColumnSpan="1"
+				Grid.Row="3"
+				Grid.RowSpan="1"
+				ItemTemplateSelector="{StaticResource TemplateSelector}"    
+				Margin="16,2,9,14"
+				BorderBrush="{StaticResource Red3}"
+				Visibility="Visible" >
+			<ListBox.ItemContainerStyle>
+				<Style TargetType="{x:Type ListBoxItem}">
+					<EventSetter Event="PreviewMouseLeftButtonUp" Handler="ListBox_OnPreviewMouseUp"/>
+					<EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBox_PreviewMouseLeftButtonDown"/>
+					<EventSetter Event="PreviewMouseMove" Handler="ListBox_PreviewMouseMove"/>
+					<EventSetter Event="PreviewDragEnter" Handler="ListBox_OnPreviewDragEnter"/>
+					<EventSetter Event="Drop" Handler="ListBox_Drop"/>
+				</Style>
+			</ListBox.ItemContainerStyle>
+		</ListBox>
+
+		<ListView  x:Name="Listview"
+			     Background="{StaticResource Cyan5}"
+				BorderThickness="2"	
+				AllowDrop="True"
+				PreviewDragEnter="ListView_OnPreviewDragEnter"
+				DragEnter="ListBox_OnPreviewDragEnter"
+				Grid.Column="0"
+				Grid.ColumnSpan="1"
+				Grid.Row="3"
+				Grid.RowSpan="1"
+				ItemTemplateSelector="{StaticResource TemplateSelector}"    
+				Margin="16,2,9,14"
+				BorderBrush="{StaticResource Blue0}"
+				Visibility="Hidden" >
+
+			<ListView.ItemContainerStyle>
+				<Style TargetType="{x:Type ListViewItem}">
+					<EventSetter Event="PreviewMouseLeftButtonUp" Handler="ListView_OnPreviewMouseUp"/>
+					<EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBox_PreviewMouseLeftButtonDown"/>
+					<EventSetter Event="PreviewMouseMove" Handler="ListBox_PreviewMouseMove"/>
+					<EventSetter Event="PreviewDragEnter" Handler="ListView_OnPreviewDragEnter"/>
+				</Style>
+			</ListView.ItemContainerStyle>
+		</ListView>
+
+
+		<StackPanel Orientation="Horizontal"
+				HorizontalAlignment="Left"
+				Grid.Column="0"
+				Grid.ColumnSpan="2"
+				Grid.Row="1" 
+				Grid.RowSpan="2" 
+				Margin="19,342,0,0" 
+				Width="831">
+
+			<CheckBox x:Name="ToggleViewStatus" 
+				Background="{StaticResource Yellow2}"
+				Checked="ToggleViewStatus_Checked" 
+				Content="Sharing Bank Data View"
+				FontSize="18"
+				FontWeight="DemiBold"  
+				Foreground="{StaticResource Green0}" 
+				Height="30"
+				Margin="0 10 0 0"
+				Unchecked="ToggleViewStatus_Unchecked"
+				VerticalContentAlignment="Center" 
+				Width="231"
+			    />
+		</StackPanel>
+
+		<!--#region Main bottom button bar-->
+		<StackPanel  x:Name="bottombtnsStackpanel"
+					 Orientation="Horizontal"
+					Grid.Row="4" 
+					Grid.Column="0"
+				    Grid.ColumnSpan="2"
+					HorizontalAlignment="Right"
+					Margin="0,20,0,0"
+					Width="681">
+
+			<Button Content="Toggle view" 
+				   Background="{StaticResource HeaderBrushGreen}"
+				   BorderBrush="{StaticResource Blue0}"
+				   BorderThickness="2"
+				   Click="Toggle_Click"				  
+				   FontSize="18"
+				   FontWeight="Medium"
+				   Foreground="{StaticResource White0}"
+				   Padding="5"
+				   Template="{StaticResource HorizontalGradientTemplateGreen}" 
+				   Width="136" />
+
+			<Button Content="Toggle ListBox Template" 
+					Background="{StaticResource HeaderBrushGreen}"
+					BorderBrush="{StaticResource Blue0}"
+					BorderThickness="2"
+					Click="Button_Click"
+					FontSize="18"
+					FontWeight="Medium"
+					Foreground="{StaticResource White0}"
+					Margin="5"
+					Padding="5"				  
+					Template="{StaticResource HorizontalGradientTemplateGreen}" 
+					Width="238" />
+
+			<Button Content="Reload Db" 
+					Background="{StaticResource HeaderBrushGreen}"
+					BorderBrush="{StaticResource Blue0}"
+					BorderThickness="2"
+					Click="Reload_Click"
+					FontSize="18"
+					Foreground="{StaticResource White0}"					  
+					FontWeight="Medium"
+					Margin="5"
+					Padding="5"
+					Template="{StaticResource HorizontalGradientTemplateGreen}" 
+					Width="125" />
+
+			<Button Content="Close" 
+					Background="{StaticResource HeaderBrushGreen}"
+					BorderBrush="{StaticResource Blue0}"
+					BorderThickness="2"
+					Click="Close_Click"				  
+					FontSize="18"
+					FontWeight="Medium"
+					Foreground="{StaticResource White0}"	  
+					Margin="5"
+					Padding="5"
+					Template="{StaticResource HorizontalGradientTemplateGreen}" 
+					Width="136" />
+
+		</StackPanel>
+		<!--#endregion Main bottom button bar-->
+
+		<Grid
+			Grid.Row="3"
+			Grid.Column="1"
+				>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="30" />
+				<RowDefinition Height="50" />
+				<RowDefinition Height="50" />
+				<RowDefinition Height="30" />
+				<RowDefinition Height="50" />
+			</Grid.RowDefinitions>
+
+			<!--#region Filtering options-->
+
+			<TextBlock
+				FontSize="18"
+				FontWeight="Medium"
+				Foreground="{StaticResource White0}" 
+				Grid.Row="0"
+				HorizontalAlignment="Center"
+				Text="Filtering"
+				/>
+			<Button  x:Name="AcTypeBtn"
+					Background="{StaticResource HeaderBrushGreen}"
+					BorderBrush="{StaticResource Blue0}"
+					BorderThickness="2"
+					Click="ResetFilter_Click"				  
+					Content="Set AcType" 
+					FontSize="14"
+					FontWeight="Medium"
+					Foreground="{StaticResource White0}"
+					Grid.Column="1" 
+					Grid.Row="1"
+					Height="34"
+					Margin="5,0,150,0"
+					Padding="5"
+					Template="{StaticResource HorizontalGradientTemplateGreen}"  
+					 VerticalAlignment="Center" 
+				   Width="125"/>
+
+			<Button  x:Name="FilterBtn"
+					Background="{StaticResource HeaderBrushGreen}"
+					BorderBrush="{StaticResource Blue0}"
+					BorderThickness="2"
+					Click="ResetFilterType_Click"				  
+					Content="Select Filter parameters" 
+					IsEnabled="true"
+					FontSize="14"
+					FontWeight="Medium"
+					Foreground="{StaticResource White0}" 
+					Grid.Row="2" 
+					Height="34"
+					Margin="10,0,150,0"
+					Padding="5"
+					Template="{StaticResource HorizontalGradientTemplateGreen}"
+					VerticalAlignment="Center"	 />
+			<ComboBox x:Name="changefiltertype"
+				BorderBrush="Red"
+				BorderThickness="1"
+				FontSize="18" 
+				Grid.Row="2"
+				Height="26"
+				HorizontalAlignment="Left" 
+				HorizontalContentAlignment="Center"
+				Margin="188,0,0,0"
+				Panel.ZIndex="3"
+				SelectedIndex="0"
+				SelectionChanged="changefiltertype_SelectionChanged"
+				Text="ACTYPE" 
+				VerticalAlignment="Center"
+				Width="125" />
+
+			<!--#endregion-->
+
+			<!--#region Stack panel ONE-->
+			<StackPanel x:Name="actypeStackpanel"
+				Orientation="Horizontal"
+					Background="Bisque"				
+					Grid.Column="1" 
+					Grid.Row="3"
+					VerticalAlignment="Top" 
+					Height="30" 
+					Margin="0,0,0,0"
+					Visibility="Collapsed"
+					>
+				<TextBlock 
+					FontSize="14"
+					Grid.Column="1" 
+					Grid.Row="3" 
+					Margin="0 0 10 0"
+					Text="A/c Type: " />
+				<TextBlock 
+					FontSize="14"
+					Grid.Column="1" 
+					Grid.Row="3" 
+					Margin="0 0 4 0"
+					Text="Min" />
+
+				<TextBox x:Name="filtertypelow"
+					Background="{StaticResource Green0}"
+					FontSize="14"
+					Foreground="White"
+					Grid.Column="1" 
+					Grid.Row="3" 
+					HorizontalContentAlignment="Center"
+					Margin="0 0 10 0"
+				
+					Text="1"
+					VerticalContentAlignment="Center" Width="30" 
+					/>
+				<TextBlock 
+					  FontSize="14"
+					  Grid.Column="1" 
+					  Grid.Row="3" 
+					Margin="0 0 5 0"
+					  Text="Max" />
+				<TextBox x:Name="filtertypehigh"
+					Background="{StaticResource Green0}"
+					FontSize="14"
+					Foreground="White"
+					Grid.Column="1" 
+					Grid.Row="3" 
+					HorizontalContentAlignment="Center"
+					Margin="0 0 10 0"
+				
+					Text="4"
+					VerticalContentAlignment="Center" Width="30" 
+					/>
+			</StackPanel>
+			<!--#endregion Stack panel ONE-->
+
+			<!--#region Stack panel TWO-->
+			<StackPanel x:Name="intrateStackpanel"
+				Orientation="Horizontal"
+					Background="Bisque"				
+					Grid.Column="1" 
+					Grid.Row="3" 
+					Height="40"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center" 
+					Visibility="Collapsed"
+					Width="280" 
+					>
+				<TextBlock 
+					FontSize="14"
+					Grid.Column="1" 
+					Grid.Row="3" 
+					Margin="0 0 10 0"
+					Text="Interest Rate : " />
+				<TextBlock 
+					FontSize="14"
+					Grid.Column="1" 
+					Grid.Row="3" 
+					Margin="0 0 10 0"
+					Text="Min" />
+
+				<TextBox x:Name="IntratelowValue"
+					Background="{StaticResource Green0}"
+					FontSize="14"
+					Foreground="White"
+					Grid.Column="1" 
+					Grid.Row="3" 
+					HorizontalContentAlignment="Center"
+					Margin="0 0 10 0"
+				
+					Text="0.50"
+					VerticalContentAlignment="Center" 
+					/>
+				<TextBlock 
+					  FontSize="14"
+					  Grid.Column="1" 
+					  Grid.Row="3" 
+					Margin="0 0 10 0"
+					  Text="Max" />
+				<TextBox x:Name="IntratehighValue"
+					Background="{StaticResource Green0}"
+					FontSize="14"
+					Foreground="White"
+					Grid.Column="1" 
+					Grid.Row="3" 
+					HorizontalContentAlignment="Center"
+					Margin="0 0 10 0"
+				
+					Text="8.00"
+					VerticalContentAlignment="Center" RenderTransformOrigin="2.728,0.951" 
+					/>
+			</StackPanel>
+			<!--#endregion Stack panel TWO-->
+
+			<!--#region Stack panel THREE-->
+			<StackPanel x:Name="balanceStackpanel"
+				Orientation="Horizontal"
+					Background="Bisque"				
+					Grid.Column="1" 
+					Grid.Row="3"
+					Height="40"
+					VerticalAlignment="Top" 
+					Margin="3,0,-1,0"
+					Visibility="Collapsed"
+					>
+				<TextBlock 
+					FontSize="14"
+					Grid.Column="1" 
+					Grid.Row="3" 
+					Margin="0 0 10 0"
+					Text="Balances: " />
+				<TextBlock 
+					FontSize="14"
+					Grid.Column="1" 
+					Grid.Row="3" 
+					Margin="0 0 4 0"
+					Text="Min" />
+
+				<TextBox x:Name="lowbalValue"
+					Background="{StaticResource Green0}"
+					FontSize="14"
+					Foreground="White"
+					Grid.Column="1" 
+					Grid.Row="3" 
+					HorizontalContentAlignment="Center"
+					Margin="0 0 10 0"
+				
+					Text="0.50"
+					VerticalContentAlignment="Center" Width="66" 
+					/>
+				<TextBlock 
+					  FontSize="14"
+					  Grid.Column="1" 
+					  Grid.Row="3" 
+					Margin="0 0 5 0"
+					  Text="Max" />
+				<TextBox x:Name="highbalValue"
+					Background="{StaticResource Green0}"
+					FontSize="14"
+					Foreground="White"
+					Grid.Column="1" 
+					Grid.Row="3" 
+					HorizontalContentAlignment="Center"
+					Margin="0 0 10 0"
+				
+					Text="8.00"
+					VerticalContentAlignment="Center" RenderTransformOrigin="2.728,0.951" Width="64" 
+					/>
+			</StackPanel>
+			<Button  x:Name="AcTypeBtn_Cancel"
+				   Background="{StaticResource HeaderBrushGreen}"
+				   BorderBrush="{StaticResource Blue0}"
+				   BorderThickness="2"
+				   Click="CancelFilter_Click"				  
+				   Content="Cancel" 
+				   FontSize="14"
+				   FontWeight="Medium"
+				   Foreground="{StaticResource White0}" 
+				   Grid.Row="1"
+				   Height="34"
+				   Margin="160,0,38,0"
+				   Padding="5"
+				   Template="{StaticResource HorizontalGradientTemplateGreen}"  
+				   VerticalAlignment="Center"
+				   Width="85"/>
+			<!--#endregion Stack panel THREE-->
+		</Grid>
+	</Grid>
+</Window>

@@ -1,0 +1,320 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:WPFPages.Dicts">
+
+	<!--
+		AVAILABLE GRADIENTS
+		"D_btnWhiteBlueGradientBackgroundStyle"			"D_txtWhiteBlueGradientBackgroundStyle"
+		"D_btnWhiteRedGradientBackgroundStyle" 			"D_txtWhiteRedGradientBackgroundStyle"
+		"D_btnWhiteGreenGradientBackgroundStyle"		"D_txtWhiteGreenGradientBackgroundStyle"
+		"D_btnWhiteOrangeGradientBackgroundStyle		"D_txtWhiteOrangeGradientBackgroundStyle
+		"D_btnWhiteGrayGradientBackgroundStyle" 		"D_txtWhiteGrayGradientBackgroundStyle"
+		"D_btnWhiteBlackGradientBackgroundStyle"		"D_txtWhiteBlackGradientBackgroundStyle"
+		
+		
+		"D_btnBlueWhiteGradientBackgroundStyle" 		"D_txtBlueWhiteGradientBackgroundStyle"
+		"D_btnRedWhiteGradientBackgroundStyle" 			"D_txtRedWhiteGradientBackgroundStyle"
+		"D_btnGreenWhiteGradientBackgroundStyle"		"D_txtGreenWhiteGradientBackgroundStyle"
+		"D_btnOrangeWhiteGradientBackgroundStyle		"D_txtOrangeWhiteGradientBackgroundStyle
+		"D_btnGrayWhiteGradientBackgroundStyle" 		"D_txtGrayWhiteGradientBackgroundStyle"
+		"D_btnBlackWhiteGradientBackgroundStyle"		"D_txtBlackWhiteGradientBackgroundStyle"
+	-->
+
+	<!--  White to Color gradients  -->
+	<Style x:Key="D_txtWhiteBlueGradientBackgroundStyle" TargetType="{x:Type TextBlock}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="1,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="AliceBlue" />
+					<GradientStop Offset="0" Color="Blue" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_txtWhiteRedGradientBackgroundStyle" TargetType="{x:Type TextBlock}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="1,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="AliceBlue" />
+					<GradientStop Offset="0" Color="Red" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_txtWhiteGreenGradientBackgroundStyle" TargetType="{x:Type TextBlock}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="1,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="AliceBlue" />
+					<GradientStop Offset="0" Color="Green" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_txtWhiteOrangeGradientBackgroundStyle" TargetType="{x:Type TextBlock}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="1,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="AliceBlue" />
+					<GradientStop Offset="0" Color="Orange" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_txtWhiteBlackGradientBackgroundStyle" TargetType="{x:Type TextBlock}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="1,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="AliceBlue" />
+					<GradientStop Offset="0" Color="Black" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_txtWhiteGrayGradientBackgroundStyle" TargetType="{x:Type TextBlock}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="1,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="AliceBlue" />
+					<GradientStop Offset="0" Color="DarkGray" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<!--  Now - Color to White gradients  -->
+	<Style x:Key="D_txtBlueWhiteGradientBackgroundStyle" TargetType="{x:Type TextBlock}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint=".5,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="Blue" />
+					<GradientStop Offset="0" Color="AliceBlue" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_txtRedWhiteGradientBackgroundStyle" TargetType="{x:Type TextBlock}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint=".5,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="Red" />
+					<GradientStop Offset="0" Color="AliceBlue" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_txtGreenWhiteGradientBackgroundStyle" TargetType="{x:Type TextBlock}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint=".5,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="Green" />
+					<GradientStop Offset="0" Color="AliceBlue" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_txtOrangeWhiteGradientBackgroundStyle" TargetType="{x:Type TextBlock}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint=".5,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="Orange" />
+					<GradientStop Offset="0" Color="AliceBlue" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_txtBlackWhiteGradientBackgroundStyle" TargetType="{x:Type TextBlock}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint=".5,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="Black" />
+					<GradientStop Offset="0" Color="AliceBlue" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_txtGrayWhiteGradientBackgroundStyle" TargetType="{x:Type TextBlock}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint=".5,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="DarkGray" />
+					<GradientStop Offset="0" Color="AliceBlue" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+
+	<!--  BUTTONS  -->
+	<!--  White to Color gradients  -->
+	<Style x:Key="D_btnWhiteBlueGradientBackgroundStyle" TargetType="{x:Type Button}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="1,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="AliceBlue" />
+					<GradientStop Offset="0" Color="Blue" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_btnWhiteRedGradientBackgroundStyle" TargetType="{x:Type Button}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="1,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="AliceBlue" />
+					<GradientStop Offset="0" Color="Red" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_btnWhiteGreenGradientBackgroundStyle" TargetType="{x:Type Button}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="1,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="AliceBlue" />
+					<GradientStop Offset="0" Color="Green" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_btnWhiteOrangeGradientBackgroundStyle" TargetType="{x:Type Button}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="1,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="AliceBlue" />
+					<GradientStop Offset="0" Color="Orange" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_btnWhiteBlackGradientBackgroundStyle" TargetType="{x:Type Button}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="1,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="AliceBlue" />
+					<GradientStop Offset="0" Color="Black" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_btnWhiteGrayGradientBackgroundStyle" TargetType="{x:Type Button}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="1,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="AliceBlue" />
+					<GradientStop Offset="0" Color="DarkGray" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<!--  Now - Color to White gradients  -->
+	<Style x:Key="D_btnBlueWhiteGradientBackgroundStyle" TargetType="{x:Type Button}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint=".5,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="Blue" />
+					<GradientStop Offset="0" Color="AliceBlue" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_btnRedWhiteGradientBackgroundStyle" TargetType="{x:Type Button}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint=".5,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="Red" />
+					<GradientStop Offset="0" Color="AliceBlue" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_btnGreenWhiteGradientBackgroundStyle" TargetType="{x:Type Button}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint=".5,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="Green" />
+					<GradientStop Offset="0" Color="AliceBlue" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_btnOrangeWhiteGradientBackgroundStyle" TargetType="{x:Type Button}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint=".5,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="Orange" />
+					<GradientStop Offset="0" Color="AliceBlue" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_btnBlackWhiteGradientBackgroundStyle" TargetType="{x:Type Button}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint=".5,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="Black" />
+					<GradientStop Offset="0" Color="AliceBlue" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="D_btnGrayWhiteGradientBackgroundStyle" TargetType="{x:Type Button}">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint=".5,0" EndPoint=".3,1">
+					<GradientStop Offset="1" Color="DarkGray" />
+					<GradientStop Offset="0" Color="AliceBlue" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+
+
+</ResourceDictionary>

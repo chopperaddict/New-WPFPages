@@ -1,0 +1,2433 @@
+﻿<Window x:Class="WPFPages.Views.MultiviewListBoxViewers"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:att="clr-namespace:WPFPages.AttachedProperties"
+	xmlns:bankdata="clr-namespace:WPFPages.ViewModels"
+	xmlns:Cells="clr-namespace:WPFPages"
+	xmlns:conv="clr-namespace:WPFPages.Converts"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:WPFPages.Views"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:models="clr-namespace:WPFPages.ViewModels"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	Closed="Window_Closed"
+	Height="797" 
+	mc:Ignorable="d"
+	MinHeight="645" 
+	MaxWidth="965"
+	MinWidth="965"
+	Loaded="Window_Loaded"	  
+	Title="User ListBox Viewer" 
+	Width="965"
+	 x:Name="MultiviewLB">
+	<!--DataContext="BankAccountViewModel"-->
+
+	<!--// Window with DataGrids AND ListViews for Bank & Customer Db's
+	using comples DataTemplates and various Styles, mostly in this file's Resources area
+	This now resizes vertically very elegantly indeed, after a long fight wth it !-->
+
+
+	<Window.Resources>
+
+
+		<!--// NB ESSENTIAL declaration of a Convertor, Date in this case 
+		the Convertor Class name is "dateconvertor", and DateConv is the 
+		StaticResource key to use to access it
+		conv is declared above to confirm the namespace the convertor Class is declared in-->
+		<conv:DateTimeToShortStringConverter x:Key="DateConvert"/>
+		<conv:NumericString2ShortDateConverter x:Key="NumberToDateConvert"/>
+		<conv:Date2UTCConverter x:Key="Date2UTCConvert"/>
+		<conv:UniversalValueConverter x:Key="UniversalConvert"/>
+		<conv:Actype2Name x:Key="Ac2NameConvert"/>
+		<conv:ReduceColumnWidthConverter x:Key="ReduceColumnWidth"/>
+
+		<bankdata:BankAccountViewModel x:Key="bankvm"/>
+		<!--<d:DesignData BankAccountViewModel x:Key="Bankdata"/>-->
+		<!--<Cells:DataGridRowStyling x:Key="DGCELLS"/>-->
+
+
+		<!--************************ LISTVIEW *********************************-->
+
+		<!--#region STACKPANEL Styles-->
+
+		<!--This handles painting each row of the Focused or unfocused Listview 		
+		It ignores MouseOver on entry to the window -->
+		<!--WORKING VERY WELL, ALL COLORS ARE GRADED QUITE WELL  13/7/21-->
+
+		<Style TargetType="{x:Type StackPanel}" x:Key="LvRowControl">
+			<Style.Triggers>
+
+				<!--// USED *** ONLY *** FOR BACKGROUND COLORATION OF FULL LISTVIEW ROW -->
+
+				<!--================================
+				START  OF ACTYPE = 1 USES BLUE AS ITS BASE COLOR
+				=================================-->
+				<!--IT TAKES EIGHT  DIFFERENT OPTIONS TO COVER EACH PERMUTATION FOR EACH ACTYPE, SO a total of 32 MULTIDATATRIGGER's are REQUIRED-->
+				<!-- 4  FOR SELECTED, 4 FOR UNSELECTED ITEMS-->
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<!--FOCUSED OPTIONS-->
+						<!--SELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue3}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<!--FOCUSED OPTIONS-->
+						<!--SELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue1}" />
+						<!--<Setter Property="FocusVisualStyle" Value="{x:Null}" />-->
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<!--FOCUSED OPTIONS-->
+						<!--UNSELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue6}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<!--FOCUSED OPTIONS-->
+						<!--UNSELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="False" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue4}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<!--UNFOCUSED OPTION FOR SELECTED ITEMS-->
+
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<!--UNFOCUSED OPTION-->
+						<!--UNSELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue6}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<!--UNFOCUSED OPTION-->
+						<!--UNSELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue8}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<!--UNFOCUSED OPTION-->
+						<!--SELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue4}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--UNFOCUSED OPTION FOR NON SELECTED ITEMS-->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<!--UNFOCUSED OPTION-->
+						<!--SELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue2}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--==========
+				END OF ACTYPE = 1
+				===========-->
+
+				<!--=================================
+				START  OF ACTYPE = 2 USES GREEN AS ITS BASE COLOR
+				====================================-->
+				<!--IT TAKES EIGHT  DIFFERENT OPTIONS TO COVER EACH PERMUTATIO FOR EACH ACTYPE, SO a total of 32 MULTIDATATRIGGER's are REQUIRED-->
+				<!-- 4  FOR SELECTED, 4 FOR UNSELECTED ITEMS-->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<!--FOCUSED OPTIONS-->
+						<!--SELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green0}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<!--FOCUSED OPTIONS-->
+						<!--SELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green3}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<!--FOCUSED OPTIONS-->
+						<!--UNSELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="False" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green5}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<!--FOCUSED OPTIONS-->
+						<!--UNSELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green7}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--UNFOCUSED OPTION FOR SELECTED ITEMS-->
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<!--UNFOCUSED OPTION-->
+						<!--UNSELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green6}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<!--UNFOCUSED OPTION-->
+						<!--UNSELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green8}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<!--UNFOCUSED OPTION-->
+						<!--SELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green4}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--UNFOCUSED OPTION FOR NON SELECTED ITEMS-->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<!--UNFOCUSED OPTION-->
+						<!--SELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green2}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--==========
+				END OF ACTYPE = 2
+				===========-->
+
+				<!--=================================
+				START  OF ACTYPE = 3 USES YELLOW AS ITS BASE COLOR
+				====================================-->
+				<!--IT TAKES EIGHT  DIFFERENT OPTIONS TO COVER EACH PERMUTATIO FOR EACH ACTYPE, SO a total of 32 MULTIDATATRIGGER's are REQUIRED-->
+				<!-- 4  FOR SELECTED, 4 FOR UNSELECTED ITEMS-->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<!--FOCUSED OPTIONS-->
+						<!--SELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Orange0}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<!--FOCUSED OPTIONS-->
+						<!--SELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Orange2}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<!--FOCUSED OPTIONS-->
+						<!--UNSELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="False" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Orange4}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<!--FOCUSED OPTIONS-->
+						<!--UNSELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Orange7}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--UNFOCUSED OPTION FOR SELECTED ITEMS-->
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<!--UNFOCUSED OPTION-->
+						<!--UNSELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Orange6}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<!--UNFOCUSED OPTION-->
+						<!--UNSELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Yellow3}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<!--UNFOCUSED OPTION-->
+						<!--SELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Orange4}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--UNFOCUSED OPTION FOR NON SELECTED ITEMS-->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<!--UNFOCUSED OPTION-->
+						<!--SELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Yellow2}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--==========
+				END OF ACTYPE = 3
+				===========-->
+
+				<!--====================================
+				START  OF ACTYPE = 4 USES MAGENTA AS  ITS BASE COLOR
+				======================================-->
+				<!--IT TAKES EIGHT  DIFFERENT OPTIONS TO COVER EACH PERMUTATIO FOR EACH ACTYPE, SO a total of 32 MULTIDATATRIGGER's are REQUIRED-->
+				<!-- 4  FOR SELECTED, 4 FOR UNSELECTED ITEMS-->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<!--FOCUSED OPTIONS-->
+						<!--SELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Magenta0}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<!--FOCUSED OPTIONS-->
+						<!--SELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Magenta1}"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<!--FOCUSED OPTIONS-->
+						<!--UNSELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="False" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Magenta5}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<!--FOCUSED OPTIONS-->
+						<!--UNSELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Magenta7}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--UNFOCUSED OPTION FOR SELECTED ITEMS-->
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<!--UNFOCUSED OPTION-->
+						<!--UNSELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Magenta5}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<!--UNFOCUSED OPTION-->
+						<!--UNSELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Magenta3}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<!--UNFOCUSED OPTION-->
+						<!--SELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Magenta1}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--UNFOCUSED OPTION FOR NON SELECTED ITEMS-->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<!--UNFOCUSED OPTION-->
+						<!--SELECTED, MOUSE OVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Path=IsKeyboardFocusWithin}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Magenta2}" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--==========
+				END OF ACTYPE = 4
+				===========-->
+
+			</Style.Triggers>
+
+		</Style>
+
+		<!--#endregion LISTVIEW row background  colors handler-->
+
+		<!--#region Specialist styles-->
+
+		<!--====================-->
+		<!--LISTVIEW - THE ACCOUNT TYPE IN WORDS-->
+		<!--====================-->
+		<!--SET THE FOREGROUND COLOR OF THE TEXT-->
+		<Style x:Key="AcWordStyle" TargetType="TextBlock">
+			<Style.Triggers>
+
+				<!--ACTYPE = 1-->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<!--NOT FOCUSED, NOT SELECTED NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Black0}" />
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="1"/>
+					<!--FOCUSED, SELECTED, MOUSEOVER-->
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White0}" />
+					<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<!--FOCUSED, SELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White4}" />
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<!--FOCUSED, NOT SELECTED, MOUSEOVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Orange7}" />
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--ACTYPE = 2-->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<!--NOT FOCUSED, NOT SELECTED NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Black0}" />
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<!--FOCUSED, SELECTED, MOUSEOVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White0}" />
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<!--FOCUSED, SELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White4}" />
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<!--FOCUSED, NOT SELECTED, MOUSEOVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Yellow3}"/>
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--ACTYPE = 3-->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<!--NOT FOCUSED, NOT SELECTED NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Black0}" />
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<!--FOCUSED, SELECTED, MOUSEOVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White0}" />
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<!--FOCUSED, SELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White4}" />
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<!--FOCUSED, NOT SELECTED, MOUSEOVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White0}"/>
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+
+				<!--ACTYPE = 4-->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<!--NOT FOCUSED, NOT SELECTED NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Black0}" />
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<!--FOCUSED, SELECTED, MOUSEOVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White0}" />
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<!--FOCUSED, SELECTED, NO MOUSE-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White4}" />
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<!--FOCUSED, NOT SELECTED, MOUSEOVER-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Yellow0}" />
+						<Setter Property="FontWeight" Value="Bold" />
+						<Setter Property="Width" Value="400" />
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+			</Style.Triggers>
+		</Style>
+
+
+		<Style x:Key="ContextMenu2Style" TargetType="HeaderedItemsControl" >
+			<!--<Style x:Key="Border1Style" TargetType="Border" BasedOn="{StaticResource BaseBorder1Style}">-->
+			<!--<Setter Property="Background" Value="{StaticResource Blue3}"/>-->
+			<Setter Property="BorderThickness" Value="1"/>
+			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter  Property="Background" Value="{StaticResource Red3}"/>
+					<Setter  Property="Foreground" Value="{StaticResource White0}"/>
+					<!--<Setter  Property="Foreground" Value="{StaticResource Black0}"/>-->
+				</Trigger>
+				<Trigger Property="IsMouseOver" Value="False">
+					<!--<Setter  Property="Foreground" Value="{StaticResource Black0}"/>-->
+					<Setter  Property="Background" Value="{StaticResource Green3}"/>
+					<Setter  Property="Foreground" Value="{StaticResource White0}"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+
+		<!--#endregion Specialist styles-->
+
+		<!--#region LISTVIEW TEXTBLOCK Styles-->
+
+		<!--// LISTVIEW - CONTROL COLOR OF THE TEXT of the ListView TEXTBLOCKS inside a Border "_Border" 
+		// USED FOR TEXT SIZE/WEIGHT/COLORATION ONLY, NOT BACKGROUND
+		NB: This *** DOES *** TAKE NOTICE OF THE SELECTED STATUS-->
+
+		<Style x:Key="tbItemstyle1" TargetType="TextBlock" >
+			<Style.Triggers>
+				<!--ACTYPE=1,  NO MOUSE,NOT SELECTED -->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{StaticResource Black0}"/>
+						<Setter Property="FontSize" Value="12"/>
+						<Setter Property="FontWeight" Value="Normal"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<!--ACTYPE=1,  NO MOUSE,SELECTED -->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{StaticResource White3}"/>
+						<Setter Property="FontSize" Value="12"/>
+						<Setter Property="FontWeight" Value="Normal"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<!--ACTYPE=1, MOUSE OVER, SELECTED -->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{StaticResource White2}"/>
+						<Setter Property="FontWeight" Value="Bold"/>
+						<Setter Property="FontSize" Value="12"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<!--ACTYPE=1, MOUSE OVER, NOT SELECTED -->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{StaticResource White0}"/>
+						<Setter Property="FontWeight" Value="Bold"/>
+						<Setter Property="FontSize" Value="12"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--ACTYPE 2-->
+
+				<!--ACTYPE=2,  NO MOUSE, NOT SELECTED -->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{StaticResource White0}"/>
+						<Setter Property="FontSize" Value="12"/>
+						<Setter Property="FontWeight" Value="Normal"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<!--ACTYPE=2,  NO MOUSE, SELECTED -->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{StaticResource White0}"/>
+						<Setter Property="FontSize" Value="12"/>
+						<Setter Property="FontWeight" Value="Normal"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<!--ACTYPE=2, MOUSE OVER, SELECTED -->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{StaticResource White0}"/>
+						<Setter Property="FontWeight" Value="Bold"/>
+						<Setter Property="FontSize" Value="11"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<!--ACTYPE=2, MOUSE OVER, NOT SELECTED -->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{StaticResource White0}"/>
+						<Setter Property="FontWeight" Value="Bold"/>
+						<Setter Property="FontSize" Value="12"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--ACTYPE 3-->
+				<!--ACTYPE=3,  NO MOUSE, NOT SELECTED -->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{StaticResource Black0}"/>
+						<Setter Property="FontSize" Value="12"/>
+						<Setter Property="FontWeight" Value="Normal"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<!--ACTYPE=3, MOUSE OVER, SELECTED -->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{StaticResource White0}"/>
+						<Setter Property="FontSize" Value="12"/>
+						<Setter Property="FontWeight" Value="Bold"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<!--ACTYPE=3, MOUSE OVER, NOT SELECTED -->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{StaticResource Black0}"/>
+						<Setter Property="FontWeight" Value="Bold"/>
+						<Setter Property="FontSize" Value="12"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<!--ACTYPE 4-->
+				<!--ACTYPE=4,  NO MOUSE, NOT SELECTED -->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{StaticResource Black0}"/>
+						<Setter Property="FontSize" Value="12"/>
+						<Setter Property="FontWeight" Value="Normal"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<!--ACTYPE=4, MOUSE OVER, SELECTED -->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{StaticResource White0}"/>
+						<Setter Property="FontSize" Value="12"/>
+						<Setter Property="FontWeight" Value="Bold"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<!--ACTYPE=4, MOUSE OVER, NOT SELECTED -->
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Foreground" Value="{StaticResource White0}"/>
+						<Setter Property="FontWeight" Value="Bold"/>
+						<Setter Property="FontSize" Value="12"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+			</Style.Triggers>
+
+		</Style>
+
+		<!--#endregion LISTVIEW TEXTBLOCK Styles-->
+
+		<!--#region TextBox stylling in ListBox/View-->
+
+		<Style x:Key="tboxItemstyle1" TargetType="TextBox" >
+			<!--// LISTVIEW - BankAccountViewModel data = TextBox style for fields that can be edited-->
+			<Style.Triggers>
+
+				<!--// Controls the TEXTBOX background color ONLY (and onlly When window has the focus)-->
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<!--TEXTBOX, FOCUSED, MOUSEOVER.-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Cyan5}"/>
+						<Setter Property="Foreground" Value="{StaticResource Black0}"/>
+						<Setter Property="FontWeight" Value="DemiBold"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="1"/>
+						<!--TEXTBOX, FOCUSED, NO MOUSE -->
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue4}" />
+						<Setter Property="Foreground" Value="{StaticResource White0}"/>
+						<Setter Property="FontWeight" Value="DemiBold"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<!--TEXTBOX, , MOUSEOVER.-->
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green9}" />
+						<Setter Property="Foreground" Value="{StaticResource White0}"/>
+						<Setter Property="FontWeight" Value="DemiBold"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="2"/>
+						<!--TEXTBOX, FOCUSED, NO MOUSE -->
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green9}" />
+						<Setter Property="Foreground" Value="{StaticResource Black0}"/>
+						<Setter Property="FontWeight" Value="Normal"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<!--TEXTBOX, FOCUSED, MOUSEOVER -->
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Yellow4}" />
+						<Setter Property="Foreground" Value="{StaticResource Black1}"/>
+						<Setter Property="FontWeight" Value="DemiBold"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="3"/>
+						<!--TEXTBOX, FOCUSED, NO MOUSE -->
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Orange5}" />
+						<Setter Property="Foreground" Value="{StaticResource Black0}"/>
+						<Setter Property="FontWeight" Value="Normal"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<!--TEXTBOX, FOCUSED, MOUSEOVER -->
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Magenta2}" />
+						<Setter Property="Foreground" Value="{StaticResource White0}"/>
+						<Setter Property="FontWeight" Value="DemiBold"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding AcType}" Value="4"/>
+						<!--TEXTBOX, FOCUSED, NO MOUSE -->
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Red9}" />
+						<Setter Property="Foreground" Value="{StaticResource White0}"/>
+						<Setter Property="FontWeight" Value="Normal"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<!--<Condition Binding="{Binding AcType}" Value="4"/>-->
+						<!--TEXTBOX, UNFOCUSED, NO MOUSE -->
+						<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+						<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="false" />
+					</MultiDataTrigger.Conditions>
+					<MultiDataTrigger.Setters>
+						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Red9}" />
+						<Setter Property="Foreground" Value="{StaticResource White0}"/>
+						<Setter Property="FontWeight" Value="Normal"/>
+					</MultiDataTrigger.Setters>
+				</MultiDataTrigger>
+			</Style.Triggers>
+		</Style>
+
+		<!--END OF TEXTBOX STYLING-->
+
+		<!--#endregion TextBox stylling in ListBox/View-->
+
+		<!--==============================================-->
+		<!--END OF MAIN LISTBOX/LISTVIEW LAYOUT TEMPLATE-->
+		<!--==============================================-->
+
+		<!--=====================================-->
+		<!--#region CONTEXT MENU CODE AND STYLING-->
+		<!--=====================================-->
+
+		<!--SET "END" (SUBMENU ITEM) ONLY -  BACKGROUND COLOR ON MOUSEOVER TO LIGHT/MID BLUE -->
+		<Style x:Key="MenuItemLightblue" TargetType="{x:Type MenuItem}">
+			<Setter Property="Background" Value="Red" />
+			<Setter Property="Foreground" Value="Black" />
+			<!--<Setter Property="BorderBrush" Value="{StaticResource HeaderBorderBrushYellow}" />-->
+			<Setter Property="BorderThickness" Value="1.5" />
+			<Setter Property="SnapsToDevicePixels" Value="True" />
+			<Setter Property="HorizontalContentAlignment" Value="left" />
+			<Setter Property="VerticalAlignment" Value="Bottom" />
+			<Setter Property="VerticalContentAlignment" Value="Bottom" />
+			<Setter Property="MinHeight" Value="25" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type MenuItem}">
+						<Border x:Name="Bd" 
+							  Padding="17,0,17,0" 
+							  BorderBrush="{TemplateBinding BorderBrush}" 
+							  BorderThickness="{TemplateBinding BorderThickness}" 
+							  Background="{TemplateBinding Background}" 
+							  SnapsToDevicePixels="True" 
+							  Uid="Border_38">
+							<ContentPresenter x:Name="ContentPresenter"  
+										Content="{TemplateBinding Header}" 
+										Grid.Column="1" ContentSource="Header" 
+										Margin="{TemplateBinding Padding}" 
+										RecognizesAccessKey="True" 
+										SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+										Uid="ContentPresenter_33"/>
+						</Border>
+						<!--Handle Mouseover condition-->
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsHighlighted" Value="True">
+								<Setter Property="Height" TargetName="Bd" Value="35"/>
+								<!--This is  the Border color-->
+								<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Red3}"/>
+								<!--This is  the Background color-->
+								<Setter Property="Background" TargetName="Bd" Value="{StaticResource Blue1}"/>
+								<Setter Property="MenuItem.Foreground" TargetName="Bd" Value="{StaticResource White0}"/>
+								<!--<Setter Property="Padding" TargetName="Bd"  Value="5,0,5,5"/>-->
+							</Trigger>
+							<Trigger Property="IsHighlighted" Value="False">
+								<Setter Property="Height" TargetName="Bd" Value="35"/>
+								<!--This is  the Border color-->
+								<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource White2}"/>
+								<!--This is  the Background color-->
+								<Setter Property="Background" TargetName="Bd" Value="{StaticResource Blue4}"/>
+								<Setter Property="MenuItem.Foreground" TargetName="Bd" Value="{StaticResource White0}"/>
+								<!--<Setter Property="Padding" TargetName="Bd"  Value="5,0,5,5"/>-->
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<ContextMenu x:Key="ContextMenu2">
+
+			<!--DOES NOT WORK ON TOP LEVEL MENU ITEM-->
+
+			<MenuItem 
+				Name ="linq1" Header="Linq Queries"  
+				Foreground="{StaticResource White0}"
+				Background="Brown"
+				FontSize="16" >
+				<!--IsMouseDirectlyOverChanged="linq1_IsMouseDirectlyOverChanged">-->
+
+				<MenuItem Header="AC Type 1 Only" 
+				Background="{StaticResource Red2}"    
+				Foreground="{StaticResource White0}"
+					    Click="Linq1_Click"
+					   Style="{StaticResource MenuItemLightblue}" />
+
+				<MenuItem Header="AC Type 2 Only" 
+				Background="{StaticResource Red2}"    
+				Foreground="{StaticResource White0}"
+					    Click="Linq2_Click"
+					    Style="{StaticResource MenuItemLightblue}"/>
+
+				<MenuItem Header="AC Type 3 Only" 
+					    Click="Linq3_Click"
+				    Foreground="{StaticResource Black0}"
+				    Background="{StaticResource Gray3}"
+				Style="{StaticResource MenuItemLightblue}"/>
+
+				<MenuItem Header="AC Type 4 Only" 
+					    Click="Linq4_Click"
+				    Foreground="{StaticResource Black0}"
+				    Background="{StaticResource Gray3}"
+					    Style="{StaticResource MenuItemLightblue}"/>
+
+				<Separator Style="{StaticResource Menu_Separator}"
+				    />
+
+				<MenuItem Header="Multiple A/c holders Only" 
+					    Click="Linq5_Click"
+				    Foreground="{StaticResource Red1}"
+				    Background="{StaticResource Gray3}"
+				    Style="{StaticResource MenuItemLightblue}"/>
+				<MenuItem Header="Show All A/c's" 
+					    Click="Linq6_Click"
+				    Foreground="{StaticResource Green0}"
+				    Background="{StaticResource Gray3}"
+				    Style="{StaticResource MenuItemLightblue}"/>
+
+			</MenuItem>
+			<Separator Style="{StaticResource Menu_Separator}"/>
+
+			<MenuItem Header="View currently selected record in JSON Format"  
+				    Background="{StaticResource Green3}"
+				    Foreground="{StaticResource White1}"
+				    FontSize="16"
+				    Click="ViewJsonRecord_Click"
+				   Style="{StaticResource MenuItemLightblue}">
+				<MenuItem.Icon>
+					<Image Source="/Icons/symlink_directory_30px.png"  />
+				</MenuItem.Icon>
+			</MenuItem>
+
+		</ContextMenu>
+
+		<!--#endregion CONTEXT MENU CODE AND STYLING-->
+
+		<!--#region DATATEMPLATES-->
+
+		<DataTemplate x:Key="dTemplate">
+			<Border x:Name="_Border"
+                        PreviewMouseDown="_Border_PreviewMouseDown"
+                        Height="25"
+                        Background="Transparent"
+                        Padding="0"
+                        >
+				<!--Outermost stackpanel-->
+				<StackPanel x:Name="LbItem" Orientation="Horizontal" Height="25"
+						PreviewMouseLeftButtonDown="LbItem_PreviewMouseLeftButtonDown"
+						PreviewMouseLeftButtonUp="LbItem_PreviewMouseLeftButtonUp"
+						Style="{StaticResource LvRowControl}">
+					<!--Height="50"-->
+
+					<StackPanel Orientation="Horizontal" Height="25" Width="150">
+						<TextBlock Text=" "/>
+
+						<TextBlock x:Name="tb100"
+                                          Text="{Binding CustNo, FallbackValue=1055001}" 
+                                          VerticalAlignment="Center"
+                                          Margin="0 0 0 0"
+                                          Padding="5 5 0 0"
+                                          Height="25"
+                                          Width="60"
+                                          FontWeight="Bold"
+                                          Style="{StaticResource tbItemstyle1}"/>
+
+						<TextBox  Text="{Binding BankNo, FallbackValue=4032521}" 
+							VerticalAlignment="Center"
+							HorizontalContentAlignment="Center"
+							Margin="0 0 0 0"
+							Padding="0,0,0,0"
+							Height="20"
+							Width="60"
+							Style="{StaticResource tboxItemstyle1}"/>
+
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" Height="25" Width="190">
+						<!--Style="{StaticResource StackPanelstyle1}">-->
+						<TextBlock Text="  " />
+
+						<TextBox Text="{Binding AcType, FallbackValue=1, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                          VerticalContentAlignment="Center"
+                                        HorizontalContentAlignment="Center"
+				                Margin="0 0 0 0"
+			                      Padding="0,0,0,0"
+						    Height="20"
+                                        Width="30"
+                                          PreviewKeyDown="TextBox_PreviewKeyDown"  
+                                          Style="{StaticResource tboxItemstyle1}"/>
+
+						<TextBlock Text="   "/>
+
+						<TextBox  Text="{Binding Balance, FallbackValue=23456.71}" 													
+                                          VerticalContentAlignment="Center"
+                                          HorizontalContentAlignment="Center"
+							Margin="0 0 0 0"
+				                Padding="0,-1,0,0"
+						    Height="20"
+                                          Width="90" 
+                                          FontSize="14"
+                                          Style="{StaticResource tboxItemstyle1}"/>
+						<TextBlock Text=" "/>
+
+						<TextBox  Text="{Binding IntRate, FallbackValue=3.21, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                          VerticalContentAlignment="Center"
+                                          HorizontalContentAlignment="Center"
+							Margin="0 0 0 0"
+							Padding="0,-1,0,0"
+							Height="20"
+                                          Width="50" 
+                                          FontSize="14"
+                                          Style="{StaticResource tboxItemstyle1}"/>
+
+					</StackPanel>
+
+					<!--DATES STACK PANEL-->
+					<!--<StackPanel Orientation="Horizontal" Height=245" >-->
+					<StackPanel Orientation="Horizontal"	Height="25">
+						<TextBlock Text="   " />
+						<TextBlock  Text="{Binding ODate, Converter={StaticResource DateConvert}}"
+						            Padding="2"
+                                    Height="20"
+						            Width="70"
+						            Style="{StaticResource tbItemstyle1}"/>
+						<TextBlock Text="   " />
+						<TextBlock  Text="{Binding CDate, Converter={StaticResource DateConvert}}"
+								Padding="2"
+								Height="20"
+								Style="{StaticResource tbItemstyle1}"/>
+					</StackPanel>
+					<!--</StackPanel>-->
+
+					<StackPanel Orientation="Horizontal" Height="25">
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="    A/C Type :" 
+						            Padding="2"
+                                Height="20"
+								FontWeight="DemiBold"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal" Height="25">
+							<TextBlock Text="   " />
+							<TextBlock  Text="{Binding AcType, Converter={StaticResource Ac2NameConvert}}"
+									Padding="1"
+									Height="20"
+									FontWeight="DemiBold"
+									FontSize="14"
+									Style="{StaticResource AcWordStyle}"/>
+						</StackPanel>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+		</DataTemplate>
+
+		<DataTemplate x:Key="dTemplate2">
+			<Border x:Name="_Border"
+                        PreviewMouseDown="_Border_PreviewMouseDown"
+                        Height="35"
+                        Background="Transparent"
+                        Padding="0"
+                        >
+				<!--Outermost stackpanel-->
+				<StackPanel x:Name="LbItem"
+						Orientation="Horizontal"
+						Height="40"
+						PreviewMouseLeftButtonDown="LbItem_PreviewMouseLeftButtonDown2"
+						PreviewMouseLeftButtonUp="LbItem_PreviewMouseLeftButtonUp2"
+						Style="{StaticResource LvRowControl}">
+
+					<StackPanel Orientation="Horizontal" Height="45" Width="60">
+						<TextBlock  Text="{Binding CustNo}" 
+                                           VerticalAlignment="Top"
+                                          Margin="0,3,0,0"
+                                          Padding="5,10,0,0"
+                                          Height="40"
+     						      Width="60"
+							Style="{StaticResource tbItemstyle1}"/>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" Height="45" Width="60">
+						<TextBox  Text="{Binding BankNo, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                          HorizontalContentAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="0,-4,0,0"
+                                          Padding="0,7,0,0"
+                                          Height="35"
+     						      Width="60"
+							Style="{StaticResource tboxItemstyle1}"/>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" Height="45" Width="30">
+						<!--Style="{StaticResource StackPanelstyle1}">-->
+						<TextBlock Text="  " />
+
+						<TextBox Text="{Binding AcType, FallbackValue=1, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                        VerticalContentAlignment="Center"
+                                          HorizontalContentAlignment="Center"
+                                          Margin="0,-5,0,0"
+                                          Padding="0,-2,0,0"
+                                          Height="35"
+                                          Width="30"
+                                          PreviewKeyDown="TextBox_PreviewKeyDown"  
+                                          Style="{StaticResource tboxItemstyle1}"/>
+						<TextBlock Text="   "/>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" Height="45" Width="80">
+						<!--Style="{StaticResource StackPanelstyle1}">-->
+						<TextBlock Text="  " />
+
+						<TextBox Text="{Binding FName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                          VerticalContentAlignment="Center"
+                                          HorizontalContentAlignment="Center"
+                                          Margin="0,-5,0,0"
+                                          Padding="0,-2,0,0"
+                                          Height="35"
+                                          Width="80"
+                                          PreviewKeyDown="TextBox_PreviewKeyDown"  
+                                          Style="{StaticResource tboxItemstyle1}"/>
+						<TextBlock Text="   "/>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" Height="45" Width="80">
+						<!--Style="{StaticResource StackPanelstyle1}">-->
+						<TextBlock Text="  " />
+						<TextBox Text="{Binding LName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                          VerticalContentAlignment="Center"
+                                          HorizontalContentAlignment="Center"
+                                          Margin="0,-5,0,0"
+                                          Padding="0,-2,0,0"
+                                          Height="35"
+                                          Width="80"
+                                          PreviewKeyDown="TextBox_PreviewKeyDown"  
+                                          Style="{StaticResource tboxItemstyle1}"/>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" Height="45" Width="120">
+						<TextBlock Text="  " />
+						<TextBox Text="{Binding Addr1, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                          VerticalContentAlignment="Center"
+                                          HorizontalContentAlignment="Center"
+                                          Margin="0,-5,0,0"
+                                          Padding="0,-2,0,0"
+                                          Height="35"
+                                          Width="120"
+                                          PreviewKeyDown="TextBox_PreviewKeyDown"  
+                                          Style="{StaticResource tboxItemstyle1}"/>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" Height="45" Width="120">
+						<!--Style="{StaticResource StackPanelstyle1}">-->
+						<TextBlock Text="  " />
+						<TextBox Text="{Binding Addr2, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                          VerticalContentAlignment="Center"
+                                          HorizontalContentAlignment="Center"
+                                          Margin="0,-5,0,0"
+                                          Padding="0,-2,0,0"
+                                          Height="35"
+                                          Width="120"
+                                          PreviewKeyDown="TextBox_PreviewKeyDown"  
+                                          Style="{StaticResource tboxItemstyle1}"/>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" Height="45" Width="80">
+						<!--Style="{StaticResource StackPanelstyle1}">-->
+						<TextBlock Text="  " />
+						<TextBox Text="{Binding Town, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                          VerticalContentAlignment="Center"
+                                          HorizontalContentAlignment="Center"
+                                          Margin="0,-5,0,0"
+                                          Padding="0,-2,0,0"
+                                          Height="35"
+                                          Width="80"
+                                          PreviewKeyDown="TextBox_PreviewKeyDown"  
+                                          Style="{StaticResource tboxItemstyle1}"/>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" Height="45" Width="80">
+						<!--Style="{StaticResource StackPanelstyle1}">-->
+						<TextBlock Text="  " />
+						<TextBox Text="{Binding County, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                          VerticalContentAlignment="Center"
+                                          HorizontalContentAlignment="Center"
+                                          Margin="0,-5,0,0"
+                                          Padding="0,-2,0,0"
+                                          Height="35"
+                                          Width="80"
+                                          PreviewKeyDown="TextBox_PreviewKeyDown"  
+                                          Style="{StaticResource tboxItemstyle1}"/>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" Height="45" Width="90">
+						<!--Style="{StaticResource StackPanelstyle1}">-->
+						<TextBlock Text="  " />
+						<TextBox Text="{Binding PCode, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                          VerticalContentAlignment="Center"
+                                          HorizontalContentAlignment="Center"
+                                          Margin="0,-5,0,0"
+                                          Padding="0,-2,0,0"
+                                          Height="35"
+                                          Width="90"
+                                          PreviewKeyDown="TextBox_PreviewKeyDown"  
+                                          Style="{StaticResource tboxItemstyle1}"/>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" Height="45" Width="100">
+						<!--Style="{StaticResource StackPanelstyle1}">-->
+						<TextBlock Text="  " />
+						<TextBox Text="{Binding Phone, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                          VerticalContentAlignment="Center"
+                                          HorizontalContentAlignment="Center"
+                                          Margin="0,-5,0,0"
+                                          Padding="0,-2,0,0"
+                                          Height="35"
+                                          Width="100"
+                                          PreviewKeyDown="TextBox_PreviewKeyDown"  
+                                          Style="{StaticResource tboxItemstyle1}"/>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" Height="45" Width="100">
+						<!--Style="{StaticResource StackPanelstyle1}">-->
+						<TextBlock Text="  " />
+						<TextBox Text="{Binding Mobile, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                          VerticalContentAlignment="Center"
+                                          HorizontalContentAlignment="Center"
+                                          Margin="0,-5,0,0"
+                                          Padding="0,-2,0,0"
+                                          Height="35"
+                                          Width="100"
+                                          PreviewKeyDown="TextBox_PreviewKeyDown"  
+                                          Style="{StaticResource tboxItemstyle1}"/>
+					</StackPanel>
+
+					<!--DATES STACK PANEL-->
+					<StackPanel Orientation="Vertical" Height="45" >
+						<StackPanel Orientation="Horizontal"
+							Margin="0,-5,0,0"
+							Height="20">
+							<TextBlock Text="   " />
+							<TextBlock  Text="{Binding ODate, Converter={StaticResource DateConvert}}"
+						            Padding="5"
+						            Height="21"
+						            Width="70"
+						            Style="{StaticResource tbItemstyle1}"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<!--Style="{StaticResource LvRowControl}">-->
+							<TextBlock Text="   " />
+							<TextBlock  Text="{Binding CDate, Converter={StaticResource DateConvert}}"
+								Padding="5"
+								Height="18"
+								Style="{StaticResource tbItemstyle1}"/>
+						</StackPanel>
+					</StackPanel>
+
+
+					<StackPanel Orientation="Horizontal" Height="45" Margin="20,0,0,0" Width="Auto">
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text=" A/C Type :" 
+                                                Height="35"
+                                                Width="70" 
+                                                FontSize="14"
+							      FontWeight="DemiBold"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="   " />
+							<TextBlock  Text="{Binding AcType, Converter={StaticResource Ac2NameConvert}}"
+                                                Height="35"
+                                                Width="Auto" 
+                                                FontSize="14"
+								Padding="0"
+								FontWeight="DemiBold"
+								Style="{StaticResource AcWordStyle}"/>
+						</StackPanel>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+			<!--</Expander>-->
+		</DataTemplate>
+
+		<!--#endregion DATATEMPLATES-->
+
+	</Window.Resources>
+
+	<!--%%%%%%%%%%%%%%%%%%%%%%%%% END WINDOW RESOURCES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+
+	<!--==================================
+	ALL WORKING WELL !! V 28/10/21
+	==================================-->
+
+	<Grid x:Name="Lbgrid" Margin="0,0,-10,0"
+>
+		<Grid.Background>
+			<!--create an elegant left to right light-> Dark gradient as a background-->
+			<LinearGradientBrush EndPoint="0.0,1" StartPoint="1.3,0">
+				<GradientStop Color="#333333" Offset="0.7" />
+				<GradientStop Color="LightGray" Offset="0.17" />
+			</LinearGradientBrush>
+		</Grid.Background>
+
+		<Border x:Name="Brdr"
+			  Background="Transparent"
+			  Margin="0,19,-4,1">
+
+			<!--MASTER grid setup-->
+
+			<Grid x:Name="SelectionGrid"
+				  Background="Transparent" Margin="0,-16,0,0">
+				<Grid.RowDefinitions >
+					<RowDefinition Height="50"  />
+					<RowDefinition Height="35"  />
+					<RowDefinition Height="284*" />
+					<RowDefinition Height="35" />
+					<RowDefinition Height="284*" />
+					<RowDefinition Height="66.04"/>
+				</Grid.RowDefinitions>
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="6.75"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="45"/>
+				</Grid.ColumnDefinitions>
+
+				<!--#region Top Data content control fields-->
+
+				<StackPanel
+					Background="Transparent"
+					Grid.Row="0"
+					Grid.Column="1"
+					Grid.ColumnSpan="2"
+					Grid.RowSpan="2"
+					Height="74"
+					Orientation="Horizontal"
+					VerticalAlignment="Top" Margin="0,-4,329,0" >
+
+					<TextBlock 
+					     Background="Transparent"
+					     FontSize="12"
+						FontWeight="Normal"
+					     Foreground="{StaticResource Cyan5}"						
+					     Margin="15,19,0,22"
+					     Text="Min. A/C #"
+					     Width="64" Height="24"/>
+					<TextBox x:Name="MinValue"
+						Background="{StaticResource Cyan5}"
+						FontSize="14"
+						Foreground="Black"
+						Height="26"
+						Margin="5,20,10,32"
+						Text="{Binding Path=CustNo, Mode=TwoWay, Source=this, FallbackValue=1055000}"
+						VerticalAlignment="Center"
+						VerticalContentAlignment="Center"
+						Width="64"/>
+					<TextBlock 
+						Background="Transparent"
+						FontSize="14"
+					     Foreground="{StaticResource Cyan5}"
+						Margin="5,19,0,23"
+						Text="Max. A/C #"
+						Width="73" Height="24"/>
+
+					<TextBox x:Name="MaxValue"
+						Background="{StaticResource Cyan5}"
+						FontSize="14"
+						Foreground="Black"
+						Height="26"
+						Margin="5,18,10,30"
+						Text="{Binding Path=CustNo, Mode=TwoWay, Source=this, FallbackValue=1070000}"
+						VerticalAlignment="Center"
+						Width="64"/>
+
+					<TextBlock 
+						Background="Transparent"
+						FontSize="14"
+					     Foreground="{StaticResource Cyan5}"						
+						Height="26"
+						Margin="0,18,0,26"
+						Text="Max. Rows to display"
+						Width="132"/>
+					<TextBox x:Name="MaxRecords"
+						Background="{StaticResource Cyan5}"
+						FontSize="16"
+						FontWeight="Bold"
+						Height="26"
+						Foreground="Red"
+						HorizontalContentAlignment="Center" 
+						Margin="0 -10 10 0"
+						Text="500"
+						Width="48"/>
+					<Button x:Name="LoadData"
+						Background="{StaticResource HeaderBorderBrushYellow}"	
+						Content="Load Selected Data"
+						Height="40"
+						Margin="0 -15 0 0"
+						PreviewMouseLeftButtonDown="DbList_LoadBtnPressed"
+						Template="{StaticResource HorizontalGradientTemplateYellow}"
+						Width="113">
+					</Button>
+
+					<Button x:Name="Resize_RowsUp"
+						Background="{StaticResource HeaderBorderBrushYellow}"	
+						Content="Row Height ^"
+						Height="40"
+						HorizontalAlignment="Right"
+						Margin="10,8,0,22"
+						PreviewMouseLeftButtonDown="ResizeUp"
+						Template="{StaticResource HorizontalGradientTemplateYellow}"
+						Width="90"/>
+
+					<Button x:Name="Resize_RowsDn"
+						Background="{StaticResource HeaderBorderBrushYellow}"	
+						Content="Row Height v"
+						Height="40"
+						HorizontalAlignment="Right"
+						Margin="10,8,0,22"
+						PreviewMouseLeftButtonDown="ResizeDn"
+						Template="{StaticResource HorizontalGradientTemplateYellow}"
+						Width="97"/>
+
+					<Button x:Name="CloseWin"
+						Content="Close"
+						FontSize="26"	
+						Grid.Column="2"
+						Grid.ColumnSpan="2"
+						Grid.RowSpan="2" 
+						Height="56" 
+						Margin="10,8,0,5"
+						PreviewMouseLeftButtonDown="CloseBtn_PreviewMouseLeftButtonDown"					  
+						Template="{StaticResource HorizontalGradientTemplateRed}" 
+						Width="102" />
+				</StackPanel>
+
+				<!--#endregion Data content control fields-->
+
+				<!--#region bank labels annd fields-->
+				<StackPanel Grid.Row="1" Grid.Column="1"  Orientation="Horizontal" Grid.ColumnSpan="2" Margin="0,0,38,0">
+					<TextBlock 
+						Background="Transparent"
+						FontSize="18" 
+						FontWeight="Bold" 						
+						Foreground="{StaticResource White0}"
+						Margin="15 6 0 0"
+						Text="BankAccount Db" 
+						VerticalAlignment="Top"/>
+
+					<TextBlock x:Name="BankCount"
+						Background="{StaticResource Red5}"						     
+						FontSize="18"
+						FontWeight="DemiBold"
+						Foreground="{StaticResource White0}"
+						Margin="20 4 0 0"
+						Height="26"
+						Padding="15 0 0 0"
+						Text="123"
+						Width="60"/>
+					<TextBlock x:Name="Searchlabel"
+						Background="Transparent"
+						FontSize="18"
+						FontWeight="DemiBold"
+						Foreground="{StaticResource Cyan6}" 
+						Margin="10 4 0 0"
+						Height="26"
+						Padding="10 0 0 0"
+						Text="Customer # Search : "
+						Width="180"/>
+
+					<!--DataContext="{Static•Resource MultiviewListBoxViewers}"-->
+					<TextBox x:Name="ViewFilterCondition"
+						Background="{StaticResource Cyan5}"
+						BorderThickness="1"
+						BorderBrush="{StaticResource Cyan5}"
+						FontSize="18"
+						FontWeight="Bold"
+						Foreground="{StaticResource Black1}" 
+						Height="26"
+						HorizontalContentAlignment="Center"
+						Margin="0 4 0 0"
+						Padding="2 -1 5 5"
+						   Text="{Binding Path=SearchText, ElementName=MultiviewLB}"
+						VerticalContentAlignment="Top"
+						Width="87"/>
+						<!--Text="{Binding Path=Search, ElementName=MultiviewLB, UpdateSourceTrigger=PropertyChanged, FallbackValue=1055028}"-->
+					<TextBox x:Name="SearchError"
+						Background="Red"
+						FontSize="14"
+						FontWeight="Bold"
+						Foreground="White"
+						HorizontalContentAlignment="Center" 
+						Margin="30 5 0 0"
+						Padding="0 3 0 0"
+						Text="No Matches found ..."
+						VerticalAlignment="Center"
+						Visibility="Collapsed"
+						Width="172" Height="28"/>
+
+					<TextBlock x:Name="tbBankDb"
+						     Background="{StaticResource Blue0}"
+						     FontSize="18"
+						     FontWeight="Bold"
+						     Foreground="{StaticResource White0}" 
+						     Height="26"
+							Margin="20 5 0 0"
+						     Padding="0 1 0 0"
+						     Text="Bank"
+						     TextAlignment="Center"
+						     Width="130"/>
+					<TextBlock x:Name="tbCustDb"
+						     Background="{StaticResource Blue0}"
+						     FontSize="18"
+						     FontWeight="Bold"
+						     Foreground="{StaticResource White0}" 
+						     Height="26"
+						     HorizontalAlignment="Center"
+							Margin="20 5 0 0"
+						     Padding="0 1 0 0"
+						     Text="Cust"
+						     TextAlignment="Center"
+						     Width="130"/>
+
+					<!--Text="{Binding CustNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Source=this}"-->
+				</StackPanel>
+				<!--#endregion bank labels annd fields-->
+
+
+
+				<!--// THIS IS AN EXAMPLE SETUP FOR THE NEW DATAGRID SYSTEM that uses various helpers
+                              such as the [Style TargetType="DataGridColumnHeader"] to implement the header row setup colors
+                              and the Loaded method that calls our Datagrid Helper file "DataGridUtilities.cs"-->
+
+				<!--Drag is working from the datagrid-->
+				<!-- NB the DataGrid.Columns are LOADED in the Loaded method from a resource file
+                              which calls the DataGridUtilities.cs method "LoadDataGridColumns()"-->
+
+				<!--<Border  x:Name="border2"
+					Grid.Column="1" 
+					Grid.ColumnSpan="1" 
+					Grid.Row="2" 
+					 >-->
+				<!--#region Bank DataGrid -->
+
+				<Grid 
+						Grid.Column="1"
+						Grid.Row="2" Margin="0,0,263,0" 
+						>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="10"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="40"/>
+					</Grid.ColumnDefinitions>
+
+
+					<DataGrid x:Name="datagrid"
+							AlternatingRowBackground="{StaticResource Blue9}"
+							att:DataGridColumnsColorAP.HeaderBackground="{StaticResource Red4}"
+							att:DataGridColumnsColorAP.HeaderForeground="White"
+							AutoGenerateColumns="false"
+							Background="{StaticResource Blue8}"
+							BorderThickness="2"
+							BorderBrush="Red" 
+							CanUserSortColumns="false"					    
+							CanUserAddRows="False"
+							CellStyle="{StaticResource BankAccountGridStyle}"
+							Grid.Column="1"
+							Grid.ColumnSpan="1"
+							Grid.Row="0"
+							HorizontalAlignment="Left"
+							ItemsSource="{Binding bankcollection}"
+							Margin="0,20,0,10"
+							MinHeight="150"
+							Padding="1"
+							PreviewDragEnter="datagrid_PreviewDragEnter"
+							PreviewMouseLeftButtonUp="datagrid_PreviewMouseLeftButtonup"
+							PreviewMouseMove="datagrid_PreviewMouseMove"
+							PreviewMouseLeftButtonDown="datagrid_PreviewMouseLeftButtondown"
+							PreviewMouseRightButtonDown="datagrid_PreviewMouseRightButtonDown"
+							RowHeight="18"
+							SelectionChanged="datagrid_SelectionChanged"
+							Visibility="Visible" 
+							Width="892" >
+
+						<!--#region Templated datagrid columns-->
+
+						<DataGrid.Columns>
+							<DataGridTemplateColumn Header="  Id" Width="40"
+										x:Name="ID5"
+									    SortMemberPath="Id" >
+								<DataGridTemplateColumn.CellTemplate >
+									<DataTemplate >
+										<TextBlock 
+										Text="{Binding Id}"
+										HorizontalAlignment="Center"
+										VerticalAlignment="Top"/>
+									</DataTemplate >
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn >
+
+							<DataGridTextColumn Header="Customer #"  Width="80"
+										Binding="{Binding CustNo, 
+										Mode=TwoWay, 
+										UpdateSourceTrigger=PropertyChanged}">
+							</DataGridTextColumn>
+							<DataGridTextColumn Header="Bank #" Width="80" 
+									    SortMemberPath="BankNo"
+										Binding ="{Binding BankNo, 
+										Mode=TwoWay, 
+										UpdateSourceTrigger=LostFocus}">
+							</DataGridTextColumn>
+							<DataGridTextColumn Header="Type" Width="45" 
+									    SortMemberPath="AcType"
+										Binding="{Binding AcType, 
+										Mode=TwoWay, 
+										UpdateSourceTrigger=LostFocus}"/>
+							<DataGridTextColumn Header="Balance" Width="90" 
+										SortMemberPath="Balance"									
+										Binding="{Binding Balance, 
+										Mode=TwoWay, 
+										UpdateSourceTrigger=LostFocus,
+										StringFormat='£ ##,###,###.00'}"/>
+							<DataGridTextColumn Header="Interest" Width="60" 
+										SortMemberPath="IntRate"
+										Binding="{Binding IntRate, Mode=TwoWay, 
+										UpdateSourceTrigger=LostFocus,
+										StringFormat='0.00'}"/>
+
+							<!--the next 2 show 2 ways to format a date - 1 a Converter the other a direct Format string-->
+							<DataGridTemplateColumn Header="Open Date" Width="80" SortMemberPath="ODate">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding Path=ODate,
+									StringFormat='dd/MM/yyyy'}"  	 									
+									     HorizontalAlignment="Center"
+										VerticalAlignment="Top"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+								<DataGridTemplateColumn.CellEditingTemplate>
+									<DataTemplate>
+										<DatePicker SelectedDate="{Binding Path=ODate, 
+									StringFormat='dd/MM/yyyy',
+										Mode=TwoWay, 
+										UpdateSourceTrigger=PropertyChanged}">
+										</DatePicker>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellEditingTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTemplateColumn Header="Close Date" Width="80" SortMemberPath="CDate">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding Path=CDate, 
+										StringFormat='dd/MM/yyyy'}"
+										HorizontalAlignment="Center"
+										VerticalAlignment="Top"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+								<DataGridTemplateColumn.CellEditingTemplate>
+									<DataTemplate>
+										<DatePicker SelectedDate="{Binding Path=CDate, 
+									StringFormat='dd/MM/yyyy',
+										Mode=TwoWay, 
+										UpdateSourceTrigger=PropertyChanged}"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellEditingTemplate>
+							</DataGridTemplateColumn>
+
+						</DataGrid.Columns>
+						<!--#endregion Templated datagrid columns-->
+
+						<DataGrid.Resources>
+							<!--Set the header layout-->
+							<Style TargetType="DataGridColumnHeader">
+								<Setter Property="Background" Value="{Binding (att:DataGridColumnsColorAP.HeaderBackground),  RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+								<Setter Property="Foreground" Value="{Binding (att:DataGridColumnsColorAP.HeaderForeground),  RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+								<Setter Property="Height" Value="25"/>
+								<Setter Property="FontWeight" Value="DemiBold"/>
+							</Style>
+						</DataGrid.Resources>
+					</DataGrid>
+					<!--Focusable="True"-->
+					<ListBox	x:Name="ColumnSelection" 
+								Background="{StaticResource Blue4}"
+								BorderBrush="#FFE04B1F" 
+								FontSize="16"
+								Foreground="White" 
+								Grid.Column="1"
+								Height="80"
+								HorizontalAlignment="Right"
+								HorizontalContentAlignment="Center"
+								IsEnabled="True"
+								IsTabStop="False"
+								ItemContainerStyle="{StaticResource _ColumnsListBoxItemStyle}"				
+								Margin="905,0,0,0" 	
+								Panel.ZIndex="3"
+								SelectedIndex="0"						
+								SelectionChanged="Columns_SelectionChanged"
+								UseLayoutRounding="True"
+								VerticalAlignment="Center"
+								VerticalContentAlignment="Center" 
+								Visibility="Visible" 
+								Width="40" 
+									/>
+
+				</Grid>
+				<!--</Border>-->
+				<!--#endregion DataGrid ONE-->
+
+				<!--#region Bank ListView -->
+
+				<!--//This a very nice layout our aListView handling BankAccountViewModel data-->
+				<Border  x:Name="border3" 
+					Grid.Column="1" 
+					Grid.ColumnSpan="1" 
+					Grid.Row="2"
+					Margin="2,0,0,16" 
+					Height="268" 
+					VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="954" 
+					   >
+
+					<ListView x:Name="UCListbox"
+						    BorderBrush="Red"
+						    BorderThickness="1"
+						    MinHeight="150"
+						    MouseDoubleClick="UCListbox_MouseDoubleClick"
+						    PreviewDragEnter="datagrid_PreviewDragEnter"
+						    PreviewMouseLeftButtonDown="datagrid_PreviewMouseLeftButtondown2"
+						    PreviewMouseLeftButtonUp="datagrid_PreviewMouseLeftButtonup"
+						    PreviewMouseMove="datagrid_PreviewMouseMove"
+						    PreviewMouseDown="DbListbox_PreviewMouseLeftButtonDown"	
+						    PreviewMouseRightButtonDown="ListView_PreviewMouseRightButtonDown"
+						    PreviewMouseUp="DbListbox_PreviewMouseLeftButtonUp"	
+						    ScrollViewer.VerticalScrollBarVisibility="Visible"
+						    ScrollViewer.CanContentScroll="True"
+						    SelectionChanged="UCListbox_SelectionChanged"
+						    Visibility="Collapsed"
+						    ItemTemplate="{StaticResource dTemplate}"
+						    Padding="1" Margin="11,11,0,-1" HorizontalAlignment="Left" Width="889"    />
+				</Border>
+				<!--#endregion ListView ONE-->
+
+				<!--#region Customer label, Count && info-->
+				<TextBlock 
+					Background="Transparent"
+					Grid.Row="3" 
+					Grid.Column="1" 
+					FontSize="18" 
+					FontWeight="Bold" 
+					Foreground="{StaticResource White0}"
+					HorizontalAlignment="Left"
+					Margin="15,4,0,3" 
+					Text="Customer Db" 
+					Width="111"/>
+
+				<TextBlock x:Name="CustCount"
+						Background="{StaticResource Red5}"						     
+						FontSize="18"
+						FontWeight="DemiBold"
+						Foreground="{StaticResource White0}"
+					     Height="26"
+					     HorizontalAlignment="Left"
+					     Padding="15 0 0 0"
+						Text="123" 
+					     	Grid.Row="3" 
+						Grid.Column="1" 
+					     Width="60"
+					     Margin="139,4,0,5" 
+					    >
+					<TextBlock.RenderTransform>
+						<TransformGroup>
+							<ScaleTransform ScaleY="1"/>
+							<SkewTransform/>
+							<RotateTransform/>
+							<TranslateTransform/>
+						</TransformGroup>
+					</TextBlock.RenderTransform>
+				</TextBlock>
+
+				<!--#endregion Customer info-->
+
+				<!--#region Customer DATAGRID -->
+
+				<Border   x:Name="border4"
+					Grid.Column="1" 
+					Grid.ColumnSpan="1" 
+					Grid.Row="4" 
+					Margin="0,1,141,17">
+
+					<DataGrid x:Name="datagrid2"
+						att:DataGridColumnsColorAP.HeaderBackground="{StaticResource Red4}"
+						att:DataGridColumnsColorAP.HeaderForeground="White"
+						AutoGenerateColumns="False"
+						BorderThickness="3"
+						BorderBrush="Blue"
+						CanUserSortColumns="False"	
+						CanUserAddRows="False"
+						HorizontalAlignment="Left"
+						HorizontalScrollBarVisibility="Auto"
+						Margin="13,4,0,-2"
+						MinHeight="75" 
+						PreviewDragEnter="datagrid_PreviewDragEnter"
+						PreviewMouseLeftButtonUp="datagrid_PreviewMouseLeftButtonup"
+						PreviewMouseMove="datagrid_PreviewMouseMove"
+						PreviewMouseLeftButtonDown="datagrid_PreviewMouseLeftButtondown2"
+						Padding="1"
+						RowHeight="18"
+						SelectionChanged="datagrid_SelectionChanged"
+						RenderTransformOrigin="0.5,0.5" 
+						Visibility="Visible"
+						VerticalContentAlignment="Stretch" Width="927" >
+
+						<!--#region Templated datagrid columns-->
+						<DataGrid.Columns>
+							<DataGridTemplateColumn Header="Id" Width="40"
+									    SortMemberPath="Id" >
+								<DataGridTemplateColumn.CellTemplate >
+									<DataTemplate >
+										<TextBlock 
+									Text="{Binding Id}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+									</DataTemplate >
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn >
+
+							<DataGridTextColumn Header="Customer #" Binding="{Binding CustNo, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+							</DataGridTextColumn>
+
+							<DataGridTextColumn Header="Bank #" Width="80" 
+								    SortMemberPath="BankNo"
+									Binding ="{Binding BankNo, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus}"
+									>
+							</DataGridTextColumn>
+
+							<DataGridTextColumn Header="Type" Width="40" 
+								    SortMemberPath="AcType"
+									Binding="{Binding AcType, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus}"/>
+
+							<DataGridTextColumn Header="Forename" Binding="{Binding FName, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+							</DataGridTextColumn>
+
+							<DataGridTextColumn Header="Surname" Binding="{Binding LName, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+							</DataGridTextColumn>
+
+							<DataGridTextColumn Header="Address 1" Binding="{Binding Addr1, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+							</DataGridTextColumn>
+
+							<DataGridTextColumn Header="Address 2" Binding="{Binding Addr2, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+							</DataGridTextColumn>
+
+
+							<DataGridTextColumn Header="Town" Binding="{Binding Town, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+							</DataGridTextColumn>
+
+							<DataGridTextColumn Header="County" Binding="{Binding County, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+							</DataGridTextColumn>
+
+							<DataGridTextColumn Header="Post Code" Binding="{Binding PCode, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+							</DataGridTextColumn>
+							<DataGridTextColumn Header="Phone" Binding="{Binding Phone, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+							</DataGridTextColumn>
+							<DataGridTextColumn Header="Cell" Binding="{Binding Mobile, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+							</DataGridTextColumn>
+
+							<DataGridTemplateColumn Header="Open Date" Width="80" SortMemberPath="ODate">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding Path=ODate,
+								StringFormat='dd/MM/yyyy'}"  	 									
+								     HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+								<DataGridTemplateColumn.CellEditingTemplate>
+									<DataTemplate>
+										<DatePicker SelectedDate="{Binding Path=ODate, 
+								StringFormat='dd/MM/yyyy',
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+										</DatePicker>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellEditingTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn Header="Close Date" Width="80" SortMemberPath="CDate">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding Path=CDate, 
+									StringFormat='dd/MM/yyyy'}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+								<DataGridTemplateColumn.CellEditingTemplate>
+									<DataTemplate>
+										<DatePicker SelectedDate="{Binding Path=CDate, 
+								StringFormat='dd/MM/yyyy',
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellEditingTemplate>
+							</DataGridTemplateColumn>
+						</DataGrid.Columns>
+
+						<!--#endregion Templated datagrid columns-->
+
+						<DataGrid.Resources>
+							<!--Set the header layout-->
+							<Style TargetType="{x:Type DataGridColumnHeader}">
+								<Setter Property="Background" Value="{Binding (att:DataGridColumnsColorAP.HeaderBackground), RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
+								<Setter Property="Foreground" Value="{Binding (att:DataGridColumnsColorAP.HeaderForeground), RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
+								<Setter Property="Height" Value="25"/>
+								<Setter Property="FontWeight" Value="DemiBold"/>
+								<Setter Property="Height" Value="25"/>
+							</Style>
+
+						</DataGrid.Resources>
+
+						<DataGrid.AlternatingRowBackground>
+							<StaticResource ResourceKey="Blue9"/>
+						</DataGrid.AlternatingRowBackground>
+						<DataGrid.Background>
+							<StaticResource ResourceKey="Blue8"/>
+						</DataGrid.Background>
+						<DataGrid.CellStyle>
+							<StaticResource ResourceKey="BankAccountGridStyle"/>
+						</DataGrid.CellStyle>
+
+					</DataGrid>
+				</Border>
+				<!--#endregion DATAGRID TWO-->
+
+				<!--#region Cudstomer ListView -->
+
+				<Border   x:Name="border5"
+					Grid.Column="1"  
+					Grid.RowSpan="1" 
+					Grid.Row="4"
+					HorizontalAlignment="Left"
+					Margin="10,5,0,15" 
+					Width="922">
+
+					<ListView x:Name="UCListbox2"
+						Margin="0,0,-6,-4"
+						MinHeight="150"
+                                    MouseDoubleClick="UCListbox_MouseDoubleClick"
+                                    PreviewDragEnter="datagrid_PreviewDragEnter"
+                                    PreviewMouseLeftButtonDown="datagrid_PreviewMouseLeftButtondown"
+                                    PreviewMouseLeftButtonUp="datagrid_PreviewMouseLeftButtonup"
+                                    PreviewMouseMove="datagrid_PreviewMouseMove"
+                                    PreviewMouseDown="DbListbox_PreviewMouseLeftButtonDown2"	
+                                    PreviewMouseUp="DbListbox_PreviewMouseLeftButtonUp2"	
+                                    PreviewMouseRightButtonDown="ListView_PreviewMouseRightButtonDown"
+                                    ItemTemplate="{StaticResource dTemplate2}"
+                                    ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                    ScrollViewer.CanContentScroll="True"
+                                    SelectionChanged="UCListbox_SelectionChanged2"   
+                                    VerticalContentAlignment="Stretch"                                              
+                                    Visibility="Collapsed" Width="928" 
+						    />
+
+					<!--Width="{Binding Path=ActualWidth, ElementName=border5}"  >-->
+				</Border>
+
+				<!--#endregion ListView TWO-->
+
+				<!--#region Bottom Button Bar-->
+
+				<!--// A Pseudo button with rounded corners-->
+				<StackPanel x:Name="btnwrapper"
+					Grid.Row="5"
+					Grid.Column="1"    
+					Margin="20,0,20,0"
+					Orientation="Horizontal"
+					VerticalAlignment="Center" Height="52">
+
+					<!--// A Pseudo button with rounded corners-->
+					<Button x:Name="ClearBtn"
+						Background="{StaticResource HeaderBorderBrushYellow}"	
+						Content="Reload Db's"
+						Template="{StaticResource HorizontalGradientTemplateYellow}"
+						FontWeight="Bold"
+						FontSize="14"
+						Margin="0,-5 ,0,-5"
+						Grid.RowSpan="2"
+						Width="100"
+						Height="50"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Top"
+						PreviewMouseLeftButtonDown="ClearBtn_PreviewMouseLeftButtonDown">
+					</Button>
+
+					<!--// A Pseudo button with rounded corners-->
+					<Button x:Name="ToggleViews"
+						Background="{StaticResource HeaderBorderBrushYellow}"	
+						BorderThickness="1"
+						Content="Toggle Views"
+						Margin="10,-5,10,-5"
+				    		FontWeight="Bold"
+						  FontSize="14"
+						Grid.RowSpan="2"
+						Height="50"
+						PreviewMouseLeftButtonDown="ToggleBtn_PreviewMouseLeftButtonDown"
+						Template="{StaticResource HorizontalGradientTemplateYellow}"
+						VerticalAlignment="Top"
+						Width="113"/>
+
+					<Button x:Name="CopyDb"
+						Background="{StaticResource HeaderBorderBrushGreen}"	
+						Click="CopyDb_Click"
+						Content="Create Copy Db"
+						FontWeight="Normal"
+						Foreground="White"
+						FontSize="14"
+						Height="50"
+						Margin="0,-10,0,0"
+						Template="{StaticResource HorizontalGradientTemplateGreen}"
+						Width="121"/>
+
+					<Button x:Name="UpdateBank"
+						Background="{StaticResource HeaderBorderBrushGreen}"	
+						Click="UpdateBank_Click"
+						Content="Update BankDb"
+						FontWeight="Normal"
+						FontSize="14"
+						Foreground="White"
+						Margin="10 -10 0 0"
+						Template="{StaticResource HorizontalGradientTemplateGreen}"
+						Width="145"
+						Height="50"/>
+
+					<Button x:Name="UpdateCustomer"
+						Background="{StaticResource HeaderBorderBrushGreen}"	
+						Click="UpdateCustomer_Click"
+						Content="Update Customer Db"
+						FontWeight="Normal"
+						FontSize="14"
+						Foreground="White"
+						Margin="10 -10 0 0"
+						Template="{StaticResource HorizontalGradientTemplateGreen}"
+						Width="145"
+						Height="50"/>
+
+					<Button x:Name="CloseBtn"
+						Content="Close Window"
+						FontSize="18"
+						FontWeight="DemiBold"
+						Grid.RowSpan="2"
+						Height="50"
+						HorizontalAlignment="Right"
+						Margin="10,-5,0,0"
+						PreviewMouseLeftButtonDown="CloseBtn_PreviewMouseLeftButtonDown"
+						Template="{StaticResource HorizontalGradientTemplateRed}"
+						VerticalAlignment="Top"
+						Width="162">
+					</Button>
+
+				</StackPanel>
+
+				<!--#endregion LISTVIEW ITSELF  lower BUTTON Bar-->
+
+			</Grid>
+		</Border>
+
+	</Grid>
+</Window>
+	

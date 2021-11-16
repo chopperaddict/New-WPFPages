@@ -1,0 +1,501 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<!--#region TextBox stylling in ListBox/View-->
+
+	<!--<Style x:Key="tboxItemstyle1" TargetType="TextBox" >
+		--><!--// LISTVIEW - BankAccountViewModel data = TextBox style for fields that can be edited--><!--
+		<Style.Triggers>
+
+			--><!--// Controls the TEXTBOX background color ONLY (and onlly When window has the focus)--><!--
+
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="1"/>
+					--><!--TEXTBOX, FOCUSED, MOUSEOVER.--><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Cyan5}"/>
+					<Setter Property="Foreground" Value="{StaticResource Black0}"/>
+					<Setter Property="FontWeight" Value="DemiBold"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="1"/>
+					--><!--TEXTBOX, FOCUSED, NO MOUSE --><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue4}" />
+					<Setter Property="Foreground" Value="{StaticResource White0}"/>
+					<Setter Property="FontWeight" Value="DemiBold"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="2"/>
+					--><!--TEXTBOX, , MOUSEOVER.--><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green9}" />
+					<Setter Property="Foreground" Value="{StaticResource White0}"/>
+					<Setter Property="FontWeight" Value="DemiBold"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="2"/>
+					--><!--TEXTBOX, FOCUSED, NO MOUSE --><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green9}" />
+					<Setter Property="Foreground" Value="{StaticResource Black0}"/>
+					<Setter Property="FontWeight" Value="Normal"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="3"/>
+					--><!--TEXTBOX, FOCUSED, MOUSEOVER --><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Yellow4}" />
+					<Setter Property="Foreground" Value="{StaticResource Black1}"/>
+					<Setter Property="FontWeight" Value="DemiBold"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="3"/>
+					--><!--TEXTBOX, FOCUSED, NO MOUSE --><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Orange5}" />
+					<Setter Property="Foreground" Value="{StaticResource Black0}"/>
+					<Setter Property="FontWeight" Value="Normal"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="4"/>
+					--><!--TEXTBOX, FOCUSED, MOUSEOVER --><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Magenta2}" />
+					<Setter Property="Foreground" Value="{StaticResource White0}"/>
+					<Setter Property="FontWeight" Value="DemiBold"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="4"/>
+					--><!--TEXTBOX, FOCUSED, NO MOUSE --><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Red9}" />
+					<Setter Property="Foreground" Value="{StaticResource White0}"/>
+					<Setter Property="FontWeight" Value="Normal"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					--><!--<Condition Binding="{Binding AcType}" Value="4"/>-->
+					<!--TEXTBOX, UNFOCUSED, NO MOUSE --><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListViewItem}, Path=IsKeyboardFocusWithin}" Value="false" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Red9}" />
+					<Setter Property="Foreground" Value="{StaticResource White0}"/>
+					<Setter Property="FontWeight" Value="Normal"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+		</Style.Triggers>
+	</Style>-->
+
+
+	<!--// LISTVIEW - CONTROL COLOR OF THE TEXT of the ListView TEXTBLOCKS inside a Border "_Border" 
+		// USED FOR TEXT SIZE/WEIGHT/COLORATION ONLY, NOT BACKGROUND
+		NB: This *** DOES *** TAKE NOTICE OF THE SELECTED STATUS-->
+
+	<!--<Style x:Key="tbItemstyle1" TargetType="TextBlock" >
+		<Style.Triggers>
+			--><!--ACTYPE=1,  NO MOUSE,NOT SELECTED --><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="1"/>
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{StaticResource Black0}"/>
+					<Setter Property="FontSize" Value="12"/>
+					<Setter Property="FontWeight" Value="Normal"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			--><!--ACTYPE=1,  NO MOUSE,SELECTED --><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="1"/>
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{StaticResource White3}"/>
+					<Setter Property="FontSize" Value="12"/>
+					<Setter Property="FontWeight" Value="Normal"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			--><!--ACTYPE=1, MOUSE OVER, SELECTED --><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="1"/>
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{StaticResource White2}"/>
+					<Setter Property="FontWeight" Value="Bold"/>
+					<Setter Property="FontSize" Value="12"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			--><!--ACTYPE=1, MOUSE OVER, NOT SELECTED --><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="1"/>
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{StaticResource White0}"/>
+					<Setter Property="FontWeight" Value="Bold"/>
+					<Setter Property="FontSize" Value="12"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+
+			--><!--ACTYPE 2-->
+
+			<!--ACTYPE=2,  NO MOUSE, NOT SELECTED --><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="2"/>
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{StaticResource White0}"/>
+					<Setter Property="FontSize" Value="12"/>
+					<Setter Property="FontWeight" Value="Normal"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			--><!--ACTYPE=2,  NO MOUSE, SELECTED --><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="2"/>
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{StaticResource White0}"/>
+					<Setter Property="FontSize" Value="12"/>
+					<Setter Property="FontWeight" Value="Normal"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			--><!--ACTYPE=2, MOUSE OVER, SELECTED --><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="2"/>
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{StaticResource White0}"/>
+					<Setter Property="FontWeight" Value="Bold"/>
+					<Setter Property="FontSize" Value="11"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			--><!--ACTYPE=2, MOUSE OVER, NOT SELECTED --><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="2"/>
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{StaticResource White0}"/>
+					<Setter Property="FontWeight" Value="Bold"/>
+					<Setter Property="FontSize" Value="12"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+
+			--><!--ACTYPE 3-->
+			<!--ACTYPE=3,  NO MOUSE, NOT SELECTED --><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="3"/>
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{StaticResource Black0}"/>
+					<Setter Property="FontSize" Value="12"/>
+					<Setter Property="FontWeight" Value="Normal"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			--><!--ACTYPE=3, MOUSE OVER, SELECTED --><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="3"/>
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{StaticResource White0}"/>
+					<Setter Property="FontSize" Value="12"/>
+					<Setter Property="FontWeight" Value="Bold"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			--><!--ACTYPE=3, MOUSE OVER, NOT SELECTED --><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="3"/>
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{StaticResource Black0}"/>
+					<Setter Property="FontWeight" Value="Bold"/>
+					<Setter Property="FontSize" Value="12"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+
+			--><!--ACTYPE 4-->
+			<!--ACTYPE=4,  NO MOUSE, NOT SELECTED --><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="4"/>
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{StaticResource Black0}"/>
+					<Setter Property="FontSize" Value="12"/>
+					<Setter Property="FontWeight" Value="Normal"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			--><!--ACTYPE=4, MOUSE OVER, SELECTED --><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="4"/>
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{StaticResource White0}"/>
+					<Setter Property="FontSize" Value="12"/>
+					<Setter Property="FontWeight" Value="Bold"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			--><!--ACTYPE=4, MOUSE OVER, NOT SELECTED --><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="4"/>
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{StaticResource White0}"/>
+					<Setter Property="FontWeight" Value="Bold"/>
+					<Setter Property="FontSize" Value="12"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+		</Style.Triggers>
+
+	</Style>-->
+
+	<!--SET THE FOREGROUND COLOR OF THE TEXT--><!--
+	<Style x:Key="AcWordStyle" TargetType="TextBlock">
+		<Style.Triggers>
+
+			--><!--ACTYPE = 1--><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="1"/>
+					--><!--FOCUSED, SELECTED, MOUSEOVER--><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White0}" />
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="1"/>
+					--><!--FOCUSED, SELECTED, NO MOUSE--><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White4}" />
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="1"/>
+					--><!--FOCUSED, NOT SELECTED, MOUSEOVER--><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Orange7}" />
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+
+			--><!--ACTYPE = 2--><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="2"/>
+					--><!--FOCUSED, SELECTED, MOUSEOVER--><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White0}" />
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="2"/>
+					--><!--FOCUSED, SELECTED, NO MOUSE--><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White4}" />
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="2"/>
+					--><!--FOCUSED, NOT SELECTED, MOUSEOVER--><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Yellow3}"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+
+			--><!--ACTYPE = 3--><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="3"/>
+					--><!--FOCUSED, SELECTED, MOUSEOVER--><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White0}" />
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="3"/>
+					--><!--FOCUSED, SELECTED, NO MOUSE--><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White4}" />
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="3"/>
+					--><!--FOCUSED, NOT SELECTED, MOUSEOVER--><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White0}"/>
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+
+
+			--><!--ACTYPE = 4--><!--
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="4"/>
+					--><!--FOCUSED, SELECTED, MOUSEOVER--><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="True" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White0}" />
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="4"/>
+					--><!--FOCUSED, SELECTED, NO MOUSE--><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="False" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="true" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=White4}" />
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding AcType}" Value="4"/>
+					--><!--FOCUSED, NOT SELECTED, MOUSEOVER--><!--
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=IsMouseOver}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="false" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Foreground" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Orange7}" />
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+
+		</Style.Triggers>
+	</Style>-->
+
+
+	<!--#endregion LISTVIEW TEXTBLOCK Styles-->
+
+
+	<!--END OF TEXTBOX STYLING-->
+
+</ResourceDictionary>

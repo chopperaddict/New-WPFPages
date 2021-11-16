@@ -1,0 +1,313 @@
+﻿<Window x:Class="WPFPages.Views.MoreTesting"      
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:local="clr-namespace:WPFPages.Views"
+      xmlns:data="clr-namespace:WPFPages.ViewModels"
+      xmlns:cmd="clr-namespace:WPFPages.Commands"
+      xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" 
+	xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      mc:Ignorable="d"
+      x:Name="Moretesting"
+      Title="Hit Ctrl F8 to break..." 
+        Loaded="Moretesting_Loaded"
+      Height="600" 
+      Width="866">
+
+      <!--//*********************************************************************************//-->
+
+      <!--#region RESOURCES-->
+      <Window.Resources>
+
+            <!--#region My ListView-->
+            <!--// Enable our Command, the 1st part is theactual command name as per the .CS file name and class name-->
+            <!--<cmd:BreakCommand x:Key="breakcommand"/>-->
+            
+            <Style x:Key="{x:Static GridView.GridViewScrollViewerStyleKey}" TargetType="{x:Type ScrollViewer}">
+                  <Setter Property="Focusable" Value="false"/>
+                  <Setter Property="Template">
+                        <Setter.Value>
+                              <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                                    <Grid SnapsToDevicePixels="true" Background="{TemplateBinding Background}">
+                                          <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="Auto"/>
+                                          </Grid.RowDefinitions>
+                                          <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                          </Grid.ColumnDefinitions>
+                                          <DockPanel Margin="{TemplateBinding Padding}">
+                                                <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden" Focusable="false" DockPanel.Dock="Top">
+                                                      <GridViewHeaderRowPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Margin="2,0,2,0" ColumnHeaderTemplateSelector="{Binding TemplatedParent.View.ColumnHeaderTemplateSelector, RelativeSource={RelativeSource TemplatedParent}}" Columns="{Binding TemplatedParent.View.Columns, RelativeSource={RelativeSource TemplatedParent}}" ColumnHeaderTemplate="{Binding TemplatedParent.View.ColumnHeaderTemplate, RelativeSource={RelativeSource TemplatedParent}}" ColumnHeaderContextMenu="{Binding TemplatedParent.View.ColumnHeaderContextMenu, RelativeSource={RelativeSource TemplatedParent}}" ColumnHeaderStringFormat="{Binding TemplatedParent.View.ColumnHeaderStringFormat, RelativeSource={RelativeSource TemplatedParent}}" ColumnHeaderToolTip="{Binding TemplatedParent.View.ColumnHeaderToolTip, RelativeSource={RelativeSource TemplatedParent}}" ColumnHeaderContainerStyle="{Binding TemplatedParent.View.ColumnHeaderContainerStyle, RelativeSource={RelativeSource TemplatedParent}}" AllowsColumnReorder="{Binding TemplatedParent.View.AllowsColumnReorder, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                                </ScrollViewer>
+                                                <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.DirectionalNavigation="Local" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" CanContentScroll="{TemplateBinding CanContentScroll}"/>
+                                          </DockPanel>
+                                          <ScrollBar x:Name="PART_HorizontalScrollBar" ViewportSize="{TemplateBinding ViewportWidth}" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Grid.Row="1" Orientation="Horizontal" Minimum="0.0" Maximum="{TemplateBinding ScrollableWidth}" Cursor="Arrow"/>
+                                          <ScrollBar x:Name="PART_VerticalScrollBar" ViewportSize="{TemplateBinding ViewportHeight}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Orientation="Vertical" Minimum="0.0" Maximum="{TemplateBinding ScrollableHeight}" Grid.Column="1" Cursor="Arrow"/>
+                                          <DockPanel Grid.Row="1" LastChildFill="false" Grid.Column="1" Background="{Binding Background, ElementName=PART_VerticalScrollBar}">
+                                                <Rectangle Width="1" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Fill="White" DockPanel.Dock="Left"/>
+                                                <Rectangle Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Height="1" Fill="White" DockPanel.Dock="Top"/>
+                                          </DockPanel>
+                                    </Grid>
+                              </ControlTemplate>
+                        </Setter.Value>
+                  </Setter>
+            </Style>
+            <!--#endregion-->
+
+            <!--#region Gridview styles-->
+
+            <!--// 1st example-->
+            <GridViewColumnCollection x:Key="gvcc1">
+                  <GridViewColumn Header="Year" 
+                      DisplayMemberBinding="{Binding OrderId}" 
+                      Width="40"/>
+                  <GridViewColumn Header="Day"  
+                      DisplayMemberBinding="{Binding CustomerId}" 
+                      Width="50" />
+            </GridViewColumnCollection>
+
+            <Style x:Key="MyHeaderStyle1" TargetType="{x:Type GridViewColumnHeader}">
+                  <Setter Property="Background" Value="BurlyWood"/>
+            </Style>
+
+            <!--// 2nd example-->
+            <Style x:Key="MyHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+                  <Setter Property="Background" Value="BurlyWood"/>
+                  <Setter Property="Foreground" Value="Black"/>
+            </Style>
+
+            <GridViewColumnCollection x:Key="gvcc"  >
+                  <GridViewColumn Header="Year"                                   
+                      DisplayMemberBinding="{Binding Year}" 
+                                  
+                      Width="80"/>
+                  <GridViewColumn Header="Day"  
+                      DisplayMemberBinding="{Binding DayOfWeek}" 
+                      Width="80" />
+
+            </GridViewColumnCollection>
+            <!--#endregion-->
+
+            <local:NwOrderCollection x:Key="nwdata"/>
+
+            <!--#region Styles-->
+            
+            <!--//Default style for ItemsControl-->
+            <Style x:Key="ItemsControlStyle1" TargetType="{x:Type ItemsControl}">
+                  <Setter Property="Template">
+                        <Setter.Value>
+                              <ControlTemplate TargetType="{x:Type ItemsControl}">
+                                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                                          <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    </Border>
+                              </ControlTemplate>
+                        </Setter.Value>
+                  </Setter>
+            </Style>
+            <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
+            <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#a826A0Da"/>
+            <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#3DDADADA"/>
+            <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#FFDADADA"/>
+            <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#3D26A0DA"/>
+            <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FF26A0DA"/>
+
+            <!--<SolidColorBrush x:Key="fground" Color="Black"/>-->
+
+            
+            <!--#endregion Styles-->
+
+      </Window.Resources>
+
+      <!--#endregion RESOURCES-->
+
+      <!--//*********************************************************************************//-->
+
+      <!--#region Bindings-->
+      <!--<cmd:BreakCommand x:Key="breakcommand"/>-->
+
+      <Window.CommandBindings>
+            <!--<CommandBinding Command="{StaticResource breakcommand}" />-->
+      </Window.CommandBindings>
+
+      <Window.InputBindings>
+            <KeyBinding Key="F8" Modifiers="Ctrl" Command="{Binding Breakcommand, ElementName=Moretesting}"/>
+      </Window.InputBindings>
+
+      <!--#endregion Bindings-->
+
+      <!--//*********************************************************************************//-->
+
+      <Grid Background="Lime" Margin="0,0,0,0"
+            >
+            <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!--//*********************************************************************************//-->
+            <Grid>
+
+                  <!--#region Listview-->
+                  
+                  <!--// THIS IS HOW TO STYLE A LISTVIEW
+                  //(using ItemContainerStyle to access Style)
+                  STYLE IS FOR OVERALL LISTVIEW and BANKACCOUNT Data-->
+                  <ListView x:Name="Lv1" Margin="29,24,281,240"
+                        Grid.Column="0"
+                        SelectionMode="Single"
+                        SelectionChanged="Lv1_SelectionChanged"
+                        SelectedItem="0"     
+                        ItemContainerStyle="{StaticResource lvItemStyle1}"
+                        Background="LightBlue"
+                        Foreground="Black"                           
+                        Style="{DynamicResource ListViewStyle2}">
+
+                        <ListView.ItemTemplate >
+                              <DataTemplate >
+                                    <StackPanel x:Name="itemstackpanel" Orientation="Horizontal" Margin="0">
+                                          <TextBlock Text="{Binding OrderId}" Width="40" Height="20" Padding="1"/>
+                                          <TextBlock Text="{Binding CustomerId}" Width="45" Height="20" Padding="1"/>
+                                          <TextBlock Text="{Binding ShipCountry}" Width="55" Height="20" Padding="1"/>
+                                          <TextBlock Text="{Binding ShipVia}" Width="20" Height="20" Padding="1"/>
+                                          <TextBlock Text="{Binding ShipName}" Width="175" Height="20" Padding="1"/>
+                                          <TextBlock Text="{Binding ShipAddress}" Width="125" Height="20" Padding="1"/>
+                                           <TextBlock Text="{Binding RequiredDate, Converter={StaticResource DateConvert}}" Width="95" Height="20" Padding="1"/>
+                                    </StackPanel>
+                              </DataTemplate>
+                        </ListView.ItemTemplate>
+                  </ListView>
+
+                  <!--// THIS ALSO DISPLAYS DATA, BUT CANT SEEM TO FIND A WAY TO STYLE IT-->     
+                       <!--<ListView.ItemTemplate >
+                              <DataTemplate >
+                                    <StackPanel Orientation="Horizontal" Margin="8">
+                                          <TextBlock Text="{Binding OrderId}" Width="40" Height="20" Padding="5"/>
+                                          <TextBlock Text="{Binding CustomerId}" Width="45" Height="20" Padding="5"/>
+                                          <TextBlock Text="{Binding ShipVia}" Width="20" Height="20" Padding="5"/>
+                                          <TextBlock Text="{Binding ShipName}" Width="125" Height="20" Padding="5"/>
+                                          <TextBlock Text="{Binding ShipAddress}" Width="100" Height="20" Padding="5"/>
+                                          <TextBlock Text="{Binding ShipRegion`}" Width="75" Height="20" Padding="5"/>
+                                          <TextBlock Text="{Binding ShipCountry}" Width="75" Height="20" Padding="5"/>
+                                          <TextBlock Text="{Binding RequiredDate, Converter={StaticResource DateConvert}}" Width="95" Height="20" Padding="5"/>
+                                    </StackPanel>
+                              </DataTemplate>
+                        </ListView.ItemTemplate>-->
+                        
+                        <!--// This IS HOW TO USE A GRIDVIEW INSIDE A LISTVIEW-->
+                        <!--<ListView.View >
+                              <GridView>                              
+                                    <GridView.Columns>
+                                          <GridViewColumn Header="Employee  Id" DisplayMemberBinding="{Binding EmployeeId}"/>
+                                          <GridViewColumn Header="Ship via" DisplayMemberBinding="{Binding ShipVia}"/>
+                                          <GridViewColumn Header="Ship Via" DisplayMemberBinding="{Binding ShipName}"/>
+                                          <GridViewColumn Header="Freight" DisplayMemberBinding="{Binding Freight}"/>
+                                          <GridViewColumn Header="ShipName" DisplayMemberBinding="{Binding ShipName}"/>
+                                          <GridViewColumn Header="ShipAddress" DisplayMemberBinding="{Binding ShipAddress}"/>                                          
+                                    </GridView.Columns>                              
+                              </GridView>
+                              </ListView.View >-->
+                  <!--</ListView>-->
+                  <!--#endregion-->
+                  <!--//*********************************************************************************//-->
+
+    
+                  <!--#region More complex GridView-->
+                  <StackPanel  Margin="36,372,379,18"                         
+                               Grid.Column="0">
+
+                        <StackPanel.Resources>
+                              <XmlDataProvider x:Key="MyData" XPath="/Info">
+                                    <x:XData>
+                                          <Info xmlns="">
+                                                <Song Name="Song1" Time="3:54" Artist="Singer1" Rating="3" Disk="Disk1" />
+                                                <Song Name="Song2" Time="4:31" Artist="Singer2" Rating="4" Disk="Disk3"/>
+                                                <Song Name="Song3" Time="5:06" Artist="Singer3" Rating="5" Disk="Disk1" />
+                                                <Song Name="Song4" Time="4:18" Artist="Singer3" Rating="2" Disk="Disk2" />
+                                                <Song Name="Song5" Time="6:15" Artist="Singer1" Rating="5" Disk="Disk3" />
+                                          </Info>
+                                    </x:XData>
+                              </XmlDataProvider>
+
+                              <ControlTemplate x:Key="Default" TargetType='{x:Type ListViewItem}'>
+                                    <StackPanel Background="Beige">
+                                          <GridViewRowPresenter Content="{TemplateBinding Content}" Columns="{TemplateBinding GridView.ColumnCollection}"/>
+                                    </StackPanel>
+                              </ControlTemplate>
+
+                              <ControlTemplate x:Key="StronglyRecommended" TargetType='{x:Type ListViewItem}'>
+                                    <StackPanel Background="Beige">
+                                          <GridViewRowPresenter Content="{TemplateBinding Content}" Columns="{TemplateBinding GridView.ColumnCollection}"/>
+                                          <TextBlock Background="LightBlue" Text="Strongly Recommended" />
+                                    </StackPanel>
+                              </ControlTemplate>
+
+                              <ControlTemplate x:Key="Recommended" TargetType='{x:Type ListViewItem}'>
+                                    <StackPanel Background="Beige">
+                                          <GridViewRowPresenter Content="{TemplateBinding Content}" Columns="{TemplateBinding GridView.ColumnCollection}"/>
+                                          <TextBlock Background="LightBlue" Text="Recommended" />
+                                    </StackPanel>
+                              </ControlTemplate>
+
+                              <Style x:Key="MyHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+                                    <Setter Property="Background" Value="BurlyWood"/>
+                              </Style>
+                        </StackPanel.Resources>
+
+                        <ListView ItemsSource="{Binding Source={StaticResource MyData}, 
+                          XPath=Song}" Height="Auto" >
+
+                              <ListView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListViewItem}"  >
+                                          <Setter Property="Template" Value="{StaticResource Default}"/>
+                                          <Style.Triggers>
+                                                <DataTrigger Binding="{Binding XPath=@Rating}" Value="5">
+                                                      <Setter Property="Template" Value="{StaticResource StronglyRecommended}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding XPath=@Rating}" Value="4">
+                                                      <Setter Property="Template" Value="{StaticResource Recommended}"/>
+                                                </DataTrigger>
+                                          </Style.Triggers>
+                                    </Style>
+                              </ListView.ItemContainerStyle>
+
+                              <ListView.View>
+                                    <GridView ColumnHeaderContainerStyle="{StaticResource MyHeaderStyle}">
+                                          <GridViewColumn Header="Name" DisplayMemberBinding="{Binding XPath=@Name}" Width="100"/>
+                                          <GridViewColumn Header="Time" DisplayMemberBinding="{Binding XPath=@Time}" Width="80"/>
+                                          <GridViewColumn Header="Artist"  DisplayMemberBinding="{Binding XPath=@Artist}" Width="80" />
+                                          <GridViewColumn Header="Disk" DisplayMemberBinding="{Binding XPath=@Disk}"  Width="100"/>
+                                    </GridView>
+                              </ListView.View>
+                        </ListView>
+
+                  </StackPanel>
+
+                  <!--#endregion-->
+
+                  <!--#region Example simple GridView-->
+
+                  <StackPanel Margin="625,18,14,454"
+                        Grid.Column="1"
+                              HorizontalAlignment="Right">
+                        <GridViewHeaderRowPresenter Name="hrp" Columns="{StaticResource gvcc}"  
+                                ColumnHeaderContainerStyle="{StaticResource MyHeaderStyle}" Height="30"
+                                                    />
+
+                        <GridViewRowPresenter  Columns="{StaticResource gvcc}"  >
+                              <GridViewRowPresenter.Content  >
+                                    <sys:DateTime >2005/2/1</sys:DateTime>
+                              </GridViewRowPresenter.Content>
+                        </GridViewRowPresenter>
+                        <GridViewRowPresenter Columns="{StaticResource gvcc}" >
+                              <GridViewRowPresenter.Content>
+                                    <sys:DateTime>2006/10/12</sys:DateTime>
+                              </GridViewRowPresenter.Content>
+                        </GridViewRowPresenter>
+                  </StackPanel>
+                  <!--#endregion-->
+            </Grid>
+      </Grid>
+</Window>

@@ -1,0 +1,317 @@
+﻿<UserControl x:Class="WPFPages.UserControls.RectangleControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFPages.UserControls"
+     		xmlns:conv="clr-namespace:WPFPages.Converts"
+             mc:Ignorable="d" 
+		 Loaded="RectangularButton_Loaded"
+		 x:Name="RectangularButton"
+		 DataContext="RectangleControl"
+		 IsHitTestVisible="True"
+             Height="50" Width="250"
+             d:DesignHeight ="50"
+             d:DesignWidth="250"
+             Background="Transparent"
+             
+             >
+      
+
+	<UserControl.Resources>
+
+		<!--<conv:UniversalValueConverter x:Key="UniversalConvert"/>-->
+		<conv:TextVerticalPositionConverter x:Key="SetTextTop"/>
+		<conv:ToggleBoolConverter x:Key="ToggleBool"/>
+		<conv:ToggleVisibilityConverter x:Key="ToggleVisConverter"/>
+		<conv:TextLeftPositionConverter x:Key="SetTextLeft"/>
+		<conv:TextWidthMultiConverter x:Key="WidthMultiConverter"/>
+		<conv:TextHeightMultiConverter x:Key="HeightMultiConverter"/>
+		<conv:BtnWidthConverter x:Key="ButtonWidthConv"/>
+		<conv:TextWidthMinus10Percent x:Key="ReduceTextwidthConverter"/>
+		<!--<local:ReduceEllipseHeightConverter x:Key="ReduceEllipseHeight"/>-->
+
+		<!--// Brushes used on my 3D buttons-->
+		<!--#region two color gradients-->
+		<LinearGradientBrush x:Key="Greenbackground" StartPoint="0.5,1" EndPoint="0.5,0">
+			<GradientStop Offset="0" Color="#FF00FF00" />
+			<GradientStop Offset="1" Color="#99006000" />
+		</LinearGradientBrush>
+		<LinearGradientBrush x:Key="Yellowbackground" StartPoint="0.5,1" EndPoint="0.5,0">
+			<GradientStop Offset="0" Color="#FFFFEF00" />
+			<GradientStop Offset="1" Color="#FFFF9B00" />
+		</LinearGradientBrush>
+		<LinearGradientBrush x:Key="Bluebackground" StartPoint="0.5,1" EndPoint="0.5,0">
+			<GradientStop Offset="0" Color="#FF12B1FF" />
+			<GradientStop Offset="1" Color="#E5555BCD" />
+		</LinearGradientBrush>
+		<LinearGradientBrush x:Key="Orangebackground" StartPoint="0.5,1" EndPoint="0.5,0">
+			<GradientStop Offset="0" Color="#FFFFBC41" />
+			<GradientStop Offset="1" Color="#FFFF8841" />
+		</LinearGradientBrush>
+		<LinearGradientBrush x:Key="Magentabackground" StartPoint="0.5,1" EndPoint="0.5,0">
+			<GradientStop Offset="0" Color="#FFFF92FF" />
+			<GradientStop Offset="1" Color="#FFFF33D6" />
+		</LinearGradientBrush>
+		<!--#endregion-->
+		<!--#region multilevel gradients-->
+		<!--======================================================================================-->
+		<LinearGradientBrush x:Key="MultiBlue" StartPoint="0.5,0" EndPoint="0.5,1">
+			<GradientStop Offset="1.0" Color="#FF70CADA" />
+			<GradientStop Offset="0.9" Color="#D270B2D8" />
+			<GradientStop Offset="0.7" Color="#D2709AD8" />
+			<GradientStop Offset="0.5" Color="#D27081E0" />
+			<GradientStop Offset="0.2" Color="#D27069C3" />
+			<GradientStop Offset="0.0" Color="#D27035C3" />
+		</LinearGradientBrush>
+		<LinearGradientBrush x:Key="HeaderBorderBrushBlue" StartPoint="0.5,0" EndPoint="0.5,1">
+			<GradientStop Offset="0.514" Color="#FF1D4855" />
+			<GradientStop Offset="0.753" Color="#FF007F96" />
+			<GradientStop Offset="1" Color="#FF0AEAFA" />
+		</LinearGradientBrush>
+
+		<!--Good example of a dummy "Dome" button-->
+		<RadialGradientBrush x:Key="MultiBlueRadial" GradientOrigin="0.1,0.3" Center="0.5,0.5" RadiusX="0.8" RadiusY="0.8">
+			<GradientStop Offset="0.0" Color="#FF70CADA" />
+			<GradientStop Offset="0.3" Color="#FC494BFB" />
+			<GradientStop Offset="0.4" Color="#FC7374FB" />
+			<GradientStop Offset="0.5" Color="#FC5052CC" />
+			<GradientStop Offset="0.8" Color="#FC5077FD" />
+			<GradientStop Offset="1.0" Color="#FF70CADA" />
+		</RadialGradientBrush>
+
+		<!--======================================================================================-->
+
+		<LinearGradientBrush x:Key="MultiRed" StartPoint="0.5,0" EndPoint="0.5,1">
+			<GradientStop Offset="1.0" Color="#FBD0D1D2" />
+			<GradientStop Offset="0.9" Color="#FDD40000" />
+			<GradientStop Offset="0.7" Color="#FDB20000" />
+			<GradientStop Offset="0.5" Color="#FD8E0000" />
+			<GradientStop Offset="0.2" Color="#FDFF0000" />
+			<GradientStop Offset="0.0" Color="#FBD0D1D2" />
+		</LinearGradientBrush>
+
+		<LinearGradientBrush x:Key="HeaderBorderBrushRed" StartPoint="0.5,0" EndPoint="0.5,1">
+			<GradientStop Offset="0.314" Color="#ff4f2225" />
+			<GradientStop Offset="0.553" Color="#FF9c2129" />
+			<GradientStop Offset="1" Color="#FFdb6069" />
+		</LinearGradientBrush>
+
+		<!--Good example of a dummy "Dome" button-->
+		<RadialGradientBrush x:Key="MultiRedRadial" GradientOrigin="0.5,0.5" Center="0.5,0.5" RadiusX="0.8" RadiusY="0.8">
+			<GradientStop Offset="0.0" Color="#FCFFD4D3" />
+			<GradientStop Offset="0.2" Color="#FDD40000" />
+			<GradientStop Offset="0.5" Color="#FDD40000" />
+			<GradientStop Offset="0.4" Color="#FDB20000" />
+			<GradientStop Offset="0.7" Color="#FFCB6A6B" />
+			<GradientStop Offset="0.9" Color="#FCFFD4D3" />
+		</RadialGradientBrush>
+
+		<!--======================================================================================-->
+
+		<LinearGradientBrush x:Key="MultiYellow" StartPoint="0.1,0" EndPoint="0.5,1">
+			<GradientStop Offset="1.0" Color="#FEFBFF00" />
+			<GradientStop Offset="0.9" Color="#FFf5d816" />
+			<GradientStop Offset="0.7" Color="#70C5CB00" />
+			<GradientStop Offset="0.5" Color="#D9C5B400" />
+			<GradientStop Offset="0.2" Color="#FEE6B400" />
+			<GradientStop Offset="0.0" Color="#708D9200" />
+		</LinearGradientBrush>
+
+		<LinearGradientBrush x:Key="HeaderBorderBrushYellow" StartPoint="0.5,0" EndPoint="0.5,1">
+			<GradientStop Offset="0.114" Color="#FF595013" />
+			<GradientStop Offset="0.853" Color="#FF7d7015" />
+			<GradientStop Offset="0.5" Color="#F5d816" />
+		</LinearGradientBrush>
+
+		<!--Good example of a dummy "Dome" button-->
+		<RadialGradientBrush x:Key="MultiYellowRadial" GradientOrigin="0.5,0.5" Center="0.5,0.5" RadiusX="0.8" RadiusY=".8">
+			<GradientStop Offset="0.0" Color="#FDFFFFD3" />
+			<GradientStop Offset="0.2" Color="#FDFEFF00" />
+			<GradientStop Offset="0.5" Color="#FDE7E71A" />
+			<GradientStop Offset="0.4" Color="#FDC4B700" />
+			<GradientStop Offset="0.7" Color="#FDA28B1A" />
+			<GradientStop Offset="0.9" Color="#FDA2A21A" />
+		</RadialGradientBrush>
+
+		<!--======================================================================================-->
+
+		<LinearGradientBrush x:Key="MultiGreen" StartPoint="0.5,0" EndPoint="0.5,1">
+			<GradientStop Offset="1.0" Color="#FCE1FFE3" />
+			<GradientStop Offset="0.9" Color="#FE00D300" />
+			<GradientStop Offset="0.7" Color="#FE00AF00" />
+			<GradientStop Offset="0.5" Color="#FE00D300" />
+			<GradientStop Offset="0.2" Color="#FE00AF00" />
+			<GradientStop Offset="0.0" Color="#FE009600" />
+		</LinearGradientBrush>
+		<LinearGradientBrush x:Key="HeaderBorderBrushGreen" StartPoint="0.5,0" EndPoint="0.5,1">
+			<GradientStop Offset="0.314" Color="#FF224022" />
+			<GradientStop Offset="0.553" Color="#FF336633" />
+			<GradientStop Offset="1" Color="#FF00FF00" />
+		</LinearGradientBrush>
+
+		<!--Good example of a dummy "Dome" button-->
+		<RadialGradientBrush x:Key="MultiGreenRadial" GradientOrigin="0.1,0.3" Center="0.5,0.5" RadiusX="0.8" RadiusY="0.8">
+			<GradientStop Offset="0.0" Color="#FE00FC00" />
+			<GradientStop Offset="0.2" Color="#FE00AF00" />
+			<GradientStop Offset="0.5" Color="#FC3E963F" />
+			<GradientStop Offset="0.4" Color="#FE00AF00" />
+			<GradientStop Offset="0.7" Color="#FC3E503F" />
+			<GradientStop Offset="0.9" Color="#FC3E6C3F" />
+		</RadialGradientBrush>
+
+		<!--======================================================================================-->
+
+		<LinearGradientBrush x:Key="MultiGray" StartPoint="0.5,0" EndPoint="0.5,1">
+			<GradientStop Offset="1.0" Color="#FBD0D1D2" />
+			<GradientStop Offset="0.9" Color="#FBB4B3B5" />
+			<GradientStop Offset="0.7" Color="#FB989797" />
+			<GradientStop Offset="0.5" Color="#FBD0D1D2" />
+			<GradientStop Offset="0.2" Color="#FB696869" />
+			<GradientStop Offset="0.0" Color="#FB4A4C4A" />
+		</LinearGradientBrush>
+
+		<LinearGradientBrush x:Key="BorderGray" StartPoint="0.5,0" EndPoint="0.5,1">
+			<GradientStop Offset="0.314" Color="#FBB4B3B5" />
+			<GradientStop Offset="0.553" Color="#FB696869" />
+			<GradientStop Offset="1" Color="#d5d3db" />
+		</LinearGradientBrush>
+
+		<RadialGradientBrush x:Key="MultiGrayRadial" GradientOrigin="0.1,0.5" Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+			<GradientStop Offset="1.0" Color="#FBD0D1D2" />
+			<GradientStop Offset="0.9" Color="#FBB4B3B5" />
+			<GradientStop Offset="0.7" Color="#FB989797" />
+			<GradientStop Offset="0.5" Color="#FBB4B3B5" />
+			<GradientStop Offset="0.2" Color="#FBB4B3B5" />
+			<GradientStop Offset="0.0" Color="#FBD0D1D2" />
+		</RadialGradientBrush>
+
+		<!--<Style x:Key="ShadowTextBlockStyle" TargetType="TextBlock">
+			<Setter Property="Control.Template">
+				<Setter.Value>
+					<Template TargetType="{x:Type TextBlock}">
+						<Grid >
+							<TextBlock>
+								
+							</TextBlock>
+						
+		
+							--><!--MOST IMPORTANT the ContentPresenter lives here and displays our
+							"Content" text correctly NB: Interestingly, it is in the BORDER which
+							is the Outermost part of a buttons "design" as shown very clearly in
+							the Visual Tree so that is where I need to put it with other controls
+							
+							V.Tree shows that inside the ContentPresenter is a StackPanel that
+							actually contains the Contents text--><!--
+							
+							<ContentPresenter
+								Margin="2"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								RecognizesAccessKey="True" />
+
+						</Grid>
+					</Template>
+				</Setter.Value>
+			</Setter>
+		</Style>-->
+
+	</UserControl.Resources>
+
+	<Grid   x:Name="Frame"
+		Background="Transparent"
+		Panel.ZIndex="1"
+		MouseEnter="RectBtn_MouseEnter"
+		MouseLeave="RectBtn_MouseLeave"
+		UseLayoutRounding="True"		    
+		Margin="9,3,2,0"  >
+            <Grid.Effect>
+                  <DropShadowEffect 						
+				Color="{Binding ShadowBlurColor, ElementName=RectangularButton}"
+				Direction="{Binding ShadowDirection, ElementName=RectangularButton}"
+                        Opacity="{Binding ShadowOpacity, ElementName=RectangularButton}"
+				ShadowDepth="{Binding ShadowDepth, ElementName=RectangularButton}"
+				BlurRadius="{Binding ShadowBlurRadius, ElementName=RectangularButton}"
+				RenderingBias="Quality"	/>
+            </Grid.Effect>
+
+            <Grid x:Name="ContainerGrid"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  MouseEnter="RectBtn_MouseEnter"
+			MouseLeave="RectBtn_MouseLeave"
+			Margin="-4,-2,3,2">
+                  
+                  <Grid.Effect>
+                        <DropShadowEffect 						
+						Color="{Binding ShadowBlurColor, ElementName=RectangularButton}"
+						Opacity="{Binding ShadowOpacity, ElementName=RectangularButton}"
+						ShadowDepth="{Binding ShadowBlurSize, ElementName=RectangularButton}"
+						BlurRadius="{Binding ShadowBlurRadius, ElementName=RectangularButton}"
+						RenderingBias="Quality"						
+						Direction="49"/>
+                  </Grid.Effect>
+
+   			<Rectangle x:Name="RectBtn"					     
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Fill="{Binding Background, ElementName=RectangularButton}"
+				Loaded="RectBtn_Loaded"
+				IsHitTestVisible="True"
+				OverridesDefaultStyle="True"
+			      MouseEnter="RectBtn_MouseEnter"
+			      MouseLeave="RectBtn_MouseLeave"
+				Panel.ZIndex="1"  
+				RadiusX="{Binding CornerRadius, ElementName=RectangularButton}"
+				RadiusY="{Binding CornerRadius, ElementName=RectangularButton}"
+				Stroke="{Binding BorderBrush , ElementName=RectangularButton}"
+				StrokeThickness="{Binding BorderThickness, ElementName=RectangularButton}"
+				RenderTransformOrigin="0.5,0.5" 
+				Margin="-5,2,2,1" 
+				Visibility="Visible">                       
+                        
+                        <Rectangle.RenderTransform>
+					<TransformGroup>
+						<ScaleTransform ScaleX="1" ScaleY="1"/>
+						<SkewTransform/>
+						<RotateTransform/>
+						<TranslateTransform X="0" Y="0"/>
+					</TransformGroup>
+				</Rectangle.RenderTransform>
+			</Rectangle>
+
+                  <TextBlock x:Name="ButtonText"
+                        Margin="0 0 10 0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+				Panel.ZIndex="5"
+				FontSize="{Binding FontSize, ElementName=RectangularButton}" 
+				FontStyle="{Binding FontDecoration, ElementName=RectangularButton}"
+				Foreground="{Binding Foreground, ElementName=RectangularButton}"
+				OverridesDefaultStyle="True"
+				TextAlignment="Center"    
+				TextWrapping="Wrap"
+				Text="{Binding Text, ElementName=RectangularButton}"				
+			      MouseEnter="RectBtn_MouseEnter"
+			      MouseLeave="RectBtn_MouseLeave"
+				>
+				<!--Needed to move text block down to force it to center the text in the border-->
+				<TextBlock.RenderTransform>
+					<TranslateTransform 
+						X="{Binding TextLeftOffset, ElementName=RectangularButton, FallbackValue=0}"
+						Y="{Binding TextHeight, ElementName=RectangularButton, FallbackValue=0}"/>
+				</TextBlock.RenderTransform>
+
+				<TextBlock.Effect>
+					<DropShadowEffect 
+							ShadowDepth="{Binding TextShadowSize, ElementName=RectangularButton, FallbackValue=1}"
+							Direction="{Binding TextShadowDirection, ElementName=RectangularButton, FallbackValue=133}"
+							Color="{Binding TextShadowColor, ElementName=RectangularButton}"
+							Opacity="{Binding TextShadowOpacity, ElementName=RectangularButton}"
+							BlurRadius="{Binding TextShadowRadius, ElementName=RectangularButton}"/>
+				</TextBlock.Effect>
+
+			</TextBlock>
+		</Grid>
+	</Grid>
+</UserControl>

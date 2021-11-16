@@ -1,0 +1,1556 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			  xmlns:dateconv="clr-namespace:WPFPages.Converts"
+			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+	<!--This is  the way to extract *** Datagrid *** Columns from source file and then use the Loaded method to load them at run time-->
+	<!--This is 1st used in UserListBoxViewer.xaml-->
+
+	<!--#region DataGrid Columns "DGMultiDetailsColumns"-->
+	<x:Array x:Key="DGMultiDetailsColumns" Type="{x:Type DataGridColumn}">
+		<!--<DataGridTemplateColumn Header="Id" Width="40"
+									    SortMemberPath="Id" >
+			<DataGridTemplateColumn.CellTemplate >
+				<DataTemplate >
+					<TextBlock 
+									Text="{Binding Id}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+				</DataTemplate >
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn >
+		
+		--><!--the next 2 show 2 ways to format a date - 1 a Converter the other a direct Format string--><!--
+		<DataGridTemplateColumn Header="Open Date" Width="80" SortMemberPath="ODate">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Path=ODate,
+								StringFormat='dd/MM/yyyy'}"  	 									
+								     HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+			<DataGridTemplateColumn.CellEditingTemplate>
+				<DataTemplate>
+					<DatePicker SelectedDate="{Binding Path=ODate, 
+								StringFormat='dd/MM/yyyy',
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+					</DatePicker>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellEditingTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn Header="Close Date" Width="80" SortMemberPath="CDate">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Path=CDate, 
+									StringFormat='dd/MM/yyyy'}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+			<DataGridTemplateColumn.CellEditingTemplate>
+				<DataTemplate>
+					<DatePicker SelectedDate="{Binding Path=CDate, 
+								StringFormat='dd/MM/yyyy',
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellEditingTemplate>
+		</DataGridTemplateColumn>-->
+
+	</x:Array>
+	<!--#endregion DataGrid Columns "DGMultiDetailsColumns"-->
+
+	<!--#region DataGrid Columns "DGMultiDetailsTextColumns"-->
+	<x:Array x:Key="DGMultiDetailsTextColumns" Type="{x:Type DataGridTextColumn}">
+		<!--<DataGridTextColumn Header="Customer #" Binding="{Binding CustNo, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+		</DataGridTextColumn>
+		
+		<DataGridTextColumn Header="Bank #" Width="80" 
+								    SortMemberPath="BankNo"
+									Binding ="{Binding BankNo, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus}"
+									>
+		</DataGridTextColumn>
+
+		<DataGridTextColumn Header="Type" Width="40" 
+								    SortMemberPath="AcType"
+									Binding="{Binding AcType, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus}"/>
+
+		<DataGridTextColumn Header="Balance" Width="90" 
+									SortMemberPath="Balance"									
+									Binding="{Binding Balance, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus,
+									StringFormat='£ ##,###,###.00'}"/>
+
+		<DataGridTextColumn Header="Interest" Width="60" 
+									SortMemberPath="IntRate"
+									Binding="{Binding IntRate, Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus,
+									StringFormat='0.00'}"/>-->
+	</x:Array>
+	<!--#endregion DataGrid Columns ""-->
+
+	<!--#region DataGrid Columns "DGMultiBankColumns"-->
+	<x:Array x:Key="DGMultiBankColumns" Type="{x:Type DataGridColumn}">
+		<!--<DataGridTemplateColumn Header="Id" Width="40"
+									x:Name="ID5"
+									    SortMemberPath="Id" >
+			<DataGridTemplateColumn.CellTemplate >
+				<DataTemplate >
+					<TextBlock 
+									Text="{Binding Id}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+				</DataTemplate >
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn >
+		--><!--the next 2 show 2 ways to format a date - 1 a Converter the other a direct Format string--><!--
+		<DataGridTemplateColumn Header="Open Date" Width="80" SortMemberPath="ODate">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Path=ODate,
+								StringFormat='dd/MM/yyyy'}"  	 									
+								     HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+			<DataGridTemplateColumn.CellEditingTemplate>
+				<DataTemplate>
+					<DatePicker SelectedDate="{Binding Path=ODate, 
+								StringFormat='dd/MM/yyyy',
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+					</DatePicker>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellEditingTemplate>
+		</DataGridTemplateColumn>
+		<DataGridTemplateColumn Header="Close Date" Width="80" SortMemberPath="CDate">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Path=CDate, 
+									StringFormat='dd/MM/yyyy'}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+			<DataGridTemplateColumn.CellEditingTemplate>
+				<DataTemplate>
+					<DatePicker SelectedDate="{Binding Path=CDate, 
+								StringFormat='dd/MM/yyyy',
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellEditingTemplate>
+		</DataGridTemplateColumn>-->
+	</x:Array>
+	<!--#endregion DataGrid Columns ""-->
+
+	<!--#region DataGrid Columns "DGMultiBankTextColumns"-->
+	<x:Array x:Key="DGMultiBankTextColumns" Type="{x:Type DataGridTextColumn}">
+		<!--<DataGridTextColumn Header="Customer #" Binding="{Binding CustNo, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+		</DataGridTextColumn>
+		<DataGridTextColumn Header="Bank #" Width="80" 
+								    SortMemberPath="BankNo"
+									Binding ="{Binding BankNo, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus}">
+		</DataGridTextColumn>
+		<DataGridTextColumn Header="Type" Width="40" 
+								    SortMemberPath="AcType"
+									Binding="{Binding AcType, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus}"/>
+		<DataGridTextColumn Header="Balance" Width="90" 
+									SortMemberPath="Balance"									
+									Binding="{Binding Balance, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus,
+									StringFormat='£ ##,###,###.00'}"/>
+		<DataGridTextColumn Header="Interest" Width="60" 
+									SortMemberPath="IntRate"
+									Binding="{Binding IntRate, Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus,
+									StringFormat='0.00'}"/>-->
+	</x:Array>
+	<!--#endregion DataGrid Columns ""-->
+
+	<!--#region DataGrid Columns "DGMultiCustomerColumns"-->
+
+	<x:Array x:Key="DGMultiCustomerColumns" Type="{x:Type DataGridColumn}">
+		<!--<DataGridTemplateColumn Header="Id" Width="40"
+									    SortMemberPath="Id" >
+			<DataGridTemplateColumn.CellTemplate >
+				<DataTemplate >
+					<TextBlock 
+									Text="{Binding Id}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+				</DataTemplate >
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn >
+		<DataGridTemplateColumn Header="Open Date" Width="80" SortMemberPath="ODate">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Path=ODate,
+								StringFormat='dd/MM/yyyy'}"  	 									
+								     HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+			<DataGridTemplateColumn.CellEditingTemplate>
+				<DataTemplate>
+					<DatePicker SelectedDate="{Binding Path=ODate, 
+								StringFormat='dd/MM/yyyy',
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+					</DatePicker>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellEditingTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn Header="Close Date" Width="80" SortMemberPath="CDate">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Path=CDate, 
+									StringFormat='dd/MM/yyyy'}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Top"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+			<DataGridTemplateColumn.CellEditingTemplate>
+				<DataTemplate>
+					<DatePicker SelectedDate="{Binding Path=CDate, 
+								StringFormat='dd/MM/yyyy',
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellEditingTemplate>
+		</DataGridTemplateColumn>-->
+
+	</x:Array>
+
+	<!--#endregion DataGrid Columns "DGMultiBankColumns"-->
+
+	<!--#region DataGrid Colunns "DGMultiCustomerTextColumns"-->
+
+	<x:Array x:Key="DGMultiCustomerTextColumns" Type="{x:Type DataGridTextColumn}">
+		<!--<DataGridTextColumn Header="Customer #" Binding="{Binding CustNo, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+		</DataGridTextColumn>
+
+		<DataGridTextColumn Header="Bank #" Width="80" 
+								    SortMemberPath="BankNo"
+									Binding ="{Binding BankNo, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus}"
+									>
+		</DataGridTextColumn>
+
+		<DataGridTextColumn Header="Type" Width="40" 
+								    SortMemberPath="AcType"
+									Binding="{Binding AcType, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=LostFocus}"/>
+
+		<DataGridTextColumn Header="Forename" Binding="{Binding FName, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+		</DataGridTextColumn>
+
+		<DataGridTextColumn Header="Surname" Binding="{Binding LName, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+		</DataGridTextColumn>
+
+		<DataGridTextColumn Header="Address 1" Binding="{Binding Addr1, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+		</DataGridTextColumn>
+
+		<DataGridTextColumn Header="Address 2" Binding="{Binding Addr2, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+		</DataGridTextColumn>
+
+
+		<DataGridTextColumn Header="Town" Binding="{Binding Town, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+		</DataGridTextColumn>
+
+		<DataGridTextColumn Header="County" Binding="{Binding County, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+		</DataGridTextColumn>
+
+		<DataGridTextColumn Header="Post Code" Binding="{Binding PCode, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+		</DataGridTextColumn>
+		<DataGridTextColumn Header="Phone" Binding="{Binding Phone, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+		</DataGridTextColumn>
+		<DataGridTextColumn Header="Cell" Binding="{Binding Mobile, 
+									Mode=TwoWay, 
+									UpdateSourceTrigger=PropertyChanged}">
+		</DataGridTextColumn>-->
+
+	</x:Array>
+	<!--#endregion DataGrid Colunns "DGMultiBankTextColumns"-->
+
+	<!--#region DataGrid Columns "DGEditDbColumns"-->
+	<x:Array x:Key="DGEditDbColumns" Type="{x:Type DataGridTemplateColumn}">
+		<DataGridTemplateColumn
+					Width="40"
+					Header="Id"
+					SortMemberPath="Id">
+		<DataGridTemplateColumn.CellTemplate>
+			<DataTemplate>
+				<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Top"
+								Text="{Binding Id}" />
+			</DataTemplate>
+		</DataGridTemplateColumn.CellTemplate>
+	</DataGridTemplateColumn>
+	<!--  the next 3 show 2 ways to format a date - 1 a Converter the other a direct Format string  -->
+	<DataGridTemplateColumn
+					Width="80"
+					Header="D.o.B"
+					SortMemberPath="DOB">
+		<DataGridTemplateColumn.CellTemplate>
+			<DataTemplate>
+				<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Top"
+								Text="{Binding Dob, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat='dd/MM/yyyy'}" />
+			</DataTemplate>
+		</DataGridTemplateColumn.CellTemplate>
+		<DataGridTemplateColumn.CellEditingTemplate>
+			<DataTemplate>
+				<DatePicker SelectedDate="{Binding Path=Dob, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+			</DataTemplate>
+		</DataGridTemplateColumn.CellEditingTemplate>
+	</DataGridTemplateColumn>
+
+	<DataGridTemplateColumn
+					Width="80"
+					Header="Open Date"
+					SortMemberPath="ODate">
+		<DataGridTemplateColumn.CellTemplate>
+			<DataTemplate>
+				<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Top"
+								Text="{Binding ODate, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat='dd/MM/yyyy'}" />
+			</DataTemplate>
+		</DataGridTemplateColumn.CellTemplate>
+		<DataGridTemplateColumn.CellEditingTemplate>
+			<DataTemplate>
+				<DatePicker SelectedDate="{Binding Path=ODate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+			</DataTemplate>
+		</DataGridTemplateColumn.CellEditingTemplate>
+	</DataGridTemplateColumn>
+
+	<DataGridTemplateColumn
+					Width="80"
+					Header="Close Date"
+					SortMemberPath="CDate">
+		<DataGridTemplateColumn.CellTemplate>
+			<DataTemplate>
+				<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Top"
+								Text="{Binding Path=CDate, StringFormat='dd/MM/yyyy'}" />
+			</DataTemplate>
+		</DataGridTemplateColumn.CellTemplate>
+		<DataGridTemplateColumn.CellEditingTemplate>
+			<DataTemplate>
+				<DatePicker SelectedDate="{Binding Path=CDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+			</DataTemplate>
+		</DataGridTemplateColumn.CellEditingTemplate>
+	</DataGridTemplateColumn>
+	</x:Array>
+	<!--#endregion DataGrid Columns "DGEditDbColumns"-->
+
+	<!--#region DataGrid Columns "DGEditDbTextColumns"-->
+	<x:Array x:Key="DGEditDbTextColumns" Type="{x:Type DataGridTextColumn}">
+		<DataGridTextColumn Binding="{Binding CustNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Customer #" />
+		<DataGridTextColumn Binding="{Binding BankNo, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Header="Bank #" SortMemberPath="BankNo" />
+		<DataGridTextColumn Binding="{Binding AcType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="A/c Type#" />
+		<DataGridTextColumn Binding="{Binding FName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="First Name" />
+		<DataGridTextColumn Binding="{Binding LName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Last Name" />
+		<DataGridTextColumn Binding="{Binding Addr1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Address 1" />
+		<DataGridTextColumn Binding="{Binding Addr2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Address 2" />
+		<DataGridTextColumn Binding="{Binding Town, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Town" />
+		<DataGridTextColumn Binding="{Binding County, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="County" />
+		<DataGridTextColumn Binding="{Binding PCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Post code" />
+		<DataGridTextColumn Binding="{Binding Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Phone #" />
+		<DataGridTextColumn Binding="{Binding Mobile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Mobile #" />
+	</x:Array>
+	<!--#endregion DataGrid Columns "DGEditDbTextColumns"-->
+
+	<!--#region datagrid Columns "DGDetailsColumns1"-->
+
+	<x:Array x:Key="DGDetailsColumns1" Type="{x:Type DataGridTemplateColumn}">
+
+		<!--<DataGridTemplateColumn
+					x:Name="ID4"
+					Width="40"
+					Header="Id"
+					SortMemberPath="Id">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Path=Id}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+		<DataGridTemplateColumn
+					x:Name="CUSTNO4"
+					Width="70"
+					Header="Cust #"
+					SortMemberPath="CustNo">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding CustNo}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+		<DataGridTemplateColumn
+					x:Name="BANKNO4"
+					Width="70"
+					Header="Bank #"
+					SortMemberPath="BankNo">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding BankNo, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+		<DataGridTemplateColumn
+					x:Name="ACTYPE4"
+					Width="40"
+					Header="Type #"
+					SortMemberPath="AcType">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding AcType, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+		<DataGridTemplateColumn
+					x:Name="BALANCE4"
+					Width="100"
+					Header="Balance"
+					SortMemberPath="AcType">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Balance, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat='£ ##,###,###.00'}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+		<DataGridTemplateColumn
+					x:Name="INTRATE4"
+					Width="60"
+					Header="Int %"
+					SortMemberPath="IntRate">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding IntRate, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat='0.00'}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+		--><!--the next 2 show 2 ways to format a date - 1 a Converter the other a direct Format string--><!--
+		<DataGridTemplateColumn
+					x:Name="ODATE4"
+					Width="90"
+					Header="Opened"
+					SortMemberPath="ODate">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Path=ODate, StringFormat='dd/MM/yyyy'}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+			<DataGridTemplateColumn.CellEditingTemplate>
+				<DataTemplate>
+					<DatePicker SelectedDate="{Binding Path=ODate, StringFormat='dd/MM/yyyy', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+									HorizontalContentAlignment="Center"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellEditingTemplate>
+		</DataGridTemplateColumn>
+		<DataGridTemplateColumn
+					x:Name="CDATE4"
+					Width="90"
+					Header="Closed"
+					SortMemberPath="CDate">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Path=CDate, StringFormat='dd/MM/yyyy'}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+			<DataGridTemplateColumn.CellEditingTemplate>
+				<DataTemplate>
+					<DatePicker SelectedDate="{Binding Path=CDate, StringFormat='dd/MM/yyyy', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+									HorizontalContentAlignment="Center"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellEditingTemplate>
+		</DataGridTemplateColumn>-->
+	</x:Array>
+	<!--#endregion datagrid Columns "DGDetailsColumns1"-->
+	
+	<!--#region datagrid columns  "DGCustomerColumns1"-->
+
+	<x:Array x:Key="DGFullCustomerColumns" Type="{x:Type DataGridTemplateColumn}">
+		<!--<DataGridTemplateColumn
+					x:Name="ID1"
+					Width="40"
+					Header="Id"
+					SortMemberPath="Id">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							Text="{Binding Id}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn
+					x:Name="CUSTNO1"
+					Width="100"
+					Header="Customer #"
+					SortMemberPath="CustNo">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							Text="{Binding CustNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+
+		<DataGridTemplateColumn
+					x:Name="BANKNO1"
+					Width="80"
+					Header="Bank #"
+					SortMemberPath="BankNo" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding BankNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn
+					Width="50"
+					Header="Ac Type"
+					SortMemberPath="AcType" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding AcType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn
+					Width="80"
+					Header="Forename"
+					SortMemberPath="FName" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+                                          
+								Text="{Binding FName,
+									Mode=TwoWay,
+									UpdateSourceTrigger=PropertyChanged}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn
+					Width="80"
+					Header="Surname"
+					SortMemberPath="LName" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding LName,
+									Mode=TwoWay,
+									UpdateSourceTrigger=PropertyChanged}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn
+					Width="150"
+					Header="Address 1"
+					SortMemberPath="Address1" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Addr1,
+									Mode=TwoWay,
+									UpdateSourceTrigger=PropertyChanged}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn
+					Width="150"
+					Header="Address 2"
+					SortMemberPath="Address2" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Addr2,
+									Mode=TwoWay,
+									UpdateSourceTrigger=PropertyChanged}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn
+					Width="110"
+					Header="Town"
+					SortMemberPath="Town" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Town,
+									Mode=TwoWay,
+									UpdateSourceTrigger=PropertyChanged}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn
+					Width="110"
+					Header="County"
+					SortMemberPath="County" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding County,
+									Mode=TwoWay,
+									UpdateSourceTrigger=PropertyChanged}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn
+					Width="70"
+					Header="Post Code"
+					SortMemberPath="PCode" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding PCode,
+									Mode=TwoWay,
+									UpdateSourceTrigger=PropertyChanged}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn
+					Width="100"
+					Header="Phone #"
+					SortMemberPath="Phone" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Phone,
+									Mode=TwoWay,
+									UpdateSourceTrigger=PropertyChanged}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn
+					Width="100"
+					Header="Cell #"
+					SortMemberPath="Mobile" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Mobile,
+									Mode=TwoWay,
+									UpdateSourceTrigger=PropertyChanged}"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--the next 3 show 2 ways to format a date - 1 a Converter the other a direct Format string--><!--
+		<DataGridTemplateColumn 
+					Header="D.o.B" 
+					Width="80" 
+					SortMemberPath="DOB">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Dob, Mode=TwoWay,
+									UpdateSourceTrigger=LostFocus,
+									StringFormat='dd/MM/yyyy'}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+			<DataGridTemplateColumn.CellEditingTemplate>
+				<DataTemplate>
+					<DatePicker SelectedDate="{Binding Path=Dob,
+									Mode=TwoWay,
+									UpdateSourceTrigger=PropertyChanged}">
+					</DatePicker>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellEditingTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn
+					x:Name="ODATE1"
+					Width="90"
+					Header="Opened"
+					SortMemberPath="ODate">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Path=ODate, StringFormat='dd/MM/yyyy'}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+			<DataGridTemplateColumn.CellEditingTemplate>
+				<DataTemplate>
+					<DatePicker SelectedDate="{Binding Path=ODate, StringFormat='dd/MM/yyyy', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+									HorizontalContentAlignment="Center"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellEditingTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn
+					x:Name="CDATE1"
+					Width="90"
+					Header="Closed"
+					SortMemberPath="CDate">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Path=CDate, StringFormat='dd/MM/yyyy'}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+			<DataGridTemplateColumn.CellEditingTemplate>
+				<DataTemplate>
+					<DatePicker SelectedDate="{Binding Path=CDate, StringFormat='dd/MM/yyyy', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+									HorizontalContentAlignment="Center"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellEditingTemplate>
+		</DataGridTemplateColumn>-->
+	</x:Array>
+
+	<!--#endregion datagrid columns  "DGCustomerColumns1"-->
+
+	<!--#region datagrid columns  "DGPartialCustomerColumns"-->
+	<x:Array x:Key="DGPartialCustomerColumns" Type="{x:Type DataGridTemplateColumn}">
+		<!--DATAGRID  - ID FIELD-->
+		<!--<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Id" 
+								      TextAlignment="Center"
+                                                      Width="30"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock  x:Name="idfield" 
+										Text="{Binding Id}"
+										HorizontalAlignment="Center"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--DATAGRID - CUSTNO FIELD--><!--
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Customer #" 
+								     TextAlignment="Center">
+
+				</TextBlock>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate >
+				<DataTemplate x:Name="GridTemplate"
+>
+					<TextBlock Text="{Binding CustNo}" >
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="Background" Value="#70BCC8">
+										<Setter Property="Foreground" Value="Blue"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--DATAGRID - BANKNO FIELD--><!--
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Bank A/c #" 
+								     TextAlignment="Center"></TextBlock>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+							Text="{Binding BankNo}"
+							TextAlignment="Center"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--DATAGRID - ACTYPE FIELD--><!--
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Type" 
+								      Width="30"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+							Text="{Binding AcType}"
+							TextAlignment="Center">
+						<TextBlock.Style>
+							--><!--handle mouseover background color--><!--
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource Yellow1}"/>
+										<Setter Property="Foreground" Value="Black"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--DATAGRID - BALANCE FIELD--><!--
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Balance" 
+						TextAlignment="Center"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock 
+                                                Text="{Binding Balance}"
+                                                TextAlignment="Center"
+                                                Width="80">
+						<TextBlock.Style>
+							--><!--handle mouseover background color--><!--
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource Red4}"/>
+										<Setter Property="Foreground" Value="White"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--DATAGRID - INTRATE FIELD--><!--
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Int %" 
+                                                      TextAlignment="Center"
+                                                      Width="40"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate >
+					<TextBlock  Text="{Binding IntRate}"
+									     TextAlignment="Center">
+                                                            --><!--handle mouseover background color--><!--
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource Orange4}"/>
+										<Setter Property="Foreground" Value="Black"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--DATAGRID - ODATE FIELD--><!--
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Opened" 
+                                    TextAlignment="Center"
+                                    Width="70"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock 
+							Text="{Binding ODate, Converter={StaticResource DateConvert }, ConverterParameter=YYYMMDD}"
+							TextAlignment="Center"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--DATAGRID - CDATE FIELD--><!--
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Closed" 
+                                    TextAlignment="Center"
+                                    HorizontalAlignment="Center"									    
+                                    Width="70"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock 
+                                          Text="{Binding CDate, Converter={StaticResource DateConvert}}"
+                                          TextAlignment="Center"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>-->
+	</x:Array >
+	<!--#endregion datagrid columns 1-->
+
+	<!--#region datagrid "DGCustomerColumns2"-->
+	<x:Array x:Key="DGCustomerColumns2" Type="{x:Type DataGridTemplateColumn}">
+		<!--<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Id" 
+								      TextAlignment="Center"
+                                                      Width="30"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock  x:Name="idfield2" 
+										Text="{Binding Id}"
+										HorizontalAlignment="Center"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--DATAGRID - CUSTNO FIELD--><!--
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Customer #" 
+								     TextAlignment="Center">
+
+				</TextBlock>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate >
+				<DataTemplate x:Name="GridTemplate2"
+>
+					<TextBlock Text="{Binding CustNo}" >
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								--><!--<Style.Triggers>
+                                                      <Trigger Property="Background" Value="#70BCC8">
+                                                            <Setter Property="Foreground" Value="Blue"/>
+                                                            <Setter Property="FontWeight" Value="Bold"/>
+                                                      </Trigger>
+                                                </Style.Triggers>--><!--
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--DATAGRID - BANKNO FIELD--><!--
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Bank A/c #" 
+								     TextAlignment="Center"></TextBlock>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+							Text="{Binding BankNo}"
+							TextAlignment="Center"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--DATAGRID - ACTYPE FIELD--><!--
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Type" 
+								      Width="30"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+							Text="{Binding AcType}"
+							TextAlignment="Center">
+						<TextBlock.Style>
+							--><!--handle mouseover background color--><!--
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource Yellow1}"/>
+										<Setter Property="Foreground" Value="Black"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+									<Trigger Property="IsMouseCaptured" Value="True">
+										<Setter Property="Background" Value="{StaticResource Black0}"/>
+										<Setter Property="Foreground" Value="White"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--DATAGRID - BALANCE FIELD--><!--
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Forename" 
+						TextAlignment="Center"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock 
+                                                Text="{Binding FName}"
+                                                TextAlignment="Center"
+                                                Width="80">
+						<TextBlock.Style>
+							--><!--handle mouseover background color--><!--
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource Red4}"/>
+										<Setter Property="Foreground" Value="White"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--DATAGRID - INTRATE FIELD--><!--
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Surname" 
+                                                      TextAlignment="Center"
+                                                      Width="40"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate >
+					<TextBlock  Text="{Binding LName}"
+									     TextAlignment="Center">
+                                                            --><!--handle mouseover background color--><!--
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource Orange4}"/>
+										<Setter Property="Foreground" Value="Black"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Address 1" 
+                                                      TextAlignment="Center"
+                                                      Width="40"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate >
+					<TextBlock  Text="{Binding Addr1}"
+									     TextAlignment="Center">
+                                                            --><!--handle mouseover background color--><!--
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource Orange4}"/>
+										<Setter Property="Foreground" Value="Black"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Address 2" 
+                                                      TextAlignment="Center"
+                                                      Width="40"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate >
+					<TextBlock  Text="{Binding Addr2}"
+									     TextAlignment="Center">
+                                                            --><!--handle mouseover background color--><!--
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource Orange4}"/>
+										<Setter Property="Foreground" Value="Black"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Town1" 
+                                                      TextAlignment="Center"
+                                                      Width="40"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate >
+					<TextBlock  Text="{Binding Town}"
+									     TextAlignment="Center">
+                                                            --><!--handle mouseover background color--><!--
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource Orange4}"/>
+										<Setter Property="Foreground" Value="Black"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="County" 
+                                                      TextAlignment="Center"
+                                                      Width="40"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate >
+					<TextBlock  Text="{Binding County}"
+									     TextAlignment="Center">
+                                                            --><!--handle mouseover background color--><!--
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource Orange4}"/>
+										<Setter Property="Foreground" Value="Black"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Post Code" 
+                                                      TextAlignment="Center"
+                                                      Width="40"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate >
+					<TextBlock  Text="{Binding PCode}"
+									     TextAlignment="Center">
+                                                            --><!--handle mouseover background color--><!--
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource Orange4}"/>
+										<Setter Property="Foreground" Value="Black"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Phone #" 
+                                                      TextAlignment="Center"
+                                                      Width="40"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate >
+					<TextBlock  Text="{Binding Phone}"
+									     TextAlignment="Center">
+                                                            --><!--handle mouseover background color--><!--
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource Orange4}"/>
+										<Setter Property="Foreground" Value="Black"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Mobile #" 
+                                                      TextAlignment="Center"
+                                                      Width="40"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate >
+					<TextBlock  Text="{Binding Mobile}"
+									     TextAlignment="Center">
+                                                            --><!--handle mouseover background color--><!--
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource Orange4}"/>
+										<Setter Property="Foreground" Value="Black"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Birthday" 
+                                                      TextAlignment="Center"
+                                                      Width="40"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate >
+					<TextBlock  Text="{Binding Dob, Converter={StaticResource DateConvert }, ConverterParameter=YYYMMDD}"
+									     TextAlignment="Center">
+                                                            --><!--handle mouseover background color--><!--
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="TextAlignment" Value="Center"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource Orange4}"/>
+										<Setter Property="Foreground" Value="Black"/>
+										<Setter Property="FontWeight" Value="Bold"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--DATAGRID - ODATE FIELD--><!--
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Opened" 
+                                    TextAlignment="Center"
+                                    Width="70"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock 
+							Text="{Binding ODate, Converter={StaticResource DateConvert }, ConverterParameter=YYYMMDD}"
+							TextAlignment="Center"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--DATAGRID - CDATE FIELD--><!--
+		<DataGridTemplateColumn>
+			<DataGridTemplateColumn.Header>
+				<TextBlock Text="Closed" 
+                                    TextAlignment="Center"
+                                    HorizontalAlignment="Center"									    
+                                    Width="70"/>
+			</DataGridTemplateColumn.Header>
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock 
+                                          Text="{Binding CDate, Converter={StaticResource DateConvert}}"
+                                          TextAlignment="Center"/>
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>-->
+	</x:Array >
+
+	<!--#endregion datagrid columns 2-->
+
+	<!--#region datagrid columns  "DGBankColumns"-->
+
+	<!--Used by DankDbView-->
+	<x:Array x:Key="DGBankColumns" Type="{x:Type DataGridTemplateColumn}">
+		<!--<DataGridTemplateColumn				
+					x:Name="ID3"
+					Width="40"
+					Header="Id"
+					SortMemberPath="Id">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Id}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+		<DataGridTemplateColumn
+					x:Name="CUSTNO3"
+					Width="100"
+					Header="Customer #"
+					SortMemberPath="CustNo">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding CustNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+		<DataGridTemplateColumn
+					x:Name="BANKNO3"
+					Width="80"
+					Header="Bank #"
+					SortMemberPath="BankNo" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding BankNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+		<DataGridTemplateColumn
+					Width="30"
+					Header="Type"
+					SortMemberPath="AcType" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding AcType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+		<DataGridTemplateColumn
+					Width="90"
+					Header="Balance"
+					SortMemberPath="Balance" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Balance, Mode=TwoWay, 
+								UpdateSourceTrigger=LostFocus, StringFormat='£ ##,###,###.00'}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+		<DataGridTemplateColumn
+					Width="50"
+					Header="Interest"
+					SortMemberPath="IntRate" >
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding IntRate, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat='0.00'}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+		</DataGridTemplateColumn>
+
+		--><!--  the next 2 show 2 ways to format a date - 1 a Converter the other a direct Format string  --><!--
+		<DataGridTemplateColumn
+					Width="80"
+					Header="Open Date"
+					SortMemberPath="ODate">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Path=ODate, Converter={StaticResource DateConvert}}" />
+
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+			<DataGridTemplateColumn.CellEditingTemplate>
+				<DataTemplate>
+					<DatePicker SelectedDate="{Binding Path=ODate, StringFormat='dd/MM/yyyy', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellEditingTemplate>
+		</DataGridTemplateColumn>
+		<DataGridTemplateColumn
+					Width="80"
+					Header="Close Date"
+					SortMemberPath="CDate">
+			<DataGridTemplateColumn.CellTemplate>
+				<DataTemplate>
+					<TextBlock
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Text="{Binding Path=CDate, Converter={StaticResource DateConvert}}" />
+					--><!--Text="{Binding Path=CDate, StringFormat='dd/MM/yyyy'}" />--><!--
+				</DataTemplate>
+			</DataGridTemplateColumn.CellTemplate>
+			<DataGridTemplateColumn.CellEditingTemplate>
+				<DataTemplate>
+					<DatePicker SelectedDate="{Binding Path=CDate, StringFormat='dd/MM/yyyy', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+				</DataTemplate>
+			</DataGridTemplateColumn.CellEditingTemplate>
+		</DataGridTemplateColumn>-->
+	</x:Array >
+	<!--#endregion datagrid columns  "DGColumns3"-->
+
+
+
+
+	<x:Array x:Key="LVBankColumns" Type="{x:Type ItemContainerTemplate}">
+		<ItemContainerTemplate>
+		</ItemContainerTemplate>
+	</x:Array >
+
+
+
+
+</ResourceDictionary>

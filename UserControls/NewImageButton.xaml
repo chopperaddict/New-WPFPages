@@ -1,0 +1,107 @@
+﻿<UserControl x:Class="WPFPages.UserControls.ImageButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFPages.UserControls"
+             xmlns:conv="clr-namespace:WPFPages.Converts"
+             mc:Ignorable="d" 
+             Name="Testbutton"    
+             Loaded="Testbutton_Loaded"   
+             Background="Transparent"
+            d:DesignHeight ="80"
+             d:DesignWidth="250"
+            >
+      
+      <UserControl.Resources>
+            <conv:HeaderToImageConverter x:Key="source2image"/>
+      </UserControl.Resources>
+  
+      <Border x:Name="PART_Main"     
+            Background="Transparent"
+            Margin="{Binding SkewPadding, ElementName=Testbutton}"
+   
+		MouseEnter="Control_MouseEnter"
+		MouseLeave="Control_MouseLeave"
+             RenderTransformOrigin="0.5,0.5">
+            <Border.Effect>
+                 <DropShadowEffect 						
+				Color="{Binding ShadowColor, ElementName=Testbutton}"
+				Opacity="{Binding ShadowOpacity, ElementName=Testbutton}"
+				ShadowDepth="{Binding ShadowDepth, ElementName=Testbutton}"
+				BlurRadius="{Binding ShadowBlurRadius, ElementName=Testbutton}"
+				RenderingBias="Quality"						
+				Direction="{Binding ShadowDirection, ElementName=Testbutton}"/>
+            </Border.Effect>      
+            
+            <Border.RenderTransform>
+                  <TransformGroup>
+                  <SkewTransform 
+                        AngleX="{Binding SkewX, ElementName=Testbutton}"
+                        AngleY="{Binding SkewY, ElementName=Testbutton}"/>
+                  <RotateTransform
+                        Angle="{Binding RotateAngle, ElementName=Testbutton}"/>
+                  </TransformGroup>
+            </Border.RenderTransform>
+
+		<Border x:Name="_border"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  Background="{Binding Background, ElementName=Testbutton}"
+                  CornerRadius="{Binding CornerRadius, ElementName=Testbutton}" 
+                  BorderBrush="{Binding BorderBrush, ElementName=Testbutton}"
+                  BorderThickness="{Binding BorderThickness, ElementName=Testbutton}"
+            	Panel.ZIndex="0" 
+                  Margin="5"
+                  Loaded="PART_Main_Loaded"
+                  RenderTransformOrigin="0.5,0.5">
+			<!--Height="{Binding Path=ActualHeight, ElementName=PART_Main}"
+			Width="{Binding Path=ActualWidth, ElementName=PART_Main}">-->
+  
+                  <Grid x:Name="ImageBorder"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="Auto"/>
+                              <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border x:Name="ImgBorder" 
+                                BorderBrush="Black" 
+                                BorderThickness="1" 
+                                Background="Transparent"
+                              >
+                              
+                              <Image x:Name="BtnImage"                               
+                                    Grid.Column="0"
+                                    Width="{Binding ImgWidth, ElementName=Testbutton}"
+                                    VerticalAlignment="Center"
+                                    Source="{Binding Source, ElementName=Testbutton, Converter={StaticResource source2image}}"
+                                    Margin="5 0 5 0"/>
+                        </Border>
+                        
+                        <TextBlock x:Name="txtblock"
+                              Margin="0 0 10 0"
+                              Grid.Column="1"
+                              Background="Transparent"
+                              Foreground="{Binding Foreground, ElementName=Testbutton}"
+                              FontSize="{Binding FontSize, ElementName=Testbutton}"
+                              Text="{Binding Text, ElementName=Testbutton, FallbackValue=Text here...}"
+                              TextWrapping="Wrap"                                    
+                              TextAlignment="Center"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center">
+                         <TextBlock.Effect>
+                                    <DropShadowEffect 						
+				            Color="{Binding TextShadowColor, ElementName=Testbutton}"
+				            Opacity="{Binding TextShadowOpacity, ElementName=Testbutton}"
+				            ShadowDepth="{Binding TextShadowSize, ElementName=Testbutton}"
+				            BlurRadius="{Binding TextShadowRadius, ElementName=Testbutton}"
+				            Direction="{Binding TextShadowDirection, ElementName=Testbutton}"
+                                    RenderingBias="Quality"/>
+                              </TextBlock.Effect>
+                        </TextBlock>
+                  </Grid>
+            </Border>
+      </Border>
+</UserControl>

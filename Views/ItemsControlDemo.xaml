@@ -1,0 +1,116 @@
+﻿<Window x:Class="WPFPages.Views.ItemsControlDemo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFPages.Views"
+        xmlns:conv="clr-namespace:WPFPages.Converts"
+        mc:Ignorable="d"
+	  Loaded="Window_Loaded"
+        Title="ItemsControlDemo" Height="450" Width="800">
+	<Window.Resources>
+		<conv:PadHeight x:Key="padHeight"/>
+	</Window.Resources>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		
+		<ScrollViewer 
+			HorizontalScrollBarVisibility="Auto" 
+			BorderBrush="Red" 
+			BorderThickness="1" 
+			Grid.Row="0"
+			VerticalScrollBarVisibility="Auto" >
+			
+			<ItemsControl    x:Name="itemsControl"
+			     ScrollViewer.CanContentScroll="True"
+				Height="Auto"
+				Background="{StaticResource Yellow4}" 
+				HorizontalAlignment="Stretch"
+				Margin="18,10,18,10"
+				VerticalAlignment="Top">	     	
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Orientation="Horizontal"  Height="65" x:Name="sp1">
+							<Border x:Name="BankDataTemplateBorder"  
+								  BorderBrush="Red" 
+								  BorderThickness="1" 
+								Margin ="3 3 3 3">
+								<StackPanel Orientation="Horizontal" 
+									x:Name="sp2"
+									Margin ="5 5 5 5"  >
+									<TextBlock Text="{Binding Id}" Width="30" Margin ="3 0 0 0" Padding="1" x:Name="Id" VerticalAlignment="Center"  />
+									<TextBox Text="{Binding BankNo}" Width="65" Height="{Binding ItemHeight}" Padding="1" x:Name="BankNo" VerticalAlignment="Center"/>
+									<TextBlock Text="{Binding CustNo}" Width="65" Height="{Binding ItemHeight}" Margin ="3 0 7 0" Padding="1" x:Name="CustNo" VerticalAlignment="Center"/>
+									<TextBox Text="{Binding AcType}" Width="15" Height="{Binding ItemHeight}" Margin ="3 0 7 0" Padding="1"  x:Name="AcType" VerticalAlignment="Center"/>
+									<TextBox Text="{Binding Balance}"  Width="90" Height="{Binding ItemHeight}" Margin ="3 0 7 0" Padding="1"  x:Name="Balance" VerticalAlignment="Center"/>
+									<TextBox Text="{Binding IntRate}" Width="50" Height="{Binding ItemHeight}" Margin ="3 0 7 0" Padding="1"  x:Name="IntRate" VerticalAlignment="Center"/>
+									<TextBlock Text="{Binding ODate, StringFormat=dd/MM/yyyy}" Width="90" Height="{Binding ItemHeight}" Margin ="3 0 0 0" Padding="1"  x:Name="ODate" VerticalAlignment="Center"/>
+									<TextBox Text="{Binding CDate, StringFormat=dd/MM/yyyy}" Width="90" Height="{Binding ItemHeight}" Margin ="3 0 7 0" Padding="1"  x:Name="CDate" VerticalAlignment="Center"/>
+								</StackPanel>
+							</Border>
+
+							</StackPanel>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+		<GridSplitter
+			Grid.Row="1"
+			HorizontalAlignment="Stretch"
+			Background="Blue" 
+			Height="20"
+			Panel.ZIndex="5"
+			ShowsPreview="True"
+			ResizeDirection="Rows"
+			ResizeBehavior="CurrentAndNext"
+			VerticalAlignment="Top"/>
+
+		<ScrollViewer 
+			BorderBrush="Red" 
+			BorderThickness="1" 
+			Grid.Row="1"
+			Grid.RowSpan="1"
+			HorizontalScrollBarVisibility="Auto" 
+			Margin="0,217,0,0" 
+			VerticalScrollBarVisibility="Auto" 
+			>
+			<ItemsControl    x:Name="itemsControl2"
+				Background="{StaticResource Green8}" 
+			     Grid.Row="1"
+				Height="Auto"
+				HorizontalAlignment="Stretch"
+				Margin="18,10,18,10" 
+				ScrollViewer.CanContentScroll="True"
+				VerticalAlignment="Top">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Orientation="Horizontal"  Height="65" x:Name="sp1">
+							<Border x:Name="BankDataTemplateBorder2"  
+								  BorderBrush="Red" 
+								  BorderThickness="1" 
+								Margin ="3 3 3 3">
+								<StackPanel Orientation="Horizontal" 
+									x:Name="sp3"
+									Margin ="5 5 5 5"  >
+									<TextBlock Text="{Binding Id}" Width="30" Margin ="3 0 0 0" Padding="1" VerticalAlignment="Center"  />
+									<TextBox Text="{Binding BankNo}" Width="65" Height="{Binding ItemHeight}" Padding="1" VerticalAlignment="Center"/>
+									<TextBlock Text="{Binding CustNo}" Width="65" Height="{Binding ItemHeight}" Margin ="3 0 7 0" Padding="1" VerticalAlignment="Center"/>
+									<TextBox Text="{Binding AcType}" Width="15" Height="{Binding ItemHeight}" Margin ="3 0 7 0" Padding="1"  VerticalAlignment="Center"/>
+									<TextBox Text="{Binding Balance}"  Width="90" Height="{Binding ItemHeight}" Margin ="3 0 7 0" Padding="1"  VerticalAlignment="Center"/>
+									<TextBox Text="{Binding IntRate}" Width="50" Height="{Binding ItemHeight}" Margin ="3 0 7 0" Padding="1"  VerticalAlignment="Center"/>
+									<TextBlock Text="{Binding ODate, StringFormat=dd/MM/yyyy}" Width="90" Height="{Binding ItemHeight}" Margin ="3 0 0 0" Padding="1"  VerticalAlignment="Center"/>
+									<TextBox Text="{Binding CDate, StringFormat=dd/MM/yyyy}" Width="90" Height="{Binding ItemHeight}" Margin ="3 0 7 0" Padding="1"  VerticalAlignment="Center"/>
+								</StackPanel>
+							</Border>
+						</StackPanel>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+
+
+	</Grid>
+</Window>
