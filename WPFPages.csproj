@@ -190,7 +190,7 @@
     <Compile Include="UserControls\NewImageButton.xaml.cs">
       <DependentUpon>NewImageButton.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\BankCombined.cs" />
+    <Compile Include="ViewModels\BankCombinedViewModel.cs" />
     <Compile Include="ViewModels\DapperSupport.cs" />
     <Compile Include="ViewModels\NWSupplier.cs" />
     <Compile Include="ViewModels\NWSupplierCollection.cs" />

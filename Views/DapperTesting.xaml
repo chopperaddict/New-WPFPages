@@ -9,6 +9,240 @@
 	  
 	  Loaded="Window_Loaded"
         Title="Dapper Db Testing using various Methods incl. M$SQL Stored Procedures" Height="917" Width="1200">
+	<Window.Resources>
+
+		<!--#region Control colors.-->
+		<Color x:Key="WindowColor">#FFE8EDF9</Color>
+		<Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>
+		<Color x:Key="ContentAreaColorDark">#FF7381F9</Color>
+
+		<Color x:Key="DisabledControlLightColor">#FFE8EDF9</Color>
+		<Color x:Key="DisabledControlDarkColor">#FFC5CBF9</Color>
+		<Color x:Key="DisabledForegroundColor">#FF888888</Color>
+
+		<Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
+		<Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
+
+		<Color x:Key="ControlLightColor">White</Color>
+		<Color x:Key="ControlMediumColor">#5600FF00</Color>
+		<!--<Color x:Key="ControlMediumColor">#FF7381F9</Color>-->
+		<Color x:Key="ControlDarkColor">#FF211AA9</Color>
+
+		<Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
+		<Color x:Key="ControlPressedColor">#FF211AA9</Color>
+
+
+		<Color x:Key="GlyphColor">#FF444444</Color>
+		<Color x:Key="GlyphMouseOver">sc#1, 0.004391443, 0.002428215, 0.242281124</Color>
+
+		<!--Border colors-->
+		<Color x:Key="BorderLightColor">#FFCCCCCC</Color>
+		<Color x:Key="BorderMediumColor">#FF888888</Color>
+		<Color x:Key="BorderDarkColor">#FF444444</Color>
+
+		<Color x:Key="PressedBorderLightColor">#FF888888</Color>
+		<Color x:Key="PressedBorderDarkColor">#FF444444</Color>
+
+		<Color x:Key="DisabledBorderLightColor">#FFAAAAAA</Color>
+		<Color x:Key="DisabledBorderDarkColor">#FF888888</Color>
+
+		<Color x:Key="DefaultBorderBrushDarkColor">Black</Color>
+
+		<!--Control-specific resources.-->
+		<Color x:Key="HeaderTopColor">#FFC5CBF9</Color>
+		<Color x:Key="DatagridCurrentCellBorderColor">Black</Color>
+		<Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
+
+		<Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
+
+		<LinearGradientBrush x:Key="MenuPopupBrush"
+                     EndPoint="0.5,1"
+                     StartPoint="0.5,0">
+			<GradientStop Color="{DynamicResource ControlLightColor}"
+                Offset="0" />
+			<GradientStop Color="{DynamicResource ControlMediumColor}"
+                Offset="0.5" />
+			<GradientStop Color="{DynamicResource ControlLightColor}"
+                Offset="1" />
+		</LinearGradientBrush>
+
+		<LinearGradientBrush x:Key="ProgressBarIndicatorAnimatedFill"
+                     StartPoint="0,0"
+                     EndPoint="1,0">
+			<LinearGradientBrush.GradientStops>
+				<GradientStopCollection>
+					<GradientStop Color="#000000FF"
+                    Offset="0" />
+					<GradientStop Color="#600000FF"
+                    Offset="0.4" />
+					<GradientStop Color="#600000FF"
+                    Offset="0.6" />
+					<GradientStop Color="#000000FF"
+                    Offset="1" />
+				</GradientStopCollection>
+			</LinearGradientBrush.GradientStops>
+		</LinearGradientBrush>
+		<!--#endregion Control colors.-->
+
+		<ControlTemplate x:Key="ComboBoxToggleButton"
+                 TargetType="{x:Type ToggleButton}">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition Width="20" />
+				</Grid.ColumnDefinitions>
+				<VisualStateManager.VisualStateGroups>
+					<VisualStateGroup x:Name="CommonStates">
+						<VisualState x:Name="Normal" />
+						<VisualState x:Name="MouseOver">
+							<Storyboard>
+								<ColorAnimationUsingKeyFrames 
+									Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)"
+									Storyboard.TargetName="Border">
+									<EasingColorKeyFrame KeyTime="0"
+										Value="{StaticResource ControlMouseOverColor}" />
+								</ColorAnimationUsingKeyFrames>
+							</Storyboard>
+						</VisualState>
+
+						<VisualState x:Name="Pressed" />
+
+						<VisualState x:Name="Disabled">
+							<Storyboard>
+								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).
+									(GradientBrush.GradientStops)[1].(GradientStop.Color)"
+									Storyboard.TargetName="Border">
+									<EasingColorKeyFrame KeyTime="0"
+										Value="{StaticResource DisabledControlDarkColor}" />
+								</ColorAnimationUsingKeyFrames>
+								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).
+									(SolidColorBrush.Color)"
+									Storyboard.TargetName="Arrow">
+									<EasingColorKeyFrame KeyTime="0"
+										Value="{StaticResource DisabledForegroundColor}" />
+								</ColorAnimationUsingKeyFrames>
+								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.BorderBrush).
+									(GradientBrush.GradientStops)[1].(GradientStop.Color)"
+		                                          Storyboard.TargetName="Border">
+									<EasingColorKeyFrame KeyTime="0"
+									         Value="{StaticResource DisabledBorderDarkColor}" />
+								</ColorAnimationUsingKeyFrames>
+							</Storyboard>
+						</VisualState>
+					</VisualStateGroup>
+
+					<VisualStateGroup x:Name="CheckStates">
+						<VisualState x:Name="Checked">
+							<Storyboard>
+								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).
+									(GradientBrush.GradientStops)[1].(GradientStop.Color)"
+									Storyboard.TargetName="Border">
+									<EasingColorKeyFrame KeyTime="0"
+										Value="{StaticResource ControlPressedColor}" />
+								</ColorAnimationUsingKeyFrames>
+							</Storyboard>
+						</VisualState>
+
+						<VisualState x:Name="Unchecked" />
+
+						<VisualState x:Name="Indeterminate" />
+
+					</VisualStateGroup>
+				</VisualStateManager.VisualStateGroups>
+				<Border x:Name="Border"
+					Grid.ColumnSpan="2"
+					CornerRadius="2"
+					BorderThickness="1">
+					<Border.BorderBrush>
+						<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+							<GradientStop Color="{DynamicResource BorderLightColor}" Offset="0" />
+							<GradientStop Color="{DynamicResource BorderDarkColor}" Offset="1" />
+						</LinearGradientBrush>
+					</Border.BorderBrush>
+					<Border.Background>
+
+						<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+							<LinearGradientBrush.GradientStops>
+								<GradientStopCollection>
+									<GradientStop Color="{DynamicResource ControlLightColor}" />
+									<GradientStop Color="{DynamicResource ControlMediumColor}" Offset="1.0" />
+								</GradientStopCollection>
+							</LinearGradientBrush.GradientStops>
+						</LinearGradientBrush>
+					</Border.Background>
+				</Border>
+				<Border Grid.Column="0"
+					CornerRadius="2,0,0,2"
+					Margin="1" >
+					<Border.Background>
+						<SolidColorBrush Color="{DynamicResource ControlLightColor}"/>
+					</Border.Background>
+				</Border>
+				<Path x:Name="Arrow"
+					    Grid.Column="1"
+					    HorizontalAlignment="Center"
+					    VerticalAlignment="Center"
+					    Data="M 0 0 L 4 4 L 8 0 Z" >
+					<Path.Fill>
+						<SolidColorBrush Color="{DynamicResource GlyphColor}"/>
+					</Path.Fill>
+				</Path>
+			</Grid>
+		</ControlTemplate>
+
+		<Style x:Key="EllipseCheckBoxStyle" TargetType="ToggleButton">
+			<Setter Property="SnapsToDevicePixels" Value="true"/>
+			<Setter Property="OverridesDefaultStyle" Value="true"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="ToggleButton">
+						<Border x:Name="Border" 
+							  Width="52" 
+							  Height="32" 
+							  Background="Transparent" 
+							  CornerRadius="1" 
+							  BorderThickness="0" 
+							  BorderBrush="DarkGray">
+							<Grid>
+								<Ellipse x:Name="MyEllipse" 
+									   MinHeight="5" 
+									   MinWidth="5" 
+									   Stretch="Fill" 
+									   Fill="Red" Margin="-18,0,18,0"/>
+								<!--Fill="{Binding Path=FilterValue, Converter={StaticResource BoolToRG}}"/>-->
+								<!--<Line x:Name="Diag" Stroke="Transparent" X1="0" Y1="0" X2="1" Y2="1" Stretch="Fill"/>-->
+							</Grid>
+						</Border>
+
+						<ControlTemplate.Triggers>
+							<Trigger  Property="IsChecked" Value="True">
+								<Setter TargetName="MyEllipse" Property="Fill" Value="{StaticResource Green8}" />
+								<!--<Setter TargetName="GridsLabel.Content" Property="Content" Value="Combined Data Grid" />-->
+								<!--Combined Grid visible-->
+								<!--<Setter TargetName="Diag" Property="Stroke" Value="White" />-->
+							</Trigger>
+							<Trigger Property="IsChecked" Value="False">
+								<Setter TargetName="MyEllipse" Property="Fill" Value="{StaticResource Blue0}" />
+								<!--Manual selection grid visible-->
+								<!--<Setter TargetName="Diag" Property="Stroke" Value="White" />-->
+								<!--<Setter TargetName="GridsLabel" Property="Content" Value="Manual Query Grid" />-->
+							</Trigger>
+							<Trigger Property="IsChecked" Value="{x:Null}">
+								<Setter TargetName="MyEllipse" Property="Fill" Value="{StaticResource Red5}" />
+								<!--Std Grids only visible-->
+								<!--<Setter TargetName="Diag" Property="Stroke" Value="Transparent" />-->
+								<!--<Setter TargetName="GridsLabel" Property="Content" Value="Click for Grids" />-->
+							</Trigger>
+							<!--<Trigger Property="IsMouseOver" Value="true">
+								<Setter TargetName="Border" Property="Background" Value="Orange" />
+							</Trigger>-->
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</Window.Resources>
+
 	<Window.Background>
 		<LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
 			<GradientStop Offset="0" Color="#FF1D4835" />
@@ -51,7 +285,7 @@
 			GotFocus="GenericGrid2_GotFocus"			     
 			Grid.Column="1" 
 			Grid.Row="3"
-			Margin="5,5,5,19"
+			Margin="5,5,5,67"
 			RowEditEnding="GenericGrid2_RowEditEnding"/>
 
 		<DataGrid  x:Name ="GenericGrid3" 
@@ -77,6 +311,7 @@
 
 		<DataGrid  x:Name ="BankCombinedGrid" 
 			Background="{StaticResource Cyan5}"
+			AlternatingRowBackground="{StaticResource Green8}"
 			CanUserAddRows="False"
 			CellStyle="{StaticResource CustomerGridStyle}" 
 			GotFocus="BankCombinedGrid_GotFocus"			     
@@ -85,6 +320,31 @@
 			Grid.Row="1"
 			Margin="6,5,5,4"
 			Visibility="Collapsed"/>
+
+		<ToggleButton x:Name="ToggleBtn"
+			Background="{StaticResource Red5}" 
+			Content="Toggle Query Grid"
+			FontSize="24"
+			Foreground="{StaticResource White1}"
+			Grid.Column="1" 
+			Grid.Row="2"
+			IsThreeState="True"
+			Margin="450,3,50,0"  
+			Style="{StaticResource EllipseCheckBoxStyle}"
+			ToggleButton.Unchecked="Button_Unchecked"
+			ToggleButton.Checked="Button_Checked"
+			ToggleButton.Indeterminate="Button_Indeterminate"
+			VerticalAlignment="Top"/>
+
+		<TextBlock x:Name="GridsLabel" Text="Combined data Grid \nClick button to hide special grids" Foreground="White" 
+			FontSize="12"
+			Grid.Row="2" 
+			Grid.Column="1" 
+			HorizontalAlignment="Left" 
+			Margin="181,2,0,8"  
+			TextAlignment="Right"
+			TextWrapping="NoWrap"
+			Width="257"/>
 		<!--#endregion All DataGrids-->
 
 		<!--#region All labels-->
@@ -92,11 +352,11 @@
 		<Label x:Name="label1" Content="Bank Db : " 
 			 FontSize="14"
 			 Foreground="{StaticResource White0}"
+			 Grid.Column="1"
+			 Height="31"
 			 HorizontalAlignment="Left" 
 			 Margin="10,-2,0,0" 
-			 VerticalAlignment="Top" 
-			 Grid.Column="1"
-			 Height="31"/>
+			 VerticalAlignment="Top" />
 		<Label x:Name="CurrBank" Content="" 
 			 FontSize="14"
 			 Foreground="{StaticResource White0}"
@@ -467,6 +727,21 @@
 			</Button.Content>
 		</Button>
 
+		<Button x:Name="LoadCombined"
+			  Click="LoadCombined_Click"
+			  Content="Load Combined A/c's" 
+			  FontSize="16" 
+			  Foreground="{StaticResource Yellow0}"
+			  Grid.Column="1" 
+			  Grid.Row="4"
+			  Grid.RowSpan="2"
+			  Height="36" 
+			  HorizontalAlignment="Left" 
+			  Margin="400,-55,0,0" 
+			  Template="{StaticResource HorizontalGradientTemplateYellow}" 
+			  VerticalAlignment="Top" 
+			  Width="181"/>
+
 		<Button x:Name="button3"
 			Click="LoadMulti_Click"
 			Content="Load Multi A/c's" 
@@ -477,10 +752,10 @@
 			Grid.RowSpan="2"
 			Height="36" 
 			HorizontalAlignment="Left" 
-			Margin="422,-10,0,0" 
-			Template="{StaticResource HorizontalGradientTemplateBlue}" 
+			Margin="400,-10,0,0" 
+			Template="{StaticResource HorizontalGradientTemplateGreen}" 
 			VerticalAlignment="Top" 
-			Width="159"/>
+			Width="181"/>
 
 		<Button x:Name="CloseGenGridBtn" 
 			Click="CloseGenericWindow"
@@ -489,14 +764,13 @@
 			Foreground="Red"
 			Grid.Column="1" 
 			Grid.Row="4"
-			Grid.RowSpan="2"
 			Height="36" 
 			HorizontalAlignment="Left" 
-			Margin="420,34,0,0"  
+			Margin="401,34,0,0"  
 			Opacity="0.4"
 			Template="{StaticResource HorizontalGradientTemplateRed}"
 			VerticalAlignment="Top" 
-			Width="159"/>
+			Width="178"/>
 
 		<Label x:Name="DbLabel1" Content="Bank Db to load:" 
 			FontSize="14"
@@ -530,6 +804,7 @@
 			Grid.Row="3"
 			VerticalAlignment="Top" 
 			Width="184" />
+
 		<!--#endregion Data Entry fields-->
 
 	</Grid>

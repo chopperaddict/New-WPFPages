@@ -1,6 +1,7 @@
 ﻿using System;
 using System . Collections . Generic;
 using System . Collections . ObjectModel;
+using System . Configuration;
 using System . Data . SqlClient;
 using System . Diagnostics;
 using System . Linq;
@@ -41,6 +42,29 @@ namespace WPFPages . Views
 
 		// Temp declaration
 		bool CreateCombinedDb = true;
+		static private int ToggleBtnStatus { get; set; }
+
+		public double Checked
+		{
+			get
+			{return ( double ) GetValue ( CheckedProperty );}
+			set {SetValue ( CheckedProperty , value );}
+		}
+
+		public static readonly DependencyProperty CheckedProperty =
+				DependencyProperty . Register ( "Checked",
+				typeof ( int ),
+				typeof ( DapperTesting),
+				new PropertyMetadata ( ( int) 0 ), OnCheckedPropertyChanged );
+
+		private static bool OnCheckedPropertyChanged ( object value )
+		{
+			int x = Convert.ToInt32(value);
+			ToggleBtnStatus = ( x );
+
+			return true;
+		}
+
 
 		public DapperTesting ( )
 		{
@@ -85,6 +109,7 @@ namespace WPFPages . Views
 			GenericGrid3 . Background = FindResource ( "White0" ) as SolidColorBrush;
 			GenericGrid1 . Background = FindResource ( "Red5" ) as SolidColorBrush;
 			GenericGrid1 . Focus ( );
+			GridsLabel . Text = "Combined data Grid \nClick button to hide special grids";
 			Mouse . OverrideCursor = Cursors . Arrow;
 		}
 
@@ -128,8 +153,8 @@ namespace WPFPages . Views
 			GenericGrid3 . Background = FindResource ( "Red5" ) as SolidColorBrush;
 			timer . Stop ( );
 			endsecs = DateTime . Now . Second * 1000 + DateTime . Now . Millisecond;
-			if ( endsecs - startsecs < 0 )
-				Debugger . Break ( );
+			//if ( endsecs - startsecs < 0 )							  
+			//	Debugger . Break ( );
 			LoadTime . Text = ( endsecs - startsecs ) . ToString ( ) + " Milliseconds";
 			BankCount . Text = bvm . Count . ToString ( );
 			CustCount . Text = cvm . Count . ToString ( );
@@ -194,30 +219,30 @@ namespace WPFPages . Views
 						args [ 2 ] = int . Parse ( MaxRecords . Text );
 				}
 			}
-			if ( CreateCombinedDb )
-			{
-				bool result = await DapperSupport.CreateBankCombinedAsync (  bcvm ,
-		       "" ,
-		     false );
-				if ( result )
-				{
-					Console . WriteLine ( "BankCombined Db Created/Recreated successfully..." );
-					bcvm = DapperSupport . GetBankCombinedDb ( bcvm ,
-					"" ,
-					"",
-					"" ,
-					"" ,
-					false ,
-					false ,
-				"DAPPERTESTING" ,
-					args );
+			//if ( CreateCombinedDb )
+			//{
+			//	bool result = await DapperSupport.CreateBankCombinedAsync (  bcvm ,
+		 //      "" ,
+		 //    false );
+			//	if ( result )
+			//	{
+			//		Console . WriteLine ( "BankCombined Db Created/Recreated successfully..." );
+			//		bcvm = DapperSupport . GetBankCombinedDb ( bcvm ,
+			//		"" ,
+			//		"BankCombined" ,
+			//		"" ,
+			//		"" ,
+			//		false ,
+			//		false ,
+			//		"DAPPERTESTING" ,
+			//		args );
 
-					BankCombinedGrid . ItemsSource = bcvm;
-					BankCombinedGrid . UpdateLayout ( );
-					BankCombinedGrid . Refresh (  );
-					BankCombinedGrid . Visibility = Visibility . Visible;
-				}
-			}
+			//		BankCombinedGrid . ItemsSource = bcvm;
+			//		BankCombinedGrid . UpdateLayout ( );
+			//		BankCombinedGrid . Refresh (  );
+			//		BankCombinedGrid . Visibility = Visibility . Visible;
+			//	}
+			//}
 			if ( UseAsyncLoading )
 			{
 				bool resut  = await DapperSupport . GetBankObsCollectionAsync ( bvm ,
@@ -1173,7 +1198,56 @@ namespace WPFPages . Views
 		{
 			UseManualDapper . IsEnabled = true;
 		}
+		// Toggle Button  handlers
+		private void Button_Indeterminate ( object sender , RoutedEventArgs e )
+		{
+			UniversalGrid . Visibility = Visibility . Collapsed;
+			UniversalGrid . Refresh ( );
+			BankCombinedGrid . Visibility = Visibility . Collapsed;
+			BankCombinedGrid . Refresh ( );
+			GridsLabel . Text = "Complex Grids closed\nClick button to show special grids";
+			//MyEllipse.
+		}
+		private void Button_Checked ( object sender , RoutedEventArgs e )
+		{
+			BankCombinedGrid . Visibility = Visibility . Visible;
+			BankCombinedGrid . Refresh ( );
+			GridsLabel . Text = "Combined data Grid \nClick button to hide special grids";
+		}
+		private void Button_Unchecked ( object sender , RoutedEventArgs e )
+		{
+			BankCombinedGrid . Visibility = Visibility . Collapsed;
+			BankCombinedGrid . Refresh ( );
+			UniversalGrid . Visibility = Visibility . Visible;
+			UniversalGrid . Refresh ( );
+			GridsLabel . Text = "Manual Query result\nClick button to show Combined Db Grid";
+		}
 
+		private async void LoadCombined_Click ( object sender , RoutedEventArgs e )
+		{
+			bool result = await DapperSupport.CreateBankCombinedAsync (  bcvm ,
+			 "" ,
+		     false );
+			if ( result )
+			{
+				Console . WriteLine ( "BankCombined Db Created/Recreated successfully..." );
+				bcvm = DapperSupport . GetBankCombinedDb ( bcvm ,
+				"" ,
+				"BankCombined" ,
+				"" ,
+				"" ,
+				false ,
+				false ,
+				"DAPPERTESTING" ,
+				args );
+
+				BankCombinedGrid . ItemsSource = bcvm;
+				BankCombinedGrid . UpdateLayout ( );
+				BankCombinedGrid . Refresh ( );
+				BankCombinedGrid . Visibility = Visibility . Visible;
+				GridsLabel . Text = "Combined data Grid \nClick button to hide special grids";
+			}
+		}
 	}
 	class StringWrapper
 	{

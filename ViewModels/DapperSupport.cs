@@ -3044,6 +3044,7 @@ namespace WPFPages . ViewModels
 
 		#region	GETBANKCOMBINEDDB
 
+		// NOT ASYNC !!
 		public static ObservableCollection<BankCombinedViewModel> GetBankCombinedDb ( ObservableCollection<BankCombinedViewModel> collection ,
 		string SqlCommand = "" ,
 		string DbNameToLoad = "" ,
@@ -3056,13 +3057,66 @@ namespace WPFPages . ViewModels
 		{
 			ObservableCollection<BankCombinedViewModel> bvmcollection = new ObservableCollection<BankCombinedViewModel>();
 			string ConString = ( string ) Properties . Settings . Default [ "BankSysConnectionString" ];
-			DbNameToLoad = "BankCombined";
-			//====================================
-			// Use STD DAPPER QUERY to load Bank data
-			//====================================
+			//DbNameToLoad = "BankCombined";
+			//============================================
+			// Use STD DAPPER QUERY to load BankCombined data
+			//============================================
+			string[] ValidFields=
+			{
+				"ID",
+				"CUSTNO",
+				"BANKNO",
+				"ACTYPE",
+				"INTRATE" ,
+				"BALANCE" ,
+				"ODATE" ,
+				"CDATE",
+				"FNAME",
+				"LNAME",
+				"ADDR1",
+				"ADDR2",
+				"TOWN",
+				"COUNTY",
+				"PCODE",
+				"PHONE"
+				};
+			string[] errorcolumns;
+
 			IEnumerable < BankCombinedViewModel> bvmi;
 			using ( IDbConnection db = new SqlConnection ( ConString ) )
 			{
+				if ( ValidateSortConditionColumns ( ValidFields , "BankCmobined" , Orderby , Conditions , out errorcolumns ) == false )
+				{
+					if ( Orderby . ToUpper ( ) . Contains ( errorcolumns [ 0 ] ) )
+					{
+						MessageBox . Show ( $"BANKCOMBINED dB\nSorry, but an invalid Column name has been \nidentified in the Sorting Clause provided.\n\nThe Invalid Column identified was :\n{errorcolumns [ 0 ]}.\n\nTherefore No Sort will be performed for this Db" );
+						Orderby = "";
+					}
+					else if ( Conditions . ToUpper ( ) . Contains ( errorcolumns [ 0 ] ) )
+					{
+						MessageBox . Show ( $"BANKCOMBINED dB\nSorry, but an invalid Match clause or Column Name \nhas been identified in the Data Selection Clause.\n\nThe Invalid item identified was :\n\t{errorcolumns [ 0 ]}\n\nTherefore No Data Matching will be performed for this Db" );
+						Conditions = "";
+					}
+					else
+					{
+						MessageBox . Show ( $"BANKCOMBINED dB\nSorry, but the Loading of the BankCombined Db is being aborted due to \na non existent Column name.\nThe Invalid Column identified was :\n{errorcolumns [ 0 ]}" );
+						return collection;
+					}
+				}
+
+				// make sure order by clause is correctly formatted
+				if ( Orderby . Trim ( ) != "" )
+				{
+					if ( Orderby . ToUpper ( ) . Contains ( "ORDER BY " ) == false )
+					{
+						Orderby = " Order by " + Orderby;
+					}
+				}
+				if ( Conditions != "" )
+				{
+					if ( Conditions . ToUpper ( ) . Contains ( "WHERE" ) == false )
+						Conditions = " Where " + Conditions;
+				}
 				try
 				{
 					//====================================
@@ -3128,7 +3182,8 @@ namespace WPFPages . ViewModels
 			return bvmcollection;
 		}
 		#endregion	GETBANKCOMBINEDDB
-
+		
+		#region VALIDATESORTCONDITIONCOLUMNS
 		private static bool ValidateSortConditionColumns ( string [ ] validFields , string caller , string orderby , string sortby , out string [ ] errorcolumns )
 		{
 			string[] errors={"","","","","","","","","","","","","","","","","","","",""};
@@ -3198,8 +3253,6 @@ namespace WPFPages . ViewModels
 					}
 				}
 			}
-			//if ( caller == "Customer" )
-			//{
 			foreach ( var item in validFields )
 			{
 				if ( item != "" )
@@ -3219,6 +3272,9 @@ namespace WPFPages . ViewModels
 			return result;
 			//		}
 		}
+		
+		#endregion VALIDATESORTCONDITIONCOLUMNS
+
 		#endregion Utitlity/Special Methods
 	}
 }
