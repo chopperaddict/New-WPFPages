@@ -94,7 +94,7 @@
 							<RowDefinition Height="Auto" />
 						</Grid.RowDefinitions>
 						<Border Grid.Row="1"
-                  Grid.Column="0">
+					               Grid.Column="0">
 							<ScrollContentPresenter Margin="{TemplateBinding Padding}" />
 						</Border>
 						<RepeatButton Style="{StaticResource MenuScrollButton}"

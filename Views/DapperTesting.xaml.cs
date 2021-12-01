@@ -1,4 +1,5 @@
 ﻿using System;
+using System . Collections;
 using System . Collections . Generic;
 using System . Collections . ObjectModel;
 using System . Configuration;
@@ -11,6 +12,7 @@ using System . Threading;
 using System . Threading . Tasks;
 using System . Windows;
 using System . Windows . Controls;
+using System . Windows . Controls . Primitives;
 using System . Windows . Data;
 using System . Windows . Documents;
 using System . Windows . Input;
@@ -20,6 +22,7 @@ using System . Windows . Media . Imaging;
 using System . Windows . Shapes;
 using System . Windows . Threading;
 
+using WPFPages . UserControls;
 using WPFPages . ViewModels;
 
 namespace WPFPages . Views
@@ -43,12 +46,18 @@ namespace WPFPages . Views
 		// Temp declaration
 		bool CreateCombinedDb = true;
 		static private int ToggleBtnStatus { get; set; }
-
+		bool[] status = { false , false , false } ;
+		public struct ToggleFlags
+		{
+//			public bool[] status ;
+			public int current;
+		}
+		ToggleFlags tFlags = new ToggleFlags();
 		public double Checked
 		{
 			get
-			{return ( double ) GetValue ( CheckedProperty );}
-			set {SetValue ( CheckedProperty , value );}
+			{ return ( double ) GetValue ( CheckedProperty ); }
+			set { SetValue ( CheckedProperty , value ); }
 		}
 
 		public static readonly DependencyProperty CheckedProperty =
@@ -65,12 +74,22 @@ namespace WPFPages . Views
 			return true;
 		}
 
-
 		public DapperTesting ( )
 		{
 			InitializeComponent ( );
 		}
+		public override void OnApplyTemplate ( )
+		{
+			base . OnApplyTemplate ( );
 
+			if ( Template != null )
+			{
+				var v = this . GetTemplateChild ( "MyEllipse" );
+			}
+
+			//UpdateStates ( false ); // Not sure what this does ?
+			return;
+		}
 		private void Window_Loaded ( object sender , RoutedEventArgs e )
 		{
 			this . Show ( );
@@ -79,12 +98,14 @@ namespace WPFPages . Views
 			args [ 1 ] = 1700000;
 			args [ 2 ] = 0;
 			UseAsync . IsChecked = true;
+			// Setup toggle button status  to indeterminate (0)
+			tFlags . current = 0;
 			Flags . USEADOWITHSTOREDPROCEDURES = true;
 			EventControl . BankDataLoaded += EventControl_BankDataLoaded;
 			EventControl . CustDataLoaded += EventControl_CustDataLoaded;
 			EventControl . DetDataLoaded += EventControl_DetDataLoaded;
 			//			timer . Interval = TimeSpan . FromSeconds ( 1 );
-			timer . Interval = TimeSpan .FromMilliseconds( 1 );
+			timer . Interval = TimeSpan . FromMilliseconds ( 1 );
 			timer . Tick += Timer_Tick;
 			ActiveLoadMethod = "USESDAPPERSTOREDPROCEDURE";
 			BankDb . Text = "BANKACCOUNT";
@@ -108,8 +129,12 @@ namespace WPFPages . Views
 			GenericGrid2 . Background = FindResource ( "White0" ) as SolidColorBrush;
 			GenericGrid3 . Background = FindResource ( "White0" ) as SolidColorBrush;
 			GenericGrid1 . Background = FindResource ( "Red5" ) as SolidColorBrush;
+
+			tFlags . current = 2;
+			ToggleBtn_Click ( null , null );
+			SetDummyGridEntries ( );
+
 			GenericGrid1 . Focus ( );
-			GridsLabel . Text = "Combined data Grid \nClick button to hide special grids";
 			Mouse . OverrideCursor = Cursors . Arrow;
 		}
 
@@ -222,8 +247,8 @@ namespace WPFPages . Views
 			//if ( CreateCombinedDb )
 			//{
 			//	bool result = await DapperSupport.CreateBankCombinedAsync (  bcvm ,
-		 //      "" ,
-		 //    false );
+			//      "" ,
+			//    false );
 			//	if ( result )
 			//	{
 			//		Console . WriteLine ( "BankCombined Db Created/Recreated successfully..." );
@@ -817,12 +842,12 @@ namespace WPFPages . Views
 		private async void UseSelectClause ( object sender , RoutedEventArgs e )
 		{
 			string command= ManualSelect.Text.ToUpper().Trim();
-			if( ManualBtnText . Text == "Create Manual  Command :-" )
+			if ( ManualBtnText . Text == "Create Manual  Command :-" )
 			{
-				ManualBtnText.Text = "Use Manual Command ...";
+				ManualBtnText . Text = "Use Manual Command ...";
 				ManualSelect . Text = "User: ";
 				ManualSelect . CaretIndex = ManualSelect . Text . Length;
-				ManualSelect .Focus ( );
+				ManualSelect . Focus ( );
 				return;
 			}
 			if ( command . Contains ( "USER:" ) )
@@ -1006,7 +1031,7 @@ namespace WPFPages . Views
 					GenericGrid1 . Background = FindResource ( "White0" ) as SolidColorBrush;
 					GenericGrid2 . Focus ( );
 				}
-			Mouse . OverrideCursor = Cursors . Arrow;
+				Mouse . OverrideCursor = Cursors . Arrow;
 			}
 			else if ( command . Contains ( "FROM" ) && ( command . Contains ( "DET" ) || command . Contains ( "SECACCOUNT" ) ) )
 			{
@@ -1064,8 +1089,6 @@ namespace WPFPages . Views
 					DetCount . Text = dvm . Count . ToString ( );
 					timer . Stop ( );
 					endsecs = DateTime . Now . Second * 1000 + DateTime . Now . Millisecond;
-					//if ( endsecs - startsecs < 0 )
-					//	Debugger . Break ( );
 					LoadTime . Text = ( endsecs - startsecs ) . ToString ( ) + " Milliseconds";
 					GenericGrid2 . Background = FindResource ( "White0" ) as SolidColorBrush;
 					GenericGrid3 . Background = FindResource ( "Red5" ) as SolidColorBrush;
@@ -1081,6 +1104,7 @@ namespace WPFPages . Views
 			if ( e . Key == Key . Enter )
 				UseSelectClause ( sender , null );
 		}
+
 		/// <summary>
 		/// Generic method to create a database for an unkown data set retreived via Dapper sql Query
 		/// it uses a GenericClass Class that has 20 fields so data can be parsed from a string into fields
@@ -1088,7 +1112,7 @@ namespace WPFPages . Views
 		/// </summary>
 		/// <param name="dgrid"></param>
 		/// <param name="ReceivedDbData"></param>
-		private void CreateDatabase ( DataGrid dgrid , List<string> ReceivedDbData )
+		public   void CreateDatabase ( DataGrid dgrid , List<string> ReceivedDbData )
 		{
 			string datain="";
 			// Post process data string received 
@@ -1168,13 +1192,19 @@ namespace WPFPages . Views
 						}
 					}
 					catch ( Exception ex ) { }
-					
+
 				}
 				genericcollection . Add ( genclass );
 			}
+			tFlags . current = 1;
+			ToggleBtn_Click ( null , null );
+			
+			
 			UniversalGrid . ItemsSource = genericcollection;
 			UniversalGrid . SelectedIndex = 0;
+			UniversalGrid . Visibility = Visibility . Visible;
 			UniversalGrid . Refresh ( );
+			UniversalGrid . Focus ( );
 
 			// *** NB: *** This uses the StringWrapper Class at bottom fo this file to get the content of the input List<string> so they display in a datagrid
 			//foreach ( var item in collection )
@@ -1184,9 +1214,18 @@ namespace WPFPages . Views
 
 		private void CloseGenericWindow ( object sender , RoutedEventArgs e )
 		{
+			// Close Generid selection Grid
 			UniversalGrid . Visibility = Visibility . Collapsed;
+			UniversalGrid . ItemsSource = null;
+			UniversalGrid . Refresh ( );
 			BankCombinedGrid . Visibility = Visibility . Collapsed;
-			CloseGenGridBtn . Opacity= 0.3;
+			BankCombinedGrid . ItemsSource = null;
+			BankCombinedGrid . Refresh ( );
+			// rest Db entries to dummy entries
+			SetDummyGridEntries ( );
+			tFlags . current = 2;
+			ToggleBtn_Click ( null , null );
+			CloseGenGridBtn . Opacity = 0.6;
 		}
 
 		private void ManualSelect_MouseEnter ( object sender , MouseEventArgs e )
@@ -1198,63 +1237,137 @@ namespace WPFPages . Views
 		{
 			UseManualDapper . IsEnabled = true;
 		}
+
 		// Toggle Button  handlers
 		private void Button_Indeterminate ( object sender , RoutedEventArgs e )
 		{
+			// Blue ellipse visible	  - startup condition - Both grids closed
+			// NO special grids visible
 			UniversalGrid . Visibility = Visibility . Collapsed;
 			UniversalGrid . Refresh ( );
 			BankCombinedGrid . Visibility = Visibility . Collapsed;
 			BankCombinedGrid . Refresh ( );
-			GridsLabel . Text = "Complex Grids closed\nClick button to show special grids";
-			//MyEllipse.
+			GridsLabel . Text = "Standard view\nClick for Bank+Customer grid";
+			GenericGrid1 . Focus ( );
+			ToggleBtn . IsChecked = null;
+			ToggleBtn . Refresh ( );
 		}
 		private void Button_Checked ( object sender , RoutedEventArgs e )
 		{
+			// Green ellipse visible  - Combined Grid visible
+			// 2nd in sequence Blue - Green - Red
+			UniversalGrid . Visibility = Visibility . Collapsed;
+			UniversalGrid . Refresh ( );
 			BankCombinedGrid . Visibility = Visibility . Visible;
 			BankCombinedGrid . Refresh ( );
-			GridsLabel . Text = "Combined data Grid \nClick button to hide special grids";
+			GridsLabel . Text = "Combined data Grid \nClick again for standard grids";
+			BankCombinedGrid . Focus ( );
+			ToggleBtn . IsChecked = true;
+			ToggleBtn . Refresh ( );
 		}
 		private void Button_Unchecked ( object sender , RoutedEventArgs e )
 		{
+			// Red  ellipse visible	 - Universal Grid visible
+			// 3rd in sequence
 			BankCombinedGrid . Visibility = Visibility . Collapsed;
 			BankCombinedGrid . Refresh ( );
 			UniversalGrid . Visibility = Visibility . Visible;
 			UniversalGrid . Refresh ( );
 			GridsLabel . Text = "Manual Query result\nClick button to show Combined Db Grid";
+			UniversalGrid . Focus ( );
+			ToggleBtn . IsChecked = false;
+			ToggleBtn . Refresh ( );
 		}
 
 		private async void LoadCombined_Click ( object sender , RoutedEventArgs e )
 		{
+			//DependencyObject dpo = new DependencyObject ( );
+			//object  dobj = dpo . GetValue ( DapperTesting . CheckedProperty);
+			//int offset = System.Convert.ToInt32(dobj);
+			timer . Start ( );
+			startsecs = DateTime . Now . Second * 1000 + DateTime . Now . Millisecond;
 			bool result = await DapperSupport.CreateBankCombinedAsync (  bcvm ,
 			 "" ,
 		     false );
 			if ( result )
 			{
 				Console . WriteLine ( "BankCombined Db Created/Recreated successfully..." );
-				bcvm = DapperSupport . GetBankCombinedDb ( bcvm ,
-				"" ,
-				"BankCombined" ,
-				"" ,
-				"" ,
-				false ,
-				false ,
-				"DAPPERTESTING" ,
-				args );
+				bcvm = DapperSupport . GetBankCombinedDb (
+					bcvm ,
+					"" ,
+					"BankCombined " ,
+					UseSort . IsChecked == true ? OrderString . Text : "" ,
+					UseConditions . IsChecked == true ? Conditions . Text : "" ,
+					true ,
+					false ,
+					"DAPPERTESTING" ,
+					args );
 
 				BankCombinedGrid . ItemsSource = bcvm;
 				BankCombinedGrid . UpdateLayout ( );
 				BankCombinedGrid . Refresh ( );
 				BankCombinedGrid . Visibility = Visibility . Visible;
 				GridsLabel . Text = "Combined data Grid \nClick button to hide special grids";
+				timer . Stop ( );
+				endsecs = DateTime . Now . Second * 1000 + DateTime . Now . Millisecond;
+				LoadTime . Text = ( endsecs - startsecs ) . ToString ( ) + " Milliseconds";
+				tFlags . current = 1;
+				ToggleBtn_Click (null,null );
 			}
+
 		}
+		private void ToggleBtn_Click ( object sender , RoutedEventArgs e )
+		{
+			if ( tFlags . current == 0 )      // None
+			{
+				tFlags . current = 1;        // move to Universal
+				Button_Unchecked( null , null );
+			}
+			else if ( tFlags . current == 1 )      // Generic/Universal
+			{
+				tFlags .current = 2;		// move to Combined
+				Button_Checked ( null , null );
+			}
+			else if ( tFlags . current == 2 ) // Combined
+			{
+				tFlags. current = 0;          // move to standard
+				Button_Indeterminate ( null , null );
+			}
+
+		}
+		
+		void SetDummyGridEntries ( )
+		{
+			BankCombinedGrid . ItemsSource = null;
+			BankCombinedViewModel bcv = new BankCombinedViewModel();
+			bcv . FName = "Combined Db has not been loaded ....";
+			bcvm . Clear ( );
+			bcvm . Add ( bcv );
+			BankCombinedGrid . ItemsSource = bcvm;
+
+			UniversalGrid . ItemsSource = null;
+			GenericClass  gc = new GenericClass ( );
+			gc . field5 = "No Generic Query has been performed....";
+			ObservableCollection<GenericClass> gcollection = new ObservableCollection<GenericClass>();
+			gcollection . Clear ( );
+			gcollection . Add ( gc );
+			UniversalGrid . ItemsSource = gcollection;
+		}
+
+
 	}
+
+	#region extension classes
 	class StringWrapper
 	{
 		string Value { get; set; }
 	}
-	public class GenericClass
+	public class GenericClass 
 	{
+		public GenericClass ( )
+		{
+
+		}
 		public string field1 { get; set; }
 		public string field2 { get; set; }
 		public string field3 { get; set; }
@@ -1275,6 +1388,11 @@ namespace WPFPages . Views
 		public string field18 { get; set; }
 		public string field19 { get; set; }
 		public string field20 { get; set; }
+
+		//public IEnumerator GetEnumerator ( )
+		//{
+		//	return this . GetEnumerator ( );
+		//}
 	}
 
 	public class GenericHeaders
@@ -1285,5 +1403,6 @@ namespace WPFPages . Views
 	{
 		string FieldName { get; set; }
 	}
+	#endregion extension classes
 
 }

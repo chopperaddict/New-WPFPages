@@ -39,6 +39,7 @@
                   <ResourceDictionary Source="Styles\ListBoxViewStyles.xaml" />
 			<ResourceDictionary Source="Dicts\DataGridColumns.xaml" />
 			<ResourceDictionary Source="Dicts\ListBoxStyles.xaml" />
+			<ResourceDictionary Source="Dicts\ComboBoxStyles.xaml" />
 			<ResourceDictionary Source="DataTemplates\NWDataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
 

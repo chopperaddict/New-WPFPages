@@ -10,7 +10,8 @@
 	  Height="450" 
 	  MinHeight="475"
 	  Width="694"
-	  MinWidth="720"
+	  ResizeMode="CanResizeWithGrip"
+ 	  MinWidth="720"
 	  WindowStartupLocation="CenterScreen"
 	  WindowState="Normal"
 	  WindowStyle="SingleBorderWindow">

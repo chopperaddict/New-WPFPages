@@ -6,9 +6,12 @@
         xmlns:local="clr-namespace:WPFPages.Views"
         xmlns:ctrl="clr-namespace:WPFPages.UserControls"
         mc:Ignorable="d"
-	  
+  	  ResizeMode="CanResizeWithGrip"
+ 
 	  Loaded="Window_Loaded"
-        Title="Dapper Db Testing using various Methods incl. M$SQL Stored Procedures" Height="917" Width="1200">
+        Title="Dapper Db Testing using various Methods incl. M$SQL Stored Procedures" 
+	  Height="860" Width="1200"
+	  MinHeight="860" MinWidth="1200">
 	<Window.Resources>
 
 		<!--#region Control colors.-->
@@ -208,7 +211,8 @@
 									   MinHeight="5" 
 									   MinWidth="5" 
 									   Stretch="Fill" 
-									   Fill="Red" Margin="-18,0,18,0"/>
+									   Fill="Red" Margin="-18,0,18,0">
+								</Ellipse>
 								<!--Fill="{Binding Path=FilterValue, Converter={StaticResource BoolToRG}}"/>-->
 								<!--<Line x:Name="Diag" Stroke="Transparent" X1="0" Y1="0" X2="1" Y2="1" Stretch="Fill"/>-->
 							</Grid>
@@ -321,30 +325,7 @@
 			Margin="6,5,5,4"
 			Visibility="Collapsed"/>
 
-		<ToggleButton x:Name="ToggleBtn"
-			Background="{StaticResource Red5}" 
-			Content="Toggle Query Grid"
-			FontSize="24"
-			Foreground="{StaticResource White1}"
-			Grid.Column="1" 
-			Grid.Row="2"
-			IsThreeState="True"
-			Margin="450,3,50,0"  
-			Style="{StaticResource EllipseCheckBoxStyle}"
-			ToggleButton.Unchecked="Button_Unchecked"
-			ToggleButton.Checked="Button_Checked"
-			ToggleButton.Indeterminate="Button_Indeterminate"
-			VerticalAlignment="Top"/>
 
-		<TextBlock x:Name="GridsLabel" Text="Combined data Grid \nClick button to hide special grids" Foreground="White" 
-			FontSize="12"
-			Grid.Row="2" 
-			Grid.Column="1" 
-			HorizontalAlignment="Left" 
-			Margin="181,2,0,8"  
-			TextAlignment="Right"
-			TextWrapping="NoWrap"
-			Width="257"/>
 		<!--#endregion All DataGrids-->
 
 		<!--#region All labels-->
@@ -409,9 +390,9 @@
 			Grid.Column="2" 
 			Grid.Row="4"
 			Height="89" 
-			HorizontalAlignment="Left" 
-			Margin="410,51,0,0" 
-			VerticalAlignment="Top" 
+			HorizontalAlignment="Right" 
+			Margin="410,0,0,5" 
+			VerticalAlignment="Bottom" 
 			Template="{StaticResource HorizontalGradientTemplateRed}"
 			Width="166"/>
 
@@ -420,13 +401,14 @@
 			Content="Reload ALL Db's" 
 			FontSize="18" 
 			Grid.Column="2" 
-			Grid.Row="4"
-			HorizontalAlignment="Left" 
-			Height="68" 
-			Margin="410,-30,0,0" 
+			Grid.Row="3"
+			  Grid.RowSpan="2"
+			HorizontalAlignment="Right" 
+			Height="90" 
+			Margin="410,0,0,110" 
 			Template="{StaticResource HorizontalGradientTemplateGray}"
-			VerticalAlignment="Top" 
-			Width="166" Grid.RowSpan="2"/>
+			VerticalAlignment="Bottom" 
+			Width="166" />
 		<!--#endregion All Buttons-->
 
 		<!--#region Data recovery options-->
@@ -437,30 +419,36 @@
 			  FontSize="16"
 			  Foreground="{StaticResource White0}"
 			  Grid.Column="1"
-			  Grid.Row="4"
+			  Grid.Row="3"
+			 Height="32" 
 			  HorizontalAlignment="Left" 
-			  Margin="8,-12,0,0" 
-			  VerticalAlignment="Top" Width="370" Height="29" Grid.RowSpan="2" />
+			  Margin="8,0,0,20" 
+			  VerticalAlignment="Bottom" 
+			 Width="370"/>
 		<RadioButton x:Name="UseStoredProc" 
 			Click="UseStoredProc_Click"
 			Content="Use Dapper with Stored Procedure" 
 			FontSize="16"
 			Foreground="{StaticResource White0}"
 			Grid.Column="1"
-			Grid.Row="4"
+			Grid.Row="3" 
 			HorizontalAlignment="Left" 
-			Margin="8,20,0,0" 
-			VerticalAlignment="Top" Width="265" Height="29" />
+			Margin="8,0,0,118" 
+			VerticalAlignment="Bottom" 
+			Height="32" 
+			Width="265" Grid.RowSpan="2" />
 		<RadioButton x:Name="UseDapperStoredProc" 
 			Click="UseDapperStoredProc_Click"
 			Content="Use Dapper Directly (No Stored Procedure)" 
 			FontSize="16"
 			Foreground="{StaticResource White0}"
 			Grid.Column="1" 
-			Grid.Row="4"
+			Grid.Row="3"
+			Height="32"
 			 HorizontalAlignment="Left" 
-			Margin="9,52,0,0" 
-			VerticalAlignment="Top" Width="325" Height="29"/>
+			Margin="9,0,0,-70" 
+			VerticalAlignment="Bottom" 
+			Width="325" />
 		<!--#endregion Data recovery options-->
 
 		<!--#region Data Entry fields-->
@@ -481,24 +469,24 @@
 			FontSize="18"
 			Grid.Column="2" 
 			HorizontalAlignment="Left" 
-			Margin="22,78,0,0" 
+			Margin="22,83,0,0" 
 			Grid.Row="3" 
 			Text="CUSTOMER" 
 			TextAlignment="Center"
 			TextWrapping="Wrap" 
 			VerticalAlignment="Top" 
-			Width="192" MouseEnter="CustDb_MouseEnter"/>
+			Width="192" MouseEnter="CustDb_MouseEnter" Height="28"/>
 		<TextBox x:Name="DetDb" 
 			Background="{StaticResource Cyan5}"
 			FontSize="18"
 			Grid.Column="2" 
 			HorizontalAlignment="Left" 
-			Margin="22,0,0,0" 
+			Margin="22,158,0,0" 
 			Grid.Row="3" 
 			Text="SECACCOUNTS" 
 			TextAlignment="Center"
 			TextWrapping="Wrap" 
-			VerticalAlignment="Center" 
+			VerticalAlignment="Top" 
 			Width="192" MouseEnter="DetDb_MouseEnter"
 			   KeyDown="DetDb_KeyDown"/>
 
@@ -507,7 +495,7 @@
 			FontSize="20"
 			Grid.Column="2" 
 			Grid.Row="3" 
-			HorizontalAlignment="Left" 
+			HorizontalAlignment="Right" 
 			TextAlignment="Center"
 			Margin="507,14,0,0"   			
 			Text="" 
@@ -516,12 +504,12 @@
 			Width="72" MouseEnter="BankDb_MouseEnter"/>
 		<CheckBox x:Name="MaxRecordsToLoad" 
 			Click="MaxRecordsToLoad_Click"
-			Content="Limit Records loaded" 
+			Content="Limit Records loaded to max. :" 
 			FontSize="18"
 			Foreground="{StaticResource White0}"
 			Grid.Column="2" 
-			HorizontalAlignment="Left" 
-			Margin="315,17,0,0" 
+			HorizontalAlignment="Right" 
+			Margin="0,17,93,0" 
 			Grid.Row="3" 
 			VerticalAlignment="Top"/>
 
@@ -530,21 +518,21 @@
 			  FontSize="20"
 			  Grid.Column="2" 
 			  Grid.Row="3" 
-			  HorizontalAlignment="Left" 
+			HorizontalAlignment="Right" 
 			  TextAlignment="Center"
-			  Margin="240,78,0,0" 
+			  Margin="0,83,0,0" 
 			
 			  Text="CustNo, Bankno" 
 			  TextWrapping="Wrap" 
 			  VerticalAlignment="Top" 
-			  Width="339" MouseEnter="BankDb_MouseEnter"/>
+			  Width="350" MouseEnter="BankDb_MouseEnter"/>
 		<CheckBox x:Name="UseSort" 
-			Content="Use Sort option above" 
+			Content="Use Sort option below" 
 			FontSize="18"
 			Foreground="{StaticResource White0}"
 			Grid.Column="2" 
-			HorizontalAlignment="Left" 
-			Margin="236,113,0,0" 
+			HorizontalAlignment="Right" 
+			Margin="0,54,155,0" 
 			Grid.Row="3" 
 			VerticalAlignment="Top"/>
 
@@ -553,46 +541,47 @@
 			FontSize="20"
 			Grid.Column="2" 
 			Grid.Row="3" 
-			HorizontalAlignment="Left" 
+			HorizontalAlignment="Right" 
 			TextAlignment="Center"
-			Margin="240,158,0,0" 				
+			Margin="0,158,0,0" 				
 			Text=" where Actype >= 2" 
 			TextWrapping="Wrap" 
 			VerticalAlignment="Top" 
-			Width="339" MouseEnter="BankDb_MouseEnter"/>
+			Width="348" MouseEnter="BankDb_MouseEnter"/>
 		<CheckBox x:Name="UseConditions" 
-			Content="Use Selection condition above" 
+			Content="Use Selection condition below" 
 			FontSize="18"
 			Foreground="{StaticResource White0}"
 			Grid.Column="2" 
-			HorizontalAlignment="Left" 
-			Margin="236,197,0,0" 
 			Grid.Row="3" 
+			HorizontalAlignment="Right" 
+			Margin="0,131,90,0" 
 			VerticalAlignment="Top"/>
 		<Button x:Name="ReloadBank" 
 			  Content="Reload Bank Db" 
 			  FontSize="18" 			  
 			  Foreground="{StaticResource White2}"
-			  HorizontalAlignment="Left" 
+			  HorizontalAlignment="Stretch" 
 			  Click="ReloadBank_Click" 
-			  Grid.Row="4"
-			  Margin="14,-30,0,0" 
-			  VerticalAlignment="Top" 
+			  Grid.Row="3"
+			  Margin="-195,0,0,0" 
+			  VerticalAlignment="Bottom" 
 			  Height="50" 
 			  Width="364"
-			  Template="{StaticResource HorizontalGradientTemplateBlue}" Grid.Column="2" Grid.RowSpan="2"/>
+			  Template="{StaticResource HorizontalGradientTemplateBlue}" Grid.Column="2"/>
 		<Button x:Name="ReloadCust" 
 			  Content="Reload Customer Db" 
 			  FontSize="18" 
 			  Foreground="{StaticResource White2}"
-			  HorizontalAlignment="Left" 
+			  HorizontalAlignment="Stretch" 
 			  Click="ReloadCust_Click" 
+			  Grid.Column="2"
 			  Grid.Row="4"
-			  Margin="14,30,0,0" 
+			  Margin="-195,20,0,0" 
 			  VerticalAlignment="Top" 
 			  Height="50" 
 			  Width="364"
-			  Template="{StaticResource HorizontalGradientTemplateBlue}" Grid.Column="2"/>
+			  Template="{StaticResource HorizontalGradientTemplateBlue}" />
 		<Button x:Name="ReloadDet" 
 			Content="Reload SecAccount Db" 
 			Click="ReloadDet_Click" 
@@ -601,10 +590,10 @@
 			Grid.Column="2"
 			Grid.Row="4"
 			Height="50" 
-			HorizontalAlignment="Left" 
-			Margin="14,90,0,0" 
+			HorizontalAlignment="Stretch" 
+			Margin="-195,90,0,5" 
 			Template="{StaticResource HorizontalGradientTemplateBlue}" 
-			VerticalAlignment="Top" 
+			VerticalAlignment="Bottom" 
 			Width="364"/>
 		<TextBox x:Name="BankCount" 
 			Background="{StaticResource Blue0}"
@@ -631,6 +620,42 @@
 			  VerticalAlignment="Center" 
 			  Width="72" 
 			  Height="28" Grid.Column="2"/>
+
+		<TextBlock x:Name="GridsLabel" 
+			FontSize="12"
+			Foreground="White" 
+			Grid.Column="1" 
+			Grid.Row="2" 
+		     Height="45"
+			HorizontalAlignment="Left" 
+			Margin="170,2,0,305"  
+			Text="Combined data Grid \nClick button to hide special grids" 
+			TextAlignment="Right"
+			TextWrapping="NoWrap"
+			Width="257" Grid.RowSpan="2" />
+
+		<ToggleButton x:Name="ToggleBtn"
+			Background="{StaticResource Red5}" 
+			Click="ToggleBtn_Click"
+			FontSize="24"
+			Foreground="{StaticResource White1}"
+			Grid.Column="1" 
+			Grid.Row="2"
+			  HorizontalAlignment="Left" 
+			IsThreeState="True"
+			Margin="460,3,50,0"  
+			Style="{StaticResource EllipseCheckBoxStyle}"
+			VerticalAlignment="Center">
+			<ContentPresenter
+				Content="Click"
+				VerticalAlignment="Center"
+				
+				/>
+		</ToggleButton>
+		<!--ToggleButton.Unchecked="Button_Unchecked"
+			ToggleButton.Checked="Button_Checked"
+			ToggleButton.Indeterminate="Button_Indeterminate"-->
+
 		<TextBox x:Name="CustCount" 
 			  Background="{StaticResource Blue0}"
 			  FontSize="18" 
@@ -645,27 +670,29 @@
 			  Height="29" 
 			   Grid.Column="1"
 			   Grid.Row="2"/>
-		<Label x:Name="label" 
+
+		<Label x:Name="AvailableLabel" 
+			 Background="{StaticResource Red5}"
 			 Content="Available SQL Db Access Methods" 
 			 FontSize="14"
 			 Foreground="{StaticResource White0}"
 			 FontWeight="Bold"
-			 HorizontalContentAlignment="Center"
-			 Background="{StaticResource Red5}"
 			 Grid.Column="2" 
+			 Grid.Row="2" 
+			 Height="31"
+			 HorizontalContentAlignment="Center"
 			 HorizontalAlignment="Left" 
-			 Margin="22,341,0,0" 
+			 Margin="22,0,0,0" 
 			 Padding="0 6 0 0"
-			 Grid.Row="1" 
-			 VerticalAlignment="Top" 
-			 Width="286" 
-			 Height="31" Grid.RowSpan="2"/>
+			 VerticalAlignment="Center" 
+			 Width="286" />
+
 		<TextBox x:Name="LoadTime" 
 			  Background="{StaticResource Blue0}"
 			  FontSize="18" 
 			  Foreground="{StaticResource ResourceKey=White0}"
 			  HorizontalAlignment="Left" 
-			  Margin="372,8,0,0"   			
+			  Margin="372,5,0,0"   			
 			  Grid.Column="2"
 			  Height="32" Grid.Row="2" 
 			  Text="milliseconds" 
@@ -673,10 +700,18 @@
 			  TextWrapping="Wrap" 
 			  VerticalAlignment="Top" 
 			  Width="206" />
-		<Border Margin="20,242,13,47" 
-			  Background="{StaticResource Blue2}" 
-			  Grid.Row="3" 
-			  Grid.Column="2" >
+		<Border  x:Name="_border"
+			Background="{StaticResource Blue2}" 
+			Grid.Row="3"
+			Grid.Column="2" 
+			Grid.ColumnSpan="2"
+			Height="40"
+			   HorizontalAlignment="Stretch"
+			Margin="4,0,6,70" 
+			VerticalAlignment="Bottom"
+			Width="588" 
+			>
+
 			<CheckBox x:Name="UseAsync" 
 				Background="{StaticResource White0}"
 				Click="UseAsync_Click"
@@ -686,9 +721,11 @@
 				Foreground="{StaticResource Red5}"
 				Grid.Column="2" 
 				Grid.Row="3" 
-				HorizontalAlignment="Left"  
-				Margin="94,0,0,0"
-				VerticalAlignment="Center" RenderTransformOrigin="-0.134,0.718" Width="413"/>
+				Height="{Binding ActualHeight, ElementName=_border}"
+				HorizontalAlignment="Center"
+			    Margin="0,8,0,0"
+				VerticalAlignment="Top"
+				Width="414"  />
 		</Border>
 		<TextBox x:Name="ManualSelect" 
 			  Background="{StaticResource Cyan5}"
@@ -759,7 +796,7 @@
 
 		<Button x:Name="CloseGenGridBtn" 
 			Click="CloseGenericWindow"
-			Content="Close Query Grid" 
+			Content="Close Query Grids" 
 			FontSize="16" 
 			Foreground="Red"
 			Grid.Column="1" 
@@ -767,7 +804,7 @@
 			Height="36" 
 			HorizontalAlignment="Left" 
 			Margin="401,34,0,0"  
-			Opacity="0.4"
+			Opacity="0.6"
 			Template="{StaticResource HorizontalGradientTemplateRed}"
 			VerticalAlignment="Top" 
 			Width="178"/>
@@ -776,21 +813,21 @@
 			FontSize="14"
 			Foreground="{StaticResource White0}"
 			Grid.Column="2"
+			Grid.Row="2"
 			Height="30" 
 			HorizontalAlignment="Left" 
-			Margin="20,42,0,0" 
-			Grid.Row="3"
+			Margin="20,26,0,0" 
 			VerticalAlignment="Top" 
-			Width="184" />
+			Width="184" Grid.RowSpan="2" />
 
 		<Label x:Name="DbLabel2" Content="Customer Db to load:" 
 			FontSize="14"
 			Foreground="{StaticResource White0}"
 			Grid.Column="2"
+			Grid.Row="3"
 			Height="30" 
 			HorizontalAlignment="Left" 
-			Margin="20,106,0,0" 
-			Grid.Row="3"
+			Margin="20,53,0,0" 
 			VerticalAlignment="Top" 
 			Width="184" />
 
@@ -798,10 +835,10 @@
 			FontSize="14"
 			Foreground="{StaticResource White0}"
 			Grid.Column="2"
+			Grid.Row="3"
 			Height="30" 
 			HorizontalAlignment="Left" 
-			Margin="20,185,0,0" 
-			Grid.Row="3"
+			Margin="20,126,0,0" 
 			VerticalAlignment="Top" 
 			Width="184" />
 

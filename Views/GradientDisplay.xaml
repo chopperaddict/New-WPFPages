@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:WPFPages.Views"
 	xmlns:conv="clr-namespace:WPFPages.Converts"
 
-        mc:Ignorable="d"
+	  ResizeMode="CanResizeWithGrip"
+         mc:Ignorable="d"
         Title="Gradient Demonstation Display" Height="450" Width="600">
 
 	<Window.Resources>

@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFPages.Views"
-        mc:Ignorable="d"
+        ResizeMode="CanResizeWithGrip"
+	 mc:Ignorable="d"
         Title="Drop Data Window" Height="450" Width="800">
 		<Window.Background>
 			<!--create an elegant left to right light-> Dark gradient as a background-->

@@ -776,16 +776,20 @@ namespace WPFPages . Views
 
 		//********************************************************************************************//
 		private void sqlselectorbtn_Select ( object sender, RoutedEventArgs e )
-		{   // top list Select button pressed - open a new viewer of selected type
-			if ( sqlSelector . SelectedIndex == -1 )
-				return;
-			if ( MainWindow . gv . ViewerCount == MainWindow . gv . MaxViewers )
-			{
-				MessageBox . Show ( $"Sorry, but the maximum of {MainWindow . gv . MaxViewers} Viewer Windows are already open.\r\nPlease close one or more, or select an existing Viewer...", "Maximum viewer count reached" );
-				return;
-			}
+		{
 
-			HandleSelection ( sqlSelector, "NEW" );
+			SqlServerCommands sqlc = new SqlServerCommands();
+			sqlc . Show ( );
+			// top list Select button pressed - open a new viewer of selected type
+			//if ( sqlSelector . SelectedIndex == -1 )
+			//	return;
+			//if ( MainWindow . gv . ViewerCount == MainWindow . gv . MaxViewers )
+			//{
+			//	MessageBox . Show ( $"Sorry, but the maximum of {MainWindow . gv . MaxViewers} Viewer Windows are already open.\r\nPlease close one or more, or select an existing Viewer...", "Maximum viewer count reached" );
+			//	return;
+			//}
+
+			//HandleSelection ( sqlSelector, "NEW" );
 			//			Utils . GetWindowHandles ( );
 		}
 
@@ -854,7 +858,7 @@ namespace WPFPages . Views
 					lb . SelectedIndex--;
 				key1 = false;
 				return;
-			}
+			}																																									     
 			else if ( e . Key == Key . Home )
 			{
 				Flags . ListGridviewControlFlags ( );

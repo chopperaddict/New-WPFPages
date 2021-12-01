@@ -388,7 +388,9 @@ namespace WPFPages
 		public SqlDbViewer ( )
 		{
 			InitializeComponent ( );
-
+			Flags . USEDAPPERWITHSTOREDPROCEDURE = false;
+			Flags . USEADOWITHSTOREDPROCEDURES = false;
+			Flags . USESDAPPERSTDPROCEDURES = true;
 			//			sqldbForm = this;
 			ThisViewer = this;
 			SubscribeToEvents ( );
@@ -415,6 +417,9 @@ namespace WPFPages
 		public SqlDbViewer ( string caller , object Collection )
 		{
 			IsViewerLoaded = false;
+			Flags . USEDAPPERWITHSTOREDPROCEDURE = false;
+			Flags . USEADOWITHSTOREDPROCEDURES = false;
+			Flags . USESDAPPERSTDPROCEDURES = true;
 			InitializeComponent ( );
 			this . Tag = ( Guid ) Guid . NewGuid ( );
 			CurrentDb = caller;
@@ -431,7 +436,6 @@ namespace WPFPages
 			ColumnSelection . Items . Add ( 1 );
 			ColumnSelection . Items . Add ( 2 );
 
-
 			this . BankGrid . AllowDrop = true;
 
 		}
@@ -446,6 +450,9 @@ namespace WPFPages
 			BringIntoView ( );
 			this . Refresh ( );
 			IsLoading = true;
+			Flags . USEDAPPERWITHSTOREDPROCEDURE = false;
+			Flags . USEADOWITHSTOREDPROCEDURES = false;
+			Flags . USESDAPPERSTDPROCEDURES = true;
 			LoadData ( CurrentDb );
 
 			ResetMenuBarStatus ( );

@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:WPFPages.Views"
         xmlns:userctrl="clr-namespace:WPFPages.UserControls"
 	  mc:Ignorable="d"
-	  PreviewKeyDown="Window_PreviewKeyDown"
+	  ResizeMode="CanResizeWithGrip"
+ 	  PreviewKeyDown="Window_PreviewKeyDown"
         Title="System Colors" Height="500" Width="450"
 	  Loaded="Window_Loaded"
 	  WindowStartupLocation="CenterScreen">

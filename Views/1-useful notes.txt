@@ -1,3 +1,65 @@
+
+===============================================================================================================
+// How to create a COMPLEX SP the easiest way by concatenating strings
+===============================================================================================================
+	
+	IF @ARG2='' 
+		set @SQL='Select * '						-- no Selection provided
+		IF LEFT(UPPER(TRIM(@Arg2)),3)='TOP'
+			set @SQL='Select '+TRIM(@ARG2) +' * '	-- selection = top(xxx)
+		ELSE IF LEFT(UPPER(TRIM(@Arg2)),3)<>'TOP'
+			set @SQL='Select '+TRIM(@ARG2)			-- selection = fieldname(s)
+	
+		set @SQL += ' from ' + TRIM(@ARG1)			-- add DbName to be thesource of the data
+
+		IF  @ARG3<>''
+			set @SQL +=' where '+ TRIM(@ARG3)			-- add any conditions
+		IF @ARG4<>''
+			set @SQL +=' order by '+ TRIM(@ARG4)		-- finally add ordering sequence
+
+	PRINT @SQL
+	Exec sp_executeSql @SQL
+
+===============================================================================================================
+// How to Add a resize "Control" in bottom right of any window
+===============================================================================================================
+
+	  ResizeMode="CanResizeWithGrip"
+ 
+===============================================================================================================
+// How to Add/Create columns in any datagrid
+===============================================================================================================
+
+	for ( int x = 0 ; x < datalist.Count; x++ )
+		{
+			// can  be any column type !
+			DataGridTextColumn tc = new DataGridTextColumn();
+			// column internal name
+			Binding b = new Binding($"Data{x+1}");
+			tc . Binding = b;
+			// Column title
+			tc . Header = $"Data Row {x + 1}";
+			// Add to grid
+			DisplayGrid . Columns . Add ( tc );
+		}
+
+===============================================================================================================
+// How to call DAPPER based Db methods
+===============================================================================================================
+
+		public static ObservableCollection<BankAccountViewModel> GetBankObsCollection ( ObservableCollection<BankAccountViewModel> collection ,
+		string SqlCommand = "" ,			// usually blank
+		string DbNameToLoad = "" ,		// Optional Db name to be loaded/accessed
+		string Orderby = "" ,				// list of field names, comma seperated specifyng the sort order of the output data
+		string Conditions = "" ,			// fuly qualified conditions line such as "Where x = x ... ""
+		bool wantSort = false ,			// enable/disable Sorting
+		bool wantDictionary = false ,		// not used much. but does create a dictionary of < CustNo, int  > where int is just the number index it was loaded into the dictionary
+		bool Notify = false ,				// Use the loading callbck or not
+		string Caller = "" ,					// string returned to identify the calling process
+		int [ ] args = null )					// Important int[3] array] [0] contains lowest CustNo, [1] contains highest CustNo, [2] contains Maximum # of recrods to be loaded.  (Filled out by DapperSupport post call)
+
+		// args does not need to be passed down in call !!  it is an optional parameter, as are many others ( See DapperSupport())
+
 ===============================================================================================================
 // how to call new Dapper Db Load options
 ===============================================================================================================
@@ -7,29 +69,29 @@
 // they do NOT need these words in them , but remove them if found !!!
 // Equally Args[2] should not contain * but again will be removed
 
-			if ( UseAsyncLoading )
-			{
-				bool result = await DapperSupport . GetMultiBankCollectionAsync ( bvm ,
-					"" ,																	// Buffer for sqlcommand, cos you can send one in if preffered which overrides everything else
-					"Bankaccount" ,													// Actual SQL DBNAME to load
-					UseSort . IsChecked == true ? OrderString . Text : "" ,			// Sort conditions (1 or more ,with commas between)
-					UseConditions . IsChecked == true ? Conditions . Text : "" ,    //Limiter condition (AcType >= 3 etc )
-					true ,																 // Trigger notifications (Always  does send if using Async methods)
-					"DAPPERTESTING" ,											 // Caller Id 
-					args
-				);
-			}
-			else
-			{
-				bvm = DapperSupport . GetMultiBankCollection ( bvm ,
-				"" ,
-				"Bankaccount" ,
-				UseSort . IsChecked == true ? OrderString . Text : "" ,
-				UseConditions . IsChecked == true ? Conditions . Text : "" ,
-				false ,
-				"DAPPERTESTING" ,
-				args
-					);
+	if ( UseAsyncLoading )
+	{
+		bool result = await DapperSupport . GetMultiBankCollectionAsync ( bvm ,
+			"" ,																	// Buffer for sqlcommand, cos you can send one in if preffered which overrides everything else
+			"Bankaccount" ,													// Actual SQL DBNAME to load
+			UseSort . IsChecked == true ? OrderString . Text : "" ,			// Sort conditions (1 or more ,with commas between)
+			UseConditions . IsChecked == true ? Conditions . Text : "" ,    //Limiter condition (AcType >= 3 etc )
+			true ,																 // Trigger notifications (Always  does send if using Async methods)
+			"DAPPERTESTING" ,											 // Caller Id 
+			args
+		);
+	}
+	else
+	{
+		bvm = DapperSupport . GetMultiBankCollection ( bvm ,
+		"" ,
+		"Bankaccount" ,
+		UseSort . IsChecked == true ? OrderString . Text : "" ,
+		UseConditions . IsChecked == true ? Conditions . Text : "" ,
+		false ,
+		"DAPPERTESTING" ,
+		args
+			);
 
 ===============================================================================================================
 //How to copy a db to a new one

@@ -1,4 +1,6 @@
 ﻿using System;
+using System . Collections . Generic;
+using System . Collections . ObjectModel;
 using System . ComponentModel;
 using System . Diagnostics;
 using System . Linq;
@@ -708,5 +710,6 @@ namespace WPFPages . Views
 			while ( current != null );
 			return null;
 		}
+
 	}
 }

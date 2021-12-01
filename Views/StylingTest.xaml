@@ -13,7 +13,8 @@
         x:Name="storyboard"
         Background="Cyan"
         Loaded="storyboard_Loaded"   
-	  Closing="storyboard_Closing"
+	  ResizeMode="CanResizeWithGrip"
+ 	  Closing="storyboard_Closing"
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d"
         Title="Styling tests" Height="866" Width="1692">

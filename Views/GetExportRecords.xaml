@@ -8,7 +8,8 @@
 	  Background="{StaticResource HeaderBorderBrushBlue}"
 	  Loaded="OnLoaded"
 	  MinHeight="550"
-	  MinWidth="700"
+	  ResizeMode="CanResizeWithGrip"
+ 	  MinWidth="700"
         Title="Move accounts between Databases" 
 	  Height="562" 
 	  Width="674">

@@ -17,7 +17,8 @@
 	Title="DbViewer"
 	Top="280"
 	Topmost="false"
-	WindowStartupLocation="Manual"
+	  ResizeMode="CanResizeWithGrip"
+ 	WindowStartupLocation="Manual"
 	Width="853.8"
 	WindowStyle="None"
 	mc:Ignorable="d">
@@ -990,7 +991,7 @@
 					Height="30"
 					Margin="2,0,5,0"
 					Click="sqlselectorbtn_Select"
-					Content="Db Viewer"
+					Content="Sql Commands"
 					FontSize="14"
 					Foreground="{StaticResource White0}"
 					IsTabStop="True"

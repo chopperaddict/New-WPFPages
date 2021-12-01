@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:WPFPages.Views"
         xmlns:Dicts="clr-namespace:WPFPages"
         mc:Ignorable="d"
-        HorizontalContentAlignment="Center"
+        ResizeMode="CanResizeWithGrip"
+	HorizontalContentAlignment="Center"
 	  Title="Delegate Selection" Height="325" Width="300">
 	<Grid>
 		<Grid.RowDefinitions>

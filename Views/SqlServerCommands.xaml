@@ -1,0 +1,1212 @@
+﻿<Window x:Class="WPFPages.Views.SqlServerCommands"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFPages.Views"
+        mc:Ignorable="d"
+	  Loaded="Window_Loaded"
+	  MouseRightButtonUp="Window_MouseRightButtonUp"
+	  WindowStartupLocation="CenterScreen"
+	  ResizeMode="CanResizeWithGrip"
+       Title="Sql Server Commands" 
+	  MinHeight="550" 
+	  MinWidth="850"
+	  Height="550" 	
+	  Width="800">
+
+	<Window.Resources>
+		<!--create the style for the RepeatButton and Thumb of the ScrollBar.-->
+		<Style x:Key="RepeatButtonTransparent" TargetType="{x:Type RepeatButton}">
+			<!--We are drawing the WHOLE Control !!-->
+			<Setter Property="OverridesDefaultStyle" Value="true"/>
+			<!--//Handles scrollbar thumb button background color (Not  selected)-->
+			<Setter Property="Background" Value="{StaticResource Green3}"/>
+			<Setter Property="Focusable" Value="false"/>
+			<Setter Property="IsTabStop" Value="false"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type RepeatButton}">
+
+						<!--//This IS the one and only Scrollbar background -->
+						<Border 
+							Background="{StaticResource Blue4}" 
+							Height="{TemplateBinding Height}" 
+							Width="{TemplateBinding Width}" 
+							CornerRadius="0"/>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<!--#region // Complete Style for Thumb button (only) -->
+		<Style 
+			x:Key="ScrollBarThumbVertical" 
+			TargetType="{x:Type Thumb}">
+			<!--We are drawing the WHOLE Control !!-->
+			<Setter Property="OverridesDefaultStyle" Value="true"/>
+			<Setter Property="Margin" Value="3"/>
+
+			<Setter Property="IsTabStop" Value="false"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Thumb}">
+						<Border x:Name="rectangle" 
+								Height="{TemplateBinding Height}" 
+							SnapsToDevicePixels="True"
+							CornerRadius="0"
+							Width="{TemplateBinding Width}" />
+
+						<!--// controls the thumb button only-->
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="false">
+								<!--// Shows a small circle in middle of thumb button when at rest-->
+								<Setter Property="Background" TargetName="rectangle" Value="{StaticResource Red5}"/>
+							</Trigger>
+							<Trigger Property="IsMouseOver" Value="true">
+								<!--//color of Thumb button when moused over-->
+								<Setter Property="Background" TargetName="rectangle" Value="{StaticResource Red8}"/>
+							</Trigger>
+							<Trigger Property="IsFocused" Value="true">
+								<!--// No apparent effect-->
+								<Setter Property="Background" TargetName="rectangle" Value="{StaticResource Red4}"/>
+							</Trigger>
+							<Trigger Property="IsDragging" Value="true">
+								<!--Thumb color when left button pressed-->
+								<Setter Property="Background" TargetName="rectangle" Value="{StaticResource Red8}"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<!--#endregion // Style for Thumb button-->
+
+		<!--#region At rest scrollbar - partial control-->
+		<!--x:Key="ScrollbarStyle1"-->
+		<Style  TargetType="{x:Type ScrollBar}">
+			<!--NO apparent changes-->
+			<Setter Property="Background" Value="{StaticResource Red3}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource White0}"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ScrollBar}">
+						<Grid x:Name="Bg" SnapsToDevicePixels="true">
+							<Grid.RowDefinitions>
+								<RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
+								<RowDefinition Height="0.00005*"/>
+								<RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
+							</Grid.RowDefinitions>
+							<!--// This appears to be the thumb button itself-->
+							<!--The  black border color remians same all the time-->
+							<Border  x:Name="_Border"
+								BorderBrush="{StaticResource Black3}" 
+								BorderThickness="{TemplateBinding BorderThickness}" 
+								Background="{StaticResource Cyan5}" 								
+								CornerRadius="0"
+								Grid.Row="1" />
+
+							<!--Scrollbar has MOUSE  OVER-->
+							<!--// Controls colors of Up button when scrollbar has mouse over it-->
+							<RepeatButton x:Name="PART_LineUpButton" 
+								Command="{x:Static ScrollBar.LineUpCommand}" 
+								Background="{StaticResource Orange0}"
+								Foreground="{StaticResource White0}"
+								Height="25"
+								IsEnabled="{TemplateBinding IsMouseOver}" 
+								Margin="0,0,0,0">
+
+								<!--// This is the Arrow UP icon-->
+								<Path x:Name="ArrowTop" Data="M 0,4 C0,4 0,6 0,6 0,6 3.5,2.5 3.5,2.5 3.5,2.5 7,6 7,6 7,6 7,4 7,4 7,4 3.5,0.5 3.5,0.5 3.5,0.5 0,4 0,4 z" 
+									Fill="{StaticResource Black0}" 
+									Margin="3,0,3,3" 
+									Stretch="None"/>
+							</RepeatButton>
+							<Track x:Name="PART_Track"
+								 IsDirectionReversed="true"
+								 IsEnabled="{TemplateBinding IsMouseOver}" 
+								 Grid.Row="1">
+								<Track.DecreaseRepeatButton>
+									<RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" 
+											  Style="{StaticResource RepeatButtonTransparent}" 
+											  HorizontalAlignment="Left" 
+											  Width="17"/>
+								</Track.DecreaseRepeatButton>
+								<Track.IncreaseRepeatButton>
+									<RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource RepeatButtonTransparent}"/>
+								</Track.IncreaseRepeatButton>
+								<Track.Thumb>
+									<Thumb Style="{StaticResource ScrollBarThumbVertical}" Margin="2"/>
+								</Track.Thumb>
+							</Track>
+							<!--Scrollbar has MOUSE  OVER-->
+							<!--// Controls colors of Down button when scrollbar has mouse over it-->
+							<RepeatButton x:Name="PART_LineDownButton" 
+								Background="{StaticResource Orange3}"
+								Foreground="{StaticResource White0}"
+								Command="{x:Static ScrollBar.LineDownCommand}" 
+								IsEnabled="{TemplateBinding IsMouseOver}" 
+								Grid.Row="2" 
+								Height="25"
+								Margin="0,0,0,0"
+									  >
+								<!--// This is the Arrow DOWN icon-->
+								<Path x:Name="ArrowBottom" Data="M 0,2.5 C0,2.5 0,0.5 0,0.5 0,0.5 3.5,4 3.5,4 3.5,4 7,0.5 7,0.5 7,0.5 7,2.5 7,2.5 7,2.5 3.5,6 3.5,6 3.5,6 0,2.5 0,2.5 z" 
+									TextElement.FontWeight="Bold"
+									Fill="{StaticResource Black0}"
+									Margin="3,0,3,3" 
+									Stretch="None"/>
+							</RepeatButton>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<SolidColorBrush x:Key="Menu.Static.Background" Color="#FFF0F0F0"/>
+		<SolidColorBrush x:Key="Menu.Static.Border" Color="#FF999999"/>
+		<SolidColorBrush x:Key="Menu.Static.Foreground" Color="#FF212121"/>
+		<SolidColorBrush x:Key="Menu.Static.Separator" Color="#FFD7D7D7"/>
+		<SolidColorBrush x:Key="Menu.Disabled.Foreground" Color="#FF707070"/>
+		<SolidColorBrush x:Key="MenuItem.Selected.Background" Color="#3D26A0DA"/>
+		<SolidColorBrush x:Key="MenuItem.Selected.Border" Color="#FF26A0DA"/>
+		<!--// changed...-->
+		<SolidColorBrush x:Key="MenuItem.Highlight.Background" Color="#FF466092"/>
+		<SolidColorBrush x:Key="MenuItem.Highlight.Border" Color="#FF26A0DA"/>
+		<SolidColorBrush x:Key="MenuItem.Highlight.Disabled.Background" Color="#0A000000"/>
+		<SolidColorBrush x:Key="MenuItem.Highlight.Disabled.Border" Color="#21000000"/>
+		<MenuScrollingVisibilityConverter x:Key="MenuScrollingVisibilityConverter"/>
+		<Geometry x:Key="DownArrow">M 0,0 L 3.5,4 L 7,0 Z</Geometry>
+		<Geometry x:Key="UpArrow">M 0,4 L 3.5,0 L 7,4 Z</Geometry>
+		<Geometry x:Key="RightArrow">M 0,0 L 4,3.5 L 0,7 Z</Geometry>
+		<Geometry x:Key="Checkmark">F1 M 10.0,1.2 L 4.7,9.1 L 4.5,9.1 L 0,5.2 L 1.3,3.5 L 4.3,6.1L 8.3,0 L 10.0,1.2 Z</Geometry>
+		<Style x:Key="MenuScrollButton" BasedOn="{x:Null}" TargetType="{x:Type RepeatButton}">
+			<Setter Property="ClickMode" Value="Hover"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type RepeatButton}">
+						<Border x:Name="templateRoot" Background="Transparent" BorderThickness="1" BorderBrush="Transparent" SnapsToDevicePixels="true">
+							<ContentPresenter HorizontalAlignment="Center" Margin="6" VerticalAlignment="Center"/>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="{ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}" BasedOn="{x:Null}" 
+			 TargetType="{x:Type ScrollViewer}">
+			<Setter Property="HorizontalScrollBarVisibility" Value="Hidden"/>
+			<Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ScrollViewer}">
+						<Grid SnapsToDevicePixels="true">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="*"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Border Grid.Column="0" Grid.Row="1">
+								<ScrollContentPresenter CanContentScroll="{TemplateBinding CanContentScroll}" Margin="{TemplateBinding Padding}"/>
+							</Border>
+							<RepeatButton Command="{x:Static ScrollBar.LineUpCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Grid.Column="0" Focusable="false" Grid.Row="0" Style="{StaticResource MenuScrollButton}">
+								<RepeatButton.Visibility>
+									<MultiBinding Converter="{StaticResource MenuScrollingVisibilityConverter}" ConverterParameter="0" FallbackValue="Visibility.Collapsed">
+										<Binding Path="ComputedVerticalScrollBarVisibility" RelativeSource="{RelativeSource TemplatedParent}"/>
+										<Binding Path="VerticalOffset" RelativeSource="{RelativeSource TemplatedParent}"/>
+										<Binding Path="ExtentHeight" RelativeSource="{RelativeSource TemplatedParent}"/>
+										<Binding Path="ViewportHeight" RelativeSource="{RelativeSource TemplatedParent}"/>
+									</MultiBinding>
+								</RepeatButton.Visibility>
+								<Path Data="{StaticResource UpArrow}" Fill="{StaticResource Menu.Static.Foreground}"/>
+							</RepeatButton>
+							<RepeatButton Command="{x:Static ScrollBar.LineDownCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Grid.Column="0" Focusable="false" Grid.Row="2" Style="{StaticResource MenuScrollButton}">
+								<RepeatButton.Visibility>
+									<MultiBinding Converter="{StaticResource MenuScrollingVisibilityConverter}" ConverterParameter="100" FallbackValue="Visibility.Collapsed">
+										<Binding Path="ComputedVerticalScrollBarVisibility" RelativeSource="{RelativeSource TemplatedParent}"/>
+										<Binding Path="VerticalOffset" RelativeSource="{RelativeSource TemplatedParent}"/>
+										<Binding Path="ExtentHeight" RelativeSource="{RelativeSource TemplatedParent}"/>
+										<Binding Path="ViewportHeight" RelativeSource="{RelativeSource TemplatedParent}"/>
+									</MultiBinding>
+								</RepeatButton.Visibility>
+								<Path Data="{StaticResource DownArrow}" Fill="{StaticResource Menu.Static.Foreground}"/>
+							</RepeatButton>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<!--#endregion At rest scrollbar - partial control-->
+
+		<!--#region Menu Template-->
+		<ControlTemplate x:Key="{ComponentResourceKey ResourceId=TopLevelItemTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}" 
+				     TargetType="{x:Type MenuItem}">
+			<Border x:Name="templateRoot" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="true">
+				<Grid VerticalAlignment="Center">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<ContentPresenter x:Name="Icon" ContentSource="Icon" HorizontalAlignment="Center" Height="16" Margin="3" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" Width="16"/>
+					<Path x:Name="GlyphPanel" Data="{StaticResource Checkmark}" FlowDirection="LeftToRight" Fill="{StaticResource Menu.Static.Foreground}" Margin="3" VerticalAlignment="Center" Visibility="Collapsed"/>
+					<ContentPresenter ContentSource="Header" Grid.Column="1" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+				</Grid>
+			</Border>
+			<ControlTemplate.Triggers>
+				<Trigger Property="Icon" Value="{x:Null}">
+					<Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
+				</Trigger>
+				<Trigger Property="IsChecked" Value="true">
+					<Setter Property="Visibility" TargetName="GlyphPanel" Value="Visible"/>
+					<Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
+				</Trigger>
+				<!--// Background when Mouse Over-->
+				<Trigger Property="IsHighlighted" Value="True">
+					<Setter Property="Background" TargetName="templateRoot" Value="{StaticResource MenuItem.Highlight.Background}"/>
+					<Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource MenuItem.Highlight.Border}"/>
+				</Trigger>
+				<Trigger Property="IsEnabled" Value="False">
+					<Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{StaticResource Menu.Disabled.Foreground}"/>
+					<Setter Property="Fill" TargetName="GlyphPanel" Value="{StaticResource Menu.Disabled.Foreground}"/>
+				</Trigger>
+				<MultiTrigger>
+					<MultiTrigger.Conditions>
+						<Condition Property="IsHighlighted" Value="True"/>
+						<Condition Property="IsEnabled" Value="False"/>
+					</MultiTrigger.Conditions>
+					<Setter Property="Background" TargetName="templateRoot" Value="{StaticResource MenuItem.Highlight.Disabled.Background}"/>
+					<Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource MenuItem.Highlight.Disabled.Border}"/>
+				</MultiTrigger>
+			</ControlTemplate.Triggers>
+		</ControlTemplate>
+
+		<ControlTemplate x:Key="{ComponentResourceKey ResourceId=TopLevelHeaderTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}" 
+				     TargetType="{x:Type MenuItem}">
+			<Border x:Name="templateRoot" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="true">
+				<Grid VerticalAlignment="Center">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<ContentPresenter x:Name="Icon" ContentSource="Icon" HorizontalAlignment="Center" Height="16" Margin="3" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" Width="16"/>
+					<Path x:Name="GlyphPanel" Data="{StaticResource Checkmark}" FlowDirection="LeftToRight" Fill="{TemplateBinding Foreground}" Margin="3" VerticalAlignment="Center" Visibility="Collapsed"/>
+					<ContentPresenter ContentSource="Header" Grid.Column="1" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+					<Popup x:Name="PART_Popup" AllowsTransparency="true" Focusable="false" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Bottom" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" PlacementTarget="{Binding ElementName=templateRoot}">
+						<Border x:Name="SubMenuBorder" Background="{StaticResource Menu.Static.Background}" BorderThickness="1" BorderBrush="{StaticResource Menu.Static.Border}" Padding="2">
+							<ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
+								<Grid RenderOptions.ClearTypeHint="Enabled">
+									<Canvas HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
+										<Rectangle x:Name="OpaqueRect"
+											     Fill="{Binding Background, ElementName=SubMenuBorder}" 
+											     Height="{Binding ActualHeight, ElementName=SubMenuBorder}" 
+											     Width="{Binding ActualWidth, ElementName=SubMenuBorder}"/>
+									</Canvas>
+									<Rectangle Fill="{StaticResource Menu.Static.Separator}" HorizontalAlignment="Left" Margin="29,2,0,2" Width="1"/>
+									<ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Cycle" Grid.IsSharedSizeScope="true" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle"/>
+								</Grid>
+							</ScrollViewer>
+						</Border>
+					</Popup>
+				</Grid>
+			</Border>
+			<ControlTemplate.Triggers>
+				<Trigger Property="IsSuspendingPopupAnimation" Value="true">
+					<Setter Property="PopupAnimation" TargetName="PART_Popup" Value="None"/>
+				</Trigger>
+				<Trigger Property="Icon" Value="{x:Null}">
+					<Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
+				</Trigger>
+				<Trigger Property="IsChecked" Value="true">
+					<Setter Property="Visibility" TargetName="GlyphPanel" Value="Visible"/>
+					<Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
+				</Trigger>
+				<Trigger Property="IsHighlighted" Value="True">
+					<Setter Property="Background" TargetName="templateRoot" Value="{StaticResource MenuItem.Highlight.Background}"/>
+					<Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource MenuItem.Highlight.Border}"/>
+				</Trigger>
+				<Trigger Property="IsEnabled" Value="False">
+					<Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{StaticResource Menu.Disabled.Foreground}"/>
+					<Setter Property="Fill" TargetName="GlyphPanel" Value="{StaticResource Menu.Disabled.Foreground}"/>
+				</Trigger>
+				<Trigger Property="ScrollViewer.CanContentScroll" SourceName="SubMenuScrollViewer" Value="false">
+					<Setter Property="Canvas.Top" TargetName="OpaqueRect" Value="{Binding VerticalOffset, ElementName=SubMenuScrollViewer}"/>
+					<Setter Property="Canvas.Left" TargetName="OpaqueRect" Value="{Binding HorizontalOffset, ElementName=SubMenuScrollViewer}"/>
+				</Trigger>
+			</ControlTemplate.Triggers>
+		</ControlTemplate>
+
+		<ControlTemplate x:Key="{ComponentResourceKey ResourceId=SubmenuItemTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}" 
+				     TargetType="{x:Type MenuItem}">
+			<Border x:Name="templateRoot" 
+				  Background="{TemplateBinding Background}" 
+				  BorderThickness="{TemplateBinding BorderThickness}" 
+				  BorderBrush="{TemplateBinding BorderBrush}" 
+				  Height="22" 
+				  SnapsToDevicePixels="true">
+				<Grid Margin="-1">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition MinWidth="22" SharedSizeGroup="MenuItemIconColumnGroup" Width="Auto"/>
+						<ColumnDefinition Width="13"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="30"/>
+						<ColumnDefinition SharedSizeGroup="MenuItemIGTColumnGroup" Width="Auto"/>
+						<ColumnDefinition Width="20"/>
+					</Grid.ColumnDefinitions>
+					<ContentPresenter x:Name="Icon" ContentSource="Icon" HorizontalAlignment="Center" Height="16" Margin="3" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" Width="16"/>
+					<Border x:Name="GlyphPanel" Background="{StaticResource MenuItem.Selected.Background}" BorderThickness="1" BorderBrush="{StaticResource MenuItem.Selected.Border}" ClipToBounds="False" HorizontalAlignment="Center" Height="22" Margin="-1,0,0,0" VerticalAlignment="Center" Visibility="Hidden" Width="22">
+						<Path x:Name="Glyph" Data="{StaticResource Checkmark}" FlowDirection="LeftToRight" Fill="{StaticResource Menu.Static.Foreground}" Height="11" Width="10"/>
+					</Border>
+					<ContentPresenter x:Name="menuHeaderContainer" ContentSource="Header" Grid.Column="2" HorizontalAlignment="Left" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
+					<TextBlock x:Name="menuGestureText" Grid.Column="4" Margin="{TemplateBinding Padding}" Opacity="0.7" Text="{TemplateBinding InputGestureText}" VerticalAlignment="Center"/>
+				</Grid>
+			</Border>
+			<ControlTemplate.Triggers>
+				<Trigger Property="Icon" Value="{x:Null}">
+					<Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
+				</Trigger>
+				<Trigger Property="IsChecked" Value="True">
+					<Setter Property="Visibility" TargetName="GlyphPanel" Value="Visible"/>
+					<Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
+				</Trigger>
+				<Trigger Property="IsHighlighted" Value="True">
+					<Setter Property="Background" TargetName="templateRoot" Value="{StaticResource MenuItem.Highlight.Background}"/>
+					<Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource MenuItem.Highlight.Border}"/>
+				</Trigger>
+				<Trigger Property="IsEnabled" Value="False">
+					<Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{StaticResource Menu.Disabled.Foreground}"/>
+					<Setter Property="Fill" TargetName="Glyph" Value="{StaticResource Menu.Disabled.Foreground}"/>
+				</Trigger>
+				<MultiTrigger>
+					<MultiTrigger.Conditions>
+						<Condition Property="IsHighlighted" Value="True"/>
+						<Condition Property="IsEnabled" Value="False"/>
+					</MultiTrigger.Conditions>
+					<Setter Property="Background" TargetName="templateRoot" Value="{StaticResource MenuItem.Highlight.Disabled.Background}"/>
+					<Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource MenuItem.Highlight.Disabled.Border}"/>
+				</MultiTrigger>
+			</ControlTemplate.Triggers>
+		</ControlTemplate>
+
+		<ControlTemplate x:Key="{ComponentResourceKey ResourceId=SubmenuHeaderTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}" 
+				     TargetType="{x:Type MenuItem}">
+			<Border x:Name="templateRoot" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Height="22" SnapsToDevicePixels="true">
+				<Grid Margin="-1">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition MinWidth="22" SharedSizeGroup="MenuItemIconColumnGroup" Width="Auto"/>
+						<ColumnDefinition Width="13"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="30"/>
+						<ColumnDefinition SharedSizeGroup="MenuItemIGTColumnGroup" Width="Auto"/>
+						<ColumnDefinition Width="20"/>
+					</Grid.ColumnDefinitions>
+					<ContentPresenter x:Name="Icon" ContentSource="Icon" HorizontalAlignment="Center" Height="16" Margin="3" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" Width="16"/>
+					<Border x:Name="GlyphPanel" Background="{StaticResource MenuItem.Highlight.Background}" BorderThickness="1" BorderBrush="{StaticResource MenuItem.Highlight.Border}" Height="22" Margin="-1,0,0,0" VerticalAlignment="Center" Visibility="Hidden" Width="22">
+						<Path x:Name="Glyph" Data="{DynamicResource Checkmark}" FlowDirection="LeftToRight" Fill="{StaticResource Menu.Static.Foreground}" Height="11" Width="9"/>
+					</Border>
+					<ContentPresenter ContentSource="Header" Grid.Column="2" HorizontalAlignment="Left" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
+					<TextBlock Grid.Column="4" Margin="{TemplateBinding Padding}" Opacity="0.7" Text="{TemplateBinding InputGestureText}" VerticalAlignment="Center"/>
+					<Path x:Name="RightArrow" Grid.Column="5" Data="{StaticResource RightArrow}" Fill="{StaticResource Menu.Static.Foreground}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+					<Popup x:Name="PART_Popup" AllowsTransparency="true" Focusable="false" HorizontalOffset="-2" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Right" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" VerticalOffset="-3">
+						<Border x:Name="SubMenuBorder" Background="{StaticResource Menu.Static.Background}" BorderThickness="1" BorderBrush="{StaticResource Menu.Static.Border}" Padding="2">
+							<ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
+								<Grid RenderOptions.ClearTypeHint="Enabled">
+									<Canvas HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
+										<Rectangle x:Name="OpaqueRect" Fill="{Binding Background, ElementName=SubMenuBorder}" Height="{Binding ActualHeight, ElementName=SubMenuBorder}" Width="{Binding ActualWidth, ElementName=SubMenuBorder}"/>
+									</Canvas>
+									<Rectangle Fill="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" HorizontalAlignment="Left" Margin="29,2,0,2" Width="1"/>
+									<ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Cycle" Grid.IsSharedSizeScope="true" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle"/>
+								</Grid>
+							</ScrollViewer>
+						</Border>
+					</Popup>
+				</Grid>
+			</Border>
+			<ControlTemplate.Triggers>
+				<Trigger Property="IsSuspendingPopupAnimation" Value="true">
+					<Setter Property="PopupAnimation" TargetName="PART_Popup" Value="None"/>
+				</Trigger>
+				<Trigger Property="Icon" Value="{x:Null}">
+					<Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
+				</Trigger>
+				<Trigger Property="IsChecked" Value="True">
+					<Setter Property="Visibility" TargetName="GlyphPanel" Value="Visible"/>
+					<Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
+				</Trigger>
+				<Trigger Property="IsHighlighted" Value="True">
+					<Setter Property="Background" TargetName="templateRoot" Value="Transparent"/>
+					<Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource MenuItem.Highlight.Border}"/>
+				</Trigger>
+				<Trigger Property="IsEnabled" Value="False">
+					<Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{StaticResource Menu.Disabled.Foreground}"/>
+					<Setter Property="Fill" TargetName="Glyph" Value="{StaticResource Menu.Disabled.Foreground}"/>
+					<Setter Property="Fill" TargetName="RightArrow" Value="{StaticResource Menu.Disabled.Foreground}"/>
+				</Trigger>
+				<Trigger Property="ScrollViewer.CanContentScroll" SourceName="SubMenuScrollViewer" Value="false">
+					<Setter Property="Canvas.Top" TargetName="OpaqueRect" Value="{Binding VerticalOffset, ElementName=SubMenuScrollViewer}"/>
+					<Setter Property="Canvas.Left" TargetName="OpaqueRect" Value="{Binding HorizontalOffset, ElementName=SubMenuScrollViewer}"/>
+				</Trigger>
+			</ControlTemplate.Triggers>
+		</ControlTemplate>
+
+		<SolidColorBrush x:Key="Menu.Static.Background1" Color="#FFF0F0F0"/>
+		<SolidColorBrush x:Key="Menu.Static.Border1" Color="#FFFF0000"/>
+		<SolidColorBrush x:Key="Menu.Static.Foreground1" Color="#FF212121"/>
+
+		<Style x:Key="MenuItemStyle3" TargetType="{x:Type MenuItem}">
+			<Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+			<Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="BorderBrush" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="ScrollViewer.PanningMode" Value="Both"/>
+			<Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+			<Setter Property="Template" Value="{DynamicResource {ComponentResourceKey ResourceId=SubmenuItemTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}}"/>
+			<Style.Triggers>
+				<Trigger Property="Role" Value="TopLevelHeader">
+					<Setter Property="Background" Value="Transparent"/>
+					<!--// Border of menu top item-->
+					<Setter Property="BorderBrush" Value="#FFFF0000"/>
+					<Setter Property="Foreground" Value="{StaticResource Menu.Static.Foreground1}"/>
+					<Setter Property="Template" Value="{DynamicResource {ComponentResourceKey ResourceId=TopLevelHeaderTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}}"/>
+					<Setter Property="Padding" Value="6,0"/>
+				</Trigger>
+				<Trigger Property="Role" Value="TopLevelItem">
+					<Setter Property="Background" Value="{StaticResource Menu.Static.Background1}"/>
+					<Setter Property="BorderBrush" Value="{StaticResource Menu.Static.Border1}"/>
+					<Setter Property="Foreground" Value="{StaticResource Menu.Static.Foreground1}"/>
+					<Setter Property="Template" Value="{DynamicResource {ComponentResourceKey ResourceId=TopLevelItemTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}}"/>
+					<Setter Property="Padding" Value="6,0"/>
+				</Trigger>
+				<Trigger Property="Role" Value="SubmenuHeader">
+					<Setter Property="Template" Value="{DynamicResource {ComponentResourceKey ResourceId=SubmenuHeaderTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}}"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+
+		<!--#endregion Menu Template-->
+
+
+	</Window.Resources>
+
+	<Window.Background>
+		<LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+			<GradientStop Offset="0" Color="#FF1D4835" />
+			<GradientStop Offset="0.3" Color="#FF6B8E95" />
+			<GradientStop Offset="0.609" Color="#FF6B8E95" />
+			<GradientStop Offset="1" Color="#FF14A7C1" />
+			<GradientStop Offset="0" Color="#FF193A44" />
+		</LinearGradientBrush>
+	</Window.Background>
+
+
+	<Grid Margin="1,-2,-1,2" >
+		<!--#region Grid Setup-->
+		<Grid.RowDefinitions>
+			<RowDefinition Height="25"/>
+			<RowDefinition Height="70"/>
+			<RowDefinition Height="50"/>
+			<RowDefinition Height="50"/>
+			<RowDefinition Height="45"/>
+			<RowDefinition Height="45"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="50"/>
+			<RowDefinition Height="50"/>
+			<RowDefinition Height="50"/>
+			<RowDefinition Height="10"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="10"/>
+			<ColumnDefinition Width="300"/>
+			<ColumnDefinition Width="200"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="100"/>
+			<ColumnDefinition Width="10"/>
+		</Grid.ColumnDefinitions>
+		<!--#endregion Grid Setup-->
+
+		<!--#region Row 1-->
+
+		<!--// Db Tables-->
+		<ComboBox x:Name="DbToCopyCombo" 
+			Background="{StaticResource Green2}"
+			ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle1}" 			    
+			OverridesDefaultStyle="False"	   			
+			Grid.Column="1" 
+			Grid.Row="1"
+			Height="20" 
+			IsEditable="True"   
+			BorderThickness="0"
+			MaxDropDownHeight="142"  
+			Margin="79,38,26,12" 
+			SelectedItem="0"	  			   
+			MouseDoubleClick="DbToCopyCombo_MouseDoubleClick"
+			PreviewMouseLeftButtonDown="DbToCopyCombo_PreviewMouseLeftButtonDn"
+			SelectionChanged="DbToCopyCombo_SelectionChanged"
+		    Template="{StaticResource ComboBoxEditableTemplate}"/>
+
+		<!--// Stored Procedures-->
+		<ComboBox Style="{DynamicResource ComboBoxStyle1}" x:Name="SPCombo" 
+			Background="{StaticResource Blue0}"			    
+			Foreground="{StaticResource Red5}"
+			Grid.Column="1"
+			Grid.ColumnSpan="2"			
+			Grid.Row="4" 
+			IsEditable="True"  
+			ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle1}" 	
+			Margin="114,8,61,9" 
+			MaxDropDownHeight="142"  
+			MouseDoubleClick="SPCombo_MouseDoubleClick" 
+			PreviewMouseLeftButtonDown="SPCombo_PreviewMouseLeftButtonDn"
+			ScrollViewer.HorizontalScrollBarVisibility="Auto"
+			SelectionChanged="SPCombo_SelectionChanged" 
+			SelectedIndex="0" 
+			Width="Auto" />
+
+		<TextBox x:Name="DbToCopyTb" 
+			Background="{StaticResource Cyan5}"
+			Foreground="{StaticResource Black0}"
+			Grid.Row="1"
+			Grid.Column="1"
+			Height="25" 
+			HorizontalAlignment="Right"   			   
+			HorizontalContentAlignment="Center"
+			   PreviewMouseLeftButtonUp="DbToCopy_PreviewMouseLeftButtonUp"
+			VerticalContentAlignment="Center"
+			Margin="0,0,10,0"
+			Text="BankAccount" 
+			TextWrapping="Wrap" 
+			   Visibility="Collapsed"
+			Width="120" 
+			  />
+		<TextBlock x:Name="textBlock" 
+			Foreground="{StaticResource White0}"
+			Grid.Column="1" 
+			Grid.Row="1" 
+			HorizontalAlignment="Left" 
+			Margin="7,39,0,0" 
+			Text="Db to Copy :" 
+			TextWrapping="Wrap" 
+			VerticalAlignment="Top"/>
+
+		<TextBox x:Name="DbToBeCreated" 
+			Background="{StaticResource ResourceKey=Cyan5}"
+			Foreground="{StaticResource ResourceKey=Black0}"
+			Grid.Row="1"
+			Grid.Column="2"
+			Height="25"
+			HorizontalAlignment="Left"
+			HorizontalContentAlignment="Center"
+			   Margin="54,34,0,10"
+			   PreviewMouseLeftButtonUp="DbToBeCreated_PreviewMouseLeftButtonUp"
+			VerticalContentAlignment="Center"
+			Text="abc" 
+			TextWrapping="Wrap" 
+			Width="102" 
+			/>
+		<TextBlock x:Name="textBlock_Copy" 
+			Foreground="{StaticResource White0}"
+			Grid.Column="1" 
+			Grid.Row="1" 
+			HorizontalAlignment="Left" 
+			Margin="283,39,0,0" 
+			Text="Copy to Db :-" 
+			TextWrapping="Wrap" 
+			VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+
+		<TextBlock x:Name="DbCopiedResult" 
+			Background="{StaticResource Yellow1}"
+			Foreground="{StaticResource Black0}"
+			Grid.Column="2" 
+			Grid.ColumnSpan="2"
+			Grid.Row="1"
+			Height="77"
+			Margin="165,2,5,0"
+			SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical"	    
+			Padding="5"
+			Text="Db Creation result:"
+			TextAlignment="Center"
+			TextWrapping="Wrap" 
+			VerticalAlignment="Top" Grid.RowSpan="2"
+			/>
+		<Button  x:Name="CopyDbBtn"
+			Background="{StaticResource Green4}"
+			Click="CopyDbBtn_Click"
+			Content="Copy Db"
+			Foreground="{StaticResource White0}"
+			Grid.Column="4"
+			   HorizontalAlignment="Left"
+			Margin="7,7,0,40"
+			Padding="3"
+			Template="{StaticResource HorizontalGradientTemplateGreen}" Width="92" Grid.RowSpan="2"
+			/>
+		<!--#endregion Row 1-->
+
+		<!--#region Row 2-->
+		<!--Row 2-->
+		<TextBlock x:Name="NameLabel_Copy"
+			Background="{StaticResource Cyan3}"
+			FontSize="12"
+			FontWeight="Bold"
+			Foreground="{StaticResource ResourceKey=Red5}"
+			Grid.Column="1"
+			Grid.ColumnSpan="2"
+			Grid.Row="2"
+			Grid.RowSpan="1"
+			Height="39"
+			Margin="25,2,44,0"
+			Padding="2"
+			Text="      CAUTION - the 'Destination Db ' WILL be OVERWRITTEN                                    unless the ' Allow Overwrite' option is UNCHECKED "
+			TextAlignment="Center"
+			TextWrapping="Wrap"
+			VerticalAlignment="Top"/>
+		<CheckBox x:Name="AllowOverWriteFlag"
+			Foreground="{StaticResource White0}"
+			HorizontalContentAlignment="Left"
+			Grid.Column="3"
+			Grid.ColumnSpan="3"
+			Grid.Row="2"
+			Height="20"
+			IsChecked="False"
+			Margin="0,0,-8,0"
+			Content="Allow 'Copy Db' to overwrite"
+			HorizontalAlignment="Right"
+			VerticalAlignment="Center" Width="193" Checked="AllowOverWriteFlag_Checked"/>
+
+		<CheckBox x:Name="ShowInGrid"
+			  Foreground="{StaticResource White0}"
+			  Grid.Column="3"
+			  Grid.Row="2"
+			  Height="19"
+			  IsChecked="True"
+			    Checked="ShowInGrid_Checked"
+			    Unchecked="ShowInGrid_Unchecked"
+			  Margin="0,36,8,0"
+			  Content="Show Db in Grid"
+			  HorizontalAlignment="Right"
+			  HorizontalContentAlignment="Left"
+			  VerticalAlignment="Top" Grid.ColumnSpan="3" Width="113" Grid.RowSpan="2"/>
+
+		<!--#endregion Row 2-->
+
+		<!--#region Row 3-->
+
+		<TextBlock x:Name="a1field" 
+			  Foreground="{StaticResource White0}"
+			  Grid.Column="1" 
+			  Grid.Row="3" 
+			  HorizontalAlignment="Left" 
+			  Margin="7,0,0,0" 
+			  Text="Enter SQL Query (NOT Stored Proc.)" 
+			  TextWrapping="Wrap" 
+			  VerticalAlignment="Center" Height="36" Width="106"/>
+
+		<TextBox x:Name="SqlCommandString" 
+			  Background="{StaticResource Cyan5}"
+			  FontSize="18"
+			  Foreground="{StaticResource Gray0}"
+			  LostFocus="SqlCommandString_GotFocus"
+			  Grid.Row="3"
+			  Grid.Column="1"
+			   Grid.ColumnSpan="3"   			   
+			  HorizontalContentAlignment="Center"
+			   KeyDown="SqlCommandString_KeyDown"
+			   PreviewMouseLeftButtonUp="SqlCommandString_PreviewMouseLeftButtonUp"
+			  VerticalContentAlignment="Center"
+			  Margin="118,9,132,9"
+			  Text="Enter SQL command ..." 
+			  TextWrapping="Wrap" 
+			   ToolTip="Enter a valid Sql command and press Enter, or click the 'Execute' button..."  />
+
+		<Button  x:Name="ExecSqlCommand"
+			  Background="{StaticResource Green4}"
+			  Click="ExecCommand_Click"
+			  Content="Execute Command"
+			  Foreground="{StaticResource White0}"
+			  Grid.Column="3"
+			  Grid.ColumnSpan="3" 
+			  Grid.Row="3"
+			  HorizontalAlignment="Right"
+			  Margin="0,8,10,2"
+			  Padding="3"
+			  Template="{StaticResource HorizontalGradientTemplateBlue}" 
+			   Width="138"/>
+
+		<!--#endregion Row 3-->
+
+		<!--#region Row 4-->
+		<TextBlock x:Name="textBlock_Copy1" 
+			  Foreground="{StaticResource White0}"
+			  Grid.Column="1" 
+			  Grid.Row="4" 
+			  HorizontalAlignment="Left" 
+			  Margin="7,11,0,0" 
+			  Text="Stored Procedure :" 
+			  TextWrapping="Wrap" 
+			  VerticalAlignment="Top"/>
+
+
+		<TextBlock x:Name="textBlock_Copy2" 
+			  Foreground="{StaticResource White0}"
+			  Grid.Column="2" 
+			  Grid.Row="4" 
+			  HorizontalAlignment="Left" 
+			  Margin="154,0,0,0" 
+			  Text="Required arguments:-" 
+			  TextWrapping="Wrap" 
+			  VerticalAlignment="Center" 
+			     Visibility="Collapsed"
+			     Width="68"/>
+
+		<TextBox x:Name="SpArgs" 
+			  Background="{StaticResource ResourceKey=Cyan5}"
+			  Foreground="{StaticResource ResourceKey=Black0}"
+			  Grid.Row="4"
+			  Grid.Column="3"
+			  Height="25"
+			  HorizontalAlignment="Left"
+			  HorizontalContentAlignment="Center"
+			  Margin="0,11,0,11"
+			  PreviewMouseLeftButtonUp="SPArgs_PreviewMouseLeftButtonUp"
+			  VerticalContentAlignment="Center"
+			  Text="" 
+			  TextWrapping="Wrap" 
+			   Visibility="Collapsed"
+			  Width="120" />
+
+		<!--// Execute a manual SQL command of various forms-->
+		<Button  x:Name="ExecuteSp"
+			Background="{StaticResource Green4}"
+			Click="ExecuteSQLCommand_Click"
+			Content="Execute Procedure"
+			IsEnabled="true"
+			Foreground="{StaticResource White0}"
+			Grid.Column="3"
+			Grid.ColumnSpan="3"
+			Grid.Row="4"
+			HorizontalAlignment="Right"
+			Margin="0,3,10,3"
+			Padding="3"
+			Template="{StaticResource HorizontalGradientTemplateGreen}" 
+			Width="138" />
+		<!--#endregion Row 4-->
+
+		<!--#region Row 5-->
+		<TextBlock x:Name="GridCount"
+			Background="{StaticResource Blue0}"
+			FontSize="20"
+			Foreground="{StaticResource White0}"
+			Grid.Column="4"
+			Grid.ColumnSpan="1"
+			Grid.Row="6"
+			Height="29"
+			   HorizontalAlignment="Right"
+			Margin="0,14,7,0"
+			Padding="0"
+			TextAlignment="Center"
+			     Text="1234"
+			VerticalAlignment="Bottom" Width="77" />
+
+		<!--#endregion Row 5-->
+
+		<!--#region Row 6-->
+		<TextBlock x:Name="NameLabel"
+			  Background="Transparent"
+			  FontSize="14"
+			  Foreground="{StaticResource ResourceKey=Black0}"
+			  Grid.Column="4"
+			  Grid.ColumnSpan="1"
+			  Grid.Row="7"
+			  Height="25"
+			  Margin="5,3,5,0"
+			  Padding="2"
+			  Text="Db Shown"
+			  TextAlignment="Center"
+			  VerticalAlignment="Top" 			     />
+		<!--#endregion Row 6-->
+
+		<!--#region Row 7-->
+		<TextBlock x:Name="BankNameLabel"
+			  Background="{StaticResource ResourceKey=Cyan5}"
+			  FontSize="14"
+			  Foreground="{StaticResource ResourceKey=Black0}"
+			  Grid.Column="4"
+			  Grid.Row="7"
+			  Height="29"
+			   HorizontalAlignment="Center"
+			  Margin="0,29,0,0"
+			  Padding="3"
+			  TextAlignment="Center"
+			  VerticalAlignment="Top" 
+			     Grid.RowSpan="2" Width="84" />
+		<!--#endregion Row 7-->
+
+		<!--#region Row 8-->
+		<Button  x:Name="ClearGrid"
+			  Background="{StaticResource Red1}"
+			  Click="ClearGrid_Click"
+			  Content="Clear Grid"
+			  Foreground="{StaticResource Black0}"
+			  Grid.Row="8"
+			  Grid.Column="4"
+			   HorizontalAlignment="Center"
+			  Margin="0,20,0,43"
+			  Padding="3"
+			  Template="{StaticResource HorizontalGradientTemplateRed}" Grid.RowSpan="2" Width="88"
+					/>
+		<!--#endregion Row 8-->
+
+		<!--#region Row 9-->
+		<TextBox x:Name="DbToCopy_Copy" 
+			  Background="{StaticResource Cyan5}"
+			  Foreground="{StaticResource Black0}"
+			  Grid.Row="9"
+			  Grid.Column="4"
+			  Height="25" 
+			  HorizontalAlignment="Left"   			   
+			  HorizontalContentAlignment="Center"
+			  PreviewMouseLeftButtonUp="DbToCopy_PreviewMouseLeftButtonUp"
+			  VerticalContentAlignment="Center"
+			  Margin="3,5,0,5"
+			  Text="spLoadFullDetails" 
+			  TextWrapping="Wrap" 
+			   Visibility="Collapsed"
+			  Width="92" />
+
+
+
+		<Button  x:Name="ShowProcCode"
+			Background="{StaticResource Black0}"
+			Click="ListSPs_Click"
+			Content="List Stored Procedures"
+			FontSize="12"
+			Foreground="{StaticResource Yellow1}"
+			Grid.Row="5"
+			Grid.Column="1"
+			HorizontalAlignment="Left"
+			Margin="0,2,0,3"
+			Padding="3"
+			Template="{StaticResource HorizontalGradientTemplateBlue}"
+			Visibility="Visible" 
+			Width="181" />
+
+		<Button  x:Name="ShowSchemas"
+			Background="{StaticResource Red5}"
+			Click="Schemas_Click"
+			Content="Stored Procs. scripts"
+			Foreground="{StaticResource White0}" 
+			Grid.Column="1"
+			Grid.ColumnSpan="2"
+			Grid.Row="5"
+			HorizontalAlignment="Left"
+			Margin="200,2,0,3"
+			Padding="3"
+			Template="{StaticResource HorizontalGradientTemplateYellow}"
+			Visibility="Visible" 
+			Width="138" />
+
+		<Button  x:Name="SPArgumentss"
+			Background="{StaticResource Red5}"
+			   Click="SPArgumentss_Click"
+			Content="View SP Arguments"
+			Foreground="{StaticResource White0}" 
+			Grid.Column="2"
+			Grid.Row="5"
+			HorizontalAlignment="Left"
+			Margin="50,2,0,3"
+			Padding="3"
+			Template="{StaticResource HorizontalGradientTemplateBlue}"
+			Visibility="Visible" 
+			Width="138" />
+
+		<Button  x:Name="zzzyhemas"
+			Content="zzz"
+			Grid.Column="3"
+			Grid.Row="5"
+			HorizontalAlignment="Left"
+			Margin="0,2,0,3"
+			Padding="3"
+			Template="{StaticResource HorizontalGradientTemplateBlue}"
+			Visibility="Visible" 
+			Width="138" />
+
+		<Button  x:Name="fdsg"
+			Content="543523zzz"
+			Grid.Column="3"
+			Grid.ColumnSpan="2"
+			Grid.Row="5"
+			HorizontalAlignment="Right"
+			Margin="0,2,0,3"
+			Padding="3"
+			Template="{StaticResource HorizontalGradientTemplateBlue}"
+			Visibility="Visible" 
+			Width="138" />
+		<Button  x:Name="ShowGrid"
+			  Background="{StaticResource Yellow1}"
+			  Click="ShowGrid_Click"
+			  Content="Show Grid"
+			  Foreground="{StaticResource Black0}"
+			  Grid.Row="9"
+			  Grid.Column="4"
+			   HorizontalAlignment="Center"
+			  Margin="0,11,0,2"
+			  Padding="3"
+			   Template="{StaticResource HorizontalGradientTemplateYellow}" Width="90"/>
+		<!--#endregion Row 9-->
+
+		<!--#region Datagrid-->
+		<!--<ScrollViewer  x:Name="gridscroller" 
+			Grid.Column="1"
+			Grid.ColumnSpan="3"
+			Grid.Row="6"
+			Grid.RowSpan="4"
+			ScrollViewer.HorizontalScrollBarVisibility="Auto"  Width="auto">-->
+		<DataGrid x:Name="DisplayGrid"
+					AlternatingRowBackground="{StaticResource Cyan8}"
+					AutoGenerateColumns="True"
+					BorderBrush="#9AFF0000"		 	
+					CanUserAddRows="False"
+					CanUserDeleteRows="False"
+					CanUserResizeColumns="true"
+					CanUserSortColumns="True"
+					Grid.Column="1"
+					Grid.ColumnSpan="3"
+					Grid.Row="6"
+					Grid.RowSpan="4"
+					HorizontalScrollBarVisibility="Visible"
+					Margin="3,10,4,0"
+					MaxColumnWidth="500"
+					MinColumnWidth="10"
+					MinWidth="250"
+					MouseDoubleClick="DisplayGrid_MouseDblClick"
+					Padding="3"
+					Panel.ZIndex="1"
+					ToolTip="Double click to view currently selected item in an editable Text box"
+					VerticalContentAlignment="Top" 
+					Visibility="Visible"
+					/>
+		<!--</ScrollViewer>-->
+
+		<!--// Display grid record content-->
+		<TextBox x:Name="GridData_Display" 
+			Background="{StaticResource Cyan5}"
+			Foreground="{StaticResource Black0}"
+			Grid.Column="1" 
+			Grid.Row="6"   			   
+			HorizontalContentAlignment="Left"
+			HorizontalScrollBarVisibility="Auto"
+			CommandManager.CanExecute="GridData_Display_CanExecute"
+			Margin="3,10,4,0"
+			Panel.ZIndex="3"			   
+			MouseDoubleClick="GridData_Display_MouseDoubleClick"
+			TextAlignment="Left"
+			Text="spLoadFullDetails" 
+			TextWrapping="NoWrap" 
+			
+			   VerticalContentAlignment="Center"
+			VerticalScrollBarVisibility="Auto"
+			Visibility="Hidden" 
+			VerticalAlignment="Stretch" Grid.ColumnSpan="3" Grid.RowSpan="4">
+			<TextBox.ToolTip>
+				<TextBlock 
+					Background="{StaticResource Gray0}" 
+					FontSize="16" 
+					Foreground="{StaticResource White0}" 
+					Text="Double click to return to the Data Grid view..."/>
+			</TextBox.ToolTip>
+		</TextBox>
+
+
+
+		<!--#region pointer Arrows-->
+		<Path x:Name="arrow2" Data="F1 M 0,0 L 2.667,2.66665 L 5.3334,0 L 5.3334,-1.78168 L 2.6667,0.88501 L0,-1.78168 L0,0 Z" 
+					Fill="{StaticResource White0}"   
+					Grid.Row="3"
+					Grid.Column="3"
+					HorizontalAlignment="right"
+					Margin="0,24,70,0" 
+					RenderTransformOrigin="0.776,-0.13" 
+					Stretch="Fill" 
+					Width="12" Height="16" VerticalAlignment="Top" >
+			<Path.RenderTransform>
+				<TransformGroup>
+					<ScaleTransform/>
+					<SkewTransform/>
+					<RotateTransform Angle="89.427"/>
+					<TranslateTransform X="3.168" Y="6.738"/>
+				</TransformGroup>
+			</Path.RenderTransform>
+		</Path>
+		<Path x:Name="arrow3" Data="F1 M 0,0 L 2.667,2.66665 L 5.3334,0 L 5.3334,-1.78168 L 2.6667,0.88501 L0,-1.78168 L0,0 Z" 
+			Fill="{StaticResource Red5}" 		
+			Grid.Row="3"
+			Grid.Column="3"
+			HorizontalAlignment="Right"
+			Margin="0,28,53,6" 
+			Stretch="Fill" 
+			Width="12"
+			RenderTransformOrigin="0.814,-0.527" >
+			<Path.RenderTransform>
+				<TransformGroup>
+					<ScaleTransform/>
+					<SkewTransform/>
+					<RotateTransform Angle="89.427"/>
+					<TranslateTransform X="6.099" Y="9.696"/>
+				</TransformGroup>
+			</Path.RenderTransform>
+		</Path>
+		<Path x:Name="arrow4" Data="F1 M 0,0 L 2.667,2.66665 L 5.3334,0 L 5.3334,-1.78168 L 2.6667,0.88501 L0,-1.78168 L0,0 Z" 
+			Fill="{StaticResource Red5}" 
+			Grid.Row="3"
+			Grid.Column="3"
+			HorizontalAlignment="Right"
+			Margin="0,16,75,18" 
+			Stretch="Fill" 
+			Width="12" 
+			RenderTransformOrigin="-0.844,-0.162" >
+			<Path.RenderTransform>
+				<TransformGroup>
+					<ScaleTransform/>
+					<SkewTransform/>
+					<RotateTransform Angle="89.427"/>
+					<TranslateTransform X="14.393" Y="-3.96"/>
+				</TransformGroup>
+			</Path.RenderTransform>
+		</Path>
+		<!--#endregion pointer Arrows-->
+
+		<!--#endregion Datagrid-->
+
+		<ListView x:Name="listRound" 
+			    Background="{StaticResource Yellow2}"
+			    Grid.Row="5" 
+			    Grid.Column="3"
+			    Grid.RowSpan="4"
+			    Height="150"
+			    
+			    Margin="10,19,10,15"
+			    Visibility="Collapsed"
+			  >
+			<ListView.Resources>
+
+			</ListView.Resources>
+		</ListView>
+
+		<TextBox x:Name="CurrentCommandLabel" 
+			  Background="{StaticResource Red5}"
+			  Foreground="{StaticResource White0}"
+			  Grid.Row="1"
+			  Grid.Column="1"
+			  Grid.ColumnSpan="2"
+			  Height="25" 
+			  HorizontalAlignment="Left"   			   
+			  HorizontalContentAlignment="Center"
+			  KeyDown="SqlCommandString_KeyDown"
+			  PreviewMouseLeftButtonUp="SqlCommandString_PreviewMouseLeftButtonUp"
+			  VerticalContentAlignment="Center"
+			  Margin="100,3,0,42"
+			  Text="" 
+			  TextWrapping="Wrap" 
+			  ToolTip="Enter a valid Sql command and press Enter, or click the 'Execute' button..."
+			  Width="356" />
+		<TextBlock x:Name="textBlock_3" 
+			  Foreground="{StaticResource White0}"
+			  Grid.Column="1" 
+			  Grid.Row="1" 
+			  HorizontalAlignment="Left" 
+			  Margin="6,7,0,0" 
+			  Text="Last Command :" 
+			  TextWrapping="Wrap" 
+			  VerticalAlignment="Top"/>
+		<Button  x:Name="ViewDbBtn"
+			  Background="{StaticResource Green4}"
+			  Click="ViewDbBtn_Click"
+			  Content="View Db"
+			  Foreground="{StaticResource White0}"
+			  Grid.Row="1"
+			  Grid.Column="4"
+			  HorizontalAlignment="Left"
+			  Margin="7,37,0,0"
+			  Padding="3"
+			  Template="{StaticResource HorizontalGradientTemplateGreen}" 
+			   Width="92"
+			/>
+		<!--#region Menu-->
+		<!--Template="{StaticResource MenuItemCtrlTemplate1}"-->
+		<Menu x:Name="Mainmenu" 
+			Grid.Column="1" 
+			Grid.ColumnSpan="2"
+			Width="Auto" 			
+			Background="Transparent" 
+			Foreground="White"
+			HorizontalAlignment="Left"
+			HorizontalContentAlignment="Left"
+			>
+			<MenuItem x:Name="menu_options" Header="Options" 
+				Background="Transparent" 
+				Click="Option1_Click"
+				FontSize="16" 
+				Foreground="{StaticResource White1}"
+				Style="{DynamicResource MenuItemStyle3}" 
+				Width="Auto">
+				<MenuItem Header="Refresh Both Dropdowns" 
+					Background="{StaticResource Blue2}" 
+					Click="RefreshLists_Click"
+					FontSize="16" 
+					Foreground="{StaticResource White0}"
+					Name="Option2"
+					Width="Auto"/>
+				<MenuItem Header="View current grid content" 
+					Background="{StaticResource Blue2}" 
+					Click="ViewGridContent_Click"
+					FontSize="16" 
+					Foreground="{StaticResource White0}"
+					Name="Option3"
+					Width="Auto"/>
+				<MenuItem Header="something else...." 
+					Background="{StaticResource Blue2}" 
+					Click="RefreshLists_Click"
+					FontSize="16" 
+					Foreground="{StaticResource White0}"
+					Name="Option4"
+					Width="Auto"/>
+			</MenuItem>
+			<MenuItem Header="Info !" 
+				Click="info_Click"
+				Background="Transparent" 
+				FontSize="16" 
+				Foreground="{StaticResource White1}"
+				HorizontalContentAlignment="Right"
+				Name="Option5"
+				Style="{DynamicResource MenuItemStyle3}" 				    
+				Width="Auto"/>
+			<MenuItem Header="Help ?" 
+				Click="Help_Click"
+				Background="Transparent" 
+				FontSize="16" 
+				Foreground="{StaticResource White1}"
+				HorizontalContentAlignment="Right"
+				Name="Option6"
+				Style="{DynamicResource MenuItemStyle3}" 
+				Width="Auto"/>
+
+		</Menu>
+		<TextBox x:Name="SPArgs" 
+			  Background="{StaticResource ResourceKey=Cyan5}"
+			   FontSize="18"
+			  Foreground="{StaticResource ResourceKey=Gray0}"
+			  Grid.Row="4"
+			  Grid.Column="2"
+			  Grid.ColumnSpan="2" 
+			  HorizontalContentAlignment="Center"
+			  KeyDown="SPArgs_KeyDown"
+			   LostFocus="SPArgs_LostFocus"
+			  Margin="150,6,48,5"
+			  PreviewMouseLeftButtonUp="DbToBeCreated_PreviewMouseLeftButtonUp"
+			  Text="Enter arguments here ..." 
+			  TextWrapping="Wrap" 
+			  VerticalContentAlignment="Center"
+					/>
+		<!--#endregion Menu-->
+	</Grid>
+</Window>

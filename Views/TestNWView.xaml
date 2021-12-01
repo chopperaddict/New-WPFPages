@@ -9,7 +9,8 @@
         xmlns:views="clr-namespace:WPFPages.Views"
         mc:Ignorable="d"
 	  WindowStartupLocation="CenterScreen"
-	  WindowState="Normal"
+	  ResizeMode="CanResizeWithGrip"
+ 	  WindowState="Normal"
 	  Loaded="Window_Loaded"
         Title="TestNWView" Height="650" Width="800">
 

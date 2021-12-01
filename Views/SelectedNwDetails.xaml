@@ -9,7 +9,8 @@
 	  xmlns:system="clr-namespace:System;assembly=mscorlib"
 	  xmlns:data="clr-namespace:WPFPages.Views"
   	  xmlns:command="clr-namespace:WPFPages.Commands"
-
+	  ResizeMode="CanResizeWithGrip"
+ 
 	  mc:Ignorable="d"
 	  MinHeight=" 650"
 	  MinWidth="820"

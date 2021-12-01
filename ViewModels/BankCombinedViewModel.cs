@@ -11,6 +11,7 @@ namespace WPFPages . ViewModels
 	public class BankCombinedViewModel : BankAccountViewModel
 	{
 		public BankCombinedViewModel ( ){}
+
 		private string lName;
 		public string LName
 		{
