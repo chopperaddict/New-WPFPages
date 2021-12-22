@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFPages"
-	 xmlns:Analogclock="clr-namespace:MyAnalogClock;assembly=MyAnalogClock"  
         mc:Ignorable="d"
 	  WindowStartupLocation="CenterScreen"
 	  WindowState="Normal"
@@ -38,6 +37,5 @@
 			Grid.Column="2"
 			Background="Beige">
 		</DataGrid>
-		<Analogclock:AnalogClock Grid.Row="2" Background="Blue"/>
 	</Grid>
 </Window>

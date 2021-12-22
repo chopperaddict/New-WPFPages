@@ -7,32 +7,34 @@
 	xmlns:local="clr-namespace:WPFPages.Views"
 	xmlns:aprops="clr-namespace:WPFPages.Views"
 	Closing="Window_Closing"
-	Height="350"
+	Height="353"
 	KeyDown="Window_KeyDown"
 	Left="1060"
 	Margin="33,3,3,3"
 	MinHeight="350"
 	MaxHeight="350 "
 	Name="Dbselector"
-	Title="DbViewer"
+	Title="DbViewer"		
+	MouseEnter="Dbselector_MouseEnter"				
+	MouseLeave="Dbselector_MouseLeave"
 	Top="280"
 	Topmost="false"
 	  ResizeMode="CanResizeWithGrip"
  	WindowStartupLocation="Manual"
-	Width="853.8"
-	WindowStyle="None"
+	Width="851"
+	WindowStyle="ThreeDBorderWindow"
 	mc:Ignorable="d">
 
 	<Window.Resources>
 
-		<Style x:Key="MenuStyle1" TargetType="MenuItem">
+		<!--<Style x:Key="MenuStyle1" TargetType="MenuItem">
 			<Style.Triggers>
 				<Trigger Property="IsMouseOver" Value="true">
 					<Setter Property="Foreground" Value="Red"/>
 					<Setter Property="BorderBrush" Value="Red"/>
 				</Trigger>
 			</Style.Triggers>
-		</Style>
+		</Style>-->
 
 		<!--#region ContextMenus-->
 
@@ -415,7 +417,7 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
-	
+
 		<ControlTemplate x:Key="{ComponentResourceKey ResourceId=TopLevelHeaderTemplateKey, TypeInTargetAssembly={x:Type MenuItem}}" TargetType="{x:Type MenuItem}">
 			<Border x:Name="templateRoot" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
 				<Grid VerticalAlignment="Center">
@@ -616,15 +618,44 @@
 				</Setter.Value>
 			</Setter>
 		</Style>-->
-
+		<Style x:Key="menutest" TargetType="MenuItem">
+			<Setter Property="Background" Value="{StaticResource Red3}"/>
+			<Setter Property="Foreground" Value="{StaticResource Black0}" />
+			<Setter Property="Width"  Value="40" />
+			<Setter Property="BorderThickness" Value="2" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="MenuItem">
+						<Border
+							Name="_Border"
+							Padding="3"
+							HorizontalAlignment="Stretch">
+							<ContentPresenter  HorizontalAlignment="Center"/>
+						</Border>
+						<!--<Style.Triggers>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="" Value="false"/>
+								</MultiTrigger.Conditions>
+								<MultiTrigger.Setters>
+									<Setter Property="Background" Value="{StaticResource Black3}"/>
+									<Setter Property="Foreground" Value="{StaticResource White3}" />
+								</MultiTrigger.Setters>
+							</MultiTrigger>
+						</Style.Triggers>-->
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 
 		<!--#endregion various styles-->
 	</Window.Resources>
 
+	
 	<!--$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$-->
 
-
-	<Grid HorizontalAlignment="Stretch">
+	
+	<Grid  x:Name="Maingrid">
 		<!--#region grid setup-->
 
 		<Grid.RowDefinitions>
@@ -651,59 +682,74 @@
 
 		<!--#region Main MENU-->
 
-		<Menu
-			Height="30"
-			HorizontalAlignment="Left"
-			HorizontalContentAlignment="Stretch"
-			local:MenuAttachedProperties.MenuItemSelectedBackground="{StaticResource HeaderBrushYellowReversed}"
-			local:MenuAttachedProperties.MenuItemBackground="{StaticResource HeaderBrushYellow}"
+		<!--local:MenuAttachedProperties.MenuItemSelectedBackground="{StaticResource HeaderBrushYellowReversed}"
+			local:MenuAttachedProperties.MenuItemBackground="{StaticResource Yellow0}"
 			local:MenuAttachedProperties.MenuItemForeground="{StaticResource TextWhiteToBlackHorizontal}"
-			local:MenuAttachedProperties.MenuSelectedForeground="{StaticResource TextBlackToWhiteHorizontal}"
+			local:MenuAttachedProperties.MenuItemSelectedForeground="{StaticResource TextBlackToWhiteHorizontal}"
 			local:MenuAttachedProperties.MenuFontSize="14"
 			local:MenuAttachedProperties.MenuFontWeight="DemiBold"
-			local:MenuAttachedProperties.MenuItemBorderColor="{StaticResource Blue2}"
+			local:MenuAttachedProperties.MenuItemBorderColor="{StaticResource White0}"
 			local:MenuAttachedProperties.MenuItemBorderThickness="1"
 			local:MenuAttachedProperties.MenuItemHeight ="30"
-			local:MenuAttachedProperties.MenuItemMargin="2"
-			Background="Transparent"
+			local:MenuAttachedProperties.MenuItemMargin="2"-->
+		
+		<!--Background and foreground have NO EFFECT-->
+		<Menu
+			Background="Black"
+			Foreground="White"
+			Height="30"
+			HorizontalAlignment="Left"
 			Grid.Column="1" 
-			BorderThickness="3"
+			BorderThickness="0"
 			BorderBrush="{StaticResource Black1}"
-			Width="810">
+			Width="846"
+			>
+			<!--Style="{StaticResource ThemeMainMenu}"-->
 
 			<!--Menu ONE Drag Client-->
 			<MenuItem  Header="Drag Win."
+			     Background="Black"
 				Name ="menu1"
 				Click="LoadDragClient_Click"
-				Foreground="{StaticResource VerticalRedGradient}"
-				Margin="1"
+				Foreground="{StaticResource Red5}"
 				FontWeight="Bold"
-				Height="25"/>
+				Height="25" Width="83"
+				    />
 
 			<!--Menu TWO Data Viewers-->
 			<MenuItem  Header="Data Viewers"
-					Name ="menu2"
-					Background="Transparent"
-					Foreground="{StaticResource HorizontalGreenGradient}"
-					FontWeight="DemiBold"
-					IsTabStop="False"
-					Height="20">
+				Name ="menu2"
+			     Background="Black"
+				Foreground="{StaticResource White0}"
+				FontWeight="DemiBold"
+				IsTabStop="False"
+				 Height="25">
 				<MenuItem  Header="Bank A/C Viewer"
-					Click="LoadBankDbView_Click"
-	                       Template="{StaticResource MenuItemCtrlTemplate1}"/>
+					     Background="Green"
+					     Foreground="Black"
+					     Click="LoadBankDbView_Click" />
+				<!--Style="{StaticResource menuitemtest}"/>-->
+				<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 				<MenuItem  Header="Customer A/C Viewer"
-					Click="LoadCustDbView_Click"
-					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+					     Background="Green"
+					     Foreground="Black"
+					Click="LoadCustDbView_Click" />
+				<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 				<MenuItem  Header="Details A/C Viewer"
-					Click="LoadDetailsDbView_Click"
-					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+					     Background="Green"
+					     Foreground="Black"
+					Click="LoadDetailsDbView_Click"/>
+				<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 				<MenuItem  Header="Full NorthWind database"
-					Click="LoadFullNorthwind_Click"
-					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+					     Background="Green"
+					     Foreground="Black"
+					Click="LoadFullNorthwind_Click"/>
+				<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 				<MenuItem  Header="Selected NorthWind database"
-					Click="LoadSelectedNorthwind_Click"
-					Template="{StaticResource MenuItemCtrlTemplate1}"/>
-
+					     Background="Green"
+					     Foreground="Black"
+					Click="LoadSelectedNorthwind_Click"/>
+				<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 				<Separator
 					Style="{StaticResource Menu_Separator}"
 					Height="3"
@@ -713,62 +759,84 @@
 					ClipToBounds="True"/>
 
 				<MenuItem  Header="Multi A/C Viewer"
-					Click="LoadMultiView_Click"
-					Template="{StaticResource MenuItemCtrlTemplate1}"/>
-
+					Background="Green"
+					     Foreground="Black"
+					Click="LoadMultiView_Click"/>
+				<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 				<MenuItem  Header="Test NorthWind System"
+					     Background="Green"
+					     Foreground="Black"
 						Click="NorthWind_Click"
 						Margin="2"
 						FontWeight="Bold"
-						IsTabStop="False"
-						Template="{StaticResource MenuItemCtrlTemplate1}"/>
-
+						IsTabStop="False"/>
+						<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 				<MenuItem  Header="Test Bank System"
+					     Background="Green"
+					     Foreground="Black"
 						Click="TestBank_Click"
+						Margin="1"
+						FontWeight="Bold"
+						IsTabStop="False"/>
+						Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				
+				
+				
+				<MenuItem  Header="Test Details System"
+						Background="Orange"
+					     Foreground="Black"
+						Margin="1"
+						FontWeight="Bold"
+						IsTabStop="False"
+						Click="TestDet_Click" />
+					<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
+				<MenuItem  Header="TreeView Viewer"
+						Background="Orange"
+					     Foreground="Black"
 						Margin="2"
 						FontWeight="Bold"
 						IsTabStop="False"
-						Template="{StaticResource MenuItemCtrlTemplate1}"/>
-
-				<MenuItem  Header="Test Details System"
-					Click="TestDet_Click"
-					Template="{StaticResource MenuItemCtrlTemplate1}"/>
-				<MenuItem  Header="TreeView Viewer"
-					Click="TreeView_Click"
-					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+						Click="TreeView_Click"/>
+						<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 				<MenuItem  Header="Multi View Listbox/Views"
-					Click="UserListbox_Click"
-					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+						Background="Orange"
+					     Foreground="Black"
+						Click="UserListbox_Click"/>
+						<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 			</MenuItem>
 
 			<!--================================================-->
 
 			<MenuItem  Header="Execute Sys"
 				     Name ="menu3"
-					Background="Transparent"
-					Foreground="{StaticResource Orange2}"
+				     Background="Black"
+					Foreground="White"
 					FontWeight="DemiBold"
 					IsTabStop="False"
 					Height="25">
 				<MenuItem  Header="Execute File/Program"
+					Background="Green"
+					Foreground="White"
 					Click="Execute_Click"
 					MinWidth="200"
 					Padding="5,2,5,0"
-					IsTabStop="False"
-					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+					IsTabStop="False"/>
 				<MenuItem  Header="Maintain Search paths"
+					Background="Green"
+					Foreground="White"
 					Click="Paths_Click"
-					MinWidth="200"
-	                   Template="{StaticResource MenuItemCtrlTemplate1}"/>
+					MinWidth="200"/>
+				<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 
 			</MenuItem>
 			<!--================================================-->
 
 			<!--Menu entries - FOUR single menu options (No dropdown)-->
+					<!--Background="Transparent"-->
 			<MenuItem  Header="All Colors"
+				     Background="Black"
 				     Name ="Colors"
 				     Click="Colors_Click"
-					Background="Transparent"
 					Foreground="{StaticResource HorizontalYellowGradient}"
 					FontWeight="DemiBold"
 					IsTabStop="False"
@@ -776,39 +844,49 @@
 			<MenuItem Header="  Sys. Colors" 
 				    Click="sysColors_Click" 						
 					FontWeight="DemiBold"
-					Background="Transparent"
+				     Background="Black"
 					Foreground="{StaticResource HorizontalRedGradient}"/>
 			<MenuItem Header="  Bkgrounds" 
 				    Click="Backgrounds_Click" 						
 					FontWeight="DemiBold"
-					Background="Transparent"
+				     Background="Black"
 					Foreground="{StaticResource HeaderBrushYellow}"/>
 			<MenuItem Header="  Animation" 
+				     Background="Black"
 				    Click="Animate_Click" 						
 					FontWeight="DemiBold"
-					Background="Transparent"
 					Foreground="{StaticResource VerticalBlueGradient}"/>
 
 			<!--================================================-->
 
 			<MenuItem Header="  Testing" 				    
 					FontWeight="DemiBold"
-					Background="Transparent"
+				     Background="Black"
 					Foreground="{StaticResource White0}" 
 					Click="MenuItem_Click">
-				<MenuItem Header=" Analog Clock" 
+				<!--<MenuItem Header=" Analog Clock" 
+					Background="Red"
+					Foreground="White"
 				    Click="Clock_Click" 						
-				    Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				    Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 				<MenuItem Header="  BankAccount Window" 
+					Background="Red"
+					Foreground="White"
 				    Click="Bankaccount_Click" 						
 		                   Template="{StaticResource MenuItemCtrlTemplate1}"/>
 				<MenuItem Header="  BtnTest" 
+					Background="Red"
+					Foreground="White"
 				    Click="ButtonTesting_Click" 						
 				       Template="{StaticResource MenuItemCtrlTemplate1}"/>
 				<MenuItem Header="  More Testing" 
+					Background="Red"
+					Foreground="White"
 				    Click="MoreTesting_Click" 						
 		                Template="{StaticResource MenuItemCtrlTemplate1}"/>
 				<MenuItem Header=" Buttons and dapper" 
+					Background="Red"
+					Foreground="White"
 				    Click="DaperTesting_Click" 						
 		                Template="{StaticResource MenuItemCtrlTemplate1}"/>
 			</MenuItem>
@@ -816,31 +894,48 @@
 			<!--================================================-->
 			<MenuItem Header=" Others" 
 				FontWeight="DemiBold"
-				Background="Transparent"
+				     Background="Black"
 				Block.IsHyphenationEnabled="True"
    				Foreground="{StaticResource White0}">
 				<MenuItem Header=" Styled Grid " 
-				    Click="Styled_Click" 	
-	                    Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				    Click="Styled_Click" 	/>
+				<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 				<MenuItem Header=" Grouped Accounts" 
-				    Click="Grouping_Click" 	
-	                    Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				    Click="Grouping_Click" 		/>
+	                    <!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 				<MenuItem Header=" Items Control" 
-				    Click="ItemsControl_Click" 						
-		              Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				    Click="ItemsControl_Click"	/>
+		              <!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 				<MenuItem Header=" Styling Tests" 
-				    Click="StoryBoard_Click" 						
-		              Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				    Click="StoryBoard_Click"	/>
+		              <!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 				<MenuItem Header=" Att'd Props " 
-				    Click="Attached_Click" 						
-			        Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				    Click="Attached_Click"	/>
+			        <!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 			</MenuItem>
 
+			<MenuItem Header="MsgBox" 
+				FontWeight="Bold"
+				Background="Black"
+				Foreground="{StaticResource HorizontalYellowGradient}">
+				<MenuItem Header="MsgBox Setup Window" 
+					FontWeight="Bold"
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+					Click="Msgbox_Click" />
+				<MenuItem Header="Show MsgBox AP's" 
+					FontWeight="Bold"
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+					Click="MsgboxAPs_Click" />
+			</MenuItem>
+			
 			<MenuItem Header="About..." 
 				FontWeight="Bold"
-				Background="Transparent"
+			     Background="Black"
 				Foreground="{StaticResource HorizontalYellowGradient}"				    
-				Click="CustomMsgbox_Click" Style="{DynamicResource MenuItemStyle1}" />
+				Click="CustomMsgbox_Click" />
+			<!--Style="{DynamicResource MenuItemStyle1}" />-->
 			<!--================================================-->
 		</Menu>
 
@@ -906,7 +1001,7 @@
 			Grid.Row="2"
 			Grid.Column="1"
 			Margin="3.5,4,0,7">
-			<StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+			<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 				<Button
 					x:Name="BankViewer"
 					Foreground="{StaticResource White0}"
@@ -974,7 +1069,7 @@
 
 				<Button
 					x:Name="MultiViewer"
-					Width="127"
+					Width="115"
 					Height="30"
 					Margin="2,0,5,0"
 					Click="MultiViewer_Click"
@@ -999,7 +1094,7 @@
 					Template="{StaticResource HorizontalGradientTemplateBlue}" />
 				<Button
 					x:Name="DapperBtn"
-					Width="113"
+					Width="95"
 					Height="30"
 					Margin="2,0,5,0"
 					Click="Dapper_Select"
@@ -1057,8 +1152,10 @@
 
 			<CheckBox
 				x:Name="OntopChkbox"
+				Grid.Row="0"
+				Grid.Column="0"
 				Width="100"
-				Margin="0,0,0,0"
+				Margin="-50,6,0,0"
 				HorizontalAlignment="Left"
 				VerticalAlignment="Center"
 				Click="OntopChkbox_Click"
@@ -1068,7 +1165,7 @@
 				Grid.Row="0"
 				Grid.Column="0"
 				Height="30"
-				Margin="120,8,295,7"
+				Margin="80,8,295,7"
 				Click="DeleteAllViewers_Click"
 				Content="Close All Viewers"
 				FontSize="14"
@@ -1089,7 +1186,6 @@
 			GotFocus="Viewerslist_Focused"
 			Grid.Row="3"
 			Grid.Column="1"
-			HorizontalAlignment="stretch"
 			HorizontalContentAlignment="Center"
 			IsTabStop="True"
 			Loaded="OnWindowLoaded"
@@ -1101,7 +1197,6 @@
 			ScrollViewer.VerticalScrollBarVisibility="Auto"
 			Style="{StaticResource _styletest}"
 			TabIndex="3"
-			VerticalAlignment="Stretch"
 			VerticalContentAlignment="Stretch"
 			Visibility="Visible"
 			ItemContainerStyle="{DynamicResource _ListBoxItemStyle1}">

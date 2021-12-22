@@ -14,6 +14,7 @@ using WPFPages.Views;
 
 namespace WPFPages.ViewModels
 {
+	[Serializable]
 	public partial class DetailsViewModel : ObservableCollection<DetailsViewModel> 
 	{
 		#region PropertyChanged

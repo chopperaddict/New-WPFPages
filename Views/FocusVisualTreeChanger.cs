@@ -19,7 +19,10 @@ namespace WPFPages . Views
 		}
 
 		public static readonly DependencyProperty IsChangedProperty =
-		DependencyProperty.RegisterAttached("IsChanged", typeof(bool), typeof(FocusVisualTreeChanger), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits, IsChangedCallback));
+		DependencyProperty.RegisterAttached("IsChanged", 
+			  typeof(bool),
+			typeof(FocusVisualTreeChanger), 
+			new FrameworkPropertyMetadata(false,  FrameworkPropertyMetadataOptions.Inherits, IsChangedCallback));
 
 		private static void IsChangedCallback ( DependencyObject d , DependencyPropertyChangedEventArgs e )
 		{

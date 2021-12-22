@@ -19,6 +19,7 @@ namespace WPFPages . Views
 	//===========================
 	//CUSTOMER VIEW MODEL CLASS
 	//===========================
+	[Serializable]
 	public partial class CustomerViewModel : INotifyPropertyChanged
 	{
 		#region CONSTRUCTORS

@@ -456,11 +456,9 @@ namespace WPFPages . Views
 			}
 			try
 			{
-
 				Startup = true;
 				try
 				{
-
 					DataFields . DataContext = this . BankGrid . SelectedItem as BankAccountViewModel;
 				}
 				catch ( Exception ex )

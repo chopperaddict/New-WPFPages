@@ -1,0 +1,144 @@
+﻿<Window x:Class="WPFPages.Views.MsgboxSetup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFPages.Views"
+        xmlns:conv="clr-namespace:WPFPages.Converts"
+        mc:Ignorable="d"
+	  Closing="Window_Closing"
+	  WindowStartupLocation="CenterOwner"
+        Title="Application Configuration System" Height="640" Width="450">
+	<Window.Resources>
+		<conv:HexStringToBrush x:Key="Hex2string"/>
+
+	</Window.Resources>
+	<Window.Background>
+		<SolidColorBrush Color="LightBlue"/>
+	</Window.Background>
+	<Grid>
+
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="5" x:Name="Row1" />
+			<RowDefinition Height="35" />
+			<RowDefinition Height="35" />
+			<RowDefinition Height="35" />
+			<RowDefinition Height="35" />
+			<RowDefinition Height="35" />
+			<RowDefinition Height="35" />
+			<RowDefinition Height="35" />
+			<RowDefinition Height="35" />
+			<RowDefinition Height="35" />
+			<RowDefinition Height="95" />
+			<RowDefinition Height="135" />
+			<RowDefinition Height="15" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="10" />
+			<ColumnDefinition Width="220" />
+			<ColumnDefinition Width="110" />
+			<ColumnDefinition Width="90" />
+			<ColumnDefinition Width="10" />
+		</Grid.ColumnDefinitions>
+
+		<Label x:Name="label" Content="Dialog BackGround" Grid.Column="1"  Grid.Row="1" FontSize="14" 
+			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
+		<Label x:Name="label1" Content="Dialog ForeGround"  Grid.Column="1"  Grid.Row="2" FontSize="14" 
+			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
+		<Label x:Name="label2" Content="Button's BackGround"  Grid.Column="1"  Grid.Row="3" FontSize="14" 
+			 HorizontalAlignment="Right"  Margin="0,-5,6,0" VerticalAlignment="Center" Height="30" Width="Auto" />
+		<Label x:Name="label3" Content="Button's ForeGround"  Grid.Column="1"  Grid.Row="4" FontSize="14" 
+			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
+		<Label x:Name="label4" Content="Button Border Color"  Grid.Column="1"  Grid.Row="5" FontSize="14" 
+			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
+		<Label x:Name="label5" Content="Mouseover Button's BackGround"  Grid.Column="1"  Grid.Row="6" FontSize="14" 
+			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
+		<Label x:Name="label6" Content="Mouseover Button's ForeGround"  Grid.Column="1"  Grid.Row="7" FontSize="14" 
+			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
+		<Label x:Name="label7" Content="Default Button's BackGround"  Grid.Column="1"  Grid.Row="8" FontSize="14" 
+			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
+		<Label x:Name="label8" Content="Default Button's ForeGround"  Grid.Column="1"  Grid.Row="9" FontSize="14" 
+			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
+
+		<TextBox x:Name="textBox" Grid.Column="2"   Grid.Row="1"  Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FFFF0000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95" 
+			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox_GotFocus"/>
+		<TextBox x:Name="textBox1"  Grid.Column="2"   Grid.Row="2" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox1_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FFFF0000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95"  
+			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox1_GotFocus"/>
+		<TextBox x:Name="textBox2"  Grid.Column="2"   Grid.Row="3" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox2_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95" 
+			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox2_GotFocus"/>
+		<TextBox x:Name="textBox3"  Grid.Column="2"   Grid.Row="4" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox3_KeyUp"
+			HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95" 
+			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox3_GotFocus"/>
+		<TextBox x:Name="textBox4"  Grid.Column="2"   Grid.Row="5" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox4_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95"
+			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox4_GotFocus"/>
+		<TextBox x:Name="textBox5" Grid.Column="2"   Grid.Row="6" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox5_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,3,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Top" Width="95"  
+			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox5_GotFocus" Grid.RowSpan="4"/>
+		<TextBox x:Name="textBox6"  Grid.Column="2"   Grid.Row="7" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox6_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95" 
+			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox6_GotFocus"/>
+		<TextBox x:Name="textBox7"  Grid.Column="2"   Grid.Row="8" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox7_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95" 
+			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox7_GotFocus"/>
+		<TextBox x:Name="textBox8"  Grid.Column="2"   Grid.Row="9" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox8_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95" 
+			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox8_GotFocus"/>
+
+		<Border x:Name="color1" Grid.Row="1"  Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color1_PreviewMouseDown"
+			  Background="{Binding ElementName=textBox, Path=Text, Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" Margin="5,4,5,4" />
+		<Border x:Name="color2" Grid.Row="2"  Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color2_PreviewMouseDown"
+			  Background="{Binding ElementName=textBox1, Path=Text, Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" />
+		<Border x:Name="color3" Grid.Row="3"  Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color3_PreviewMouseDown"
+			  Background="{Binding ElementName=textBox2, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" />
+		<Border x:Name="color4" Grid.Row="4"  Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color4_PreviewMouseDown"
+			  Background="{Binding ElementName=textBox3, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" />
+		<Border x:Name="color5" Grid.Row="5"  Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color5_PreviewMouseDown"
+			  Background="{Binding ElementName=textBox4, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" />
+		<Border x:Name="color6" Grid.Row="6"  Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color6_PreviewMouseDown"
+			  Background="{Binding ElementName=textBox5, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" />
+		<Border x:Name="color7" Grid.Row="7" Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color7_PreviewMouseDown"
+			  Background="{Binding ElementName=textBox6, Path=Text,   Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" />
+		<Border x:Name="color8" Grid.Row="8"  Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color8_PreviewMouseDown"
+			  Background="{Binding ElementName=textBox7, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" />
+		<Border x:Name="color9" Grid.Row="9" Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color9_PreviewMouseDown"
+			  Background="{Binding ElementName=textBox8, Path=Text,   Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" />
+
+		<!--<TextBox Text="Message Box Configuration" Grid.Row="0"  Grid.Column="1" Grid.ColumnSpan="3"  IsTabStop="False"
+			   Margin="0 8 0 0" Background="Red" Foreground="White" HorizontalContentAlignment="Center" />-->
+		<TextBox x:Name="info"
+			Background="LightGray" Grid.Row="11" Grid.Column="1" Margin="0,0,62,-27" Grid.RowSpan="2"/>
+		<TextBox x:Name="Memvars"
+			  Background="LightGray" Grid.Row="11" Grid.Column="1" Margin="168,0,4,-30" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+
+		<Button Grid.Row="11"  Grid.Column="3"  Content="Save..." Width="80"
+			  Background="Orange" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,105"			  
+			  Click="SaveMsgbox" Height="25"  IsTabStop="False"/>
+
+		<Button Grid.Row="11"  Grid.Column="3"  Content="Show..." Width="80" Grid.RowSpan="3"
+			  Background="Green" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,35,0,85"			  
+			  Click="ShowMsgbox" Height="25"  IsTabStop="False"/>
+
+		<Button Grid.Row="11"  Grid.Column="3"  Content="Show DP's" Width="80"
+			  Background="Violet" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,37" 
+			  Click="ListDps" Height="25"  IsTabStop="False"/>
+		<Button Grid.Row="11"  Grid.Column="3"  Content="Close" Width="80"
+			  Background="Red" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5"			  
+			  Click="Button_Click" Height="25"  IsTabStop="False"/>
+
+
+		<Slider x:Name="trans" Minimum="0.00" Maximum="255.00" Value="128" Height="19"	ValueChanged="trans_ValueChanged"  
+			  Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="2" Background="Black" Margin="19,0,6,75" VerticalAlignment="Bottom" IsTabStop="False"/>
+		<Slider x:Name="SRed" Minimum="0.00" Maximum="255.00" Value="128" Height="19" ValueChanged	="SRed_ValueChanged"
+			  Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="2" Background="Red" Margin="20,0,5,52" VerticalAlignment="Bottom" IsTabStop="False"/>
+		<Slider x:Name="SGreen" Minimum="0.00" Maximum="255.00" Value="128" Height="19" ValueChanged="SGreen_ValueChanged"
+			  Grid.Column="1" Grid.Row="10"  Grid.ColumnSpan="2" Background="Green" Margin="20,0,5,29" VerticalAlignment="Bottom" IsTabStop="False"/>
+		<Slider x:Name="SBlue" Minimum="0.00" Maximum="255.00" Value="128" Height="19" ValueChanged="SBlue_ValueChanged"
+			  Grid.Column="1" Grid.Row="10"  Grid.ColumnSpan="2" Background="Blue" Margin="20,0,5,5" VerticalAlignment="Bottom" IsTabStop="False"/>
+
+	</Grid>
+</Window>

@@ -1,5 +1,210 @@
 
 ===============================================================================================================
+ * 	How  to access my message boxes easily
+ ===============================================================================================================
+	Full MessageBox				// Snippet  <msf>
+	Short MessageBox			// Snippet  <mss>
+	Default MesageBox			// Snippet  <msx>
+	MesageBox config data		// Snippet  <mbcfg>
+
+	OTHER .CS Snippets:-
+	     cst		Customer
+	     cta		Contains("")
+	     ds		DapperSupport .
+	     bkv		BankAccountViewModel
+	     cvm		CustomerViewModel
+	     gnc		GenericClass
+	     obv		ObservableCollection
+	     spl		Split('');
+	     utl		Utils.
+	     dct		Dictionary< , >
+	     drg		Utils . SetupWindowDrag ( this );
+	     pss		public static string
+
+	OTHER .XAML Snippets:-
+	To make  them work, Save to C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\DesignTools\Snippets\XAML\1033\Snippets
+	grr		<grid.RowDefintion.....
+
+===============================================================================================================
+ * 	How  to stop focus rectangle in buttons
+ ===============================================================================================================
+	<MyControl FocusVisualStyle="{x:Null}" />
+
+===============================================================================================================
+ * 	How  to create a UDT style parameter for Dapper
+ ===============================================================================================================
+First create a User Defined Table type in Database
+
+CREATE TYPE udtt_PersonList AS TABLE 
+(
+    ...
+)
+GO
+In your code
+
+var dynamicParameters = new DynamicParameters();
+dynamicParameters.Add("@PersonList", PersonList.AsTableValuedParameter("[dbo].[udtt_PersonList]"));
+dynamicParameters.Add("TestOutput", 0, Dbtype.Int32, ParameterDirection.Output);
+
+===============================================================================================================
+ * 	How  to convert a List<string> into a Collection
+ ===============================================================================================================
+			// param 1 is  the grid   to be populated
+			generics = CreateDatabase ( UniversalGrid , genericlist  );
+			SqlServerCommands sqlc = new SqlServerCommands();
+
+			// Caution : This loads the data into the Datarid with only the selected rows
+			// //visible in the grid so do NOT repopulate the grid after making this call
+			sqlc . LoadActiveRowsOnlyInGrid ( UniversalGrid , generics , DapperSupport . GetGenericColumnCount ( generics ) );
+	
+===============================================================================================================
+ * 	How  to get  a new instance of a generic  type
+  Can only be used with generic types (eg ObservableCollection<xxxx>)
+ ===============================================================================================================
+				// create new obs<T>
+				// Create an instance - Activator.CreateInstance will call the default constructor.
+				// This is equivalent to calling new ObservableCollection<T>().
+
+				var openType = typeof ( ObservableCollection<T> );
+				Type[] tArgs = {typeof( ObservableCollection <T>) };
+				Type target = openType.MakeGenericType(tArgs);
+				var gc = (GenericClass)Activator.CreateInstance (target);
+										
+					// same as this ??
+					var gc = new GenericClass ( );
+
+
+===============================================================================================================
+ * 	How  to call a method  that takes 1 <T> parameter
+ * 	publiic  bool <T> GetResult(T arg);
+===============================================================================================================
+			//Test Calls to a method that has one generic parameter <T>
+			DapperGeneric<List<string>> . getresult ( lst);
+			DapperGeneric<ObservableCollection<GenericClass>> . getresult ( Generics );
+			ObservableCollection<BankAccountViewModel> bvm = new  ObservableCollection<BankAccountViewModel>();
+			DapperGeneric<ObservableCollection<GenericClass>> . getresult ( bvm );
+			GenericClass gcc = new  GenericClass   ();
+			DapperGeneric<GenericClass> . getresult ( gcc );
+
+			// This is how the generuic method tests to find out what type has been received ?
+			switch ( test )
+			{
+				case ObservableCollection<GenericClass>:
+					ObservableCollection<GenericClass>o = new  ObservableCollection<GenericClass>( );
+					NB : You cannot use the (arg) parameter directly, and you cant reassign the (o) back to the original (arg)
+					o = test as ObservableCollection<GenericClass>;
+					Console . WriteLine ( $"collection has {o . Count ( )} records" );
+					break;
+				case GenericClass:
+					GenericClass g = new GenericClass();
+					g = test as GenericClass;
+					Console . WriteLine ( $"Field1 = [{g . field1}] " );
+					break;
+
+
+===============================================================================================================
+ * 	How  to create multiple args for dapper
+ * 	var parameters = new List<DynamicParameters>();
+===============================================================================================================
+
+	for (var i = 0; i < 3; i++)
+	{
+		var p = new DynamicParameters();
+		p.Add("@Kind", InvoiceKind.WebInvoice, DbType.Int32, ParameterDirection.Input);
+		p.Add("@Code", "Many_Insert_" + (i + 1), DbType.String, ParameterDirection.Input);
+		p.Add("@RowCount", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+
+		parameters.Add(p);
+		
+		// how to use them
+		connection.Execute(sql,
+		parameters,
+		commandType: CommandType.StoredProcedure);
+	}
+
+===============================================================================================================
+// SQL OFFICIAL select syntax
+===============================================================================================================
+<SELECT statement> ::=    
+    [ WITH { [ XMLNAMESPACES ,] [ <common_table_expression> [,...n] ] } ]  
+    <query_expression>   
+    [ ORDER BY <order_by_expression> ] 
+    [ <FOR Clause>]   
+    [ OPTION ( <query_hint> [ ,...n ] ) ]   
+<query_expression> ::=   
+    { <query_specification> | ( <query_expression> ) }   
+    [  {JOIN | UNION [ ALL ] | EXCEPT | INTERSECT }  
+        <query_specification> | ( <query_expression> ) [...n ] ]   
+<query_specification> ::=   
+SELECT [ ALL | DISTINCT ]   
+    [TOP ( expression ) [PERCENT] [ WITH TIES ] ]   
+    < select_list >   
+    [ INTO new_table ]   
+    [ FROM { <table_source> } [ ,...n ] ]   
+    [ WHERE <search_condition> ]   
+    [ <GROUP BY> ]   
+    [ HAVING < search_condition > ]
+
+	--how to assign value to var from table enquiry
+	declare @X decimal;
+	select @x = (select intrate from newbank where Id=2539)
+
+	How to use CASE structure
+	=====================
+	drop table  if exists temp 
+	SELECT custno, bankno,fname,
+		CASE 
+			WHEN fname = 'jules'
+			THEN '££££££££££'
+			WHEN fname = 'Fred'
+			THEN '££££££££££'
+			--WHEN 'PL/SQL' THEN 'PL/SQL is developed by Oracle Corporation.'
+			--WHEN 'MS-SQL' THEN 'MS-SQL is developed by Microsoft Corporation.'
+			else 'gdggdfsg'
+		END AS Description
+	into temp FROM customer
+
+	OR
+
+		SELECT custno, bankno,fname,
+		CASE fname
+			WHEN 'jules'
+			THEN '££££££££££'
+			else 'gdggdfsg'
+		END AS Description
+	into temp FROM customer
+
+===============================================================================================================
+// PC recovery commands oin Powershell (Admin rights)
+===============================================================================================================
+
+  sfc /scannow
+ ... then
+ dism /online /cleanup-image /restorehealth
+ ... should fix machine ???
+
+ Check CONFIG file and make sure  these come in THIS order
+ <configuration>
+	<configSections>
+	</configSections>
+</configuration>
+
+===============================================================================================================
+// newest SQL server connection string
+===============================================================================================================
+
+Server=localhost\MSSQLSERVER03;Database=master;Trusted_Connection=True;
+
+===============================================================================================================
+// How to modify a operator in a class
+===============================================================================================================
+
+		public static bool operator == ( BankAccountViewModel x , BankAccountViewModel y )
+		{
+			return x . Equals ( y );
+		}
+
+===============================================================================================================
 // How to create a COMPLEX SP the easiest way by concatenating strings
 ===============================================================================================================
 	
@@ -417,7 +622,7 @@ CellStyle="{StaticResource xxxtypeGridStyle}">
 		local:MenuAttachedProperties.MenuItemSelectedBackground="{StaticResource Orange4}"
 		local:MenuAttachedProperties.MenuItemBackground="{StaticResource Red0}"
 		local:MenuAttachedProperties.MenuItemForeground="{StaticResource White0}"
-		local:MenuAttachedProperties.MenuSelectedForeground="{StaticResource Black0}"
+		local:MenuAttachedProperties.MenuItemSelectedForeground="{StaticResource Black0}"
 		local:MenuAttachedProperties.MenuFontSize="12"
 		local:MenuAttachedProperties.MenuFontWeight="Normal"
 		local:MenuAttachedProperties.MenuItemBorderColor="{StaticResource Blue2}"

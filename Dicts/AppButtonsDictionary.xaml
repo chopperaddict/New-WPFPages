@@ -13,32 +13,31 @@
 		It creates a plain Oval with fill color etc all
 		as specified in Button Declaration
 	-->
-	<Style x:Key="OvalButton" TargetType="Button">
+	<Style x:Key="OvalButton" TargetType="Button" >
 		<!--  Set to true to not get any properties from the themes.  -->
 		<Setter Property="OverridesDefaultStyle" Value="true" />
 
 		<!--  This does NOTHING at all !!!  -->
-		<Setter Property="Background">
-			<Setter.Value>
-				<LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
-					<GradientStop Offset="0.25" Color="{Binding Background}" />
-					<GradientStop Offset="0.55" Color="{Binding Foreground}" />
-					<GradientStop Offset="1" Color="{Binding BorderBrush}" />
-				</LinearGradientBrush>
-			</Setter.Value>
-		</Setter>
-		<!--  This is used for display of an Ellipse  -->
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
 					<Grid>
-						<!--  The Ellipse uses Back/Fore ground as specified in declaration  -->
-						<Ellipse Fill="{TemplateBinding Background}" />
+						<Border x:Name="border" Background="Green" CornerRadius="15">
+							
+						</Border>
 						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
 					</Grid>
+					
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Background" Value="Yellow"/>
+							<Setter Property="BorderBrush" Value="Red"/>
+							<Setter Property="BorderThickness" Value="4"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>
-		</Setter>
+		</Setter>	  	
 	</Style>
 
 	<!--  New version  -->
@@ -174,7 +173,6 @@
 				</LinearGradientBrush>
 			</Setter.Value>
 		</Setter>
-
 		<!--
 			Lets change the Border as well but use the colors
 			defined in the Buttons declaration in the xaml code
@@ -185,7 +183,8 @@
 					<Border
 						Background="{TemplateBinding Background}"
 						BorderBrush="{TemplateBinding BorderBrush}"
-						BorderThickness="{TemplateBinding BorderThickness}">
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="10">
 						<!--
 							MOST IMPORTANT the ContentPresenter lives here and displays our
 							"Content" text correctly NB: Interestingly, it is in the BORDER which

@@ -32,7 +32,7 @@ namespace WPFPages . Views
 
 		Func<string, int, bool> MyFunc;
 
-
+//		eg MyFunc = (str, i) => str . Contains(i . ToString ( ) );
 
 		// Get our personal Collection view of the Db
 		Stopwatch timer = new Stopwatch();

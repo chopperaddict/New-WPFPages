@@ -1,0 +1,72 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<!--This is far more simplistic than the Bank control Temlate-->
+	<Style x:Key="GenericGridStyle" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="BorderBrush" Value="{StaticResource Black0}" />
+		<Setter Property="Background" Value="{StaticResource Cyan5}" />
+		<Style.Triggers>
+			<!--//=======================================================================================//-->
+			<!--// Handle Background and Foreground colors of SELECTED row-->
+			<!--NO MOUSE  / NOT SELECTED -->
+			<!--// Handle Background and Foreground colors of NON SELECTED row-->
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="False" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="false" />
+					<!--<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsKeyboardFocusWithin}" Value="False" />-->
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Background" Value="{StaticResource Gray3}" />
+					<Setter Property="Foreground" Value="{StaticResource Black0}" />
+					<Setter Property="FontWeight" Value="Normal" />
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+
+			<!--NO MOUSE  / SELECTED TRUE-->
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="true" />
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="false" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Background" Value="{StaticResource Cyan5}" />
+					<Setter Property="Foreground" Value="{StaticResource Black2}" />
+					<Setter Property="FontWeight" Value="DemiBold" />
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+
+			<!--MOUSE  OVER / NOT SELECTED -->
+			<!--// Handle Foreground colors of NON SELECTED row-->
+			<!--// This sets text to Blue when mouseover of the UNFOCUSED WINDOW-->
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="False" />
+					<!--<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsKeyboardFocusWithin}" Value="False" />-->
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="True" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Background" Value="{StaticResource Orange2}" />
+					<Setter Property="Foreground" Value="{StaticResource Black0}" />
+					<Setter Property="FontWeight" Value="Normal" />
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>
+
+			<!-- MOUSE OVER / SELECTED TRUE-->
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="true" />
+					<!--<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsKeyboardFocusWithin}" Value="False" />-->
+					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="true" />
+				</MultiDataTrigger.Conditions>
+				<MultiDataTrigger.Setters>
+					<Setter Property="Background" Value="{StaticResource Red0}" />
+					<Setter Property="Foreground" Value="{StaticResource Cyan0}" />
+					<Setter Property="FontWeight" Value="Bold" />
+				</MultiDataTrigger.Setters>
+			</MultiDataTrigger>    	
+		</Style.Triggers>
+	</Style>
+
+</ResourceDictionary>

@@ -283,6 +283,13 @@
 		<GradientStop Offset="0" Color="White" />
 	</LinearGradientBrush>
 
+	<LinearGradientBrush x:Key="TextWhiteToBlackHorizontal4" StartPoint="1,0" EndPoint="0,1">
+		<GradientStop Offset="0.8" Color="Black" />
+		<GradientStop Offset="0.7" Color="#CD000000" />
+		<GradientStop Offset="0.6" Color="#40400000" />
+		<GradientStop Offset="0.2" Color="White" />
+	</LinearGradientBrush>
+
 	<LinearGradientBrush x:Key="TextBlueToWhiteHorizontal" StartPoint="0,1" EndPoint="1,0">
 		<GradientStop Offset="1" Color="Blue" />
 		<GradientStop Offset="0" Color="White" />

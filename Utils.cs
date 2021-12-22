@@ -21,6 +21,10 @@ using System . Text;
 using Newtonsoft . Json . Linq;
 using System . Windows . Media . Imaging;
 using System . Data;
+using System . Net . Configuration;
+using System . Runtime . CompilerServices;
+using System . IdentityModel . Selectors;
+using static System . Windows . Forms . VisualStyles . VisualStyleElement . Window;
 
 namespace WPFPages
 {
@@ -229,10 +233,113 @@ namespace WPFPages
 			}
 			return null;
 		}
-		
+
 		#endregion play tunes / sounds
 
-	
+
+		// Record the name of the method that called this one.
+		public static void trace( )
+		{
+			// logs all the calls made upwards in a tree
+			string output="", tmp="";
+			int indx = 1;
+			var v  = new StackTrace ( 0 );
+			while ( true )
+			{
+				try
+				{
+
+					tmp=	v. GetFrame ( indx++ ) . GetMethod ( ) . Name + '\n';
+					if ( tmp . Contains ( "Invoke" ) || tmp . Contains ( "RaiseEvent" ) )
+						break;
+					else
+						output += tmp;
+				}
+				catch ( Exception ex )
+				{ 
+					Console . WriteLine ( "Crashed...\n" );
+					break;
+				}
+			}
+			Console . WriteLine ( $"StackTrace :\n{output}\n" );
+		}
+		public static void Mbox ( Window win , string string1 = "" , string caption = "" , string string2 = "" , string iconstring = "" , int Btn1 = 1 , int Btn2 = 0 , int defButton = 1 )
+		{
+			// We NEED to remove any \r as part of \r\n as textboxes ONLY accept \n on its own for Cr/Lf
+			string1 = ParseforCR ( string1 );
+			Msgboxs m = new Msgboxs( string1:string1,  string2:string2, caption:caption ,Btn1:Btn1, Btn2 : Btn2, defButton : defButton , iconstring:iconstring );
+			//			m . Owner = win;
+			m . ShowDialog ( );
+		}
+
+		public static void Mssg (
+				string caption = "" ,
+				string string1 = "" ,
+				string string2 = "" ,
+				string string3 = "" ,
+				string title = "" ,
+				string iconstring = "" ,
+				int defButton = 1 ,
+				int Btn1 = 1 ,
+				int Btn2 = 2 ,
+				int Btn3 = 3 ,
+				int Btn4 = 4 ,
+				string btn1Text = "" ,
+				string btn2Text = "" ,
+				string btn3Text = "" ,
+				string btn4Text = ""
+			     )
+		{
+			Msgbox msg = new Msgbox(
+				caption:caption ,
+				string1:string1,
+				string2:string2,
+				string3:string3,
+				title:title,
+				Btn1:Btn1,
+				Btn2 : Btn2,
+				Btn3 : Btn3,
+				Btn4 : Btn4,
+				defButton : defButton ,
+				iconstring:iconstring,
+				btn1Text:btn1Text,
+				btn2Text:btn2Text,
+				btn3Text:btn3Text,
+				btn4Text:btn4Text );
+			//msg . Owner = win;
+			msg . Show ( );
+			//msg . ShowDialog ( );
+		}
+
+		private static string ParseforCR ( string input )
+		{
+			string output="";
+			if ( input . Length == 0 )
+				return input;
+			if ( input . Contains ( "\r\n" ) )
+			{
+				do
+				{
+					string[] fields = input.Split('\r');
+					foreach ( var item in fields )
+					{
+						output += item;
+					}
+					if ( output . Contains ( "\r" ) == false )
+						break;
+				} while ( true );
+			}
+			else
+				return input;
+			return output;
+		}
+		public static Brush GetNewBrush ( string color )
+		{
+			if ( color [ 0 ] != '#' )
+				color = "#" + color;
+			return ( Brush ) new BrushConverter ( ) . ConvertFrom ( color );
+		}
+
 		//Generic form of Selection forcing code below
 		/// <summary>
 		/// This is a great method that almost guarantees to 
@@ -1205,7 +1312,7 @@ namespace WPFPages
 		}
 
 		#endregion Window control/ find methods
-		
+
 		public static Style GetDictionaryStyle ( string tempname )
 		{
 			Style ctmp = System . Windows . Application . Current . FindResource ( tempname ) as Style;
@@ -1299,8 +1406,9 @@ namespace WPFPages
 		public static void SetupWindowDrag ( Window inst )
 		{
 			inst . MouseDown += delegate
-			{try
-				{inst . DragMove ( );}
+			{
+				try
+				{ inst . DragMove ( ); }
 				catch { return; }
 			};
 		}
@@ -1333,17 +1441,23 @@ namespace WPFPages
 			return bitmap;
 		}
 
-		public  static void LoadBankDbGeneric ( BankCollection bvm , string caller="",bool Notify = false , int lowvalue = -1 , int highvalue = -1 , int maxrecords = -1 )
+		public static void LoadBankDbGeneric ( BankCollection bvm , string caller = "" , bool Notify = false , int lowvalue = -1 , int highvalue = -1 , int maxrecords = -1 )
 		{
 			if ( maxrecords == -1 )
 				BankCollection . LoadBank ( cc: bvm , caller: "BankAccount" , ViewerType: 99 , NotifyAll: Notify );
 			else
 			{
 				DataTable dtBank  = new DataTable();
-				dtBank = BankCollection . LoadSelectedBankData ( Min: lowvalue, Max: highvalue, Tot: maxrecords );
+				dtBank = BankCollection . LoadSelectedBankData ( Min: lowvalue , Max: highvalue , Tot: maxrecords );
 				bvm = BankCollection . LoadSelectedCollection ( bankCollection: bvm , max: -1 , dtBank: dtBank , Notify: Notify );
 			}
 
+		}
+		public static void SelectTextBoxText ( TextBox txtbox )
+		{
+			txtbox . SelectionLength = txtbox . Text . Length;
+			txtbox . SelectionStart = 0;
+			txtbox . SelectAll ( );
 		}
 
 		#region Visual Stlye / Search Helpers

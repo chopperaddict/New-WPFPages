@@ -8,9 +8,11 @@ using System . Data . SqlClient;
 using System . Data . SqlTypes;
 using System . Diagnostics;
 using System . Globalization;
+using System . IO;
 using System . Linq;
 using System . Linq . Expressions;
 using System . Reflection;
+using System . Runtime . Serialization . Formatters . Binary;
 using System . Security . AccessControl;
 using System . Security . Cryptography;
 using System . Security . Policy;
@@ -34,27 +36,403 @@ using WPFPages . Properties;
 using WPFPages . ViewModels;
 using WPFPages . Views;
 
+/*
+ * 	How  to create multiple args for dapper
+ * 	var parameters = new List<DynamicParameters>();
+
+	for (var i = 0; i < 3; i++)
+	{
+		var p = new DynamicParameters();
+		p.Add("@Kind", InvoiceKind.WebInvoice, DbType.Int32, ParameterDirection.Input);
+		p.Add("@Code", "Many_Insert_" + (i + 1), DbType.String, ParameterDirection.Input);
+		p.Add("@RowCount", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+
+		parameters.Add(p);
+		
+		// how to use them
+		connection.Execute(sql,
+		parameters,
+		commandType: CommandType.StoredProcedure);
+	}
+ * */
 namespace WPFPages . ViewModels
 {
-	/// <summary>
-	/// Method to load all Db's via SQL using DAPPER to save complexity
-	///  Author : ianch
-	/// Created : 10/27/2021 8:12:36 AM
-	/// </summary>
-	///	Methods to load SQ data using Dapper library for speed and simplicity
 
 	#region PerformSqlCommands
 	public static class DapperSupport
 	{
 		static int [ ] dummyargs= {0,0,0};
 
-		#region ExecuteSPSingle
-		#endregion	ExecuteSPSingle
+
+		#region CREATEGENERICCOLLECTION
+
+
+		/// <summary>
+		/// returns the  List<string " genericlist as well as filling out the  "collection"
+		/// </summary>
+		/// <param name="collection"></param>
+		/// <param name="SqlCommand"></param>
+		/// <param name="Arguments"></param>
+		/// <param name="WhereClause"></param>
+		/// <param name="OrderByClause"></param>
+		/// <param name="genericlist"></param>
+		/// <param name="errormsg"></param>
+		/// <returns></returns>
+		public static void CreateGenericCollection (
+			ref ObservableCollection<GenericClass> collection ,
+			string SqlCommand ,
+			string Arguments ,
+			string WhereClause ,
+			string OrderByClause ,
+			ref List<string> genericlist ,
+			ref string errormsg )
+		{
+			//			out string DbToOpen ,
+			//====================================
+			// Use DAPPER to run a Stored Procedure
+			//====================================
+			string result = "";
+			bool HasArgs = false;
+			int argcount = 0;
+			//DbToOpen = "";
+			errormsg = "";
+			string ConString = ( string ) Properties . Settings . Default [ "BankSysConnectionString" ];
+			IEnumerable  resultDb;
+			genericlist = new List<string> ( );
+			string arg1="", arg2="", arg3="", arg4="";
+			Dictionary<string , object> dict = new Dictionary<string, object>();
+			using ( IDbConnection db = new SqlConnection ( ConString ) )
+			{
+				try
+				{
+					// Use DAPPER to run  Stored Procedure
+					try
+					{
+						// Parse out the arguments and put them in correct order for all SP's
+						if ( Arguments . Contains ( "'" ) )
+						{
+							bool [] argsarray = {false,false,false,false};
+							int argscount = 0;
+							// we maybe have args in quotes
+							string []   args =Arguments .Trim().Split( '\'' );
+							for ( int x = 0 ; x < args . Length ; x++ )
+							{
+								if ( args [ x ] . Trim ( ) . Contains ( "," ) )
+								{
+									string tmp=args[x].Trim();
+									if ( tmp . Substring ( tmp . Length - 1 , 1 ) == "," )
+									{
+										tmp = tmp . Substring ( 0 , tmp . Length - 1 );
+										args [ x ] = tmp;
+										argsarray [ x ] = true;
+										argscount++;
+									}
+									else
+									{
+										if ( args [ x ] != "" )
+										{
+											argsarray [ x ] = true;
+											argscount++;
+										}
+									}
+								}
+							}
+							for ( int x = 0 ; x < argsarray . Length ; x++ )
+							{
+								switch ( x )
+								{
+									case 0:
+										if ( argsarray [ x ] == true )
+											arg1 = args [ x ];
+										break;
+									case 1:
+										if ( argsarray [ x ] == true )
+											arg2 = args [ x ];
+										break;
+									case 2:
+										if ( argsarray [ x ] == true )
+											arg3 = args [ x ];
+										break;
+									case 3:
+										if ( argsarray [ x ] == true )
+											arg4 = args [ x ];
+										break;
+								}
+							}
+						}
+						else if ( Arguments . Contains ( "," ) )
+						{
+							string []   args =Arguments .Trim().Split(',');
+							//string[] args = DbName.Split(',');
+							for ( int x = 0 ; x < args . Length ; x++ )
+							{
+								switch ( x )
+								{
+									case 0:
+										arg1 = args [ x ];
+										if ( arg1 . Contains ( "," ) )              // trim comma off
+											arg1 = arg1 . Substring ( 0 , arg1 . Length - 1 );
+										break;
+									case 1:
+										arg2 = args [ x ];
+										if ( arg2 . Contains ( "," ) )              // trim comma off
+											arg2 = arg2 . Substring ( 0 , arg2 . Length - 1 );
+										break;
+									case 2:
+										arg3 = args [ x ];
+										if ( arg3 . Contains ( "," ) )         // trim comma off
+											arg3 = arg3 . Substring ( 0 , arg3 . Length - 1 );
+										break;
+									case 3:
+										arg4 = args [ x ];
+										if ( arg4 . Contains ( "," ) )         // trim comma off
+											arg4 = arg4 . Substring ( 0 , arg4 . Length - 1 );
+										break;
+								}
+							}
+						}
+						else
+						{
+							// One or No arguments
+							arg1 = Arguments;
+							if ( arg1 . Contains ( "," ) )              // trim comma off
+								arg1 = arg1 . Substring ( 0 , arg1 . Length - 1 );
+						}
+						// Create our aguments using the Dynamic parameters provided by Dapper
+						var Params = new DynamicParameters();
+						if ( arg1 != "" )
+							Params . Add ( "Arg1" , arg1 , DbType . String , ParameterDirection . Input , arg1 . Length );
+						if ( arg2 != "" )
+							Params . Add ( "Arg2" , arg2 , DbType . String , ParameterDirection . Input , arg2 . Length );
+						if ( arg3 != "" )
+							Params . Add ( "Arg3" , arg3 , DbType . String , ParameterDirection . Input , arg3 . Length );
+						if ( arg4 != "" )
+							Params . Add ( "Arg4" , arg4 , DbType . String , ParameterDirection . Input , arg4 . Length );
+						// Call Dapper to get results using it's StoredProcedures method which returns
+						// a Dynamic IEnumerable that we then parse via a dictionary into collection of GenericClass  records
+						int colcount = 0, maxcols = 0;
+
+						if ( SqlCommand . ToUpper ( ) . Contains ( "SELECT " ) )
+						{
+							//***************************************************************************************************************//
+							// Performing a standard SELECT command but returning the data in a GenericClass structure	  (Bank/Customer/Details/etc)
+							var reslt = db . Query ( SqlCommand, CommandType.Text);
+							//***************************************************************************************************************//
+							if ( reslt == null )
+							{
+								errormsg = "DT";
+								return;
+							}
+							else
+							{
+								//Although this is duplicated  with the one below we CANNOT make it a method()
+								errormsg = "DYNAMIC";
+								int dictcount = 0;
+								int fldcount = 0;
+								try
+								{
+
+									foreach ( var item in reslt )
+									{
+										GenericClass gc = new GenericClass();
+										try
+										{
+											// we need to create a dictionary for each row of data then add it to a GenericClass row then add row to Generics Db
+											string buffer = "";
+											gc = ParseDapperRow ( item , dict , out colcount );
+											dictcount = 1;
+											fldcount = dict . Count;
+											int index = 0;
+											string tmp="";
+											foreach ( var pair in dict )
+											{
+												try
+												{
+													if ( pair . Key != null && pair . Value != null )
+													{
+														AddDictPairToGeneric ( gc , pair , dictcount++ );
+														tmp = pair . Key . ToString ( ) + "=" + pair . Value . ToString ( );
+														buffer += tmp + ",";
+													}
+												}
+												catch ( Exception ex )
+												{
+													Console . WriteLine ( $"Dictionary ERROR : {ex . Message}" );
+													result = ex . Message;
+												}
+											}
+											//remove trailing comma
+											string s = buffer . Substring (0, buffer . Length - 1 );
+											buffer = s;
+											genericlist . Add ( buffer );
+										}
+										catch ( Exception ex )
+										{
+											result = $"SQLERROR : {ex . Message}";
+											errormsg = result;
+											Console . WriteLine ( result );
+										}
+										collection . Add ( gc );
+										dict . Clear ( );
+										dictcount = 1;
+									}
+								}
+								catch ( Exception ex )
+								{
+									Console . WriteLine ( $"OUTER DICT/PROCEDURE ERROR : {ex . Message}" );
+									result = ex . Message;
+									errormsg = result;
+								}
+								if( errormsg  == "")
+									errormsg = $"DYNAMIC:{fldcount}";
+								return;
+							}
+						}
+						else
+						{
+							// probably a stored procedure ?  							
+							bool IsSuccess=false;
+
+							//***************************************************************************************************************//
+							// This returns the data from SP commands (only) in a GenericClass Structured format
+							var reslt = db . Query ( SqlCommand , Params ,commandType: CommandType . StoredProcedure );
+							//***************************************************************************************************************//
+
+							if ( reslt != null )
+							{   								
+								//Although this is duplicated  with the one above we CANNOT make it a method()
+								int dictcount = 0;
+								int fldcount = 0;
+								long zero= reslt.LongCount ();
+								try
+								{
+									foreach ( var item in reslt )
+									{
+										GenericClass gc = new GenericClass();
+										try
+										{
+											//	Create a dictionary for each row of data then add it to a GenericClass row then add row to Generics Db
+											gc = ParseDapperRow ( item , dict , out colcount );
+											dictcount = 1;
+											fldcount = dict . Count;
+											if ( fldcount == 0 )
+											{
+												//no problem, we will get a Datatable anyway
+												return;
+											}
+											string buffer="", tmp="";
+											foreach ( var pair in dict )
+											{
+												try
+												{
+													if ( pair . Key != null && pair . Value != null )
+													{
+														AddDictPairToGeneric ( gc , pair , dictcount++ );
+														tmp = pair . Key . ToString ( ) + "=" + pair . Value . ToString ( );
+														buffer += tmp + ",";
+													}
+												}
+												catch ( Exception ex )
+												{
+													Console . WriteLine ( $"Dictionary ERROR : {ex . Message}" );
+													result = ex . Message;
+												}
+											}
+											IsSuccess = true;
+											string s = buffer . Substring (0, buffer . Length - 1 );
+											buffer = s;
+											genericlist . Add ( buffer );
+										}
+										catch ( Exception ex )
+										{
+											result = $"SQLERROR : {ex . Message}";
+											Console . WriteLine ( result );
+											return;
+										}
+										collection . Add ( gc );
+										dict . Clear ( );
+										dictcount = 1;
+									}
+								}
+								catch ( Exception ex )
+								{
+									Console . WriteLine ( $"OUTER DICT/PROCEDURE ERROR : {ex . Message}" );
+									if ( ex . Message . Contains ( "not find stored procedure" ) )
+									{
+										result = $"SQL PARSE ERROR - [{ex . Message}]";
+										errormsg = $"{result}";
+									}
+									else
+									{
+										long x= reslt.LongCount ();
+										if ( x == ( long ) 0 )
+										{
+											result = $"ERROR : [{SqlCommand}] returned ZERO records... ";
+											errormsg = $"DYNAMIC:0";
+											return;
+										}
+										else
+										{
+											result = ex . Message;
+											errormsg = $"UNKNOWN :{ex . Message}";
+										}
+										return;
+									}
+								}
+							}
+							if ( IsSuccess == false )
+								Console . WriteLine ( $"Dapper request returned zero results" );
+						}
+					}
+					catch ( Exception ex )
+					{
+						Console . WriteLine ( $"STORED PROCEDURE ERROR : {ex . Message}" );
+						result = ex . Message;
+						errormsg = $"SQLERROR : {result}";
+					}
+				}
+				catch ( Exception ex )
+				{
+					Console . WriteLine ( $"Sql Error, {ex . Message}, {ex . Data}" );
+					result = ex . Message;
+				}
+			}
+			return;
+		}
+
+
+		#endregion CREATEGENERICCOLLECTION
+		public static DataTable RunSqlCommand ( string commandline )
+		{
+			DataTable dt = new DataTable();
+			try
+			{
+				SqlConnection con;
+				string ConString = "";
+				ConString = ( string ) Properties . Settings . Default [ "BankSysConnectionString" ];
+				con = new SqlConnection ( ConString );
+				using ( con )
+				{
+					SqlCommand cmd = new SqlCommand ( commandline, con );
+					SqlDataAdapter sda = new SqlDataAdapter ( cmd );
+					sda . Fill ( dt );
+				}
+			}
+			catch ( Exception ex )
+			{
+				Debug . WriteLine ( $"Failed to load Db - {ex . Message}, {ex . Data}" );
+				return null;
+			}
+			return dt;
+		}
 
 		#region	PERFORMSQLEXECUTECOMMAND
-		public static int PerformSqlExecuteCommand ( string SqlCommand , out string err )
+		public static int PerformSqlExecuteCommand ( string SqlCommand , string [ ] args , out string err )
 		//--------------------------------------------------------------------------------------------------------------------------------------------------------
 		{
+			//####################################################################################//
+			// Handles running a dapper stored procedure call with transaction support & thrws exceptions back to caller
+			//####################################################################################//
 			int gresult = -1;
 			string Con = ( string ) Properties . Settings . Default [ "BankSysConnectionString" ];
 			SqlConnection sqlCon=null;
@@ -64,10 +442,30 @@ namespace WPFPages . ViewModels
 			{
 				using ( sqlCon = new SqlConnection ( Con ) )
 				{
-					var parameters = "";
-					// Perform the sql command requested
-					//IEnumerable<GenericClass> result = 
-					var r = sqlCon . Execute ( @SqlCommand , parameters );// as IEnumerable<GenericClass>;
+					sqlCon . Open ( );
+					using ( var tran = sqlCon . BeginTransaction ( ) )
+					{
+						if ( ( SqlCommand . ToUpper ( ) == "SPINSERTSPECIFIEDROW" || SqlCommand . ToUpper ( ) == "SPCREATETABLE" || SqlCommand . ToUpper ( ) == "SPDROPTABLE" ) && args . Length > 0 )
+						{
+							var parameters = new DynamicParameters();
+							if ( args [ 0 ] != "" )
+								parameters . Add ( "Tablename" , args [ 0 ] , DbType . String , ParameterDirection . Input , args [ 0 ] . Length );
+							if ( args [ 1 ] != "" )
+								parameters . Add ( "cmd" , args [ 1 ] , DbType . String , ParameterDirection . Input , args [ 1 ] . Length );
+							if ( args [ 2 ] != "" )
+								parameters . Add ( "Values" , args [ 2 ] , DbType . String , ParameterDirection . Input , args [ 2 ] . Length );
+
+							gresult = sqlCon . Execute ( @SqlCommand , parameters , commandType: CommandType . StoredProcedure , transaction: tran );
+						}
+						else
+						{
+							// Perform the sql command requested
+							var parameters = "";
+							gresult = sqlCon . Execute ( @SqlCommand , parameters , commandType: CommandType . StoredProcedure , transaction: tran );// as IEnumerable<GenericClass>;
+						}
+						// Commit the transaction
+						tran . Commit ( );
+					}
 				}
 			}
 			catch ( Exception ex )
@@ -75,13 +473,70 @@ namespace WPFPages . ViewModels
 				Console . WriteLine ( $"Error {ex . Message}, {ex . Data}" );
 				err = $"Error {ex . Message}";
 			}
+
+			Utils . trace ( );
+
 			return gresult;
 		}
 		#endregion	PERFORMSQLEXECUTECOMMAND
 
-		#region	PERFORMSQLDBTEST
-		public static int PerformSqlDbTest ( string SqlCommand , out string err )
+		#region	PERFORMSQLEXECUTECOMMANDASYNC
+		public static async Task<int> PerformSqlExecuteCommandAsync ( string SqlCommand , string [ ] args )
 		//--------------------------------------------------------------------------------------------------------------------------------------------------------
+		{
+			//####################################################################################//
+			// Handles running a dapper stored procedure call with transaction support & thrws exceptions back to caller
+			//####################################################################################//
+			int gresult = -1;
+			string Con = ( string ) Properties . Settings . Default [ "BankSysConnectionString" ];
+			SqlConnection sqlCon=null;
+			//err = "";
+
+			try
+			{
+				using ( sqlCon = new SqlConnection ( Con ) )
+				{
+					sqlCon . Open ( );
+					using ( var tran = sqlCon . BeginTransaction ( ) )
+					{
+						if ( ( SqlCommand . ToUpper ( ) == "SPINSERTSPECIFIEDROW" || SqlCommand . ToUpper ( ) == "SPCREATETABLE" || SqlCommand . ToUpper ( ) == "SPDROPTABLE" ) && args . Length > 0 )
+						{
+							var parameters = new DynamicParameters();
+							if ( args [ 0 ] != "" )
+								parameters . Add ( "Tablename" , args [ 0 ] , DbType . String , ParameterDirection . Input , args [ 0 ] . Length );
+							if ( args [ 1 ] != "" )
+								parameters . Add ( "cmd" , args [ 1 ] , DbType . String , ParameterDirection . Input , args [ 1 ] . Length );
+							if ( args [ 2 ] != "" )
+								parameters . Add ( "Values" , args [ 2 ] , DbType . String , ParameterDirection . Input , args [ 2 ] . Length );
+
+							//************************************************************************************************************************************************************************//
+							gresult = sqlCon . Execute ( @SqlCommand , parameters , commandType: CommandType . StoredProcedure , transaction: tran );
+							//************************************************************************************************************************************************************************//
+						}
+						else
+						{
+							// Perform the sql command requested
+							var parameters = "";
+							//************************************************************************************************************************************************************************//
+							gresult = await sqlCon . ExecuteAsync ( @SqlCommand , parameters , commandType: CommandType . StoredProcedure , transaction: tran );// as IEnumerable<GenericClass>;
+																													//************************************************************************************************************************************************************************//
+						}
+						// Commit the transaction
+						tran . Commit ( );
+					}
+				}
+			}
+			catch ( Exception ex )
+			{
+				Console . WriteLine ( $"Error {ex . Message}, {ex . Data}" );
+			}
+			return gresult;
+		}
+		#endregion	PERFORMSQLEXECUTECOMMANDASYNC
+
+		#region	PERFORMSQLDBTEST
+		//--------------------------------------------------------------------------------------------------------------------------------------------------------
+		public static int PerformSqlDbTest ( string SqlCommand , out string err )
 		{
 			int gresult = -1;
 			string Con = ( string ) Properties . Settings . Default [ "BankSysConnectionString" ];
@@ -92,7 +547,7 @@ namespace WPFPages . ViewModels
 				using ( sqlCon = new SqlConnection ( Con ) )
 				{
 					var parameters = "";
-					var result = sqlCon . Query<GenericClass>( @SqlCommand , parameters );
+					var result = sqlCon . Query<GenericClass>( @SqlCommand , parameters , commandType: CommandType.Text);
 					foreach ( var item in result )
 					{
 						Console . WriteLine ( $"content = {item . GetType ( ) . ToString ( )}" );
@@ -109,7 +564,12 @@ namespace WPFPages . ViewModels
 			catch ( Exception ex )
 			{
 				Console . WriteLine ( $"Error {ex . Message}, {ex . Data}" );
-				err = $"Error {ex . Message}";
+				if ( ex . Message . Contains ( "There is already an object named" ) )
+					err = ex . Message;
+				else
+				{
+					err = $"Error {ex . Message}";
+				}
 			}
 			return gresult;
 		}
@@ -123,6 +583,7 @@ namespace WPFPages . ViewModels
 		/// <param name="SqlCommand"></param>
 		/// <param name="err"></param>
 		/// <returns>List 'of string'</returns>
+		
 		public static List<string> LoadStringDbData ( ObservableCollection<SelectionEntry> collection ,
 			string SqlCommand ,
 			out string err )
@@ -137,7 +598,10 @@ namespace WPFPages . ViewModels
 			{
 				try
 				{
+					//***************************************************************************************************************//
 					entries = db . Query<string> ( SqlCommand ) . ToList ( );
+					//***************************************************************************************************************//
+
 					foreach ( var item in entries )
 					{
 						SelectionEntry newentry = new SelectionEntry();
@@ -155,6 +619,8 @@ namespace WPFPages . ViewModels
 		#endregion LOADDBDATA
 
 		#endregion PerformSqlCommands
+
+		#region STD DAPPER METHODS
 
 		#region Bank Db Data Loading methods
 
@@ -236,16 +702,21 @@ namespace WPFPages . ViewModels
 					{
 						Orderby = Orderby . Contains ( "Order by" ) ? Orderby . Substring ( 9 ) : Orderby;
 						Conditions = Conditions . Contains ( "where " ) ? Conditions . Substring ( 6 ) : Conditions;
-						var Args = new { DbName = "" , Arg = " " , Conditions = "" , SortBy = "" };
+						var Args = new { Arg1 = "" , Arg2 = " " , Arg3= ""};
 						SqlCommand = $"spLoadMultiBankAccountsOnly";
 						if ( args [ 2 ] == 0 )
-							Args = new { DbName = $" {DbNameToLoad} " , Arg = $" * " , Conditions = $" {Conditions} " , SortBy = $" {Orderby}" };
+							Args = new { Arg1 = $" {DbNameToLoad} " , Arg2 = $" {Conditions} " , Arg3 = $" {Orderby}" };
 						else if ( args [ 2 ] > 0 )
-							Args = new { DbName = $" {DbNameToLoad} " , Arg = $" Top ({args [ 2 ] . ToString ( )}) *  " , Conditions = $" {Conditions}  " , SortBy = $" {Orderby}" };
+							Args = new { Arg1 = $" {DbNameToLoad} " , Arg2 = $" {Conditions}  " , Arg3 = $" {Orderby}" };
+
 						// This syntax WORKS CORRECTLY
+
+						//***************************************************************************************************************//
 						var result  = db . Query<BankAccountViewModel>( SqlCommand , Args,null,false, null,CommandType.StoredProcedure).ToList();
+						//***************************************************************************************************************//
 
 						Console . WriteLine ( result );
+						//process the list of multi a/c Bank accounts
 						foreach ( var item in result )
 						{
 							bvmcollection . Add ( item );
@@ -353,14 +824,21 @@ namespace WPFPages . ViewModels
 					{
 						Orderby = Orderby . Contains ( "Order by" ) ? Orderby . Substring ( 9 ) : Orderby;
 						Conditions = Conditions . Contains ( "where " ) ? Conditions . Substring ( 6 ) : Conditions;
-						var Args = new { DbName = "" , Arg = " " , Conditions = "" , SortBy = "" };
+						var Args = new { Arg1 = "" , Arg2 = " " , Arg3= ""};
 						SqlCommand = $"spLoadMultiBankAccountsOnly";
 						if ( args [ 2 ] == 0 )
-							Args = new { DbName = $" {DbNameToLoad} " , Arg = $" * " , Conditions = $" {Conditions} " , SortBy = $" {Orderby}" };
+							Args = new { Arg1 = $" {DbNameToLoad} " , Arg2 = $" {Conditions} " , Arg3 = $" {Orderby}" };
 						else if ( args [ 2 ] > 0 )
-							Args = new { DbName = $" {DbNameToLoad} " , Arg = $" Top ({args [ 2 ] . ToString ( )}) *  " , Conditions = $" {Conditions}  " , SortBy = $" {Orderby}" };
+							Args = new { Arg1 = $" {DbNameToLoad} " , Arg2 = $" {Conditions}  " , Arg3 = $" {Orderby}" };
+						//if ( args [ 2 ] == 0 )
+						//	Args = new { DbName = $" {DbNameToLoad} " , Arg = $" * " , Conditions = $" {Conditions} " , SortBy = $" {Orderby}" };
+						//else if ( args [ 2 ] > 0 )
+						//	Args = new { DbName = $" {DbNameToLoad} " , Arg = $" Top ({args [ 2 ] . ToString ( )}) *  " , Conditions = $" {Conditions}  " , SortBy = $" {Orderby}" };
 						// This syntax WORKS CORRECTLY
+
+						//***************************************************************************************************************//
 						var result  = db . Query<BankAccountViewModel>( SqlCommand , Args,null,false, null,CommandType.StoredProcedure).ToList();
+						//***************************************************************************************************************//
 
 						Console . WriteLine ( result );
 						foreach ( var item in result )
@@ -560,7 +1038,11 @@ namespace WPFPages . ViewModels
 								else if ( args [ 2 ] > 0 )
 									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $"{Orderby}" };
 								// This syntax WORKS CORRECTLY
+
+								//***************************************************************************************************************//
 								var result  = db . Query<BankAccountViewModel>( SqlCommand , Args,null,false, null,CommandType.StoredProcedure).ToList();
+								//***************************************************************************************************************//
+
 								Console . WriteLine ( result );
 								foreach ( var item in result )
 								{
@@ -624,7 +1106,9 @@ namespace WPFPages . ViewModels
 									SqlCommand += $" order by {Orderby}";
 							}
 							// Read data via Dapper into list<BVM> cos Dapper uses Linq, so we cannot get other types returned
+							//***************************************************************************************************************//
 							bvmi = db . Query<BankAccountViewModel> ( SqlCommand );
+							//***************************************************************************************************************//
 
 							foreach ( var item in bvmi )
 							{
@@ -821,8 +1305,12 @@ namespace WPFPages . ViewModels
 									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" , Arg4 = $"{ Orderby}" };
 								else if ( args [ 2 ] > 0 )
 									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $"{Orderby}" };
+
 								// This syntax WORKS CORRECTLY
+								//***************************************************************************************************************//
 								var result  = db . Query<BankAccountViewModel>( SqlCommand , Args,null,false, null,CommandType.StoredProcedure).ToList();
+								//***************************************************************************************************************//
+
 								Console . WriteLine ( result );
 								foreach ( var item in result )
 								{
@@ -842,7 +1330,7 @@ namespace WPFPages . ViewModels
 							//====================================
 							if ( Conditions != "" )
 							{
-								if ( args [ 2 ] > 0 && Orderby!="")
+								if ( args [ 2 ] > 0 && Orderby != "" )
 									SqlCommand = $" Select top ({args [ 2 ]}) * from {DbNameToLoad}  where {Conditions} Order by {Orderby}";
 								else
 									SqlCommand = $" Select * from {DbNameToLoad} where {Conditions}";
@@ -879,11 +1367,13 @@ namespace WPFPages . ViewModels
 								if ( SqlCommand == "" )
 									SqlCommand = $" Select * from {DbNameToLoad} ";
 
-								if ( wantSort && Orderby !="")
+								if ( wantSort && Orderby != "" )
 									SqlCommand += $" Order by {Orderby}";
 							}
 							// Read data via Dapper into list<BVM> cos Dapper uses Linq, so we cannot get other types returned
+							//***************************************************************************************************************//
 							bvmi = db . Query<BankAccountViewModel> ( SqlCommand );
+							//***************************************************************************************************************//
 
 							foreach ( var item in bvmi )
 							{
@@ -959,7 +1449,10 @@ namespace WPFPages . ViewModels
 
 						SqlCommand += $" order by CustNo, BankNo";
 					// Read data via Dapper into list<BVM> cos Dapper uses Linq, so we cannot get other types returned
+					//***************************************************************************************************************//
 					bvmlist = db . Query<BankAccountViewModel> ( SqlCommand ) . ToList ( );
+					//***************************************************************************************************************//
+
 					if ( bvmlist . Count > 0 )
 					{
 						// We want a ObservableCollection<BankAccountViewModel>, so create it here, and also a dictionary<int, int>
@@ -1039,11 +1532,13 @@ namespace WPFPages . ViewModels
 					else if ( SqlCommand == "" && args == null )    // No inforeceived at all, so use generic command
 						SqlCommand = "Select * from {DbNameToLoad} ";
 
-					if ( wantSort)
+					if ( wantSort )
 
 						SqlCommand += $" order by CustNo, BankNo";
 
+					//***************************************************************************************************************//
 					bvmlist = db . Query<BankAccountViewModel> ( SqlCommand ) . ToList ( );
+					//***************************************************************************************************************//
 
 					if ( bvmlist . Count > 0 )
 					{
@@ -1265,7 +1760,10 @@ namespace WPFPages . ViewModels
 									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $"{Orderby}" };
 								// This syntax WORKS CORRECTLY
 							}
+							//***************************************************************************************************************//
 							var result  = db . Query<CustomerViewModel>( SqlCommand , Args,null,false, null,CommandType.StoredProcedure).ToList();
+							//***************************************************************************************************************//
+
 							Console . WriteLine ( result );
 							foreach ( var item in result )
 							{
@@ -1328,7 +1826,9 @@ namespace WPFPages . ViewModels
 									SqlCommand += $" order by  {Orderby}";
 							}
 
+							//***************************************************************************************************************//
 							cvm = db . Query<CustomerViewModel> ( SqlCommand );
+							//***************************************************************************************************************//
 
 							foreach ( var item in cvm )
 							{
@@ -1558,7 +2058,10 @@ namespace WPFPages . ViewModels
 								}
 							}
 
+							//***************************************************************************************************************//
 							var result = db . Query<CustomerViewModel> ( SqlCommand , Args , null , false , null , CommandType . StoredProcedure ) . ToList ( );
+							//***************************************************************************************************************//
+
 							Console . WriteLine ( result );
 							foreach ( var item in result )
 							{
@@ -1622,7 +2125,10 @@ namespace WPFPages . ViewModels
 										SqlCommand += $"Order by {Orderby}";
 								}
 							}
+
+							//***************************************************************************************************************//
 							cvm = db . Query<CustomerViewModel> ( SqlCommand );
+							//***************************************************************************************************************//
 
 							foreach ( var item in cvm )
 							{
@@ -1699,7 +2205,9 @@ namespace WPFPages . ViewModels
 					if ( wantSort && SqlCommand . Contains ( "order by" ) == false )
 						SqlCommand += $" order by CustNo, BankNo";
 
+					//***************************************************************************************************************//
 					cvmlist = db . Query<CustomerViewModel> ( SqlCommand ) . ToList ( );
+					//***************************************************************************************************************//
 
 					if ( cvmlist . Count > 0 )
 					{
@@ -1716,6 +2224,7 @@ namespace WPFPages . ViewModels
 				catch ( Exception ex )
 				{
 					Console . WriteLine ( $"SQL DAPPER {DbNameToLoad}  error : {ex . Message}, {ex . Data}" );
+					return null;
 				}
 				finally
 				{
@@ -1923,7 +2432,10 @@ namespace WPFPages . ViewModels
 									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $"{Orderby}" };
 								// This syntax WORKS CORRECTLY
 							}
+							//***************************************************************************************************************//
 							var result  = db . Query<DetailsViewModel>( SqlCommand , Args,null,false, null,CommandType.StoredProcedure).ToList();
+							//***************************************************************************************************************//
+
 							Console . WriteLine ( result );
 							foreach ( var item in result )
 							{
@@ -1983,12 +2495,15 @@ namespace WPFPages . ViewModels
 									if ( SqlCommand == "" )
 										SqlCommand = $" Select * from {DbNameToLoad} ";
 
-									if ( wantSort && Orderby!="")
+									if ( wantSort && Orderby != "" )
 										SqlCommand += $" order by {Orderby}";
 								}
 
 								// Read data via Dapper into IEnumerable<DbType>
+								//***************************************************************************************************************//
 								dvm = db . Query<DetailsViewModel> ( SqlCommand );
+								//***************************************************************************************************************//
+
 								foreach ( var item in dvm )
 								{
 									dvmcollection . Add ( item );
@@ -1997,7 +2512,10 @@ namespace WPFPages . ViewModels
 							else
 							{
 								// Read data via Dapper into IEnumerable<DbType>
+								//***************************************************************************************************************//
 								dvm = db . Query<DetailsViewModel> ( SqlCommand );
+								//***************************************************************************************************************//
+
 								foreach ( var item in dvm )
 								{
 									dvmcollection . Add ( item );
@@ -2199,7 +2717,11 @@ namespace WPFPages . ViewModels
 									// This syntax WORKS CORRECTLY
 								}
 							}
+
+							//***************************************************************************************************************//
 							var result  = db . Query<DetailsViewModel>( SqlCommand , Args,null,false, null,CommandType.StoredProcedure).ToList();
+							//***************************************************************************************************************//
+
 							Console . WriteLine ( result );
 							foreach ( var item in result )
 							{
@@ -2264,7 +2786,10 @@ namespace WPFPages . ViewModels
 								}
 							}
 							// Read data via Dapper into IEnumerable<DbType>
+							//***************************************************************************************************************//
 							dvm = db . Query<DetailsViewModel> ( SqlCommand );
+							//***************************************************************************************************************//
+
 							foreach ( var item in dvm )
 							{
 								dvmcollection . Add ( item );
@@ -2298,6 +2823,8 @@ namespace WPFPages . ViewModels
 		#endregion Standard Details Data Loading methods
 
 		#endregion Details Db Data Loading methods
+
+		#endregion STD DAPPER METHODS
 
 		#region Update Db methods
 
@@ -2359,7 +2886,6 @@ namespace WPFPages . ViewModels
 				{
 					Console . WriteLine ( $"SQL DAPPER {DbName} Update error : {ex . Message}, {ex . Data}" );
 					result = false;
-
 				}
 				finally
 				{
@@ -2415,7 +2941,6 @@ namespace WPFPages . ViewModels
 				{
 					Console . WriteLine ( $"SQL DAPPER {DbName} Update error : {ex . Message}, {ex . Data}" );
 					result = false;
-
 				}
 				finally
 				{
@@ -3094,7 +3619,10 @@ namespace WPFPages . ViewModels
 			{
 				using ( IDbConnection db = new SqlConnection ( ConString ) )
 				{
+					//***************************************************************************************************************//
 					var Data = db . Query<object>( SqlCommand  ). ToList();
+					//***************************************************************************************************************//
+
 					Console . WriteLine ( $"SQL DAPPER {Data . Count} records successfuly" );
 					var dat = Data . Select ( x =>  x.ToString() ) . ToList ( );
 					string str = "";
@@ -3110,16 +3638,7 @@ namespace WPFPages . ViewModels
 				Console . WriteLine ( $"GENERIC DB ERROR : {ex . Message}" );
 				return false;
 			}
-			//{
-			//	EventControl . TriggerCustDataLoaded ( null ,
-			//		new LoadedEventArgs
-			//		{
-			//			CallerType = "SQLSERVER" ,
-			//			CallerDb = Caller 
-			//			//DataSource = cvmcollection ,
-			//			//RowCount = cvmcollection . Count
-			//		} );
-			return true;// (List<List<string>>)null;
+			return true;
 		}
 
 		#endregion Generic Db load
@@ -3133,8 +3652,6 @@ namespace WPFPages . ViewModels
 
 		{
 			string[] datain = { "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""};  // 40 elements 
-																										     //Type t = typeof(DbName) ;
-																										     //ObservableCollection<typeof(DbName)> collection = new ObservableCollection<DbName>();
 			List<string>   DbData = new List<string>();
 			//static IEnumerable  List<string> strarray;
 			string ConString = ( string ) Properties . Settings . Default [ "BankSysConnectionString" ];
@@ -3145,7 +3662,11 @@ namespace WPFPages . ViewModels
 				{
 					//object data=null;
 					//var parameters= new DynamicParameters(data);
-					var Data = db . Query<object>( SqlCommand  ). ToList();
+
+					//***************************************************************************************************************//
+					var Data = db . Query( SqlCommand ,CommandType.Text ). ToList();
+					//***************************************************************************************************************//
+
 					//var Data = db . Query<dynamic>( SqlCommand  ). ToList();
 					Console . WriteLine ( $"SQL DAPPER {Data . Count} records successfuly" );
 					var dat = Data . Select ( x =>  x.ToString() ) . ToList ( );
@@ -3248,7 +3769,7 @@ namespace WPFPages . ViewModels
 		#endregion Create Copy of any specified Db
 
 		#region	CREATEBANKCOMBINEDASYNC
-		public async static Task<bool> CreateBankCombinedAsync ( ObservableCollection<BankCombinedViewModel> collection ,
+		public async static Task<ObservableCollection<BankCombinedViewModel>> CreateBankCombinedAsync ( ObservableCollection<BankCombinedViewModel> collection ,
 		string SqlCommand = "" ,
 		bool Notify = false )
 		{
@@ -3268,16 +3789,20 @@ namespace WPFPages . ViewModels
 					try
 					{
 						//var Args = new { DbName = "" , Arg = " " , Conditions = "" , SortBy = "" };
-						SqlCommand = $"CreateBankCombinedDb";
+						SqlCommand = $"spCreateBankCombinedDb";
 						// This syntax WORKS CORRECTLY
+						//***************************************************************************************************************//
 						var result  = db . Query<BankCombinedViewModel>( SqlCommand , null,null,false, null,CommandType.StoredProcedure).ToList();
+						//***************************************************************************************************************//
+
 						//Console . WriteLine ( result );
-						//foreach ( var item in result )
-						//{
-						//	bvmcollection . Add ( item );
-						//}
+						foreach ( var item in result )
+						{
+							bvmcollection . Add ( item );
+						}
 						Console . WriteLine ( $"SQL DAPPER BANKCOMBINED DB created successfuly" );
 						collection = bvmcollection;
+						return collection;
 					}
 					catch ( Exception ex )
 					{
@@ -3292,10 +3817,10 @@ namespace WPFPages . ViewModels
 				catch ( Exception ex )
 				{
 					Console . WriteLine ( $"Sql Error, {ex . Message}, {ex . Data}" );
-					return false;
+					return null;
 				}
 			}
-			return true;
+			return collection;
 		}
 		#endregion	CREATEBASNKCOMBINEDASYNC
 
@@ -3425,7 +3950,9 @@ namespace WPFPages . ViewModels
 							SqlCommand += $" {Orderby}";
 					}
 					// Read data via Dapper into list<BVMI> cos Dapper uses Linq, so we cannot get other types returned
+					//***************************************************************************************************************//
 					bvmi = db . Query<BankCombinedViewModel> ( SqlCommand );
+					//***************************************************************************************************************//
 
 					foreach ( var item in bvmi )
 					{
@@ -3539,292 +4066,78 @@ namespace WPFPages . ViewModels
 		#endregion VALIDATESORTCONDITIONCOLUMNS
 
 		#endregion Utitlity/Special Methods
+		#region GENERAL METHODS
 
-		public static DataTable RunSqlCommand ( string commandline )
+		public static List<string> GetConnectionStrings ( )
 		{
-			DataTable dt = new DataTable();
+			List<string> Constrings = new List<string>();
+			var v = System.Configuration.ConfigurationManager.ConnectionStrings;
+			foreach ( var item in v )
+			{
+				Constrings . Add ( item . ToString ( ) );
+			}
+			return Constrings;
+		}
+		public static int GetGenericColumnCount ( ObservableCollection<GenericClass> collection , GenericClass gcc = null )
+		{
+			GenericClass gc = new GenericClass();
 			try
 			{
-				SqlConnection con;
-				string ConString = "";
-				ConString = ( string ) Properties . Settings . Default [ "BankSysConnectionString" ];
-				con = new SqlConnection ( ConString );
-				using ( con )
-				{
-					SqlCommand cmd = new SqlCommand ( commandline, con );
-					SqlDataAdapter sda = new SqlDataAdapter ( cmd );
-					sda . Fill ( dt );
-				}
+				if ( gcc == null )
+					gc = collection [ 0 ] as GenericClass;
+				else
+					gc = gcc;
+
+				if ( gc . field20 != null )
+				{ return 20; }
+				else if ( gc . field19 != null )
+				{ return 19; }
+				else if ( gc . field18 != null )
+				{ return 18; }
+				else if ( gc . field17 != null )
+				{ return 17; }
+				else if ( gc . field16 != null )
+				{ return 16; }
+				else if ( gc . field15 != null )
+				{ return 15; }
+				else if ( gc . field14 != null )
+				{ return 14; }
+				else if ( gc . field13 != null )
+				{ return 13; }
+				else if ( gc . field12 != null )
+				{ return 12; }
+				else if ( gc . field11 != null )
+				{ return 11; }
+				else if ( gc . field10 != null )
+				{ return 10; }
+				else if ( gc . field9 != null )
+				{ return 9; }
+				else if ( gc . field8 != null )
+				{ return 8; }
+				else if ( gc . field7 != null )
+				{ return 7; }
+				else if ( gc . field6 != null )
+				{ return 6; }
+				else if ( gc . field5 != null )
+				{ return 5; }
+				else if ( gc . field4 != null )
+				{ return 4; }
+				else if ( gc . field3 != null )
+				{ return 3; }
+				else if ( gc . field2 != null )
+				{ return 2; }
+				else if ( gc . field1 != null )
+				{ return 1; }
+				return 0;
 			}
 			catch ( Exception ex )
 			{
-				Debug . WriteLine ( $"Failed to load Db - {ex . Message}, {ex . Data}" );
-				return null;
+				Console . WriteLine ( $"Column count error '{ex . Message}'" );
 			}
-			return dt;
+			return 0;
 		}
-
-		public static IEnumerable ExecuteSPGeneric (
-			ObservableCollection<GenericClass> collection ,
-			string SqlCommand ,
-			string Arguments ,
-			string Fieldname ,
-			string WhereClause ,
-			string OrderByClause ,
-			ObservableCollection<GenericClass> GenDb ,
-			Dictionary<string , object> passeddict ,
-			out ObservableCollection<BankAccountViewModel> bvmparam ,
-			out string errormsg )
+		public static void AddDictPairToGeneric<T> ( T gc , KeyValuePair<string , object> dict , int dictcount ) where T : GenericClass
 		{
-			//			out string DbToOpen ,
-			//====================================
-			// Use DAPPER to run a Stored Procedure
-			//====================================
-			string result = "";
-			bool HasArgs = false;
-			int argcount = 0;
-			//DbToOpen = "";
-			errormsg = "";
-			string ConString = ( string ) Properties . Settings . Default [ "BankSysConnectionString" ];
-			IEnumerable  resultDb;
-			//List<dynamic> GenList = new List<dynamic>   ();
-
-			string arg1="", arg2="", arg3="", arg4="";
-			Dictionary<string , object> dict = new Dictionary<string, object>();
-			bvmparam = new ObservableCollection<BankAccountViewModel> ( );
-			using ( IDbConnection db = new SqlConnection ( ConString ) )
-			{
-				try
-				{
-					// Use DAPPER to run  Stored Procedure
-					try
-					{
-						// Parse out the arguments and put them in correct order for all SP's
-						if ( Arguments . Contains ( "," ) )
-						{
-							string []   args =Arguments .Trim().Split(',');
-							//string[] args = DbName.Split(',');
-							for ( int x = 0 ; x < args . Length ; x++ )
-							{
-								switch ( x )
-								{
-									case 0:
-										arg1 = args [ x ];
-										if ( arg1 . Contains ( "," ) )              // trim comma off
-											arg1 = arg1 . Substring ( 0 , arg1 . Length - 1 );
-										break;
-									case 1:
-										arg2 = args [ x ];
-										if ( arg2 . Contains ( "," ) )              // trim comma off
-											arg2 = arg2 . Substring ( 0 , arg2 . Length - 1 );
-										break;
-									case 2:
-										arg3 = args [ x ];
-										if ( arg3 . Contains ( "," ) )         // trim comma off
-											arg3 = arg3 . Substring ( 0 , arg3 . Length - 1 );
-										break;
-									case 3:
-										arg4 = args [ x ];
-										if ( arg4 . Contains ( "," ) )         // trim comma off
-											arg4 = arg4 . Substring ( 0 , arg4 . Length - 1 );
-										break;
-								}
-							}
-						}
-						else
-						{
-							// One or No arguments
-							arg1 = Arguments;
-							if ( arg1 . Contains ( "," ) )              // trim comma off
-								arg1 = arg1 . Substring ( 0 , arg1 . Length - 1 );
-						}
-						// Create our aguments using the Dynamic parameters provided by Dapper
-						var Params = new DynamicParameters();
-						if ( arg1 != "" )
-							Params . Add ( "Arg1" , arg1 , DbType . String , ParameterDirection . Input , arg1 . Length );
-						if ( arg2 != "" )
-							Params . Add ( "Arg2" , arg2 , DbType . String , ParameterDirection . Input , arg2 . Length );
-						if ( arg3 != "" )
-							Params . Add ( "Arg3" , arg3 , DbType . String , ParameterDirection . Input , arg3 . Length );
-						if ( arg4 != "" )
-							Params . Add ( "Arg4" , arg4 , DbType . String , ParameterDirection . Input , arg4 . Length );
-						// Call Dapper to get results using it's StoredProcedures method which returns
-						// a Dynamic IEnumerable that we then parse via a dictionary into collection of GenericClass  records
-						int colcount = 0, maxcols = 0;
-
-						if ( SqlCommand . ToUpper ( ) . Contains ( "SELECT " ) )
-						{
-							var reslt = db . Query ( SqlCommand, CommandType.Text);
-							if ( reslt == null )
-							{
-								errormsg = "DT";
-								return null;
-							}
-							else
-							{
-								//Although this is duplicated  with the one below we CANNOT make it a method()
-								errormsg = "DYNAMIC";
-								int dictcount = 0;
-								int fldcount = 0;
-								try
-								{
-									foreach ( var item in reslt )
-									{
-										GenericClass gc = new GenericClass();
-										try
-										{
-											// we need to create a dictionary for each row of data then add it to a GenericClass row then add row to Generics Db
-											gc = ParseDapperRow ( item , dict , out colcount );
-											dictcount = 1;
-											fldcount = dict . Count;
-											foreach ( var pair in dict )
-											{
-												try
-												{
-													if ( pair . Key != null && pair . Value != null )
-													{
-														AddDictPairToGeneric ( gc , pair , dictcount++ );
-													}
-												}
-												catch ( Exception ex )
-												{
-													Console . WriteLine ( $"Dictionary ERROR : {ex . Message}" );
-													result = ex . Message;
-												}
-											}
-										}
-										catch ( Exception ex )
-										{
-											result = $"SQLERROR : {ex . Message}";
-											Console . WriteLine ( result );
-											return null;
-										}
-										collection . Add ( gc );
-										dict . Clear ( );
-										dictcount = 1;
-									}
-								}
-								catch ( Exception ex )
-								{
-									Console . WriteLine ( $"OUTER DICT/PROCEDURE ERROR : {ex . Message}" );
-									result = ex . Message;
-								}
-								errormsg = $"DYNAMIC:{fldcount}";
-								return null;
-							}
-						}
-						else
-						{
-							// probably a stored procedure ?  							
-							bool IsSuccess=false;
-							var reslt = db . Query ( SqlCommand , Params , null , false , null , CommandType . StoredProcedure );
-							if ( reslt == null )
-							{
-								errormsg = "DT";
-								return null;
-							}
-							else
-							{
-								//Although this is duplicated  with the one above we CANNOT make it a method()
-								int dictcount = 0;
-								int fldcount = 0;
-								long zero= reslt.LongCount ();
-								try
-								{
-									foreach ( var item in reslt )
-									{
-										GenericClass gc = new GenericClass();
-										try
-										{
-											//	Create a dictionary for each row of data then add it to a GenericClass row then add row to Generics Db
-											gc = ParseDapperRow ( item , dict , out colcount );
-											dictcount = 1;
-											fldcount = dict . Count;
-											if ( fldcount == 0 )
-											{
-												//no problem, we will get a Datatable anyway
-												return null;
-											}
-											foreach ( var pair in dict )
-											{
-												try
-												{
-													if ( pair . Key != null && pair . Value != null )
-													{
-														AddDictPairToGeneric ( gc , pair , dictcount++ );
-													}
-
-												}
-												catch ( Exception ex )
-												{
-													Console . WriteLine ( $"Dictionary ERROR : {ex . Message}" );
-													result = ex . Message;
-												}
-											}
-											IsSuccess = true;
-										}
-										catch ( Exception ex )
-										{
-											result = $"SQLERROR : {ex . Message}";
-											Console . WriteLine ( result );
-											return null;
-										}
-										collection . Add ( gc );
-										dict . Clear ( );
-										dictcount = 1;
-									}
-								}
-								catch ( Exception ex )
-								{
-									Console . WriteLine ( $"OUTER DICT/PROCEDURE ERROR : {ex . Message}" );
-									if ( ex . Message . Contains ( "not find stored procedure" ) )
-									{
-										result = $"SQL PARSE ERROR - [{ex . Message}]";
-										errormsg = $"{result}";
-									}
-									else
-									{
-										long x= reslt.LongCount ();
-										if ( x == ( long ) 0 )
-										{
-											result = $"ERROR : [{SqlCommand}] returned ZERO records... ";
-											errormsg = $"DYNAMIC:0";
-											return null;
-										}
-										else
-										{
-											result = ex . Message;
-											errormsg = $"UNKNOWN :{ex . Message}";
-										}
-										return null;
-									}
-								}
-							}
-							if ( IsSuccess == false )
-								Console . WriteLine ( $"Dapper request returned zero results" );
-						}
-					}
-					catch ( Exception ex )
-					{
-						Console . WriteLine ( $"STORED PROCEDURE ERROR : {ex . Message}" );
-						result = ex . Message;
-						errormsg = $"SQLERROR : {result}";
-					}
-				}
-				catch ( Exception ex )
-				{
-					Console . WriteLine ( $"Sql Error, {ex . Message}, {ex . Data}" );
-					result = ex . Message;
-				}
-			}
-			return null;
-		}
-
-		public static void AddDictPairToGeneric ( GenericClass gc , KeyValuePair<string , object> dict , int dictcount )
-		{
-			int index= 1;
-			//foreach ( var item in dict)
-			//{
 			switch ( dictcount )
 			{
 				case 1:
@@ -3887,18 +4200,12 @@ namespace WPFPages . ViewModels
 				case 20:
 					gc . field20 = dict . Value . ToString ( );
 					break;
-
-					//}
-					//index = 1;
 			}
-
 		}
 		public static GenericClass ParseDapperRow ( dynamic buff , Dictionary<string , object> dict , out int colcount )
 		{
 			string outstr="";
-			//string temp = buff.ToString();
 			StringBuilder sb = new StringBuilder();
-			//string[] fields = temp.Split(',');
 			GenericClass GenRow = new GenericClass();
 			int index=2;
 			colcount = 0;
@@ -3919,7 +4226,57 @@ namespace WPFPages . ViewModels
 			colcount = index;
 			return GenRow;
 		}
-		private static GenericClass SaveToField ( GenericClass GenRow , int index , string outstr )
+		public static string GetStringFromGenericRow ( GenericClass GenRow )
+		{
+			// Create a string containg data from ALL non null fields  in a GenericClass record
+			string output="";
+			for ( int i = 0 ; i < 20 ; i++ )
+			{
+				if ( GenRow . field1 != "" )
+					output += GenRow . field1 . Trim ( );
+				if ( GenRow . field2 != "" )
+					output += GenRow . field2 . Trim ( ) + ",";
+				if ( GenRow . field3 != "" )
+					output += GenRow . field3 . Trim ( ) + ",";
+				if ( GenRow . field4 != "" )
+					output += GenRow . field4 . Trim ( ) + ",";
+				if ( GenRow . field5 != "" )
+					output += GenRow . field5 . Trim ( ) + ",";
+				if ( GenRow . field6 != "" )
+					output += GenRow . field6 . Trim ( ) + ",";
+				if ( GenRow . field7 != "" )
+					output += GenRow . field7 . Trim ( ) + ",";
+				if ( GenRow . field8 != "" )
+					output += GenRow . field8 . Trim ( ) + ",";
+				if ( GenRow . field9 != "" )
+					output += GenRow . field9 . Trim ( ) + ",";
+				if ( GenRow . field10 != "" )
+					output += GenRow . field10 . Trim ( ) + ",";
+				if ( GenRow . field11 != "" )
+					output += GenRow . field11 . Trim ( ) + ",";
+				if ( GenRow . field12 != "" )
+					output += GenRow . field12 . Trim ( ) + ",";
+				if ( GenRow . field13 != "" )
+					output += GenRow . field13 . Trim ( ) + ",";
+				if ( GenRow . field14 != "" )
+					output += GenRow . field14 . Trim ( ) + ",";
+				if ( GenRow . field15 != "" )
+					output += GenRow . field15 . Trim ( ) + ",";
+				if ( GenRow . field16 != "" )
+					output += GenRow . field16 . Trim ( ) + ",";
+				if ( GenRow . field17 != "" )
+					output += GenRow . field17 . Trim ( ) + ",";
+				if ( GenRow . field18 != "" )
+					output += GenRow . field18 . Trim ( ) + ",";
+				if ( GenRow . field19 != "" )
+					output += GenRow . field19 . Trim ( ) + ",";
+				if ( GenRow . field20 != "" )
+					output += GenRow . field20 . Trim ( ) + ",";
+			}
+			output = output . Substring ( 0 , output . Length - 1 );
+			return output;
+		}
+		public static GenericClass SaveToField ( GenericClass GenRow , int index , string outstr )
 		{
 			switch ( index )
 			{
@@ -3986,5 +4343,12 @@ namespace WPFPages . ViewModels
 			}
 			return GenRow;
 		}
+
+		private static void test ( )
+		{
+			Dictionary <string, CustomerViewModel> dict = new Dictionary<string, CustomerViewModel>();
+		}
+		#endregion GENERAL METHODS
+
 	}
 }

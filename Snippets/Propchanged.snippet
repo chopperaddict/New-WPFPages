@@ -3,7 +3,7 @@
 	<CodeSnippet Format="1.0.0">
 		<Header>
 			<Title></Title>
-			<Shortcut>pchan</Shortcut>
+			<Shortcut>mbcfg</Shortcut>
 			<Description>Code snippet for PropertyChanged</Description>
 			<Author>Ian Turner</Author>
 			<SnippetTypes>
@@ -17,18 +17,21 @@
 					<Function>Property changed Insertion</Function>
 				</Literal>
 			</Declarations>
-			<Code Language="csharp"><![CDATA[               #region OnPropertyChanged
-                public event PropertyChangedEventHandler PropertyChanged;
-
-                protected void OnPropertyChanged ( string PropertyName )
-                {
-                        if ( null != PropertyChanged )
-                        {
-                                PropertyChanged ( this,
-                                        new PropertyChangedEventArgs ( PropertyName ) );
-                        }
-                }
-                #endregion OnPropertyChanged
+			<Code Language="csharp">
+                        <![CDATA[ 			DlgInput . resetdata = false;
+			DlgInput . resultboolin = false;
+			DlgInput . UseDarkMode = false;
+			DlgInput . UseIcon = true;
+			DlgInput . intin = 0;
+			DlgInput . stringin = "";
+			DlgInput . obj = null;
+			DlgInput . bground = "#9DFFFFFB" . ToSolidBrush ( );
+			DlgInput . fground = "#FF000000" . ToSolidBrush ( );
+			DlgInput . border = "#C1000000" . ToSolidBrush ( );
+			DlgInput . Buttonforeground = null;
+			DlgInput . Buttonbackground = null;
+			DlgInput . iconstring = "";
+			DlgInput . image = null;
  ]]>
 			</Code>
 		</Snippet>

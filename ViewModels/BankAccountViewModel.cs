@@ -24,6 +24,7 @@ using WPFPages . Views;
 /// </summary>
 namespace WPFPages . ViewModels
 {
+	[Serializable]
 	public partial class BankAccountViewModel : INotifyPropertyChanged
 	{
 

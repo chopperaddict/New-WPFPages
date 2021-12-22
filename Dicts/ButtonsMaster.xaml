@@ -360,6 +360,12 @@
 				<Setter Property="Background"  TargetName="border" Value="Gray"/>
 				<Setter Property="BorderBrush" TargetName="border" Value="White"/>
 			</Trigger>
+			<Trigger Property="IsEnabled" Value="false">
+				<!--Handles Click event-->
+				<Setter Property="Background"  TargetName="border" Value="Gray"/>
+				<Setter Property="TextElement.Foreground"  TargetName="border" Value="DarkGray"/>
+				<Setter Property="BorderBrush" TargetName="border" Value="White"/>
+			</Trigger>
 			<Trigger Property="ToggleButton.IsChecked" Value="True">
 				<!--Handles any checkbox style checked option-->
 				<Setter Property="Background" TargetName="border" Value="#FFBCDDEE"/>
@@ -498,14 +504,13 @@
 			<ControlTemplate.Triggers>
 			<!--This handles the button being set as IsDefault=true-->
 			<Trigger Property="FrameworkElement.Tag" Value="True">
-
 				<Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
 				<Setter Property="Control.Background" TargetName="border">
 					<Setter.Value>
 						<LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
 							<GradientStop Color="#FF1D4855" Offset="1"/>
 							<GradientStop Color="#FF007F96" Offset="0.553"/>
-							<GradientStop Color="Black" Offset="0.314"/>
+							<GradientStop Color="DarkBlue" Offset="0.314"/>
 							<!--<GradientStop Color="#FF0AEAFA" Offset="0.314"/>-->
 						</LinearGradientBrush>
 					</Setter.Value>
@@ -514,9 +519,9 @@
 			</Trigger>
 			<Trigger Property="Button.IsMouseOver" Value="false">
 				<!--MouseOver handling-->
-				<Setter Property="FontWeight"  Value="Bold"/>
+				<Setter Property="FontWeight"  Value="DemiBold"/>
 				<!--<Setter Property="Control.Foreground"  Value="{TemplateBinding Foreground}"/>-->
-				<!--<Setter Property="Control.Foreground"  TargetName="border">
+				<Setter Property="Control.Foreground"  TargetName="border">
 					<Setter.Value>
 						<LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
 							<GradientStop Color="White" Offset="0.154"/>
@@ -524,7 +529,7 @@
 							<GradientStop Color="#FF000000" Offset="1"/>
 						</LinearGradientBrush>
 					</Setter.Value>
-				</Setter>-->
+				</Setter>
 				<Setter Property="Background" TargetName="border">
 					<Setter.Value>
 						<LinearGradientBrush StartPoint="1,0" EndPoint="0,0">

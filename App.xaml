@@ -11,8 +11,9 @@
 		but you can have multiple Resourcedictionary files listed here, so you can subdivide
 		your styles etc as required
 		-->
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
+        <!--<ResourceDictionary>-->
+		<ResourceDictionary >
+		<ResourceDictionary.MergedDictionaries>
 
                   <ResourceDictionary Source="Dicts\Menus.xaml" />
                   <ResourceDictionary Source="Dicts\StylesDict.xaml" />
@@ -25,8 +26,9 @@
                   <ResourceDictionary Source="Dicts\AppButtonsDictionary.xaml" />
                   <ResourceDictionary Source="Dicts\ButtonDictionary.xaml" />
                   <ResourceDictionary Source="Dicts\TestDictionary.xaml" />
-                  <ResourceDictionary Source="Dicts\BaseDictionary.xaml" />
-                  <ResourceDictionary Source="Dicts\BtnsDict.xaml" />
+			<ResourceDictionary Source="Dicts\BaseDictionary.xaml" />
+			<ResourceDictionary Source="Dicts\MainMenu.xaml" />
+			<ResourceDictionary Source="Dicts\BtnsDict.xaml" />
                   <ResourceDictionary Source="Dicts\DGCellStyles.xaml" />
                   <ResourceDictionary Source="DataGridStyles\NwStyleTemplate.xaml" />
                   <ResourceDictionary Source="DataGridStyles\BankDatagridStyleTemplate.xaml" />
@@ -41,7 +43,14 @@
 			<ResourceDictionary Source="Dicts\ListBoxStyles.xaml" />
 			<ResourceDictionary Source="Dicts\ComboBoxStyles.xaml" />
 			<ResourceDictionary Source="DataTemplates\NWDataTemplates.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+			<ResourceDictionary Source="Dicts\GenericMenu.xaml" />
+			<ResourceDictionary Source="Dicts\DataGridStyles.xaml" />
+
+				<!--// new theme ??-->
+			<!--<ResourceDictionary Source="TThemes\ExpressionLight.xaml"/>-->
+			<!--<ResourceDictionary Source="TThemes\ExpressionDark.xaml"/>-->
+			<!--<ResourceDictionary Source="Default"/>-->
+			</ResourceDictionary.MergedDictionaries>
 
             <!--These are Application wide Overrides for that annpoying
 			Focus Rectangle that appears by default on many controls-->

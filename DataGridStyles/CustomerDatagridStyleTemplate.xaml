@@ -6,17 +6,7 @@
     <!--This is far more simplistic than the Bank control Temlate-->
     <Style x:Key="CustomerGridStyle" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
         <Style.Triggers>
-            <!--// Window IS FOCUSED-->
-            <!--// SELECTED row Background & Border-->
-            <!--<Trigger  Property="IsSelected" Value="true">
-                        <Setter Property="Background" Value="#FF1171E6" />
-                        <Setter Property="BorderBrush" Value="#FF72DBE0" />
-                        <Setter Property="Foreground" Value="{StaticResource White0}" />
-                        <Setter Property="FontWeight" Value="DemiBold" />
-                  </Trigger>-->
-
-
-            <!--//=======================================================================================//-->
+             <!--//=======================================================================================//-->
             <!--// Handle Background and Foreground colors of SELECTED row-->
             <!--NO MOUSE  / NOT SELECTED -->
             <!--// Handle Background and Foreground colors of NON SELECTED row-->

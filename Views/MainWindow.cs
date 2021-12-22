@@ -19,25 +19,112 @@ using Dapper;
 using System . Collections . Generic;
 using System . Linq;
 
+using System . Windows . Media;
+using WPFPages . AttachedProperties;
+using Microsoft . SqlServer . Management . Smo;
+using static System . Windows . Forms . VisualStyles . VisualStyleElement . TrayNotify;
+
 namespace WPFPages
 {
 
+	#region My MessageBox Definitions
 
+	public struct mb
+	{
+		static public int nnull;
+		static public int NNULL;
+		static public int ok;
+		static public int OK;
+		static public int yes;
+		static public int YES;
+		static public int no;
+		static public int NO;
+		static public int cancel;
+		static public int CANCEL;
+		static public int iconexclm;
+		static public int ICONEXCLM;
+		static public int iconwarn;
+		static public int ICONWARN;
+		static public int iconerr;
+		static public int ICONERR;
+		static public int iconinfo;
+		static public int ICONINFO;
+	}
 
-	delegate void DbEditOcurred ( object Sender, EditEventArgs e );
-	delegate void SQLEditOcurred ( object Sender, EditEventArgs e );
-	//	BankAccountViewModel bvm = BankAccountViewModel.bvm;
+	public struct MB
+	{
+		static public int nnull;
+		static public int NNULL;
+		static public int ok;
+		static public int OK;
+		static public int yes;
+		static public int YES;
+		static public int no;
+		static public int NO;
+		static public int cancel;
+		static public int CANCEL;
+		static public int iconexclm;
+		static public int ICONEXCLM;
+		static public int iconwarn;
+		static public int ICONWARN;
+		static public int iconerr;
+		static public int ICONERR;
+		static public int iconinfo;
+		static public int ICONINFO;
+	}
 
 	/// <summary>
-	/// Interaction logic for MainWindow.xaml
+	/// output parameters (return values) for my Message Box
 	/// </summary>
-	public partial class MainWindow : System . ComponentModel.INotifyPropertyChanged
+	public struct Dlgresult
 	{
+		static public bool result;
+		static public int returnint;
+		static public string returnstring;
+		static public string returnerror;
+		static public object obj;
+	}
+	#endregion My MessageBox Definitions
 
-		//public  BankCollection Bankcollection= new BankCollection();
-		//public  CustCollection Custcollection= new CustCollection();
-		//public  DetCollection Detcollection= new DetCollection ();
+	#region My MessageBox argument structuress
+	/// <summary>
+	/// Input parameters for my Message Box
+	/// </summary>
+	public struct DlgInput
+	{
+		static public Window MsgboxWin;
+		static public bool isClean;
+		static public bool resultboolin;
+		static public bool UseDarkMode;
+		static public bool resetdata;
+		static public bool UseIcon;
+		static public int intin;
+		static public string stringin;
+		static public object obj;
+		static public string iconstring;
+		static public Image image;
+		static public Brush dlgbackground;
+		static public Brush dlgforeground;
+		static public Brush btnbackground;
+		static public Brush btnforeground;
+		static public Brush Btnborder;
+		static public Brush mousebackground;
+		static public Brush mouseforeground;
+		static public Brush defbtnbackground;
+		static public Brush defbtnforeground;
+		static public Thickness BorderSize;
+	}
 
+	#endregion My MessageBox arguments
+
+	delegate void DbEditOcurred ( object Sender , EditEventArgs e );
+	delegate void SQLEditOcurred ( object Sender , EditEventArgs e );
+	//	BankAccountViewModel bvm = BankAccountViewModel.bvm;
+
+	public partial class MainWindow : System . ComponentModel . INotifyPropertyChanged
+	{
+		//public static Msgbox msgbox = new Msgbox();
+		public static DlgInput dlgin = new DlgInput();
 		// Global pointers to Viewmodel classes
 		public static BankAccountViewModel bvm = null;
 		public static CustomerViewModel cvm = null;
@@ -70,58 +157,272 @@ namespace WPFPages
 
 		public MainWindow ( )
 		{
+
+			Application . Current . Resources . Clear ( );
+			// Load a new Theme dictionary ??
+			//ResourceDictionary skin = Application.LoadComponent(new Uri("", UriKind.Relative)) as ResourceDictionary;
 			// Set this as the main dataContext
 			//			DataContext = this;
 			InitializeComponent ( );
 			Loaded += MainWindowLoaded;
-//			EventHandlers . ShowSubscribersCount ( );
-			BaseDataText = "Starting text";
-			RandomText1 = "button1";
-			RandomText2 = "button2";
+
+			GetDefaultMsgboxColors ( );
+
+			// Button "Shortforms" declaratons
+			{
+				// configure global messagebox ID's
+				MB . NNULL = mb . NNULL = 0;
+				MB . OK = mb . OK = 1;
+				MB . YES = mb . YES = 2;
+				MB . NO = mb . NO = 2;
+				MB . CANCEL = mb . CANCEL = 4;
+				MB . ICONEXCLM = mb . ICONEXCLM = 10;
+				MB . ICONWARN = mb . ICONWARN = 11;
+				MB . ICONERR = mb . ICONERR = 12;
+				MB . ICONINFO = mb . ICONINFO = 13;
+				MB . nnull = mb . nnull = 0;
+				MB . ok = mb . ok = 1;
+				MB . yes = mb . yes = 2;
+				MB . no = mb . no = 2;
+				MB . cancel = mb . cancel = 4;
+				MB . iconexclm = mb . iconexclm = 10;
+				MB . iconwarn = mb . iconwarn = 11;
+				MB . iconerr = mb . iconerr = 12;
+				MB . iconinfo = mb . iconinfo = 13;
+			}
+
 			this . Topmost = true;
 			OntopChkbox . IsChecked = true;
 			gv = GridViewer . Viewer_instance;
 			// Get this users \Documents folder and use it to save location for our Persistent Search paths
 			var defdocuments = Environment . GetFolderPath ( Environment . SpecialFolder . MyDocuments ) + @"\searchpaths.dat";
-			
-			Utils . SaveProperty ("SearchPathFile", defdocuments);
-			ConfigurationManager . RefreshSection ( "SearchPathFile" );
+
+			Utils . SaveProperty ( "SearchPathFile" , defdocuments );
+			//		ConfigurationManager . RefreshSection ( "SearchPathFile" );
 
 			// Save local Documents folder path for later use
 			string t = Environment . GetFolderPath ( Environment . SpecialFolder . MyDocuments ) + "\"";
-			Utils . SaveProperty ( "DocumentsPath", t);
-			ConfigurationManager . RefreshSection ( "DocumentsPath" );
+			Utils . SaveProperty ( "DocumentsPath" , t );
 
 			// Get Applications development root folder
 			t = Directory . GetParent ( Directory . GetCurrentDirectory ( ) ) . Parent . FullName;
-			
-			Utils . AddUpdateAppSettings ( "AppRoot", t );
-			//Utils . SaveProperty ( "AppRoot", t );
-			Utils . SaveProperty ( "AppRoot", t);
-			ConfigurationManager . RefreshSection ( "AppRoot" );
 
-			Utils . AddUpdateAppSettings ( "AppRoot", t );
-			//string program = ( string ) Properties . Settings . Default [ "AppRoot" ];
+			Utils . AddUpdateAppSettings ( "AppRoot" , t );
+			Utils . SaveProperty ( "AppRoot" , t );
+			Utils . AddUpdateAppSettings ( "AppRoot" , t );
+
 			// outputs in Output window
 			Utils . ReadAllConfigSettings ( );
+
+			// Clean MsgBox data and reload from disk flie
+			ResetMsgBox ( );
+			ReadMsgboxData ( );
+		}
+		public static void ResetMsgBox ( )
+		{
+			DlgInput . isClean = true;
+			DlgInput . resultboolin = false;
+			DlgInput . UseDarkMode = false;
+			DlgInput . resetdata = true;
+			DlgInput . UseIcon = true;
+			DlgInput . intin = 0;
+			DlgInput . stringin = "";
+			DlgInput . obj = null;
+			DlgInput . dlgbackground = "#9DFFFFFB" . ToSolidBrush ( );
+			DlgInput . mouseforeground = "#FF000000" . ToSolidBrush ( );
+			DlgInput . Btnborder = "#C1000000" . ToSolidBrush ( );
+			DlgInput . btnforeground = "#FF000000" . ToSolidBrush ( );
+			DlgInput . btnbackground = "#9DFFFFFB" . ToSolidBrush ( );
+			DlgInput . iconstring = "";
+			DlgInput . image = null;
 		}
 
-		private void OnClosing ( object sender, CancelEventArgs e )
+		private void GetDefaultMsgboxColors ( )
 		{
-			// Close our Sql Server connection
-			//if ( con!= null )
-			//{
-			//	Debug . WriteLine ( $"MAINWINDOW : Closing SQL Connection..." );
-			//	con. Close ( );
-			//	Debug . WriteLine ( $"MAINWINDOW : SQL Connection Closed successfuly..." );
-			//}
+			// setup "ground zero" colors for my message boxes
+			//Messagebox Background
+			DlgInput . dlgbackground = Utils . GetNewBrush ( "#50FBFFF6" );          // light gray
+
+			// Buttons configuration
+			// Button Background
+			DlgInput . btnforeground = Utils . GetNewBrush ( "#FF000500" );     // v. dark grey
+														// Button Foreground
+			DlgInput . btnbackground = Utils . GetNewBrush ( "#FFFFFFFF" );     // White
+														// Button MouseOver Background
+			DlgInput . mousebackground = Utils . GetNewBrush ( "#95848284" );     // Mid grey
+														 // Button MouseOver Foreground
+			DlgInput . mouseforeground = Utils . GetNewBrush ( "#FFFFFFFF" );           /// White
+
+			// Button Border
+			DlgInput . Btnborder = Utils . GetNewBrush ( "#FFFF0000" );      // Red
 		}
-		IDbConnection idb;		
-		private void Loaded_click ( object sender, RoutedEventArgs e )
+		private void OnClosing ( object sender , CancelEventArgs e )
+		{
+		}
+		// Very IMPORTANT method that loads all the saved values for my messageboxes  into memory
+		// filling boh DlgInput and the 6 Attached properties
+		// (BkGround, Foreground, MouseoverBackGround, MouseoverForeGround, BorderColor,  BorderSize)
+		// So we only need to do this once, unless of course they are changed
+		public static void ReadMsgboxData ( )
+		{
+//			SolidColorBrush brush;
+//			bool b = false;
+//			int indx=0;
+//			string input="";
+//			string[] fields;
+//			Thickness th = new Thickness();
+//			Console . WriteLine ( $"Processing ReadMsgboxData in MainWindow...." );
+//			input = File . ReadAllText ( @"Messageboxes.dat" );
+//			fields = input . Split ( '\n' );
+//			foreach ( var item in fields )
+//			{
+//				switch ( indx++ )
+//				{
+//					case 0:
+//						DlgInput . bground = item . ToSolidBrush ( );
+//						break;
+//					case 1:
+//						DlgInput . fground = item . ToSolidBrush ( );
+//						break;
+//					case 2:
+////						SetCurrentValue ( BkgroundProperty , item );
+//						Msgbox . SetBkGround ( msgbox , item . ToSolidBrush ( ) );
+//						if ( item == "" )
+//							DlgInput . bbackground = "#9DFFFFFB" . ToSolidBrush ( );
+//						else
+//							DlgInput . bbackground = item . ToSolidBrush ( );
+//						break;
+//					case 3:
+//						Msgbox . SetForeGround ( msgbox , item . ToSolidBrush ( ) );
+//						if ( item == "" )
+//							DlgInput . bforeground = "#FFFFFFFF" . ToSolidBrush ( );
+//						else
+//							DlgInput . bforeground = item . ToSolidBrush ( );
+//						break;
+//					case 4:
+//						Msgbox . SetBorderColor ( msgbox , item . ToSolidBrush ( ) );
+//						if ( item == "" )
+//							DlgInput . bbackground = "#FFFF0000" . ToSolidBrush ( );
+//						else
+//							DlgInput . bbackground = item . ToSolidBrush ( );
+//						break;
+//					case 5:
+//						Msgbox . SetMouseoverBackGround ( msgbox , item . ToSolidBrush ( ) );
+//						if ( item == "" )
+//							DlgInput . bbackground = "#9DFFFFFB" . ToSolidBrush ( );
+//						else
+//							DlgInput . bbackground = item . ToSolidBrush ( );
+//						break;
+//					case 6:
+//						Msgbox . SetMouseoverForeGround ( msgbox , item . ToSolidBrush ( ) );
+//						if ( item == "" )
+//							DlgInput . bbackground = "#FFFFFFFF" . ToSolidBrush ( );
+//						else
+//							DlgInput . bbackground = item . ToSolidBrush ( );
+//						break;
+//					case 7:
+//						th = new Thickness ( );
+//						string[] s = item.Split(',');
+//						int inx =  0;
+//						foreach ( var d in s )
+//						{
+//							if ( inx == 0 )
+//								th . Left = Convert . ToInt32 ( d );
+//							else if ( inx == 1 )
+//								th . Top = Convert . ToInt32 ( d );
+//							else if ( inx == 2 )
+//								th . Right = Convert . ToInt32 ( d );
+//							else if ( inx == 3 )
+//								th . Bottom = Convert . ToInt32 ( d );
+//							inx++;
+//						}
+//						Msgbox . SetBorderSize ( msgbox , th );
+//						DlgInput . BorderSize = th;
+//						break;
+//					case 8:
+//						DlgInput . UseIcon = item == "T" ? true : false;
+//						break;
+//					case 9:
+//						DlgInput . UseDarkMode = item == "T" ? true : false;
+//						break;
+//					case 10:
+//						DlgInput . isClean = item == "T" ? true : false;
+//						break;
+//				}
+//			}
+
+//			Console . WriteLine ( $"\nMAINWINDOW.READMSGBOXDATA() : Msgbox Data read in from disk ....\n"
+//				+ $"Btn Background :			[{Msgbox . GetBkGround ( msgbox )}]\n"
+//				+ $"Btn Foreground :			[{Msgbox . GetForeGround ( msgbox )}]\n"
+//				+ $"Btn Mouseover Background :	[{Msgbox . GetMouseoverBackGround ( msgbox )}]\n"
+//				+ $"Btn Mouseover Foreground :	[{Msgbox . GetMouseoverForeGround ( msgbox )}]\n"
+//				+ $"Btn Border :				[{Msgbox . GetBorderColor ( msgbox )}]\n"
+//				+ $"Btn Border Size :			[{th . Top},{th . Left},{th . Right},{th . Bottom}]\n\n"
+//				);
+		}
+
+		public static void ShowAPDatatoConsole ( )
+		{
+			//Thickness th = new Thickness();
+			//th = Msgbox . GetBorderSize ( msgbox );
+			//string output=$"\nMAINWINDOW.READMSGBOXDATA() : \nMsgbox Data read in from disk ....\n"
+			//		+ $"Btn Background :			[{Msgbox . GetBkGround ( msgbox )}]\n"
+			//		+ $"Btn Foreground :			[{Msgbox . GetForeGround ( msgbox )}]\n"
+			//		+ $"Btn Mouseover Background :	[{Msgbox . GetMouseoverBackGround ( msgbox )}]\n"
+			//		+ $"Btn Mouseover Foreground :	[{Msgbox . GetMouseoverForeGround ( msgbox )}]\n"
+			//		+ $"Btn Border :				[{Msgbox . GetBorderColor ( msgbox )}]\n"
+			//		+ $"Btn Border Size :			[{th . Top},{th . Left},{th . Right},{th . Bottom}]\n\n";	
+			//Console . WriteLine ( output );
+			// output=$"\nMAINWINDOW.READMSGBOXDATA() : \nMsgbox Data read in from disk ....\n"
+			//		+ $"Btn Background :			[{Msgbox . GetBkGround ( msgbox )}]\n"
+			//		+ $"Btn Foreground :			[{Msgbox . GetForeGround ( msgbox )}]\n"
+			//		+ $"Btn Mouseover Background :	[{Msgbox . GetMouseoverBackGround ( msgbox )}]\n"
+			//		+ $"Btn Mouseover Foreground :	[{Msgbox . GetMouseoverForeGround ( msgbox )}]\n"
+			//		+ $"Btn Border :			[{Msgbox . GetBorderColor ( msgbox )}]\n"
+			//		+ $"Btn Border Size :			[{th . Top},{th . Left},{th . Right},{th . Bottom}]\n\n";
+			//MessageBox . Show ( output );
+		}
+
+		public static void SaveMsgboxData ( Window win )
+		{
+			//SolidColorBrush brush;
+			//bool b = false;
+			//string output="";
+			//Console . WriteLine ( $"Processing SaveMsgboxData in MainWindow...." );
+			//brush = ( SolidColorBrush ) Msgbox . GetBkGround ( msgbox );
+			//output += brush . BrushtoText ( ) + "\n";
+			//brush = ( SolidColorBrush ) Msgbox . GetForeGround ( msgbox );
+			//output += brush . BrushtoText ( ) + "\n";
+			//brush = ( SolidColorBrush ) Msgbox . GetMouseoverBackGround ( msgbox );
+			//output += brush . BrushtoText ( ) + "\n";
+			//brush = ( SolidColorBrush ) Msgbox . GetMouseoverForeGround ( msgbox );
+			//output += brush . BrushtoText ( ) + "\n";
+			//brush = ( SolidColorBrush ) Msgbox . GetBorderColor ( msgbox );
+			//output += brush . BrushtoText ( ) + "\n";
+			//Thickness d =  Msgbox . GetBorderSize ( msgbox );
+			//output += d . ToString ( ) + "\n";
+
+			//b = DlgInput . UseIcon;
+			//output += ( b == true ? "T" : "F" ) + "\n";
+			//b = DlgInput . UseDarkMode;
+			//output += ( b == true ? "T" : "F" ) + "\n";
+			//b = DlgInput . isClean;
+			//output += ( b == true ? "T" : "F" ) + "\n";
+			//File . WriteAllText ( @"Messageboxes.dat" , output );
+			//Console . WriteLine ( $"MainWindow - Data saved to disk ....\n"
+			//	+ $"Btn Background :			[{Msgbox . GetBkGround ( win )}]\n"
+			//	+ $"Btn Foreground :			[{Msgbox . GetForeGround ( win )}]\n"
+			//	+ $"Btn Mouseover Background :	[{Msgbox . GetMouseoverBackGround ( win )}]\n"
+			//	+ $"Btn Mouseover Foreground :	[{Msgbox . GetMouseoverForeGround ( win )}]\n"
+			//	+ $"Btn Border :				[{Msgbox . GetBorderColor ( win )}]\n"
+			//	+ $"Btn Border Size :			[{d . Top}, {d . Left},{d . Right},{d . Bottom}],\n\n"
+			//	);
+
+		}
+		private void Loaded_click ( object sender , RoutedEventArgs e )
 		{
 			MainPageHolder . NavigationService . Navigate ( MainWindow . _Blank );
-			//			this . MouseDown += delegate { DoDragMove ( ); };
-			Utils.SetupWindowDrag(this);
+			Utils . SetupWindowDrag ( this );
 		}
 		private void DoDragMove ( )
 		{
@@ -138,141 +439,42 @@ namespace WPFPages
 		}
 		//Declare a Property variable to prove Slider changes work both ways
 		private int _boundNumber;
-		public int BoundNumber
-		{
-			get { return _boundNumber; }
-			set
-			{
-				if ( _boundNumber != value )
-				{
-					_boundNumber = value;
-					OnPropertyChanged ( );
-				}
-			}
-		}
-		public string RandomText1
-		{
-			get { return _randomText1; }
-			set
-			{
-				if ( _randomText1 != value )
-				{
-					_randomText1 = value;
-					OnPropertyChanged ( );
-				}
-			}
-		}
-		public string RandomText2
-		{
-			get { return _randomText2; }
-			set
-			{
-				_randomText2 = value;
-				OnPropertyChanged ( );
-			}
-		}
 
 		// Now on with other code
 
-		// Setup a generic Notifier so property changes are broadcast automatically
-//		public event PropertyChangedEventHandler PropertyChanged;
-		private void OnPropertyChanged ( [CallerMemberName] string PropertyName = null )
-		{
-			PropertyChanged?.Invoke ( this, new PropertyChangedEventArgs ( PropertyName ) );
-		}
 
-		#region PropertyChanged
 		public event PropertyChangedEventHandler PropertyChanged;
-		#endregion PropertyChanged
-
-		//This is how to declare properties for binding
-		public string BaseDataText
+		public void MainWindowLoaded ( object sender , RoutedEventArgs e )
 		{
-			get { return ( string ) GetValue ( BaseDataTextProperty ); }
-			set { SetValue ( BaseDataTextProperty, value ); }
 		}
-
-		// Using a DependencyProperty as the backing store for BaseDataText.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BaseDataTextProperty =
-			DependencyProperty . Register ( "BaseDataText", typeof ( string ), typeof ( MainWindow ), new PropertyMetadata ( default ) );
-
-		//  May be useful ???
-		//Get the Parent Window of any item ?
-		public static Window GetParentWindow ( object caller ) {
-			Window parentWindow = Window . GetWindow ( ( DependencyObject ) caller);
-			return parentWindow;
-		}
-
-		public string Button1Text
+		private void Page0_Click ( object sender , RoutedEventArgs e )
 		{
-			get { return ( string ) GetValue ( Button1TextProperty ); }
-			set { SetValue ( Button1TextProperty, value ); }
-		}
-
-		// Using a DependencyProperty as the backing store for BaseDataText.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty Button1TextProperty =
-			DependencyProperty . Register ( "Button1Text", typeof ( string ), typeof ( MainWindow ), new PropertyMetadata ( default ) );
-
-		public string Button2Text
-		{
-			get { return ( string ) GetValue ( Button2TextProperty ); }
-			set { SetValue ( Button2TextProperty, value ); }
-		}
-
-		// Using a DependencyProperty as the backing store for BaseDataText.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty Button2TextProperty =
-			DependencyProperty . Register ( "Button2Text", typeof ( string ), typeof ( MainWindow ), new PropertyMetadata ( default ) );
-
-		public void MainWindowLoaded ( object sender, RoutedEventArgs e )
-		{
-			//_frame.NavigationService.Navigate(_Page1);
-			
-			BaseDataText = "Hello World";
-			//if ( con== null ) {
-			//	string ConString = ( string ) Properties . Settings . Default [ "BankSysConnectionString" ];
-			//	int time = DateTime . Now.Millisecond;
-			//	Debug . WriteLine ( $"MAINWINDOW : SQL Connection - Making initial connection ..." );
-			//	con= new SqlConnection ( ConString );
-			//	Debug . WriteLine ( $"MAINWINDOW : SQL Connection - Connection made successfully in {(DateTime.Now.Millisecond - time)} ms..." );
-			//}
-
-		}
-
-		private void Button1_Click ( object sender, RoutedEventArgs e )
-		{
-
-		}
-
-		private void Page0_Click ( object sender, RoutedEventArgs e )
-		{
-			//Button btn = (Button)sender;
-			//btn.FontSize = 28;
 			MainPageHolder . NavigationService . Navigate ( MainWindow . _Page0 );
 		}
-		private void Page1_Click ( object sender, RoutedEventArgs e )
+		private void Page1_Click ( object sender , RoutedEventArgs e )
 		{
 			//Button btn = (Button)sender;
 			//btn.FontSize = 28;
-//		MainPageHolder . NavigationService . Navigate ( MainWindow . _Page1 );
+			//		MainPageHolder . NavigationService . Navigate ( MainWindow . _Page1 );
 		}
-		private void Page2_Click ( object sender, RoutedEventArgs e )
+		private void Page2_Click ( object sender , RoutedEventArgs e )
 		{
-//			MainPageHolder . NavigationService . Navigate ( MainWindow . _Page2 );
+			//			MainPageHolder . NavigationService . Navigate ( MainWindow . _Page2 );
 		}
-		private void Page3_Click ( object sender, RoutedEventArgs e )
+		private void Page3_Click ( object sender , RoutedEventArgs e )
 		{
-//			MainPageHolder . NavigationService . Navigate ( MainWindow . _Page3 );
+			//			MainPageHolder . NavigationService . Navigate ( MainWindow . _Page3 );
 		}
-		private void Page4_Click ( object sender, RoutedEventArgs e )
+		private void Page4_Click ( object sender , RoutedEventArgs e )
 		{
-//			MainPageHolder . NavigationService . Navigate ( MainWindow . _Page4 );
+			//			MainPageHolder . NavigationService . Navigate ( MainWindow . _Page4 );
 		}
-		private void Page5_Click ( object sender, RoutedEventArgs e )
+		private void Page5_Click ( object sender , RoutedEventArgs e )
 		{
-//			MainPageHolder . NavigationService . Navigate ( MainWindow . _Page5 );
+			//			MainPageHolder . NavigationService . Navigate ( MainWindow . _Page5 );
 		}
 
-		private void Page6_Click ( object sender, RoutedEventArgs e )
+		private void Page6_Click ( object sender , RoutedEventArgs e )
 		{
 			//	this allows the loading of up to 10 different Db Viewer Windows
 			//	and to select between them if needed
@@ -280,12 +482,12 @@ namespace WPFPages
 			// first we have some preapration to get done with pointers tpo the various Classes we are going to access
 
 			// setup global STATIC pointers to Viewmodels
-			dvm = new DetailsViewModel ( ); ;
+			dvm = new DetailsViewModel ( );
+			;
 			cvm = new CustomerViewModel ( );
 			bvm = new BankAccountViewModel ( );
-			//			Flags.DetailsModel = dvm;
 
-			// Ok hpousekeeping over, lets go
+			// Ok housekeeping over, lets go
 
 			int selected = 0;
 			if ( MainWindow . gv . DbSelectorWindow != null )
@@ -313,6 +515,7 @@ namespace WPFPages
 				//Create a new Db Selector Window system.
 				DbSelector dbs = new DbSelector ( );
 				gv . DbSelectorWindow = dbs;
+
 				dbs . Show ( );
 				//Store the "Handle" to this Db Selector window
 				Flags . DbSelectorOpen = dbs;
@@ -352,118 +555,19 @@ namespace WPFPages
 			Mouse . OverrideCursor = Cursors . Arrow;
 			return;
 
-			//if ( gv . ViewerSelectiontype == 1 )
-			//{
-			//	selected = gv . SelectedViewerType;
-			//	// Load and display a new viewer for the selected Db Type
-			//	// (returned in the selected var from dbSelector window)
-			//	Mouse . OverrideCursor = Cursors . Wait;
-
-			//	//				tw = SqlDbViewer.GetSqlInstance ().SqlDbViewer (selected);
-			//	//				tw = new SqlDbViewer (selected);
-
-			//	// find first blank entry of the 5 available slots we have
-			//	// and save our details into it
-			//	for ( int x = 0 ; x < MainWindow . gv . MaxViewers ; x++ )
-			//	{
-			//		if ( gv . window [ x ] == null )
-			//		{
-			//			gv . SelectedViewerType = selected; // store the Db type in our "current" viewer type variable
-			//			gv . ViewerSelectiontype = -1;  // reset flag field for next time
-			//			gv . ViewerCount++;
-
-			//			tw . Show ( );
-			//			tw . Focus ( );
-			//			//Save the Window handle in the Viewer Window itself - Now done in window loaded
-			//			tw . Tag = gv . window [ x ];
-			//			//break;
-			//			Mouse . OverrideCursor = Cursors . Arrow;
-			//			return;
-			//		}
-			//	}
-			//	Mouse . OverrideCursor = Cursors . Arrow;
-			//	return;
-			//}
-			//else if (gv.ViewerSelectiontype == 2)
-			//{
-			//	// find selected entry of the "used"  slots we have
-			//	// 
-			//	MainWindow.gv.ChosenViewer.Show ();
-			//	MainWindow.gv.ChosenViewer.Topmost = true;
-			//	MainWindow.gv.ChosenViewer.Focus ();
-			//	MainWindow.gv.ChosenViewer.Topmost = false;
-			//	return;
-			//}
-			//				else if (gv.ViewerSelectiontype == 3)
-			//				{
-			//					// Close/Delete viewer
-			//					bool moveremaining = false;
-			//					if (gv.ChosenViewer == null)
-			//						return;
-			//					for (int x = 0; x < MainWindow.gv.MaxViewers; x++)
-			//					{
-			//						if (!moveremaining && gv.window[x] == gv.ChosenViewer)
-			//						{
-			//							if (gv.window[x] != null)
-			//							{
-			//								//Close the viewer
-			//								gv.window[x].Close ();
-			//								//remove all record of it's very existence
-			//								gv.window[x] = null;
-			//								gv.CurrentDb[x] = "";
-			//								//							gv.CurrentGrid[x] = null;
-			//								gv.SelectedViewerType = -1; // store the Db type in our "current" viewer type variable
-			//								gv.ViewerSelectiontype = -1;  // reset flag field for next time
-			//								gv.ChosenViewer = null;
-			//								gv.DBSelectorWindow = null;
-			////								gv.ViewerListIndex[x] = -1;
-			//								gv.ViewerCount--;
-			//								moveremaining = true;
-			//							}
-			//							continue;
-			//						}
-			//						//if (moveremaining)
-			//						//{   // decrement remaining items position in list !  Smart eh ?
-			//						//	if (MainWindow.gv.[x] != -1)
-			//						//		MainWindow.gv.ViewerListIndex[x] -= 1;
-			//						//}
-			//					}
-			//				}
-			//else if ( gv . ViewerSelectiontype == 4 )
-			//{
-			//	// Close/Delete ALL open viewers
-			//	for ( int x = 0 ; x < MainWindow . gv . MaxViewers ; x++ )
-			//	{
-			//		//Close the viewer
-			//		if ( gv . window [ x ] != null )
-			//			gv . window [ x ] . Close ( );
-			//		//remove all record of it's very existence
-			//		gv . window [ x ] = null;
-			//		gv . CurrentDb [ x ] = "";
-			//		//							gv.CurrentGrid[x] = null;
-			//		//						gv.SelectedViewerType = -1; // store the Db type in our "current" viewer type variable
-			//		gv . ViewerSelectiontype = -1;  // reset flag field for next time
-			//						//						gv.ChosenViewer = null;
-			//						//						gv.DbSelectorWindow = null;
-			//						//						gv.ViewerListIndex[x] = -1;
-			//						//						gv.ViewerCount--;
-			//	}               //return;
-			//	gv . ViewerCount = 0;
-			//}
-			//			} // end Do while
 		}
-		private void ExitButton_Click ( object sender, RoutedEventArgs e ) { App . Current . Shutdown ( ); }
+		private void ExitButton_Click ( object sender , RoutedEventArgs e ) { App . Current . Shutdown ( ); }
 
-		private void Blank_Click ( object sender, RoutedEventArgs e )
+		private void Blank_Click ( object sender , RoutedEventArgs e )
 		{
 			MainPageHolder . NavigationService . Navigate ( MainWindow . _Blank );
 		}
 
-		private void Main_PreviewKeyDown ( object sender, KeyEventArgs e )
+		private void Main_PreviewKeyDown ( object sender , KeyEventArgs e )
 		{
 			if ( e . Key == Key . RightCtrl || e . Key == Key . Home || e . Key == Key . Enter )
 			{
-				Page6_Click ( sender, null );
+				Page6_Click ( sender , null );
 				this . Hide ( );
 			}
 			else if ( e . Key == Key . OemQuotes )
@@ -490,7 +594,7 @@ namespace WPFPages
 		{
 			bool? setting = OntopChkbox . IsChecked;
 			OntopChkbox . IsChecked = setting;
-			Topmost = (bool)setting;
+			Topmost = ( bool ) setting;
 		}
 	}
 }

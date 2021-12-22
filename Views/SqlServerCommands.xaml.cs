@@ -9,7 +9,9 @@ using System . Data . SqlClient;
 using System . Diagnostics;
 using System . IO;
 using System . Linq;
+using System . Runtime . Serialization . Formatters . Binary;
 using System . Text;
+using System . Threading . Tasks;
 using System . Windows;
 using System . Windows . Controls;
 using System . Windows . Input;
@@ -17,15 +19,27 @@ using System . Windows . Media;
 
 using WPFPages . ViewModels;
 
+//using static WPFPages . ViewModels . LinqSupport<T , U, V>;
+
+//using static WPFPages . ViewModels . LinqSupport;
+
 namespace WPFPages . Views
 {
+
 	/// <summary>
 	/// Interaction logic for SqlServerCommands.xaml
 	/// </summary>
 	public partial class SqlServerCommands : Window
 	{
+		//public delegate bool LinqDelegate ( T s1 , T s2 );
 		public DapperClass Db = new DapperClass ();
 		public List<string> ReceivedDbData = new List<string>();
+
+		public delegate bool LinqDelegate<T, U> ( T s1 , U s2 );
+		public delegate bool LinqDelegate1<T, U> ( T s1 , U s2 );
+		public delegate bool LinqDelegate2<T> ( T s1 );
+		public delegate bool LinqDelegate3<T, U, V> ( T s1 , U s2 , V s3 );
+
 		private string[] datastring =
 			{
 				"3, 4193116, 1055023, 1, 3476.65, 1.27, '1961/04/13', '2000/01/01'",
@@ -51,43 +65,18 @@ namespace WPFPages . Views
 		public static string ActiveDbName="";
 		public static string CurrentDbName="";
 		public static bool ShowGridFlag = false;
-		private void LoadListView ( )
-		{
-			listRound . Items . Add ( "Andhra Pradesh" );
-			listRound . Items . Add ( "Arunachal Pradesh" );
-			listRound . Items . Add ( "Assam" );
-			listRound . Items . Add ( "Bihar" );
-			listRound . Items . Add ( "Chhattisgarh" );
-			listRound . Items . Add ( "Goa" );
-			listRound . Items . Add ( "Gujarat" );
-			listRound . Items . Add ( "Haryana" );
-			listRound . Items . Add ( "Himachal Pradesh" );
-			listRound . Items . Add ( "Jharkhand" );
-			listRound . Items . Add ( "Karnataka" );
-			listRound . Items . Add ( "Kerala" );
-			listRound . Items . Add ( "Madhya Pradesh" );
-			listRound . Items . Add ( "Maharashtra" );
-			listRound . Items . Add ( "Manipur" );
-			listRound . Items . Add ( "Meghalaya" );
-			listRound . Items . Add ( "Mizoram" );
-			listRound . Items . Add ( "Nagaland" );
-			listRound . Items . Add ( "Odisha" );
-			listRound . Items . Add ( "Punjab" );
-			listRound . Items . Add ( "Rajasthan" );
-			listRound . Items . Add ( "Sikkim" );
-			listRound . Items . Add ( "Tamil Nadu" );
-			listRound . Items . Add ( "Telangana" );
-			listRound . Items . Add ( "Tripura" );
-			listRound . Items . Add ( "Uttar Pradesh" );
-			listRound . Items . Add ( "Uttarakhand" );
-			listRound . Items . Add ( "West Bengal" );
-		}
+		private static bool ProcessSp= false;
+		private bool showall=false;
+
 		protected override void OnInitialized ( EventArgs e )
 		{
-			if ( DesignerProperties . GetIsInDesignMode ( this ) == true )
-				LoadListView ( );
-			else
-				LoadListView ( );
+			//if ( DesignerProperties . GetIsInDesignMode ( this ) == true )
+			//	LoadListView ( );
+			//else
+			//	LoadListView ( );
+
+
+
 			base . OnInitialized ( e );
 		}
 		private void Window_Loaded ( object sender , RoutedEventArgs e )
@@ -95,11 +84,21 @@ namespace WPFPages . Views
 			string dbnametoopen = "";
 			Utils . SetupWindowDrag ( this );
 			togglevisibility ( false );
-			if ( ShowInGrid . IsChecked == true )
-				ShowGridFlag = true;
+			//if ( ShowInGrid . IsChecked == true )
+			//	ShowGridFlag = true;
 			// Populate the Db Tables && Stored Procedures Combo
 			LoadTablesCombo ( );
 			LoadSPCombo ( );
+			// make sure info panel is hidden
+			SpArgsList . Visibility = Visibility . Hidden;
+			//testing only
+			List<string> constr = new List<string>();
+			constr = DapperSupport . GetConnectionStrings ( );
+			foreach ( var item in constr )
+			{
+				Console . WriteLine ( $"{item}" );
+			}
+			// end testing
 		}
 		public override void OnApplyTemplate ( )
 		{
@@ -117,15 +116,16 @@ namespace WPFPages . Views
 			if ( DesignerProperties . GetIsInDesignMode ( this ) == true )
 			{
 				//				if ( System . Reflection . Assembly . GetExecutingAssembly ( ) . Location . Contains ( "VisualStudio" ) )
-				LoadListView ( );
-				//				else
 				//					LoadListView ( );
 			}
 		}
 
-		private void CopyDbBtn_Click ( object sender , RoutedEventArgs e )
+		private async void CopyDbBtn_Click ( object sender , RoutedEventArgs e )
 		{
 			// Copy Db to new Db  "Select * from xxx into yyy" using dapper
+			CopyDbBtn . Focus ( );
+
+			Mouse . OverrideCursor = Cursors . Wait;
 			string donor = DbToCopyCombo.SelectedItem.ToString();
 			string recip = DbToBeCreated.Text.Trim();
 			ActiveDbName = recip;
@@ -137,42 +137,60 @@ namespace WPFPages . Views
 			if ( recip . ToUpper ( ) == donor . ToUpper ( ) )
 			{
 				var dr2 = MessageBox . Show ( $"The source & destination Db are the same !!\nYou cannot copy a Db to another with the same name" ,"Sql Error",MessageBoxButton.OK, MessageBoxImage.Warning);
+				Mouse . OverrideCursor = Cursors . Arrow;
+				DbToBeCreated . SelectAll ( );
+				DbToBeCreated . Focus ( );
 				return;
 			}
-			if ( AllowOverWriteFlag . IsChecked == false )
+			// Allow Overwrite is NOT checked, so we Need to check if the destination already exists
+			OriginalSqlCommand = SqlCommand;
+			//SqlCommand = $"select count(*) as [Count] from {recip}";
+			CurrentCommandLabel . Text = $"[{SqlCommand}]";
+			if ( recip == "Enter Table name..." )
 			{
-				// Allow Overwrite is NOT checked, so we Need to check if the destination already exists
-				OriginalSqlCommand = SqlCommand;
-				//SqlCommand = $"select count(*) as [Count] from {recip}";
-				CurrentCommandLabel . Text = $"[{SqlCommand}]";
+				MessageBox . Show ( $"Please enter a Table name  to copy the [{donor . ToUpper ( )}] Db  to ?" );
+				Mouse . OverrideCursor = Cursors . Arrow;
+				DbToBeCreated . SelectAll ( );
+				DbToBeCreated . Focus ( );
+				return;
+			}
+			try
+			{
 				DapperSupport . PerformSqlDbTest ( SqlCommand , out errorstring );
 				// reset original SQL command string
 				SqlCommand = OriginalSqlCommand;
 				if ( errorstring . ToUpper ( ) . Contains ( "THERE IS ALREADY AN" ) )
 				{
-					var dr2 = MessageBox . Show ( $"The destination Db already exists !\nDo you want to go ahead and overwrite it ??" ,
+					var dr2 = MessageBox . Show ( $" There is already a Table named [{donor}],\n\nPress No to enter a different name, or Yes to overwrite the current Table." ,
 					"Sql Command",
-					MessageBoxButton.YesNo,
-					MessageBoxImage.Question);
+						MessageBoxButton.YesNo,
+						MessageBoxImage.Question);
 					IEnumerable DbResult=null;
-					if ( dr2 == MessageBoxResult . Yes )
+					if ( dr2 == MessageBoxResult . No )
 					{
 						// This call perfoms the Copy process
 						//int result = DapperSupport . PerformSqlExecuteCommand ( SqlCommand , out errormsg);
 						ObservableCollection<GenericClass> Generics = new ObservableCollection<GenericClass>();
 						ObservableCollection<BankAccountViewModel> bvmparam = new ObservableCollection<BankAccountViewModel>();
 						Dictionary <string, object>dict = new Dictionary<string, object>();
+						List<string> genericlist = new List<string>();
 
-						DbResult = DapperSupport . ExecuteSPGeneric ( Generics ,
+						try
+						{
+							DapperSupport . CreateGenericCollection ( ref Generics ,
 							$"spCopyDb" ,
 							$" {donor} {recip}, 1" ,
 							"" ,
 							"" ,
-							"" ,
-							Generics ,
-							dict ,
-							out bvmparam ,
-							out errorstring );
+							ref genericlist ,
+							ref errorstring );
+						}
+						catch ( Exception ex )
+						{
+							MessageBox . Show ( $"SQL ERROR 1125 - {ex . Message}" );
+							Mouse . OverrideCursor = Cursors . Arrow;
+							return;
+						}
 						CurrentCommandLabel . Text = $"[{SqlCommand . ToUpper ( )}]";
 						// Save Db name so we can access it later
 						CurrentDbName = recip . ToUpper ( );
@@ -198,6 +216,12 @@ namespace WPFPages . Views
 						OriginalSqlCommand = SqlCommand;
 						CurrentCommandLabel . Text = $"[{SqlCommand . ToUpper ( )}]";
 					}
+					else
+					{
+						Mouse . OverrideCursor = Cursors . Arrow;
+						DbToBeCreated . SelectAll ( );
+						DbToBeCreated . Focus ( );
+					}
 				}
 				else
 				{
@@ -206,14 +230,23 @@ namespace WPFPages . Views
 					{
 						// YEP, WE GOT A GENERIC dB STRUCTURE BACK, SO IT DOES EXIST
 						var dr2 = MessageBox . Show ( $"The destination Db already exists !\nDo you want to go ahead and overwrite it ??" ,
-					"Sql Command",
-					MessageBoxButton.YesNo,
-					MessageBoxImage.Question);
+						"Sql Command",
+						MessageBoxButton.YesNo,
+						MessageBoxImage.Question);
 
 						if ( dr2 == MessageBoxResult . Yes )
 						{
 							// This call perfoms the Copy process
-							int result = DapperSupport . PerformSqlExecuteCommand ( SqlCommand , out errormsg);
+							try
+							{
+								Task<int> result =  DapperSupport . PerformSqlExecuteCommandAsync ( SqlCommand ,null);
+							}
+							catch ( Exception ex )
+							{
+								MessageBox . Show ( $"SQL ERROR ( SqlServercommand 233) \n[{ex . Message}]" );
+								Mouse . OverrideCursor = Cursors . Arrow;
+							}
+
 							CurrentCommandLabel . Text = $"[{SqlCommand . ToUpper ( )}]";
 							// Save Db name so we can access it later
 							CurrentDbName = recip . ToUpper ( );
@@ -229,12 +262,24 @@ namespace WPFPages . Views
 								LoadSPCombo ( );
 							}
 						}
+						else
+						{
+							DbToBeCreated . SelectAll ( );
+							DbToBeCreated . Focus ( );
+						}
 					}
 					else if ( errormsg == "" )
 					{
 						// definitely does NOT exist, so proceed as normal
 						// This call perfoms the Copy process
-						int result = DapperSupport . PerformSqlExecuteCommand ( SqlCommand , out errormsg);
+						try
+						{
+							Task<int> result = DapperSupport . PerformSqlExecuteCommandAsync ( SqlCommand ,null);
+						}
+						catch ( Exception ex )
+						{
+							MessageBox . Show ( $"SQL ERROR ( SqlServercommand 264) \n[{ex . Message}]" );
+						}
 						CurrentCommandLabel . Text = $"[{SqlCommand . ToUpper ( )}]";
 
 						// Save Db name so we can access it later
@@ -246,46 +291,13 @@ namespace WPFPages . Views
 						LoadSPCombo ( );
 					}
 				}
-				return;
 			}
-			else
+			catch ( Exception ex )
 			{
-				// overwrite flag is set to ALLOW Overwrite, so just do it
-				SqlCommand = $"SpCopyDb {donor},{recip}, 1";
-				CurrentCommandLabel . Text = $"[{SqlCommand}]";
-				int result = DapperSupport . PerformSqlExecuteCommand ( SqlCommand , out errormsg);
-				DbCopiedResult . Text = errormsg;
-				DbCopiedResult . Refresh ( );
-				if ( errormsg . ToUpper ( ) . Contains ( "THERE IS ALREADY AN" ) )
-				{
-					if ( AllowOverWriteFlag . IsChecked == true )
-					{
-						// Save Db name so we can access it later
-						CurrentDbName = recip . ToUpper ( );
-						// Load the grid and display it
-						LoadShowDbGrid ( recip );
-						LoadSPCombo ( );
-						if ( ShowGridFlag == true )
-							DbCopiedResult . Text = "Copy completed successful, Db is now open in the Data Grid for you... ";
-						else
-							DbCopiedResult . Text = "The Db Copy operation completed successfully. You can open it in the Data Grid ...";
-					}
-				}
-				else if ( errormsg . ToUpper ( ) . Contains ( "ERROR" ) )
-				{
-					MessageBox . Show ( $"An error has been encountered, the informaton returned is\n : {errormsg}" , "Sql Query Error" , MessageBoxButton . OK , MessageBoxImage . Error );
-					return;
-				}
-				else
-				{
-					// Save Db name so we can access it later
-					CurrentDbName = recip . ToUpper ( );
-					DbCopiedResult . Text = $"Db [{donor . ToUpper ( )}] was copied to [{recip . ToUpper ( )}] successfully so you can View it in the Data Grid...";
-					LoadSPCombo ( );
-					// Load the grid and display it
-					//LoadShowDbGrid ( recip );
-				}
+				MessageBox . Show ( $"SQL ERROR ( CopyDbBtn_Click : 146) \n[{ex . Message}]" );
 			}
+			Mouse . OverrideCursor = Cursors . Arrow;
+			return;
 		}
 		private void CopyList ( List<string> templist )
 		{
@@ -300,26 +312,33 @@ namespace WPFPages . Views
 			if ( ReceivedDbData . Count == 0 )
 			{                       // creates and loads Db into grid
 				List<string> templist = new List<string>();
-				templist = DapperSupport . GetGenericCollection ( templist ,
-				SqlCommand = SqlCommand == "" ? $"select * from {recipient}" : SqlCommand ,
-						 false ,
-						 "SqlServerCommands" );
-				if ( templist . Count == 0 )
-					return;
-				CurrentCommandLabel . Text = $"[{SqlCommand}]";
-				OriginalSqlCommand = SqlCommand;
-				//Copy new data  to global List<string>  ReceivedDbData 
-				CopyList ( templist );
-				// creates and loads Db into grid
-				if ( ReceivedDbData . Count > 0 )
-					CreateDatabase ( DisplayGrid , ReceivedDbData );
-				DbCopiedResult . Text = $"Db [{SqlCommand}] performed successfully...";
+				try
+				{
+					templist = DapperSupport . GetGenericCollection ( templist ,
+					SqlCommand = SqlCommand == "" ? $"select * from {recipient}" : SqlCommand ,
+							 false ,
+							 "SqlServerCommands" );
+					if ( templist . Count == 0 )
+						return;
+					CurrentCommandLabel . Text = $"[{SqlCommand}]";
+					OriginalSqlCommand = SqlCommand;
+					//Copy new data  to global List<string>  ReceivedDbData 
+					CopyList ( templist );
+					// creates and loads Db into grid
+					if ( ReceivedDbData . Count > 0 )
+						CreateGenericDatabase ( DisplayGrid , ReceivedDbData );
+					DbCopiedResult . Text = $"Db [{SqlCommand}] performed successfully...";
+				}
+				catch ( Exception ex )
+				{
+					MessageBox . Show ( $"GetGenericCollection (LoadShowDbGrid : 336) error \n\n[{ex . Message}]" );
+				}
 			}
 			else
 			{
 				// creates and loads Db into grid  & Displays the grid
 				if ( ReceivedDbData . Count > 0 )
-					CreateDatabase ( DisplayGrid , ReceivedDbData );
+					CreateGenericDatabase ( DisplayGrid , ReceivedDbData );
 			}
 			if ( ShowGridFlag == false )
 			{
@@ -343,13 +362,16 @@ namespace WPFPages . Views
 		private void Closegrid_Click ( object sender , RoutedEventArgs e )
 		{
 			togglevisibility ( false );
+
 		}
 		private void ShowGrid_Click ( object sender , RoutedEventArgs e )
 		{
 			bool flagstatus = ShowGridFlag;
+			//ShowGrid . Focus ( );
 			if ( ShowGrid . Content . ToString ( ) == "Hide Grid" )
 			{
 				togglevisibility ( false );
+				e . Handled = true;
 				return;
 			}
 			else
@@ -363,13 +385,18 @@ namespace WPFPages . Views
 					//Reset grid visibility flag
 					ShowGridFlag = flagstatus;
 					ClearGrid . IsEnabled = true;
+					SetDumyGridRow ( DisplayGrid );
 				}
 				else
+				{
 					DisplayGrid . Visibility = Visibility . Visible;
+				};
+
 				BankNameLabel . Text = CurrentDbName;
 				DisplayGrid . Refresh ( );
 				DisplayGrid . Focus ( );
 			}
+			e . Handled = true;
 		}
 		private void DeleteRecipientDbBtn_Click ( object sender , RoutedEventArgs e )
 		{
@@ -431,17 +458,74 @@ namespace WPFPages . Views
 				BankNameLabel . Visibility = Visibility . Collapsed;
 				ShowGrid . Content = "Show Grid";
 			}
-		}
-		private void ExecCommand_Click ( object sender , RoutedEventArgs e )
-		{
-			int result = 0;
 
-			// Button to Execute user entered SQL query
-			if ( sender == null )
+			Utils . trace ( );
+		}
+
+		/// <summary>
+		/// checks the full set of SP's in SQL Server agains a received argument and returns true if identified
+		///  used for validating the typoe of SQL command a user may have entered  (select/ existing SP/ a.n. other)
+		/// </summary>
+		/// <param name="sp"></param>
+		/// <returns></returns>
+		static public bool CheckforStoredProcedure ( string sp )
+		{
+			bool result = false;
+			string spUpper = sp . ToUpper ( );
+			ObservableCollection <GenericClass>Checklist= new ObservableCollection<GenericClass>();
+			SqlCommand = "spGetStoredProcs";
+			SqlServerCommands ssc  = new SqlServerCommands ();
+			ssc . ExecuteStoredProcedure ( SqlCommand , Checklist , "" , "" , null );
+			foreach ( var item in Checklist )
 			{
-				// being called to check for existence of a Db
-				string DbName = SpArgs.Text;
-				string upperstring = SqlCommand . ToUpper ( );
+				if ( item . field1 . ToUpper ( ) == spUpper )
+				{
+					result = true;
+					break;
+				}
+			}
+			return result;
+		}
+		public void GetSPCheckList ( )
+		{
+			ObservableCollection <GenericClass>Checklist= new ObservableCollection<GenericClass>();
+			if ( SP_checklist . Count == 0 )
+			{
+				SqlCommand = "spGetStoredProcs";
+				ExecuteStoredProcedure ( SqlCommand , Checklist , "" , "" , null );
+				foreach ( var item in Checklist )
+				{
+					SP_checklist . Add ( item . field1 . ToUpper ( ) );
+				}
+			}
+		}
+		private async void ExecCommand_Click ( object sender , RoutedEventArgs e )
+		{
+			Task<int> result;
+
+			// Check for it being an SP in the text field - cever eh ?
+			GetSPCheckList ( );
+			if ( CheckForSPCommand ( SqlCommandString . Text ) )
+			{
+				SP_checklist . Clear ( );
+				DbCopiedResult . Text = $"SQL query [{SqlCommand}] failed to be executed....";
+				Mouse . OverrideCursor = Cursors . Arrow;
+				return;
+			}
+			ExecSqlCommand . Focus ( );
+			// Button to Execute user entered SQL query
+			// may be called to check for existence of a Db
+			string DbName = SqlCommandString.Text;
+			string upperstring = DbName. ToUpper ( );
+			if ( upperstring . Contains ( "ENTER ARGUMENTS HERE" ) )
+			{
+				Mouse . OverrideCursor = Cursors . Arrow;
+				MessageBox . Show ( $"You must enter a valid SQL query in the ' SQL command '  field...'" , "User entry Error !" , MessageBoxButton . OK );
+				return;
+			}
+			if ( upperstring . Contains ( "SELECT " ) == false )
+			{
+				Mouse . OverrideCursor = Cursors . Wait;
 				if ( upperstring . Contains ( " INTO " ) )
 				{
 					// NEED TO TEST FOR EXISTENCE OF THIS DB
@@ -457,104 +541,106 @@ namespace WPFPages . Views
 					if ( DbName . Length > 0 )
 					{
 						SqlCommand = $"Select * from {DbName}";
+						CurrentCommandLabel . Text = $"[{SqlCommand}]";
 					}
-				}
-				//result = performExec ( );
-				CurrentCommandLabel . Text = $"[{SqlCommand}]";
-				var queryresult = DapperSupport.PerformSqlDbTest(SqlCommand, out errorstring);
-				if ( errorstring != null )
-				{
-					if ( errorstring . ToUpper ( ) . Contains ( "INVALID OBJECT" ) && errorstring . ToUpper ( ) . Contains ( DbName . ToUpper ( ) ) )
+
+					// Test  for validity
+					//************************************************************************************************************************************************************************//
+					var queryresult = DapperSupport.PerformSqlDbTest(SqlCommand, out errorstring);
+					//************************************************************************************************************************************************************************//
+
+					if ( errorstring != null )
 					{
-						Console . WriteLine ( "Db does NOT exist" );
-						SqlCommand = OriginalSqlCommand;
-						result = DapperSupport . PerformSqlExecuteCommand ( SqlCommand , out errorstring );
-						Console . WriteLine ( $"Result returned from Sql Server was  {result}" );
+						if ( errorstring . ToUpper ( ) . Contains ( "INVALID OBJECT" ) && errorstring . ToUpper ( ) . Contains ( DbName . ToUpper ( ) ) )
+						{
+							Console . WriteLine ( "Db does NOT exist" );
+							SqlCommand = OriginalSqlCommand;
+							try
+							{
+								//************************************************************************************************************************************************************************//
+								result = DapperSupport . PerformSqlExecuteCommandAsync ( SqlCommand , null );
+								//************************************************************************************************************************************************************************//
+								Console . WriteLine ( $"Result returned from Sql Server was  {result}" );
+							}
+							catch ( Exception ex )
+							{
+								MessageBox . Show ( $"SQL ERROR ( SqlServercommand 482 \n[{ex . Message}]" );
+								Mouse . OverrideCursor = Cursors . Arrow;
+							}
+						}
 					}
 					else
 					{
-						SqlCommand = OriginalSqlCommand;
-						result = DapperSupport . PerformSqlExecuteCommand ( SqlCommand , out errorstring );
-						if ( errorstring != "" )
-						{
-							var dr2 = MessageBox . Show ( $"The Command does NOT appear to be valid.\nPlease correct and retry the query" ,
-								"Sql Command",
-								MessageBoxButton.OK,
-								MessageBoxImage.Exclamation);
-						}
-						else
-						{
-							// Save Db name so we can access it later
-							CurrentDbName = GetDbNameFromCommand ( SqlCommand ) . ToUpper ( );
-							// Load the grid and display it
-							LoadShowDbGrid ( GetDbNameFromCommand ( SqlCommand ) );
-						}
-						Console . WriteLine ( $"Result returned from Sql Server was  {result}" );
+						CurrentCommandLabel . Text = SqlCommandString . Text;
+						errorstring = "";
+					}
+				}
+				else
+				{
+					// processing unknown command
+					if ( CheckForSPCommand ( SqlCommandString . Text ) == false )
+					{
+						//						MessageBox . Show ( $"The command you have entered\n\n{SqlCommandString . Text }]\n\nhas not been recognized");
+						Mouse . OverrideCursor = Cursors . Arrow;
+						DlgInput . mouseforeground = FindResource ( "Black0" ) as Brush;
+						Utils . Mbox ( this , string1: $"The command you have entered\n[{SqlCommandString . Text }]\nhas not been recognized" , string2: "This is the footr string " , caption: "Tis is  the caption string" , iconstring: "" , Btn1: 1 , Btn2: 0 , defButton: 1 );
+						DbCopiedResult . Text = $"SQL command\n[{SqlCommandString . Text} failed to execute...";
+						//  						MessageBox . Show ("fdgffhhdhh","",MessageBoxButton.OK,MessageBoxImage.Error);
 					}
 				}
 			}
 			else
 			{
-				// called internally by other methods
-				if ( OriginalSqlCommand == "" )
-					SqlCommand = SqlCommandString . Text;
-				else
-					SqlCommand = OriginalSqlCommand;
-				if ( SqlCommand == "Enter SQL command ..." )
+				//processing a user entered cmd containing at lease SELECT 
+				SqlCommand = SqlCommandString . Text;
+				try
 				{
-					MessageBox . Show ( $"Sorry, but you MUST enter a valid SQL Query that can be processed " , "Sql Error Encountered" , MessageBoxButton . OK , MessageBoxImage . Information );
-					return;
-				}
-				CurrentCommandLabel . Text = $"[{SqlCommand}]";
-				string DbToOpen="";
-				IEnumerable DbResult=null;
-				ObservableCollection<GenericClass> Generics = new ObservableCollection<GenericClass>();
-				ObservableCollection<BankAccountViewModel> bvmparam = new ObservableCollection<BankAccountViewModel>();
-				Dictionary <string, object>dict = new Dictionary<string, object>();
-				DbResult = DapperSupport . ExecuteSPGeneric ( Generics ,
+					ObservableCollection<GenericClass> generics = new ObservableCollection<GenericClass>();
+					Dictionary <string, object>dict = new     Dictionary <string, object>();
+					ObservableCollection<BankAccountViewModel> bvmparam = new  ObservableCollection<BankAccountViewModel>();
+					List<string> genericlist = new List<string>     ();
+					string errormsg="";
+
+					// Return a list<string> from any "Select " query
+					DapperSupport . CreateGenericCollection (
+					ref generics ,
 					SqlCommand ,
 					"" ,
 					"" ,
 					"" ,
-					"" ,
-					Generics ,
-					dict ,
-					out bvmparam ,
-					out errorstring );
+					ref genericlist ,
+					ref errormsg );
+					// We want a list<string> from this call
 
-				if ( errorstring . Contains ( "SQLERROR :" ) )
-				{
-					MessageBox . Show ( $"An SQL Error occured. SQL Error message was\n : {errorstring . Substring ( 10 )}" );
-					CurrentCommandLabel . Text = SqlCommand;
-					return;
+					if ( generics . Count == 0 )
+					{
+						SetDumyGridRow ( DisplayGrid );
+					}
+					else
+					{
+						if ( errormsg == "" )
+						{
+							DisplayGrid . ItemsSource = null;
+							DisplayGrid . Items . Clear ( );
+							// Caution : This is a powerful method that loads the List<string> data into the Datagrid with only the selected rows
+							// //visible in the grid so do NOT repopulate the grid after making this call
+							CreateGenericDatabase ( DisplayGrid , genericlist );
+						}
+						else
+						{
+							Utils . Mbox ( this , string1: $"SQL processing error: \n[{errormsg}]\n" , string2: "hey ho" , caption: "SqlError" , Btn1: mb . OK , defButton: mb . OK , iconstring: "" );
+						}
+					}
 				}
-				else if ( errorstring . Contains ( "UNKNOWN :" ) )
+				catch ( Exception ex )
 				{
-					MessageBox . Show ( $"An undefined SQL Error occured. Error message was\n : {errorstring . Substring ( 9 )}" );
-					CurrentCommandLabel . Text = SqlCommand;
-					return;
+					MessageBox . Show ( $"SQL ERROR ( SqlServercommand 496) \n[{ex . Message}]" );
 				}
-				else
-				{
-					Console . WriteLine ( $"Records loaded from Sql Server by Query [{SqlCommand}]was  {Generics . Count}" );
-					// Command appears to be valid, so process it
-					DbCopiedResult . Text = $"SQL Command \n[{SqlCommand . ToUpper ( )}]\ncompleted successfully... ";
-					DbCopiedResult . Refresh ( );
-
-					// Save Db name so we can access it later
-					CurrentDbName = GetDbNameFromCommand ( SqlCommand ) . ToUpper ( );
-					// Load the grid and display it
-					//					LoadShowDbGrid ( GetDbNameFromCommand ( SqlCommand ) );
-					DisplayGrid . ItemsSource = null;
-					DisplayGrid . Items . Clear ( );
-					DisplayGrid . ItemsSource = Generics;
-					DisplayGrid . Visibility = Visibility . Visible;
-					DisplayGrid . Refresh ( );
-					togglevisibility ( true , GetDbNameFromCommand ( SqlCommand ) );
-				}
+				Mouse . OverrideCursor = Cursors . Arrow;
+				return;
 			}
-			return;
 		}
+
 		/// <summary>
 		/// Get the Db Name from the SQL command string (if possible)
 		/// </summary>
@@ -580,63 +666,64 @@ namespace WPFPages . Views
 			}
 			return output;
 		}
-		private int performExec ( )
-		{
-			//SqlCommand = SqlCommandString . Text;
-
-			SqlCommand = OriginalSqlCommand;
-			CurrentCommandLabel . Text = $"[{SqlCommand}]";
-			int result = DapperSupport . PerformSqlExecuteCommand ( SqlCommand , out errorstring );
-			Console . WriteLine ( $"Result returned from Sql Server was  {result}" );
-			return result;
-		}
 		private void SqlCommandString_PreviewMouseLeftButtonUp ( object sender , System . Windows . Input . MouseButtonEventArgs e )
 		{
 			// Select entire string on entry into the field to make it easier to type an entry
-			if ( SqlCommandString . Text == "Enter SQL command ..." )
-			{
-				SqlCommandString . Text = "";
-				SqlCommandString . Foreground = FindResource ( "Black0" ) as SolidColorBrush;
-			}
+			ResetFieldDefaults ( sender as TextBox , true );
 		}
 		private void DbToCopy_PreviewMouseLeftButtonUp ( object sender , System . Windows . Input . MouseButtonEventArgs e )
 		{
-			SelectTextBoxText ( DbToCopyTb );
+			//Utils.SelectTextBoxText ( DbToCopyTb );
 		}
+
+		private List<string>SP_checklist = new List<string>();
 		private void DbToBeCreated_PreviewMouseLeftButtonUp ( object sender , System . Windows . Input . MouseButtonEventArgs e )
 		{
 			//SelectTextBoxText ( DbToBeCreated );
-			if ( SPArgs . Text . Contains ( "Enter arguments here" ) )
-			{
-				SPArgs . Text = "";
-				SPArgs . Foreground = FindResource ( "Red5" ) as SolidColorBrush;
-			}
-		}
-		private void SelectTextBoxText ( TextBox txtbox )
-		{
-			txtbox . SelectionLength = txtbox . Text . Length;
-			txtbox . SelectionStart = 0;
-			txtbox . SelectAll ( );
+			ResetFieldDefaults ( sender as TextBox , true );
+			GetSPCheckList ( );
 		}
 		private void SqlCommandString_KeyDown ( object sender , System . Windows . Input . KeyEventArgs e )
 		{
+			// Check for it being an SP in the text field - cever eh ?
+			{
+			}
 			if ( e . Key == Key . Enter )
 			{
+				if ( CheckForSPCommand ( SqlCommandString . Text ) )
+				{
+					SP_checklist . Clear ( );
+					DbCopiedResult . Text = $"SQL command\n[{SqlCommandString . Text} failed to execute...";
+					return;
+				}
 				SqlCommand = SqlCommandString . Text;
 				OriginalSqlCommand = SqlCommand;
 				ExecCommand_Click ( this , null );
 			}
 		}
+		public bool CheckForSPCommand ( string SqlCommand )
+		{
+			ObservableCollection <GenericClass>Checklist= new ObservableCollection<GenericClass>();
+			GetSPCheckList ( );
+			if ( SP_checklist . Contains ( SqlCommand . ToUpper ( ) ) )
+			{
+				MessageBox . Show ( $"The command you have entered \n\n            [{SqlCommandString . Text . ToUpper ( )}].\n\nis an existing Stored Procedure.\n\nYou can run these using the option below" );
+				SP_checklist . Clear ( );
+				DbCopiedResult . Text = $"SQL command\n[{SqlCommand} failed to execute...";
+				return true;
+			}
+			return false;
+		}
 		private void ClearGrid_Click ( object sender , RoutedEventArgs e )
 		{
-			DisplayGrid . ItemsSource = null;
-			DisplayGrid . Items . Clear ( );
-			DisplayGrid . Refresh ( );
+			ClearGrid . Focus ( );
+
+			SetDumyGridRow ( DisplayGrid );
 			BankNameLabel . Text = "";
 			GridCount . Text = "";
 			this . Title = $"Sql Server Commands : Active Db : 'None'";
 			//			ClearGrid . IsEnabled = false;
-			ShowInGrid . IsEnabled = true;
+			//			ShowInGrid . IsEnabled = true;
 			// cant show procs if grid is cleared as we do not have a Db remaining
 			ActiveDbName = "";
 			// delete last enquiry
@@ -644,9 +731,29 @@ namespace WPFPages . Views
 			SqlCommand = "";
 			CurrentCommandLabel . Text = "";
 		}
+		public void SetDumyGridRow ( DataGrid Grid )
+		{
+			ObservableCollection<GenericClass> db= new ObservableCollection<GenericClass>();
+			GenericClass gc = new GenericClass();
+			Grid . ItemsSource = null;
+			Grid . Items . Clear ( );
+			Grid . Refresh ( );
+			gc . field1 = "       No Current Selection ...       ";
+			db . Add ( gc );
+			LoadActiveRowsOnlyInGrid ( Grid , db , 1 );
+
+		}
 
 		#region LoadDbGrid
-		public void CreateDatabase ( DataGrid dgrid , List<string> ReceivedDbData )
+		/// <summary>
+		/// Creates a GenericClass collection and can also populte a datagrid  if LoadGrid==true
+		/// and returns the collection to the caller
+		/// </summary>
+		/// <param name="dgrid"></param>
+		/// <param name="ReceivedDbData"></param>
+		/// <param name="LoadGrid"></param>
+		/// <returns></returns>
+		public ObservableCollection<GenericClass> CreateGenericDatabase ( DataGrid dgrid , List<string> ReceivedDbData , bool LoadGrid = true )
 		{
 			string datain="";
 			int totalfields = 0;
@@ -731,22 +838,23 @@ namespace WPFPages . Views
 				}
 				genericcollection . Add ( genclass );
 			}
-			//			if ( ShowGridFlag  == true )
-			LoadActiveRowsOnlyInGrid ( genericcollection , totalfields );
+			if ( LoadGrid == true )
+				LoadActiveRowsOnlyInGrid ( dgrid , genericcollection , totalfields );
+			return genericcollection;
 		}
 
-		public void LoadActiveRowsOnlyInGrid ( ObservableCollection<GenericClass> genericcollection , int total )
+		public void LoadActiveRowsOnlyInGrid ( DataGrid Grid , ObservableCollection<GenericClass> genericcollection , int total )
 		{
 			// filter data to remove all "extraneous" columns
-			DisplayGrid . ItemsSource = null;
-			DisplayGrid . Items . Clear ( );
+			Grid . ItemsSource = null;
+			Grid . Items . Clear ( );
 			if ( total == 1 )
 			{
 				var res =
 				   ( from data in genericcollection
 				     select new
 				     {data.field1}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 2 )
 			{
@@ -754,7 +862,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1,data.field2}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 3 )
 			{
@@ -762,7 +870,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2,data.field3}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 4 )
 			{
@@ -770,7 +878,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 5 )
 			{
@@ -778,7 +886,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 6 )
 			{
@@ -786,7 +894,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 7 )
 			{
@@ -794,7 +902,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6,data.field7}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 8 )
 			{
@@ -802,7 +910,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6,data.field7,data.field8}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 9 )
 			{
@@ -810,7 +918,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6,data.field7,data.field8,data.field9}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 10 )
 			{
@@ -818,7 +926,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6,data.field7,data.field8,data.field9 ,data.field10}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 11 )
 			{
@@ -826,7 +934,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6,data.field7,data.field8,data.field9,data.field10,data.field11}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 12 )
 			{
@@ -834,7 +942,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6,data.field7,data.field8,data.field9,data.field10,data.field11,data.field12}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 13 )
 			{
@@ -842,7 +950,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6,data.field7,data.field8,data.field9,data.field10,data.field11,data.field12,data.field13}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 14 )
 			{
@@ -850,7 +958,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6,data.field7,data.field8,data.field9,data.field10,data.field11,data.field12,data.field13,data.field14}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 15 )
 			{
@@ -858,7 +966,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6,data.field7,data.field8,data.field9,data.field10,data.field11,data.field12,data.field13,data.field14,data.field15}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 16 )
 			{
@@ -866,7 +974,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6,data.field7,data.field8,data.field9,data.field10,data.field11,data.field12,data.field13,data.field14,data.field15,data.field16}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 17 )
 			{
@@ -874,7 +982,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6,data.field7,data.field8,data.field9,data.field10,data.field11,data.field12,data.field13,data.field14,data.field15,data.field16,data.field17}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 18 )
 			{
@@ -882,7 +990,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6,data.field7,data.field8,data.field9,data.field10,data.field11,data.field12,data.field13,data.field14,data.field15,data.field16,data.field17,data.field18}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 19 )
 			{
@@ -890,7 +998,7 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6,data.field7,data.field8,data.field9,data.field10,data.field11,data.field12,data.field13,data.field14,data.field15,data.field16,data.field17,data.field18,data.field19}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
 			else if ( total == 20 )
 			{
@@ -898,40 +1006,59 @@ namespace WPFPages . Views
 				   ( from data in genericcollection
 				     select new
 				     {data.field1, data.field2, data.field3,data.field4,data.field5,data.field6,data.field7,data.field8,data.field9,data.field10,data.field11,data.field12,data.field13,data.field14,data.field15,data.field16,data.field17,data.field18,data.field19,data.field20}).ToList();
-				DisplayGrid . ItemsSource = res;
+				Grid . ItemsSource = res;
 			}
-			DisplayGrid . SelectedIndex = 0;
-			DisplayGrid . Visibility = Visibility . Visible;
-			GridCount . Text = DisplayGrid . Items . Count . ToString ( );
-			DisplayGrid . Refresh ( );
-			DisplayGrid . Focus ( );
+			Grid . SelectedIndex = 0;
+			Grid . Visibility = Visibility . Visible;
+			GridCount . Text = Grid . Items . Count . ToString ( );
+			Grid . Refresh ( );
+			Grid . Focus ( );
 		}
 		#endregion LoadDbGrid
 
-		private void ShowInGrid_Checked ( object sender , RoutedEventArgs e )
-		{
-			ShowGridFlag = true;
-		}
-		private void ShowInGrid_Unchecked ( object sender , RoutedEventArgs e )
-		{
-			ShowGridFlag = false;
-		}
+		//private void ShowInGrid_Checked ( object sender , RoutedEventArgs e )
+		//{
+		//	ShowGridFlag = true;
+		//}
+		//private void ShowInGrid_Unchecked ( object sender , RoutedEventArgs e )
+		//{
+		//	ShowGridFlag = false;
+		//}
+
+
 		private void ExecuteSQLCommand_Click ( object sender , RoutedEventArgs e )
 		{
 			// Execute Command button
-
+			ExecuteSp . Focus ( );
+			Mouse . OverrideCursor = Cursors . Wait;
 			string args =SPArgs.Text == "Enter arguments here ..." ? "" : SPArgs.Text;
-			SqlCommand = SPCombo . SelectedItem . ToString ( );
+
+			if ( args . ToUpper ( ) . Contains ( "SELECT " ) == false )
+				SqlCommand = SPCombo . SelectedItem . ToString ( );
+			else
+				SqlCommand = SPArgs . Text;
 			// dummy Fn so we can call it drectly
+
+			// Check for it being an SP in the text field - cever eh ?
+			ObservableCollection <GenericClass>Checklist= new ObservableCollection<GenericClass>();
+			GetSPCheckList ( );
+			if ( CheckForSPCommand ( SqlCommandString . Text ) )
+			{
+				SP_checklist . Clear ( );
+				DbCopiedResult . Text = $"SQL command\n[{SqlCommandString . Text} failed to execute...";
+				return;
+			}
 			ExecuteStoredProcedure ( SqlCommand , null , "" , args , e );
+			SP_checklist . Clear ( );
+			Mouse . OverrideCursor = Cursors . Arrow;
+
 		}
-		private string ExecuteStoredProcedure ( string SqlCommand , ObservableCollection<GenericClass> generics = null , string DbName = "" , string Arguments = "" , RoutedEventArgs e = null )
+		public ObservableCollection<GenericClass> ExecuteStoredProcedure ( string SqlCommand , ObservableCollection<GenericClass> generics = null , string DbName = "" , string Arguments = "" , RoutedEventArgs e = null , bool displayData = true )
 		{
-			bool showall=false;
 			string SavedValue = SqlCommand;
 			string command = "", dbnametoopen = "";
 			string errormsg="";
-			string Fieldname="", WhereClause="", OrderByClause="";
+			string  WhereClause="", OrderByClause="";
 			ObservableCollection<GenericClass> Generics = new ObservableCollection<GenericClass>();
 			if ( generics != null )
 				Generics = generics;
@@ -939,13 +1066,15 @@ namespace WPFPages . Views
 			Dictionary <string, object>dict = new Dictionary<string, object>();
 			IEnumerable DbResult=null;
 			CurrentCommandLabel . Text = $"[{SqlCommand}]";
-			if ( e != null )
-				SqlCommand = SPCombo . SelectedItem . ToString ( );
+
+			//============
+			// Sanity checks
+			//============
 			// If it is a CopyDb Procedure, bale out, use the Copy button
 			if ( SqlCommand . ToUpper ( ) . Contains ( "SPCOPYDB" ) )
 			{
 				MessageBox . Show ( $"Please use the 'Copy Db' button at top right to perform this operation.." , "Input error" , MessageBoxButton . OK );
-				return ( $"" );
+				return null;
 			}
 			if ( SavedValue == "spGetFullSchema" && Arguments == "FULL" )
 			{
@@ -957,8 +1086,9 @@ namespace WPFPages . Views
 				{
 					if ( SPArgs . Text == "Enter arguments here ..." )
 					{
-						MessageBox . Show ( "You need to specify the SP that you want to view the ARG's\nfor in the field 'Enter arguments here ...'??" , "Details required" , MessageBoxButton . OK , MessageBoxImage . Warning );
-						return "";
+						MessageBox . Show ( "You need to specify the SP that you want to view the ARG's\nfor in the field 'Enter arguments here ...'??" ,
+							     "Details required" , MessageBoxButton . OK , MessageBoxImage . Warning );
+						return null;
 					}
 					var reslt = MessageBox . Show ("Click Yes to see ALL occurences of @ARG, No for just the header declarations?","Details required", MessageBoxButton.YesNo, MessageBoxImage.Question  );
 					if ( reslt == MessageBoxResult . Yes )
@@ -968,18 +1098,16 @@ namespace WPFPages . Views
 				}
 				else
 				{
-					var reslt = MessageBox . Show ( "This will get the @ARGS for the currently selected SP in the Combo above\nClick Yes to proceed or No to select a  different SP in the combo'??" , "Confirmation required" ,
-						  MessageBoxButton.YesNoCancel, MessageBoxImage .Question);
+					//var reslt = MessageBox . Show ( "This will get the @ARGS for the currently selected SP in the Combo above\nClick Yes to proceed or No to select a  different SP in the combo'??" , "Confirmation required" ,
+					//	  MessageBoxButton.YesNoCancel, MessageBoxImage .Question);
+					//if ( reslt == MessageBoxResult . Yes )
+					//{
+					var reslt = MessageBox . Show ( "Click Yes to see ALL occurences of @ARG, No for just the header declarations?" , "Details required" , MessageBoxButton . YesNo , MessageBoxImage . Question );
 					if ( reslt == MessageBoxResult . Yes )
-					{
-						reslt = MessageBox . Show ( "Click Yes to see ALL occurences of @ARG, No for just the header declarations?" , "Details required" , MessageBoxButton . YesNo , MessageBoxImage . Question );
-						if ( reslt == MessageBoxResult . Yes )
-						{
-							showall = true;
-						}
-					}
+						showall = true;
 					else
-						return "";
+						showall = false;
+					GridData_Display . Visibility = Visibility . Hidden;
 				}
 			}
 			//****************************************************************************//
@@ -987,128 +1115,261 @@ namespace WPFPages . Views
 			//****************************************************************************//
 			//if ( Arguments != "" )
 			//	Arguments = ParseArguments ( Arguments );
-			DbResult = DapperSupport . ExecuteSPGeneric (
-		Generics ,
-		SqlCommand ,
-		Arguments ,
-		"" ,
-		"" ,
-		"" ,
-		null ,
-		dict ,
-		out bvmparam ,
-		out errormsg );
-			DisplayGrid . ItemsSource = null;
-			DisplayGrid . Items . Clear ( );
 
-			if ( errormsg . Contains ( "DYNAMIC:" ) )
+			try
 			{
-				// Process the data we have finally got into the Observabllecollection<GenricsClass>
-				// which has 20 columns down to just whatever # of columns we actually have to work with/Display
-				//Much cleaner and more pleasant to view
-				if ( Generics . Count == 0 && errormsg . Contains ( "DYNAMIC:0" ) )
+				List<string> genericlist = new List<string>();
+
+				//				DapperGeneric<ObservableCollection<GenericClass>> . CallGeneric ( Generics );
+
+				bool usegeneric = false;
+				//bool use2 = true;
+
+				if ( usegeneric )
 				{
-					MessageBox . Show ( $"SQL Error : \nSql Query was : [{SqlCommand}]  returned ZERO records !" , "SQL Query Error" , MessageBoxButton . OK ,
+					GenericClass gc = new GenericClass ( );
+					List<GenericClass> genlist = new List<GenericClass>();
+					DapperGeneric<GenericClass , ObservableCollection<GenericClass> , List<GenericClass>> . ExecuteSPFullGenericClass (
+						ref Generics ,
+						false ,
+						ref Generics ,
+						SqlCommand ,
+						Arguments ,
+						"" ,
+						"" ,
+						ref genlist ,
+						ref genlist ,
+						 out errormsg );
+				}
+				else
+				{
+					DapperSupport . CreateGenericCollection (
+						ref Generics ,
+						SqlCommand ,
+						Arguments ,
+						"" ,
+						"" ,
+						ref genericlist ,
+						ref errormsg );
+				}
+				if ( displayData == false )
+				{
+					return Generics;
+				}
+				DisplayGrid . ItemsSource = null;
+				DisplayGrid . Items . Clear ( );
+				GridData_Display . Visibility = Visibility . Hidden;
+
+				if ( errormsg . Contains ( "DYNAMIC:" ) )
+				{
+					// Process the data we have finally got into the Observabllecollection<GenricsClass>
+					// which has 20 columns down to just whatever # of columns we actually have to work with/Display
+					//Much cleaner and more pleasant to view
+					if ( Generics . Count == 0 && errormsg . Contains ( "DYNAMIC:0" ) )
+					{
+						MessageBox . Show ( $"SQL Error : \nSql Query was : [{SqlCommand}]  returned ZERO records !" , "SQL Query Error" , MessageBoxButton . OK ,
+							    MessageBoxImage . Error );
+						this . Title = $"Sql Server Commands : Active Db : 'None'";
+						DbCopiedResult . Text = $"SQL query [{SqlCommand}] retuned ZERO records";
+						CurrentCommandLabel . Text = SqlCommand + " " + Arguments;
+						return null;
+					}
+					string t = errormsg.Substring(8);
+					int colcount =Convert.ToInt32(t );
+					Console . WriteLine ( $"Db has {Generics . Count} records and {colcount} columns" );
+					//LoadActiveRowsOnlyInGrid ( spViewerGrid , Generics , colcount );
+					LoadActiveRowsOnlyInGrid ( DisplayGrid , Generics , colcount );
+					DisplayGrid . SelectedIndex = 0;
+					//spViewerGrid . SelectedIndex = 0;
+					//spViewerGrid . Refresh ( );
+					DisplayGrid . Refresh ( );
+					togglevisibility ( true , GetDbNameFromCommand ( SqlCommand ) );
+					// update  informatoin panels
+					DbCopiedResult . Text = $"[{SqlCommand}] has been completed successfully....";
+					CurrentCommandLabel . Text = $"[{SqlCommand}]";
+					this . Title = $"Sql Server Commands : Active/Last Db/Command : '{SqlCommand}'";
+
+					return null;
+				}
+				else if ( errormsg . Contains ( "SQL PARSE ERROR" ) || errormsg . Contains ( "SQLERROR :" ) )
+				{
+					// Process the data we have finally got into the Observabllecollection<GenricsClass>
+					// which has 20 columns down to just whatever # of columns we actually have to work with/Display
+					//Much cleaner and more pleasant to view
+					MessageBox . Show ( errormsg , "SQL Query Error" , MessageBoxButton . OK ,
 						    MessageBoxImage . Error );
 					this . Title = $"Sql Server Commands : Active Db : 'None'";
-					DbCopiedResult . Text = $"SQL query [{SqlCommand}] retuned ZERO records";
+					DbCopiedResult . Text = $"SQL query [{SqlCommand}] failed to run  correctly";
 					CurrentCommandLabel . Text = SqlCommand + " " + Arguments;
-					return "";
+					return null;
 				}
-				string t = errormsg.Substring(8);
-				int colcount =Convert.ToInt32(t );
-				Console . WriteLine ( $"Db has {Generics . Count} records and {colcount} columns" );
-				LoadActiveRowsOnlyInGrid ( Generics , colcount );
-				DisplayGrid . SelectedIndex = 0;
-				DisplayGrid . Refresh ( );
-				togglevisibility ( true , GetDbNameFromCommand ( SqlCommand ) );
-				// update  informatoin panels
-				DbCopiedResult . Text = $"[{SqlCommand}] has been completed successfully....";
-				CurrentCommandLabel . Text = $"[{SqlCommand}]";
-				this . Title = $"Sql Server Commands : Active/Last Db/Command : '{SqlCommand}'";
-				return "";
-			}
-			else if ( errormsg . Contains ( "SQL PARSE ERROR" ) )
-			{
-				// Process the data we have finally got into the Observabllecollection<GenricsClass>
-				// which has 20 columns down to just whatever # of columns we actually have to work with/Display
-				//Much cleaner and more pleasant to view
-				MessageBox . Show ( errormsg , "SQL Query Error" , MessageBoxButton . OK ,
-					    MessageBoxImage . Error );
-				this . Title = $"Sql Server Commands : Active Db : 'None'";
-				DbCopiedResult . Text = $"SQL query [{SqlCommand}] failed to run  correctly";
-				CurrentCommandLabel . Text = SqlCommand + " " + Arguments;
-				return "";
-			}
-			else
-			{
-				int columncount = 0;
-				DataTable dt = new DataTable();
-				dt = ProcessSqlCommand ( SqlCommand + " " + Arguments );
-				if ( dt . Rows . Count == 0 )
+				else
 				{
-					if(errormsg == "")
-						MessageBox . Show ( $"Datatable contains Zero records " , $"[{SqlCommand} {Arguments}] SP Script Error" , MessageBoxButton . OK , MessageBoxImage . Warning );
-//					else
-//						MessageBox . Show ( $"Datatable contains Zero records, Error reported was : \n{errormsg} " , $"[{SqlCommand} {Arguments}] SP Script Error" , MessageBoxButton . OK , MessageBoxImage . Warning );
-					return "";
-				}
-				int  count = 0;
-				columncount = 0;
-				Generics . Clear ( );
-				foreach ( var item in dt . Rows )
-				{
-					GenericClass  gc = new GenericClass ( );
-					string  store="";
-					DataRow dr = item as DataRow;
-					columncount = dr . ItemArray . Count ( );
-					if ( columncount == 0 )
-						columncount = 1;
-					// we only need max cols - 1 here !!!
-					for ( int x = 0 ; x < columncount ; x++ )
-						store += dr . ItemArray [ x ] . ToString ( ) + ",";
-					CreateGenericRecord ( store , gc , Generics );
-				}
-				if ( SavedValue == "spGetSpecificSchema" )
-				{
-					if ( Generics . Count > 0 )
+					int columncount = 0;
+					DataTable dt = new DataTable();
+					if ( SqlCommand . Substring ( 0 , 2 ) != "sp" )
 					{
-						string buff = GetSpecificSPArguments ( "RETURNEDRESULTS" , Generics [ 0 ] . field1, showall );
-						if ( buff . Length == 0 )
+						dt = ProcessSqlCommand ( SqlCommand + " " + Arguments );
+						if ( dt . Rows . Count == 0 )
 						{
-							MessageBox . Show ( "The request succeeded, but the selected SP does not require any Arguments" , "Sql Information" , MessageBoxButton . OK , MessageBoxImage . Information );
-							return "";
+							// Dont dfisplay if it is an SQL TYPE/TALE etc  creation command
+							if ( errormsg == "" && SqlCommand . Contains ( "SPCREATE_" ) == false )
+								MessageBox . Show ( $"Datatable contains Zero records " , $"[{SqlCommand} {Arguments}] SP Script Error" , MessageBoxButton . OK , MessageBoxImage . Warning );
+							else if ( SqlCommand . Contains ( "SPCREATE_" ) )
+								DbCopiedResult . Text = $"[{SqlCommand}]\n\n'Special' command has been completed sucessfully ...";
+							return null;
 						}
-						DisplayGrid . Visibility = Visibility . Hidden;
-						GridData_Display . Visibility = Visibility . Visible;
-						GridData_Display . Text = buff;
-						DbCopiedResult . Text = $"[{SqlCommand}] completed successfully....";
+						int  count = 0;
+						columncount = 0;
+						Generics . Clear ( );
+						foreach ( var item in dt . Rows )
+						{
+							GenericClass  gc = new GenericClass ( );
+							string  store="";
+							DataRow dr = item as DataRow;
+							columncount = dr . ItemArray . Count ( );
+							if ( columncount == 0 )
+								columncount = 1;
+							// we only need max cols - 1 here !!!
+							for ( int x = 0 ; x < columncount ; x++ )
+								store += dr . ItemArray [ x ] . ToString ( ) + ",";
+							CreateGenericRecord ( store , gc , Generics );
+						}
+						if ( SavedValue == "spGetSpecificSchema" )
+						{
+							if ( Generics . Count > 0 )
+							{
+								string buff = GetSpecificSPArguments ( "RETURNEDRESULTS" , Generics [ 0 ] . field1, showall );
+								if ( buff . Length == 0 )
+								{
+									MessageBox . Show ( "The request succeeded, but the selected SP does not require any Arguments" , "Sql Information" , MessageBoxButton . OK , MessageBoxImage . Information );
+									return null;
+								}
+								DisplayGrid . Visibility = Visibility . Hidden;
+								GridData_Display . Visibility = Visibility . Visible;
+								GridData_Display . Text = buff;
+								DbCopiedResult . Text = $"[{SqlCommand}] completed successfully....";
+								CurrentCommandLabel . Text = $"[{SqlCommand}]";
+								this . Title = $"Sql Server Commands : Active/Last Db/Command : '{SqlCommand}'";
+							}
+							return null;
+						}
+						// Loads JUST the rows we actually have, not the full 20 columns !!
+						//Much cleaner and more pleasant to view
+						LoadActiveRowsOnlyInGrid ( DisplayGrid , Generics , columncount );
+						//LoadActiveRowsOnlyInGrid ( spViewerGrid , Generics , columncount );
+						togglevisibility ( true , GetDbNameFromCommand ( SqlCommand ) );
+						if ( Arguments != "" )
+							DbCopiedResult . Text = $"The Stored Procedure [{SqlCommand} [{Arguments}]] \nwas executed successfuly...";
+						else
+							DbCopiedResult . Text = $"The Stored Procedure [{SqlCommand}] \nwas executed successfuly...";
+						//spViewerGrid . SelectedIndex = 0;
+						//spViewerGrid . Visibility = Visibility . Collapsed;
+						//spViewerGrid . Focus ( );
+						//spViewerGrid . Refresh ( );
+						//spViewerGrid . Focus ( );
+						DisplayGrid . SelectedIndex = 0;
+						DisplayGrid . Visibility = Visibility . Visible;
+						GridCount . Text = DisplayGrid . Items . Count . ToString ( );
+						DisplayGrid . Refresh ( );
+						DisplayGrid . Focus ( );
+						// update  information panels
+						CurrentCommandLabel . Text = $"[{SqlCommand}]";
+						OriginalSqlCommand = SqlCommand;
+						DbCopiedResult . Text = $"[{SqlCommand}] has been completed successfully....";
 						CurrentCommandLabel . Text = $"[{SqlCommand}]";
 						this . Title = $"Sql Server Commands : Active/Last Db/Command : '{SqlCommand}'";
 					}
+				}
+			}
+			catch ( Exception ex )
+			{
+				MessageBox . Show ( $"SQL ERROR 1125 - {ex . Message}" );
+				return null;
+			}
+			return null;
+		}
+
+		public string GetSpArgs ( string spName , bool showfull = false )
+		{
+			string output = "";
+			string errormsg="";
+			int columncount = 0;
+			DataTable dt = new DataTable();
+			ObservableCollection<GenericClass> Generics = new ObservableCollection<GenericClass>();
+
+			ObservableCollection<BankAccountViewModel> bvmparam = new ObservableCollection<BankAccountViewModel>();
+			List<string> genericlist = new List<string>();
+			try
+			{
+				DapperSupport . CreateGenericCollection (
+					ref Generics ,
+					"spGetSpecificSchema  " ,
+					$"{SPCombo . SelectedItem . ToString ( )}" ,
+					"" ,
+					"" ,
+					ref genericlist ,
+					ref errormsg );
+				dt = ProcessSqlCommand ( "spGetSpecificSchema  " + spName );
+				if ( dt . Rows . Count == 0 )
+				{
+					if ( errormsg == "" )
+						MessageBox . Show ( $"No Argument information is available" , $"[{spName }] SP Script Information" , MessageBoxButton . OK , MessageBoxImage . Warning );
 					return "";
 				}
-				// Loads JUST the rows we actually have, not the full 20 columns !!
-				//Much cleaner and more pleasant to view
-				LoadActiveRowsOnlyInGrid ( Generics , columncount );
-				togglevisibility ( true , GetDbNameFromCommand ( SqlCommand ) );
-				if ( Arguments != "" )
-					DbCopiedResult . Text = $"The Stored Procedure [{SqlCommand} [{Arguments}]] \nwas executed successfuly...";
-				else
-					DbCopiedResult . Text = $"The Stored Procedure [{SqlCommand}] \nwas executed successfuly...";
-				DisplayGrid . SelectedIndex = 0;
-				DisplayGrid . Visibility = Visibility . Visible;
-				GridCount . Text = DisplayGrid . Items . Count . ToString ( );
-				DisplayGrid . Refresh ( );
-				DisplayGrid . Focus ( );
-				// update  informatoin panels
-				CurrentCommandLabel . Text = $"[{SqlCommand}]";
-				OriginalSqlCommand = SqlCommand;
-				DbCopiedResult . Text = $"[{SqlCommand}] has been completed successfully....";
-				CurrentCommandLabel . Text = $"[{SqlCommand}]";
-				this . Title = $"Sql Server Commands : Active/Last Db/Command : '{SqlCommand}'";
 			}
-			return "";
+			catch ( Exception ex )
+			{
+				MessageBox . Show ( $"SQL ERROR 1125 - {ex . Message}" );
+				return "";
+			}
+			int  count = 0;
+			columncount = 0;
+			//			Generics . Clear ( );
+			foreach ( var item in dt . Rows )
+			{
+				GenericClass  gc = new GenericClass ( );
+				string  store="";
+				DataRow dr = item as DataRow;
+				columncount = dr . ItemArray . Count ( );
+				if ( columncount == 0 )
+					columncount = 1;
+				// we only need max cols - 1 here !!!
+				for ( int x = 0 ; x < columncount ; x++ )
+					store += dr . ItemArray [ x ] . ToString ( ) + ",";
+				output += store;
+				//CreateGenericRecord ( store , gc , Generics );
+			}
+			if ( showfull == false )
+			{
+				// we now have the result, so lets process them
+				string buffer = output;
+				string[] lines = buffer.Split('\n');
+				output = "";
+				//output = $"Procedure Name : \n{SPCombo . SelectedItem . ToString ( ) . ToUpper ( )}\n\n";
+				foreach ( var item in lines )
+				{
+					if ( item . ToUpper ( ) . Contains ( "@ARG" ) )
+						output += item;
+					if ( showall == false && item . ToUpper ( ) == "AS\r" )
+						break;
+				}
+				// we now have a list of the Args for the selected SP in output
+				// Show it in a TextBox if it takes 1 or more args
+				if ( output != "" )
+				{
+					SpArgsListtbox . Text = $"Procedure Name : {SPCombo . SelectedItem . ToString ( ) . ToUpper ( )}\n\n";
+					SpArgsListtbox . Text += output;
+					SpArgsListtbox . Text += $"\n\nPress ENTER to execute {SPCombo . SelectedItem . ToString ( ) . ToUpper ( )}\nor ESCAPE to exit the process...\n";
+					SpArgsList . Visibility = Visibility . Visible;
+					SpArgsListtbox . Focus ( );
+				}
+				else
+				{
+					MessageBox . Show ( $"Procedure [{SPCombo . SelectedItem . ToString ( ) . ToUpper ( )}] \ndoes not Support / Require any arguments" , "Stored Procedure Arguments" , MessageBoxButton . OK );
+				}
+			}
+			return output;
 		}
 		private string ParseArguments ( string args )
 		{
@@ -1317,6 +1578,7 @@ namespace WPFPages . Views
 		}
 		private void DbToCopyCombo_SelectionChanged ( object sender , SelectionChangedEventArgs e )
 		{
+			DbToCopyCombo . Focus ( );
 			ComboBox cb = sender as  ComboBox;
 			ComboBoxItem cbitem = new ComboBoxItem();
 			cbitem = cb . SelectedItem as ComboBoxItem;
@@ -1345,10 +1607,11 @@ namespace WPFPages . Views
 		}
 		private void SPArgs_PreviewMouseLeftButtonUp ( object sender , MouseButtonEventArgs e )
 		{
-			SelectTextBoxText ( SpArgs );
+			//SelectTextBoxText ( SpArgs );
 		}
 		private void Schemas_Click ( object sender , RoutedEventArgs e )
 		{
+			ShowSchemas . Focus ( );
 			ObservableCollection<GenericClass> Generics = new ObservableCollection<GenericClass>();
 			// get Args for a specific stored procs
 			//			var reslt = MessageBox . Show ( $"This will return the arguments for the currently selected Stored Procedure\nin the Combo box to the left.\nClick Yes  to go ahead, or No\nto let you select the correct procedure", "", MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -1356,14 +1619,15 @@ namespace WPFPages . Views
 			//			{
 			SqlCommand = "spGetFullSchema";
 			ExecuteStoredProcedure ( SqlCommand , Generics , "" , "FULL" , null );
-			GridData_Display . Visibility = Visibility . Hidden;				
+			//spViewerGrid . Visibility = Visibility . Visible;
+			GridData_Display . Visibility = Visibility . Hidden;
 			DisplayGrid . Visibility = Visibility . Visible;
 			return;
 
 		}
 		private void ListSPs_Click ( object sender , RoutedEventArgs e )
 		{
-			// get list of all stored procs
+			// get list of all stored procs in our grid
 			ObservableCollection<GenericClass> Generics = new ObservableCollection<GenericClass>();
 			SqlCommand = "spGetStoredProcs";
 			ExecuteStoredProcedure ( SqlCommand , Generics , "" , "" , null );
@@ -1374,6 +1638,7 @@ namespace WPFPages . Views
 		}
 		private void SPCombo_SelectionChanged ( object sender , SelectionChangedEventArgs e )
 		{
+			SPCombo . Focus ( );
 			ComboBox cb = sender as  ComboBox;
 			ComboBoxItem cbitem = new ComboBoxItem();
 			cbitem = cb . SelectedItem as ComboBoxItem;
@@ -1383,12 +1648,19 @@ namespace WPFPages . Views
 				cbitem . Background = FindResource ( "Blue1" ) as SolidColorBrush;
 				cbitem . Foreground = FindResource ( "White0" ) as SolidColorBrush;
 				cb . Refresh ( );
+				SPArgs . Text = "";
 			}
 		}
 		private void ViewDbBtn_Click ( object sender , RoutedEventArgs e )
 		{
 			// view selected Db in grid
+			ViewDbBtn . Focus ( );
+			ObservableCollection<GenericClass> collection = new ObservableCollection<GenericClass>();
+			ObservableCollection<BankAccountViewModel> bvm = new ObservableCollection<BankAccountViewModel> ();
+			ObservableCollection<GenericClass> GenDb = new ObservableCollection<GenericClass>();
 			List<string> data = new List<string>();
+			Mouse . OverrideCursor = Cursors . Wait;
+
 			if ( ActiveDbName == "" )
 			{
 				ActiveDbName = DbToCopyCombo . SelectedItem . ToString ( );
@@ -1396,24 +1668,47 @@ namespace WPFPages . Views
 			SqlCommand = $"Select * from {ActiveDbName}";
 			OriginalSqlCommand = SqlCommand;
 			CurrentCommandLabel . Text = $"[{SqlCommand}]";
-			data = DapperSupport . GetGenericCollection (
-				data ,
-				SqlCommand ,
-				false ,
-				"" );
-			//Copy new data  to global List<string>  ReceivedDbData 
-			CopyList ( data );
-			// creates and loads Db into grid
-			if ( ReceivedDbData . Count > 0 )
-				CreateDatabase ( DisplayGrid , ReceivedDbData );
-			UpdateInfoPanels ( ActiveDbName );
-			togglevisibility ( true , GetDbNameFromCommand ( SqlCommand ) );
-
-			// Enable view  button
-			CurrentCommandLabel . Text = $"[{SqlCommand}]";
-			OriginalSqlCommand = SqlCommand;
-			CurrentCommandLabel . Text = $"Select * from [{ActiveDbName . ToUpper ( )}]";
-			DbCopiedResult . Text = $"SQL Command [{SqlCommand} completed successfully...]";
+			string errormsg="";
+			try
+			{
+				DapperSupport . CreateGenericCollection (
+					ref collection ,
+					SqlCommand ,
+					SPArgs . Text . Trim ( ) ,
+					"" ,
+					"" ,
+					ref data ,
+					ref errormsg );
+				// creates and loads Db into grid  wwith correct total or columns
+				if ( collection . Count > 0 )
+				{
+					LoadActiveRowsOnlyInGrid ( DisplayGrid , collection , DapperSupport . GetGenericColumnCount ( collection ) );
+					UpdateInfoPanels ( ActiveDbName );
+					togglevisibility ( true , GetDbNameFromCommand ( SqlCommand ) );
+					GridData_Display . Visibility = Visibility . Collapsed;
+				}
+				else
+				{
+					DisplayGrid . ItemsSource = null;
+					DisplayGrid . Items . Clear ( );
+					SetDumyGridRow ( DisplayGrid );
+					//GridData_Display . Visibility = Visibility . Visible;
+					MessageBox . Show ( "Table cannot be shown, probable reason is that it is currently\nempty as it may just be a ' temporary table ' created by one or \nmore of our Stored procedure(s)" , "Db Table Empty !" , MessageBoxButton . OK , MessageBoxImage . Information );
+				}
+				// Enable view  button
+				CurrentCommandLabel . Text = $"[{SqlCommand}]";
+				OriginalSqlCommand = SqlCommand;
+				CurrentCommandLabel . Text = $"Select * from [{ActiveDbName . ToUpper ( )}]";
+				DbCopiedResult . Text = $"SQL Command [{SqlCommand}] completed successfully...";
+				ActiveDbName = "";
+				Mouse . OverrideCursor = Cursors . Arrow;
+			}
+			catch ( Exception ex )
+			{
+				MessageBox . Show ( $"SQL ERROR 1125 - {ex . Message}" );
+				SetDumyGridRow ( DisplayGrid );
+				return;
+			}
 		}
 		private void UpdateInfoPanels ( string DbName )
 		{
@@ -1529,10 +1824,6 @@ namespace WPFPages . Views
 			p = Process . Start ( "Wordpad.exe" , fname );
 			Mouse . SetCursor ( Cursors . Arrow );
 		}
-		private void AllowOverWriteFlag_Checked ( object sender , RoutedEventArgs e )
-		{
-
-		}
 		private void DbToCopyCombo_PreviewMouseLeftButtonDn ( object sender , MouseButtonEventArgs e )
 		{
 			//			if ( DbToCopyCombo . IsDropDownOpen == false )
@@ -1604,22 +1895,17 @@ namespace WPFPages . Views
 			SPCombo . IsEditable = true;
 			SPCombo . MaxHeight = 120;
 		}
-
 		private void Window_MouseRightButtonUp ( object sender , MouseButtonEventArgs e )
 		{
 			DataGrid dg = sender as DataGrid;
 			if ( dg != null )
 				Debugger . Break ( );
 		}
-
-
-
 		private void GridData_Display_CanExecute ( object sender , CanExecuteRoutedEventArgs e )
 		{
 			e . Handled = true;
 			e . CanExecute = false;
 		}
-
 		private void GridData_Display_MouseDoubleClick ( object sender , MouseButtonEventArgs e )
 		{
 			if ( GridData_Display . Visibility == Visibility . Visible )
@@ -1628,32 +1914,32 @@ namespace WPFPages . Views
 				DisplayGrid . Visibility = Visibility . Visible;
 			}
 		}
-
 		private void info_Click ( object sender , RoutedEventArgs e )
 		{
 
 		}
-
 		private void Help_Click ( object sender , RoutedEventArgs e )
 		{
 
 		}
-
 		private void SPArgs_KeyDown ( object sender , KeyEventArgs e )
 		{
 			if ( e . Key == Key . Enter )
+			{
 				ExecuteStoredProcedure ( SPCombo . SelectedItem . ToString ( ) , null , "" , SPArgs . Text , null );
+				SP_checklist . Clear ( );
+			}
 		}
 		public string GetSpecificSPArguments ( string ProcedureToFind , string result = "" , bool showall = true )
 		{
 			string output="";
-				
+
 			if ( ProcedureToFind == "RETURNEDRESULTS" )
 			{
 				// we now have the result, so lets process them
 				string buffer = result ;
 				string[] lines = buffer.Split('\n');
-				output = $"Procedure Name : \n{SPCombo.SelectedItem.ToString(). ToUpper ( )}\n\n";
+				output = $"Procedure Name : \n{SPCombo . SelectedItem . ToString ( ) . ToUpper ( )}\n\n";
 				foreach ( var item in lines )
 				{
 					if ( item . ToUpper ( ) . Contains ( "@ARG" ) )
@@ -1664,7 +1950,7 @@ namespace WPFPages . Views
 							break;
 					}
 				}
-				output += $"\n\nDouble click in viewer to return to Data Grid View...";
+				output += $"\n\nHit ESCAPE or Double click in viewer to return to Data Grid View...";
 			}
 			else
 			{
@@ -1686,54 +1972,548 @@ namespace WPFPages . Views
 			}
 			return output;
 		}
-
-		private void SqlCommandString_GotFocus ( object sender , RoutedEventArgs e )
+		private void ResetFieldDefaults ( TextBox tb , bool direction )
 		{
-			if ( SqlCommandString . Text == "" )
+			if ( tb == null )
 			{
-				SqlCommandString . Text = "Enter SQL command ...";
-				SqlCommandString . Foreground = FindResource ( "Gray0" ) as SolidColorBrush;
+				if ( SPArgs . Text == "" )
+				{
+					SPArgs . Text = "Enter arguments here ...";
+					SPArgs . Foreground = FindResource ( "Gray0" ) as SolidColorBrush;
+					SPArgs . Refresh ( );
+				}
+				if ( SqlCommandString . Text == "" )
+				{
+					SqlCommandString . Text = "Enter SQL command ...";
+					SqlCommandString . Foreground = FindResource ( "Gray0" ) as SolidColorBrush;
+					SqlCommandString . Refresh ( );
+				}
+				if ( DbToBeCreated . Text == "" )
+				{
+					DbToBeCreated . Text = "Enter Table name...";
+					DbToBeCreated . Foreground = FindResource ( "Gray0" ) as SolidColorBrush;
+					DbToBeCreated . Refresh ( );
+				}
+			}
+			else
+			{
+				if ( direction )
+				{
+					if ( tb . Text == "Enter arguments here ..." )
+					{
+						tb . Text = "";
+						tb . Foreground = FindResource ( "Red5" ) as SolidColorBrush;
+					}
+					if ( tb . Text == "Enter SQL command ..." )
+					{
+						tb . Text = "";
+						tb . Foreground = FindResource ( "Red5" ) as SolidColorBrush;
+						tb . Refresh ( );
+					}
+					if ( tb . Text == "Enter Table name..." )
+					{
+						tb . Text = "";
+						tb . Foreground = FindResource ( "Red5" ) as SolidColorBrush;
+					}
+					tb . Refresh ( );
+				}
+				else
+				{
+					if ( tb . Text == "" )
+					{
+						tb . Text = "Enter arguments here ...";
+						tb . Foreground = FindResource ( "Gray0" ) as SolidColorBrush;
+						tb . Refresh ( );
+					}
+					if ( tb . Text == "" )
+					{
+						tb . Text = "Enter SQL command ...";
+						tb . Foreground = FindResource ( "Gray0" ) as SolidColorBrush;
+						tb . Refresh ( );
+					}
+					if ( tb . Text == "" )
+					{
+						tb . Text = "Enter Table name...";
+						tb . Foreground = FindResource ( "Gray0" ) as SolidColorBrush;
+					}
+				}
 			}
 		}
-
-		private void SPArgs_LostFocus ( object sender , RoutedEventArgs e )
+		private void SqlCommandString_LostFocus ( object sender , RoutedEventArgs e )
 		{
-			if ( SPArgs . Text == "" )
-			{
-				SPArgs . Text = "Enter arguments here ...";
-				SPArgs . Foreground = FindResource ( "Gray0" ) as SolidColorBrush;
-			}
+			ResetFieldDefaults ( sender as TextBox , false );
 		}
-
-		private void SPArgumentss_Click ( object sender , RoutedEventArgs e )
+		private void SPArguments_Click ( object sender , RoutedEventArgs e )
 		{
-
+			SPArguments . Focus ( );
 			SqlCommand = "spGetSpecificSchema";
-			GetSpecificSPArguments ( SPCombo . SelectedItem . ToString ( ) , "" , true );
+			showall = false;
+			GetSpecificSPArguments ( SPCombo . SelectedItem . ToString ( ) , "VIEWONLY" , showall );
 			//ExecuteStoredProcedure ( SqlCommand , null , "RETURNDATA" , args , null );
 		}
-	}
-	public class arrayclass
-	{
-		public string [ ] fields { get; set; }
-		public string fldname { get; set; }
-	}
-	public class SelectionEntry
-	{
-		public string Entry { get; set; }
-	}
-	public class SingleFieldClass : IEnumerable
-	{
-		public SingleFieldClass ( )
+		private void SPArgs_LostFocus ( object sender , RoutedEventArgs e )
+		{
+			ResetFieldDefaults ( sender as TextBox , false );
+		}
+		private void SpArgsList_PreviewKeyDown ( object sender , KeyEventArgs e )
+		{
+			if ( e . Key == Key . Escape )
+			{
+				SpArgsList . Visibility = Visibility . Hidden;
+				ProcessSp = false;
+			}
+			if ( e . Key == Key . Enter )
+			{
+				SpArgsList . Visibility = Visibility . Hidden;
+				ProcessSp = true;
+				// Go ahead and process the SP
+				ExecuteSQLCommand_Click ( null , null );
+			}
+		}
+		private void ViewSPArgs_Click ( object sender , RoutedEventArgs e )
+		{
+			//Preview  SP arguments  info in TextBox for current item in Combo
+			Mouse . OverrideCursor = Cursors . Wait;
+			showall = false;
+			string str = GetSpArgs ( SPCombo . SelectedItem . ToString ( ) );
+			Mouse . OverrideCursor = Cursors . Arrow;
+		}
+		private void TestGenericLinq ( object sender , RoutedEventArgs e )
+		{
+			int columncount=2;
+			ObservableCollection<GenericClass> Generics = new ObservableCollection<GenericClass>();
+			GenericClass gc = new   GenericClass();
+			//			ObservableCollection<int> intcollection = new   ObservableCollection<int>();
+			Generics . Clear ( );
+			gc . field1 = "abc";
+			gc . field2 = "bbc";
+			Generics . Add ( gc );
+			gc . field1 = "ccd";
+			gc . field2 = "dcd";
+			Generics . Add ( gc );
+
+			LinqDelegate3<string, string, int> ld = teststr3str;
+			var accounts = from items in Generics
+					   where  ld(items . field1 , items.field2, 25)
+					   orderby items . field1
+					   select items;
+			//where ( items . field1 == items.field2 )
+			LoadActiveRowsOnlyInGrid ( DisplayGrid , Generics , columncount );
+			DisplayGrid . Visibility = Visibility . Visible;
+			DisplayGrid . Refresh ( );
+
+			LinqDelegate1<string,string> ld1 = teststr2strnot;
+			var accounts2 = from items in Generics
+					    where  ld1(items . field1 , items.field2)
+					    orderby items . field1
+					    select items;
+			LoadActiveRowsOnlyInGrid ( DisplayGrid , Generics , columncount );
+			DisplayGrid . Visibility = Visibility . Visible;
+			DisplayGrid . Refresh ( );
+
+			LinqDelegate<string, string> ld2 = teststr2str;
+			var accounts3 = from items in Generics
+					    where  ld2(items . field1 , items.field2)
+					    orderby items . field1
+					    select items;
+
+			LoadActiveRowsOnlyInGrid ( DisplayGrid , Generics , columncount );
+			DisplayGrid . Visibility = Visibility . Visible;
+			DisplayGrid . Refresh ( );
+
+			/// process 2 Lists of Ints for match
+			List<int> arr1 = new List<int>();
+			List<int> arr2 = new List<int>();
+			List<int> arresult = new List<int>();
+			int y=0;
+			for ( int x = 0 ; x < 10 ; x++ )
+			{
+				arr1 . Add ( x );
+				arr2 . Add ( y++ );
+			}
+			// in line call to linq method
+			IEnumerable <int> accounts4 = Checklists ( arr1 , arr2 );
+			// got our list, now parse it into Generic class
+			Generics . Clear ( );
+			foreach ( var item in accounts4 )
+			{
+				gc = new GenericClass ( );
+				gc . field1 = item . ToString ( );
+				Generics . Add ( gc );
+			}
+			//Display results
+			DisplayGrid . ItemsSource = Generics;
+			DisplayGrid . Visibility = Visibility . Visible;
+			DisplayGrid . Refresh ( );
+
+			arr1 . Clear ( );
+			arr2 . Clear ( );
+			for ( int x = 0 ; x < 10 ; x++ )
+			{
+				arr1 . Add ( x );
+				arr2 . Add ( ++y );
+			}
+			IEnumerable <int> accounts5 = Checklists ( arr1 , arr2 );
+			// got our list, now parse it into Generic class
+			Generics . Clear ( );
+			foreach ( var item in accounts5 )
+			{
+				gc = new GenericClass ( );
+				gc . field1 = item . ToString ( );
+				Generics . Add ( gc );
+			}
+			//Display results
+			DisplayGrid . ItemsSource = Generics;
+			DisplayGrid . Visibility = Visibility . Visible;
+			DisplayGrid . Refresh ( );
+
+			Generics . Clear ( );
+			List<int> res = ListCompare(arr1, arr2);
+			//Display results
+			DisplayGrid . ItemsSource = res;
+			DisplayGrid . Visibility = Visibility . Visible;
+			DisplayGrid . Refresh ( );
+
+		}
+
+		//public List<TResult> ListCompare<TInput, TResult> (
+		//	List<TInput> list1 , List<TInput> list2 ,
+		//	Func<TInput , TInput , TResult> modified ,
+		//	Func<TInput , TResult> added ,
+		//	Func<TInput , TResult> deleted )
+		public List<int> ListCompare (
+			List<int> list1 , List<int> list2 )
+		{
+			// Displaying Matching Records from List1 and List2 by ID
+			var matchingRecords= list1
+				  .Where(e1 => list2.Any(e2 => e2.Equals(e1)))
+				  .Select(e1 =>
+				  {
+					  var e2 = list2.First(e => e.Equals(e1));
+					  return  e2;
+				  });
+
+			//// Displaying Records from List1 which is not in List2
+			//var lt1NotInlt2 = list1
+			//	  .Where(e1 => ! list2.Any(e2 => e2.Equals(e1)))
+			//	  .Select(deleted);
+
+			//// Displaying Records from List2 which is not in List1
+			//var lt2NotInlt1 = list2
+			//	  .Where(e2 => ! list1.Any(e1 => e1.Equals(e2)))
+			//	  .Select(added);
+
+			return null;
+		}
+		private IEnumerable<int> Checklists ( List<int> arr1 , List<int> arr2 )
+		{
+			int x = 0;
+			var a = arr1.GetType();
+			var b = arr2.GetType();
+			//check if the types are same
+			if ( a == b )
+			{
+				//check if the count is same
+				if ( arr1 . Count ( ) == arr2 . Count ( ) )
+				{
+					var result = from itm in arr1
+							 where itm == arr2[x++]
+							 select itm;
+					return result;
+				}
+			}
+			return null;
+		}
+
+		#region Delegate methods
+		public bool teststr3str<T, U> ( T arg1 , T arg2 , U arg3 )
+		{
+			bool b = arg1. Equals ( arg2);
+			Console . WriteLine ( $"{arg3}" );
+			return b;
+		}
+		public bool teststr2str<T> ( T arg1 , T arg2 )
+		{
+			bool c = ((T)arg1). Equals ((T)arg2);
+			//			bool b = arg1. Equals ( arg2);
+			return c;
+		}
+		public bool teststr2strnot<T> ( T arg1 , T arg2 )
+		{
+			bool c = ((T)arg1). Equals ((T)arg2);
+			//			bool b = !(arg1. Equals ( arg2));
+			return c;
+		}
+		public bool testint2int<T> ( T arg1 , T arg2 )
+		{
+			//Compare INT's
+			//			if(typeof(T) == int)
+			//int a = Convert.ToInt32(arg1 as T);
+			//int b = Convert.ToInt32(arg2);
+			bool c = ((T)arg1). Equals ((T)arg2);
+			return c;
+		}
+		public static bool testint2intnot ( int arg1 , int arg2 )
+		{
+			bool b = !(arg1. Equals ( arg2));
+			return b;
+		}
+		public static bool testdec2dect ( decimal arg1 , decimal arg2 )
+		{
+			bool b = arg1. Equals ( arg2);
+			return b;
+		}
+		#endregion Delegate methods
+
+		private void SpArgsList_PreviewMouseLeftButtonDown ( object sender , MouseButtonEventArgs e )
+		{
+			// can we drag the info window ??
+			//			SpArgsList . CaptureMouse ( );
+		}
+		private void SpArgsList_PreviewMouseLeftButtonUp ( object sender , MouseButtonEventArgs e )
+		{
+			//			SpArgsList . ReleaseMouseCapture ( );
+		}
+		private void SpArgsList_MouseMove ( object sender , MouseEventArgs e )
+		{
+			//Point pt  = e . GetPosition (this );
+			//Console . WriteLine ( $"{pt . X}, {pt . Y}" );
+		}
+		private void ViewFullSP_Click ( object sender , RoutedEventArgs e )
+		{
+			// view complete script
+			ViewFullProcCode . Focus ( );
+			string script = GetSpArgs ( SPCombo . SelectedItem . ToString ( ) , true );
+			GridData_Display . Text = $"Procedure Name : {SPCombo . SelectedItem . ToString ( ) . ToUpper ( )}\n\nPress Esc or Dbl-Click to return to Grid view...\n";
+			GridData_Display . Text += script;
+			GridData_Display . Text += $"\n\nPress Esc or Dbl-Click to hide this viewer...\n";
+			GridData_Display . Visibility = Visibility . Visible;
+			GridData_Display . Focus ( );
+		}
+		private void GridData_Display_PreviewKeyDown ( object sender , KeyEventArgs e )
+		{
+			if ( e . Key == Key . Escape )
+				GridData_Display . Visibility = Visibility . Hidden;
+		}
+		private void CheckKeyPress ( KeyEventArgs e )
+		{
+			if ( e . Key == Key . Escape )
+				SpArgsList . Visibility = Visibility . Hidden;
+			if ( e . Key == Key . Enter )
+			{
+				SpArgsList . Visibility = Visibility . Hidden;
+				ProcessSp = true;
+				// Go ahead and process the SP
+				ExecuteSQLCommand_Click ( null , null );
+			}
+		}
+		private void SpArgsList_KeyDown ( object sender , KeyEventArgs e )
+		{
+			CheckKeyPress ( e );
+		}
+		private void SpArgsListtbox_MouseDoubleClick ( object sender , MouseButtonEventArgs e )
+		{
+			SpArgsList . Visibility = Visibility . Hidden;
+		}
+		private void TextBlock_PreviewKeyDown ( object sender , KeyEventArgs e )
+		{
+			CheckKeyPress ( e );
+		}
+		private void Button_Click ( object sender , RoutedEventArgs e )
+		{
+			SpArgsList . Visibility = Visibility . Hidden;
+		}
+		private void CloseViewer_PreviewMouseDown ( object sender , MouseButtonEventArgs e )
+		{
+			SpArgsList . Visibility = Visibility . Hidden;
+		}
+		private void CloseViewer_MouseEnter ( object sender , MouseEventArgs e )
+		{
+			Label  b = sender as Label;
+			b . Background = FindResource ( "Green5" ) as SolidColorBrush;
+		}
+		private void CloseViewer_MouseLeave ( object sender , MouseEventArgs e )
+		{
+			Label b = sender as Label;
+			b . Background = FindResource ( "Red5" ) as SolidColorBrush;
+		}
+		private void CloseViewer_MouseMove ( object sender , MouseEventArgs e )
+		{
+			Label b = sender as Label;
+			b . Background = FindResource ( "Green5" ) as SolidColorBrush;
+		}
+		private void Close_Click ( object sender , RoutedEventArgs e )
+		{
+			Close . Focus ( );
+			this . Close ( );
+		}
+		private void ViewSPArgs_PreviewMouseLeftButtonDown ( object sender , MouseButtonEventArgs e )
 		{
 
 		}
-		public string Linestring { get; set; }
-
-		public IEnumerator GetEnumerator ( )
+		private void ChangeFocus ( object sender , MouseButtonEventArgs e )
 		{
-			return this . GetEnumerator ( );
+			ResetFieldDefaults ( sender as TextBox , true );
+			this . Focus ( );
+		}
+		private void DbToBeCreated_LostFocus ( object sender , RoutedEventArgs e )
+		{
+			ResetFieldDefaults ( sender as TextBox , false );
+		}
+		private void DbToBeCreated_GotFocus ( object sender , RoutedEventArgs e )
+		{
+
+		}
+
+		private void ExecSqlCommand_Copy_Click ( object sender , RoutedEventArgs e )
+		{
+			//Refresh both combos
+			LoadTablesCombo ( );
+			LoadSPCombo ( );
+		}
+
+		private void Testing1_Click ( object sender , RoutedEventArgs e )
+		{
+			;
+			//if ( spViewerGrid . Visibility != Visibility . Visible )
+			//{
+			//	TextBlock [ ]  tb = new TextBlock [5];
+			//	//DataGridColumn  dgc;
+			//	for ( int t = 0 ; t < 5 ; t++ )
+			//	{
+			//		TextBlock tt = new TextBlock();
+			//		tb [ t ] = tt;
+			//		tt . Text = "dfkd;kghdghdajghgdh;g;j/fh'uei";
+			//	}
+			//	spViewerGrid . ItemsSource = null;
+			//	spViewerGrid . Items . Clear ( );
+			//	spViewerGrid . ItemsSource = tb;
+			//	//spViewerGrid . Columns . Add ( dgc );
+			//	spViewerGrid . Visibility = Visibility . Visible;
+			//	spViewerGrid . ItemsSource = tb;
+			//}
+			//else
+			//	spViewerGrid . Visibility = Visibility . Collapsed;
+		}
+
+		private void txtDescription_GotFocus ( object sender , RoutedEventArgs e )
+		{
+
+		}
+
+		//private void SpViewerGrid_MouseDblClick ( object sender , MouseButtonEventArgs e )
+		//{
+		//	if ( spViewerGrid . Visibility == Visibility . Visible )
+		//		spViewerGrid . Visibility = Visibility . Collapsed;
+		//	else
+		//		spViewerGrid . Visibility = Visibility . Visible;
+		//}
+
+		public static T deepClone<T> ( T objtoclone )
+		{
+			try
+			{
+				BinaryFormatter BF = new BinaryFormatter();
+				MemoryStream MS = new MemoryStream(1000);
+				BF . Serialize ( MS , objtoclone );
+				MS . Position = 0;
+				return ( T ) BF . Deserialize ( MS );
+			}
+			catch ( Exception ex )
+			{
+				Console . WriteLine ( $"" );
+			}
+			return default ( T );
+		}
+
+		private void SqlCommandString_TextChanged ( object sender , TextChangedEventArgs e )
+		{
+
+		}
+
+		private void Shortmsgbox_Click ( object sender , RoutedEventArgs e )
+		{
+
+
+			Utils . Mbox (
+				this ,
+					string1: "long Message to show how it wraps in a default message box like this ...." ,
+					string2: "" ,
+					caption: "" ,
+					iconstring: "\\icons\\Information.png" ,
+					Btn1: MB . OK ,
+					Btn2: MB . NNULL ,
+					defButton: MB . OK );
+
+			//MessageBox . Show ( "" , "" , MessageBoxButton .YesNoCancel, MessageBoxImage.Warning);
+		}
+
+		private void Fullmsgbox_Click ( object sender , RoutedEventArgs e )
+		{
+			Utils . Mssg (
+				caption: "*** SQL Query Error ***" ,
+				string1: $"This is the Middle, and main row of data used to \ncreate the information provided.\nThis is  the duplicate to make it longer than the window should be able to use, and  this is  This is  the duplicate to make it longer than the window should be able to use" ,
+				string2: "string  2 goes here" ,
+				string3: "This is string3, a full width footer style row that can be used," ,
+				title: "" ,
+				iconstring: "\\icons\\error.png" ,
+				defButton: 2 ,
+				Btn1: 1 ,
+				Btn2: 2 ,
+				Btn3: 3 ,
+				Btn4: 4 ,
+				btn1Text: "" ,
+				btn2Text: "Get on with it" ,
+				btn3Text: "Bale out quick" ,
+				btn4Text: ""
+			     );
+		}
+
+		private void Grid_Click ( object sender , RoutedEventArgs e )
+		{
+			// Click on the grid triggers this !!
+			Console . WriteLine ($"Grid has been clicked on.....");
 		}
 	}
-}
+	//************************************************************************************************************************************//
+	//***********************************************END OF CLASS *****************************************************************//
+	//************************************************************************************************************************************//
+	public class MyInts
+		{
+			public MyInts ( )
+			{
+
+			}
+			private int _INT;
+
+			public int INT
+			{
+				get { return _INT; }
+				set { _INT = value; }
+			}
+
+		}
+		public class arrayclass
+		{
+			public string [ ] fields { get; set; }
+			public string fldname { get; set; }
+		}
+		public class SelectionEntry
+		{
+			public string Entry { get; set; }
+		}
+		public class SingleFieldClass : IEnumerable
+		{
+			public SingleFieldClass ( )
+			{
+
+			}
+			public string Linestring { get; set; }
+
+			public IEnumerator GetEnumerator ( )
+			{
+				return this . GetEnumerator ( );
+			}
+		}
+	}
 

@@ -115,6 +115,7 @@ namespace WPFPages . Views
 				CurrentDbType.Text = "Using Copy Data";
 			else
 				CurrentDbType . Text = "Using Original Data";
+			
 		}
 
 		public static ListBox listbox;
@@ -174,7 +175,7 @@ namespace WPFPages . Views
 		}
 
 
-		private async void HandleSelection ( ListBox listbox, string Command )
+		private  void HandleSelection ( ListBox listbox, string Command )
 		{
 			// Called when Opening/ Closing/deleting a Db Viewer window
 			//and most other functionality in this window (All buttons and double clicks)
@@ -696,7 +697,7 @@ namespace WPFPages . Views
 					ViewerDeleteAll . IsEnabled = false;
 				SelectViewerBtn . IsEnabled = true;
 			}
-
+//			string value = ConfigurationManager.AppSettings.Get("Bodrum");
 			// select the 1st entry in the lower (New Viewer) list
 			string StartupWindow = ( string ) Properties . Settings . Default [ "StartupWindow" ];
 			if ( StartupWindow == "Bank Db Viewer" )
@@ -1528,8 +1529,8 @@ namespace WPFPages . Views
 
 		private void Backgrounds_Click ( object sender, RoutedEventArgs e )
 		{
-			BackgroundDesigner bd = new BackgroundDesigner ("" );
-			e . Handled = true;
+//			BackgroundDesigner bd = new BackgroundDesigner ("" );
+//			e . Handled = true;
 			//bd . Show ( );
 		}
 
@@ -1596,8 +1597,8 @@ namespace WPFPages . Views
 
 		private void Clock_Click ( object sender , RoutedEventArgs e )
 		{
-			AnalogClockHost ah = new AnalogClockHost();
-			ah .Show ( );
+//			AnalogClockHost ah = new AnalogClockHost();
+//			ah .Show ( );
 		}
 
 		private void Clock2_Click ( object sender , RoutedEventArgs e )
@@ -1634,6 +1635,31 @@ namespace WPFPages . Views
 		{
 			DapperTesting dpt = new DapperTesting();
 			dpt . Show ( );
+		}
+
+		private void Dbselector_MouseEnter ( object sender , MouseEventArgs e )
+		{
+			Maingrid . Opacity = 1;
+//			this.Focusable = true;
+//			Focus ( );
+		}
+
+		private void Dbselector_MouseLeave ( object sender , MouseEventArgs e )
+		{
+			//Maingrid.Background = "Transparent" . ToSolidBrush ( );
+			Maingrid . Opacity = 0.4;
+		}
+
+		private void Msgbox_Click ( object sender , RoutedEventArgs e )
+		{
+			Window w = new MsgboxSetup();
+			w . Show ( );
+		}
+
+		private void MsgboxAPs_Click ( object sender , RoutedEventArgs e )
+		{
+			MainWindow.ShowAPDatatoConsole ( );
+
 		}
 	}
 }

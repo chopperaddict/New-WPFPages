@@ -26,7 +26,6 @@ namespace WpfUI
 	{
 		private Brush newbrush = null;
 		private Brush currentbrush = null;
-//		private Brush MouseoverBrush = Brushes.Green;
 		private bool imagechanged = false;
 		SqlDbViewer tw = null;
 		public Page1()

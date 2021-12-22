@@ -11,8 +11,22 @@
 	  Loaded="Window_Loaded"
         Title="Dapper Db Testing using various Methods incl. M$SQL Stored Procedures" 
 	  Height="860" Width="1200"
-	  MinHeight="860" MinWidth="1200">
+	  MinHeight="860" MinWidth="1200"
+	WindowStartupLocation="CenterScreen"									    >
 	<Window.Resources>
+
+		<LinearGradientBrush x:Key="EllipseBluegradientbackground" StartPoint="1,0" EndPoint="0,1">
+			<GradientStop Offset="0.3" Color="#FF95A6FF" />
+			<GradientStop Offset="0.8" Color="#FF0000FF" />
+		</LinearGradientBrush>
+		<LinearGradientBrush x:Key="EllipseGreengradientbackground" StartPoint="1,0" EndPoint="0,1">
+			<GradientStop Offset="0.3" Color="#1200FD00" />
+			<GradientStop Offset="0.8" Color="#FF00FD00" />
+		</LinearGradientBrush>
+		<LinearGradientBrush x:Key="EllipseRedgradientbackground" StartPoint="1,0" EndPoint="0,1">
+			<GradientStop Offset="0.3" Color="#D4FFABAC" />
+			<GradientStop Offset="0.8" Color="#FFFF0000" />
+		</LinearGradientBrush>
 
 		<!--#region Control colors.-->
 		<Color x:Key="WindowColor">#FFE8EDF9</Color>
@@ -193,6 +207,7 @@
 			</Grid>
 		</ControlTemplate>
 
+
 		<Style x:Key="EllipseCheckBoxStyle" TargetType="ToggleButton">
 			<Setter Property="SnapsToDevicePixels" Value="true"/>
 			<Setter Property="OverridesDefaultStyle" Value="true"/>
@@ -201,42 +216,94 @@
 					<ControlTemplate TargetType="ToggleButton">
 						<Border x:Name="Border" 
 							  Width="52" 
+							  Background="Transparent"
 							  Height="32" 
-							  Background="Transparent" 
 							  CornerRadius="1" 
 							  BorderThickness="0" 
-							  BorderBrush="DarkGray">
+							  BorderBrush="{StaticResource White0}">
 							<Grid>
+								<Ellipse x:Name="MyBackgroundEllipse" 
+									   MinHeight="7" 
+									   MinWidth="7" 
+									   Stretch="Fill" 
+									   Fill="{StaticResource White2}" 
+									   Margin="-30,-2,27,-1">
+								</Ellipse>
 								<Ellipse x:Name="MyEllipse" 
 									   MinHeight="5" 
 									   MinWidth="5" 
 									   Stretch="Fill" 
-									   Fill="Red" Margin="-18,0,18,0">
+									   Fill="{StaticResource EllipseRedgradientbackground}" 
+									   Margin="-27,0,27,0">
 								</Ellipse>
-								<!--Fill="{Binding Path=FilterValue, Converter={StaticResource BoolToRG}}"/>-->
-								<!--<Line x:Name="Diag" Stroke="Transparent" X1="0" Y1="0" X2="1" Y2="1" Stretch="Fill"/>-->
 							</Grid>
 						</Border>
 
 						<ControlTemplate.Triggers>
-							<Trigger  Property="IsChecked" Value="True">
-								<Setter TargetName="MyEllipse" Property="Fill" Value="{StaticResource Green8}" />
-								<!--<Setter TargetName="GridsLabel.Content" Property="Content" Value="Combined Data Grid" />-->
-								<!--Combined Grid visible-->
-								<!--<Setter TargetName="Diag" Property="Stroke" Value="White" />-->
-							</Trigger>
-							<Trigger Property="IsChecked" Value="False">
-								<Setter TargetName="MyEllipse" Property="Fill" Value="{StaticResource Blue0}" />
-								<!--Manual selection grid visible-->
-								<!--<Setter TargetName="Diag" Property="Stroke" Value="White" />-->
-								<!--<Setter TargetName="GridsLabel" Property="Content" Value="Manual Query Grid" />-->
-							</Trigger>
-							<Trigger Property="IsChecked" Value="{x:Null}">
-								<Setter TargetName="MyEllipse" Property="Fill" Value="{StaticResource Red5}" />
-								<!--Std Grids only visible-->
-								<!--<Setter TargetName="Diag" Property="Stroke" Value="Transparent" />-->
-								<!--<Setter TargetName="GridsLabel" Property="Content" Value="Click for Grids" />-->
-							</Trigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="true"/>
+									<Condition Property="IsMouseOver" Value="true"/>
+								</MultiTrigger.Conditions>
+								<MultiTrigger.Setters>
+									<Setter TargetName="MyEllipse" Property="Fill" Value="{StaticResource Green0}" />
+								</MultiTrigger.Setters>
+							</MultiTrigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="true"/>
+									<Condition Property="IsMouseOver" Value="false"/>
+								</MultiTrigger.Conditions>
+								<MultiTrigger.Setters>
+									<Setter TargetName="MyEllipse" Property="Fill" Value="{StaticResource EllipseGreengradientbackground}" />
+								</MultiTrigger.Setters>
+							</MultiTrigger>
+
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="false"/>
+									<Condition Property="IsMouseOver" Value="true"/>
+								</MultiTrigger.Conditions>
+								<MultiTrigger.Setters>
+									<Setter TargetName="MyEllipse" Property="Fill" Value="{StaticResource Blue2}" />
+								</MultiTrigger.Setters>
+							</MultiTrigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="false"/>
+									<Condition Property="IsMouseOver" Value="false"/>
+								</MultiTrigger.Conditions>
+								<MultiTrigger.Setters>
+									<Setter TargetName="MyEllipse" Property="Fill" Value="{StaticResource EllipseBluegradientbackground}" />
+								</MultiTrigger.Setters>
+							</MultiTrigger>
+
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="{x:Null}"/>
+									<Condition Property="IsMouseOver" Value="true"/>
+								</MultiTrigger.Conditions>
+								<MultiTrigger.Setters>
+									<Setter TargetName="MyEllipse" Property="Fill" Value="{StaticResource Red5}" />
+								</MultiTrigger.Setters>
+							</MultiTrigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="{x:Null}"/>
+									<Condition Property="IsMouseOver" Value="false"/>
+								</MultiTrigger.Conditions>
+								<MultiTrigger.Setters>
+									<Setter TargetName="MyEllipse" Property="Fill" Value="{StaticResource EllipseRedgradientbackground}" />
+								</MultiTrigger.Setters>
+							</MultiTrigger>
+							<!--<Trigger Property="IsChecked" Value="{x:Null}">
+								<Setter TargetName="MyEllipse" Property="Fill" Value="{StaticResource EllipseRedgradientbackground}" />
+								-->
+							<!--Std Grids only visible-->
+							<!--<Setter TargetName="Diag" Property="Stroke" Value="Transparent" />-->
+							<!--<Setter TargetName="GridsLabel" Property="Content" Value="Click for Grids" />-->
+							<!--
+							</Trigger>-->
 							<!--<Trigger Property="IsMouseOver" Value="true">
 								<Setter TargetName="Border" Property="Background" Value="Orange" />
 							</Trigger>-->
@@ -245,6 +312,8 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
+
+
 	</Window.Resources>
 
 	<Window.Background>
@@ -305,7 +374,7 @@
 			AutoGenerateColumns="True"
 			Background="{StaticResource Green5}"
 			CanUserAddRows="False"
-			CellStyle="{StaticResource DetailsGridStyle}" 
+			CellStyle="{StaticResource GenericGridStyle}" 
 			GotFocus="UniversalGrid_GotFocus"			     
 			Grid.Column="1" 
 			Grid.ColumnSpan="2"
@@ -327,6 +396,7 @@
 
 
 		<!--#endregion All DataGrids-->
+
 
 		<!--#region All labels-->
 
@@ -386,12 +456,12 @@
 		<Button x:Name="button4" 
 			Content="Close" 
 			Click="button4_Click"
-			FontSize="35" 
+			FontSize="25" 
 			Grid.Column="2" 
 			Grid.Row="4"
-			Height="89" 
+			Height="66" 
 			HorizontalAlignment="Right" 
-			Margin="410,0,0,5" 
+			Margin="0,0,0,5" 
 			VerticalAlignment="Bottom" 
 			Template="{StaticResource HorizontalGradientTemplateRed}"
 			Width="166"/>
@@ -399,13 +469,13 @@
 		<Button x:Name="button5" 
 			Click="button5_Click"
 			Content="Reload ALL Db's" 
-			FontSize="18" 
+			FontSize="14" 
 			Grid.Column="2" 
 			Grid.Row="3"
 			  Grid.RowSpan="2"
 			HorizontalAlignment="Right" 
-			Height="90" 
-			Margin="410,0,0,110" 
+			Height="70" 
+			Margin="0,0,0,81" 
 			Template="{StaticResource HorizontalGradientTemplateGray}"
 			VerticalAlignment="Bottom" 
 			Width="166" />
@@ -416,37 +486,47 @@
 		<RadioButton x:Name="UseStdDapper" 
 			  Click="UseStdDapper_Click"
 			  Content="Use Standard A.D.O Query() Method (DbReader)" 
-			  FontSize="16"
+			  FontSize="14"
 			  Foreground="{StaticResource White0}"
 			  Grid.Column="1"
 			  Grid.Row="3"
 			 Height="32" 
 			  HorizontalAlignment="Left" 
-			  Margin="8,0,0,20" 
+			  Margin="8,0,0,22" 
 			  VerticalAlignment="Bottom" 
 			 Width="370"/>
 		<RadioButton x:Name="UseStoredProc" 
 			Click="UseStoredProc_Click"
 			Content="Use Dapper with Stored Procedure" 
-			FontSize="16"
+			FontSize="14"
 			Foreground="{StaticResource White0}"
 			Grid.Column="1"
 			Grid.Row="3" 
 			HorizontalAlignment="Left" 
-			Margin="8,0,0,118" 
+			Margin="8,0,0,135" 
 			VerticalAlignment="Bottom" 
 			Height="32" 
 			Width="265" Grid.RowSpan="2" />
+
+		<TextBlock
+			Foreground="Red" 
+			Grid.Row="4"
+			Padding="0 0 10 0"
+			Text="Select an item then Right Click it   (in closed Combo) to load into Grid :-"
+			TextAlignment="Left"
+			TextWrapping="Wrap" Margin="0,43,365,67" HorizontalAlignment="Right" Width="208" Grid.Column="1"
+			/>
 		<RadioButton x:Name="UseDapperStoredProc" 
 			Click="UseDapperStoredProc_Click"
 			Content="Use Dapper Directly (No Stored Procedure)" 
-			FontSize="16"
+			FontSize="14"
 			Foreground="{StaticResource White0}"
 			Grid.Column="1" 
-			Grid.Row="3"
+			Grid.Row="4"
 			Height="32"
 			 HorizontalAlignment="Left" 
-			Margin="9,0,0,-70" 
+			Margin="9,0,0,98" 
+			Padding="0,0,0,0"
 			VerticalAlignment="Bottom" 
 			Width="325" />
 		<!--#endregion Data recovery options-->
@@ -454,23 +534,25 @@
 		<!--#region Data Entry fields-->
 		<TextBox x:Name="BankDb" 
 			Background="{StaticResource Cyan5}"
-			FontSize="18"
+			FontSize="14"
 			Grid.Column="2" 
 			Grid.Row="3" 
 			HorizontalAlignment="Left" 
 			TextAlignment="Center"
-			Margin="22,14,0,0" 
+			Margin="14,14,0,0" 
+			Padding="0,3,0,0"
 			Text="BANKACCOUNT" 
 			TextWrapping="Wrap" 
 			VerticalAlignment="Top" 
-			Width="192" MouseEnter="BankDb_MouseEnter"/>
+			Width="192" MouseEnter="BankDb_MouseEnter" Height="28"/>
 		<TextBox x:Name="CustDb" 
 			Background="{StaticResource Cyan5}"
-			FontSize="18"
+			FontSize="14"
 			Grid.Column="2" 
 			HorizontalAlignment="Left" 
-			Margin="22,83,0,0" 
+			Margin="14,83,0,0" 
 			Grid.Row="3" 
+			Padding="0,3,0,0"
 			Text="CUSTOMER" 
 			TextAlignment="Center"
 			TextWrapping="Wrap" 
@@ -478,17 +560,18 @@
 			Width="192" MouseEnter="CustDb_MouseEnter" Height="28"/>
 		<TextBox x:Name="DetDb" 
 			Background="{StaticResource Cyan5}"
-			FontSize="18"
+			FontSize="14"
 			Grid.Column="2" 
 			HorizontalAlignment="Left" 
-			Margin="22,158,0,0" 
+			Margin="14,158,0,0" 
 			Grid.Row="3" 
+			Padding="0,3,0,0"
 			Text="SECACCOUNTS" 
 			TextAlignment="Center"
 			TextWrapping="Wrap" 
 			VerticalAlignment="Top" 
 			Width="192" MouseEnter="DetDb_MouseEnter"
-			   KeyDown="DetDb_KeyDown"/>
+			   KeyDown="DetDb_KeyDown" Height="28"/>
 
 		<TextBox x:Name="MaxRecords" 
 			Background="{StaticResource Cyan5}"
@@ -514,18 +597,20 @@
 			VerticalAlignment="Top"/>
 
 		<TextBox x:Name="OrderString" 
-			  Background="{StaticResource Cyan5}"
-			  FontSize="20"
-			  Grid.Column="2" 
-			  Grid.Row="3" 
+			Background="{StaticResource Cyan5}"
+			FontSize="14"
+			Grid.Column="2" 
+			Grid.Row="3" 
+			Height="28"
 			HorizontalAlignment="Right" 
-			  TextAlignment="Center"
-			  Margin="0,83,0,0" 
-			
-			  Text="CustNo, Bankno" 
-			  TextWrapping="Wrap" 
-			  VerticalAlignment="Top" 
-			  Width="350" MouseEnter="BankDb_MouseEnter"/>
+			TextAlignment="Center"
+			Margin="0,84,0,0" 	
+			Padding="0,2,0,0"
+			Text="CustNo, Bankno" 
+			TextWrapping="Wrap" 
+			VerticalAlignment="Top" 
+			Width="350" 
+			MouseEnter="BankDb_MouseEnter" />
 		<CheckBox x:Name="UseSort" 
 			Content="Use Sort option below" 
 			FontSize="18"
@@ -538,16 +623,17 @@
 
 		<TextBox x:Name="Conditions" 
 			Background="{StaticResource Cyan5}"
-			FontSize="20"
+			FontSize="14"
 			Grid.Column="2" 
 			Grid.Row="3" 
 			HorizontalAlignment="Right" 
 			TextAlignment="Center"
 			Margin="0,158,0,0" 				
+			Padding="0,2,0,0"
 			Text=" where Actype >= 2" 
 			TextWrapping="Wrap" 
 			VerticalAlignment="Top" 
-			Width="348" MouseEnter="BankDb_MouseEnter"/>
+			Width="348" MouseEnter="BankDb_MouseEnter" Height="28"/>
 		<CheckBox x:Name="UseConditions" 
 			Content="Use Selection condition below" 
 			FontSize="18"
@@ -558,40 +644,36 @@
 			Margin="0,131,90,0" 
 			VerticalAlignment="Top"/>
 		<Button x:Name="ReloadBank" 
+			  Background="Red"
 			  Content="Reload Bank Db" 
-			  FontSize="18" 			  
-			  Foreground="{StaticResource White2}"
-			  HorizontalAlignment="Stretch" 
+			  FontSize="14" 			  
+			  Foreground="{StaticResource White2}" 
 			  Click="ReloadBank_Click" 
 			  Grid.Row="3"
-			  Margin="-195,0,0,0" 
+			  Margin="14,0,208,112" 
 			  VerticalAlignment="Bottom" 
-			  Height="50" 
-			  Width="364"
-			  Template="{StaticResource HorizontalGradientTemplateBlue}" Grid.Column="2"/>
+			  Height="40"
+			  Template="{StaticResource HorizontalGradientTemplateBlue}" Grid.Column="2" Grid.RowSpan="2"/>
 		<Button x:Name="ReloadCust" 
 			  Content="Reload Customer Db" 
-			  FontSize="18" 
-			  Foreground="{StaticResource White2}"
-			  HorizontalAlignment="Stretch" 
+			  FontSize="14" 
+			  Foreground="{StaticResource White2}" 
 			  Click="ReloadCust_Click" 
 			  Grid.Column="2"
 			  Grid.Row="4"
-			  Margin="-195,20,0,0" 
+			  Margin="14,47,208,0" 
 			  VerticalAlignment="Top" 
-			  Height="50" 
-			  Width="364"
+			  Height="40"
 			  Template="{StaticResource HorizontalGradientTemplateBlue}" />
 		<Button x:Name="ReloadDet" 
 			Content="Reload SecAccount Db" 
 			Click="ReloadDet_Click" 
-			FontSize="18" 
+			FontSize="14" 
 			Foreground="{StaticResource White2}"
 			Grid.Column="2"
 			Grid.Row="4"
-			Height="50" 
-			HorizontalAlignment="Stretch" 
-			Margin="-195,90,0,5" 
+			Height="40" 
+			Margin="14,0,208,5" 
 			Template="{StaticResource HorizontalGradientTemplateBlue}" 
 			VerticalAlignment="Bottom" 
 			Width="364"/>
@@ -608,6 +690,17 @@
 			VerticalAlignment="Center" 
 			Width="72" 
 			   Height="30"/>
+
+		<CheckBox x:Name="OntopChkbox"
+			Click="OntopChkbox_Click"
+			Content="Keep on Top" 
+			Foreground="{StaticResource White0}"
+			Grid.Column="2"
+			HorizontalAlignment="Right"
+			Margin="0,0,110, 1"
+			VerticalAlignment="Center"
+			Width="100"
+			/>
 		<TextBox x:Name="DetCount" 
 			  Background="{StaticResource Blue0}"
 			  FontSize="18" 
@@ -628,14 +721,14 @@
 			Grid.Row="2" 
 		     Height="45"
 			HorizontalAlignment="Left" 
-			Margin="170,2,0,305"  
-			Text="Combined data Grid \nClick button to hide special grids" 
+			Margin="252,2,0,305"  
+			Text="Combined data Grid :              Click button to hide special grids" 
 			TextAlignment="Right"
-			TextWrapping="NoWrap"
-			Width="257" Grid.RowSpan="2" />
+			TextWrapping="Wrap"
+			Width="175" Grid.RowSpan="2" />
 
 		<ToggleButton x:Name="ToggleBtn"
-			Background="{StaticResource Red5}" 
+			Background="{StaticResource EllipseGreengradientbackground}" 
 			Click="ToggleBtn_Click"
 			FontSize="24"
 			Foreground="{StaticResource White1}"
@@ -692,7 +785,7 @@
 			  FontSize="18" 
 			  Foreground="{StaticResource ResourceKey=White0}"
 			  HorizontalAlignment="Left" 
-			  Margin="372,5,0,0"   			
+			  Margin="377,5,0,0"   			
 			  Grid.Column="2"
 			  Height="32" Grid.Row="2" 
 			  Text="milliseconds" 
@@ -703,110 +796,124 @@
 		<Border  x:Name="_border"
 			Background="{StaticResource Blue2}" 
 			Grid.Row="3"
-			Grid.Column="2" 
-			Grid.ColumnSpan="2"
+			Grid.Column="2"
 			Height="40"
-			   HorizontalAlignment="Stretch"
-			Margin="4,0,6,70" 
-			VerticalAlignment="Bottom"
-			Width="588" 
+			Margin="14,0,3,70" 
+			VerticalAlignment="Bottom" 
 			>
 
 			<CheckBox x:Name="UseAsync" 
-				Background="{StaticResource White0}"
 				Click="UseAsync_Click"
-				Content="Use ASYNC  Methods for Loading Db's" 
-				FontSize="21"
+				Content="  Use ASYNC  Methods for Loading Db's" 
+				FontSize="16"
+				Foreground="White"
 				FontWeight="Bold"
-				Foreground="{StaticResource Red5}"
 				Grid.Column="2" 
 				Grid.Row="3" 
-				Height="{Binding ActualHeight, ElementName=_border}"
-				HorizontalAlignment="Center"
-			    Margin="0,8,0,0"
+				Height="22"
+				HorizontalAlignment="Left"
+				Margin="100,8,0,0"
 				VerticalAlignment="Top"
-				Width="414"  />
+				Width="448"  />
 		</Border>
+
+		<ComboBox x:Name="DbList"
+			FontSize="16"
+			Grid.Column="1" 
+			Grid.Row="4"
+			Height="30"
+			MouseRightButtonDown="DbList_MouseRightButtonDown"
+			MouseRightButtonUp="DbList_MouseRtBtnUp"
+			MouseDoubleClick="DbList_MouseDoubleClick"
+			ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle1}" 			    
+			Loaded="DbList_Loaded"
+			Margin="231,45,7,70" 	
+			Template="{StaticResource ComboBoxEditableTemplate}"/>
+
 		<TextBox x:Name="ManualSelect" 
-			  Background="{StaticResource Cyan5}"
-			  FontSize="20"
-			  Grid.Column="1" 
-			  Grid.Row="4" 
-			  HorizontalAlignment="Left" 
-			  TextAlignment="Center"
-			  Margin="195,81,0,0" 	
-			   PreviewKeyDown="ManualSelect_PreviewKeyDown"
-			  
-			  Text=" Select ..." 
-			  TextWrapping="Wrap" 
-			  VerticalAlignment="Top" 
-			  Width="385" PreviewMouseDown="UseDapper_MouseEnter" Height="57"/>
+			Background="{StaticResource Cyan5}"
+			IsEnabled="False"
+			FontSize="16"																					  
+			Grid.Column="1" 
+			Grid.Row="4" 
+			Height="57"
+			HorizontalAlignment="Left" 
+			LostFocus="ManualSelect_LostFocus"
+			TextAlignment="Center"
+			Margin="213,81,0,0" 	
+			Padding="0,17,0,0"
+			PreviewKeyDown="ManualSelect_PreviewKeyDown"				  
+			PreviewMouseDown="UseDapper_MouseEnter" 
+			Text="Create Sql Query ..."
+			TextWrapping="Wrap" 
+			VerticalAlignment="Top" 
+			Width="367"/>
 		<Button x:Name="UseManualDapper" 
-			  Click="UseSelectClause"  			  
-			  FontSize="18"
-			  Foreground="{StaticResource White0}"
-			  Grid.Column="1" 
-			  Grid.Row="4"
-			  HorizontalAlignment="Left" 
-			  IsEnabled="true"
-			  Margin="11,79,0,0" 
-			  Template="{StaticResource HorizontalGradientTemplateBlue}" 
-			  VerticalAlignment="Top" Width="171" Height="59">
+			Click="UseSelectClause"  			  
+			FontSize="14"
+			Grid.Column="1" 
+			Grid.Row="4"
+			Height="49"
+			HorizontalAlignment="Left" 
+			IsEnabled="true"
+			Margin="11,84,0,0" 
+			Template="{StaticResource HorizontalGradientTemplateBlue}" 
+			VerticalAlignment="Top" 
+			Width="195" >
 			<Button.Content>
 				<TextBlock x:Name="ManualBtnText"
-					Text="Create Manual  Command :-" 
-					     Foreground="{StaticResource Yellow0}"
-					     Height="50"
-					     Width="134" 
-					     TextWrapping="WrapWithOverflow"
+					Text="Create Sql Query :-"
+					     Foreground="{StaticResource Red2}"
+					     Height="24"
+					     Width="Auto" 
+					     TextWrapping="Wrap"
 					     HorizontalAlignment="Center"
-					     VerticalAlignment="Top"/>
+					     
+					     VerticalAlignment="Center"/>
 			</Button.Content>
 		</Button>
 
 		<Button x:Name="LoadCombined"
 			  Click="LoadCombined_Click"
 			  Content="Load Combined A/c's" 
-			  FontSize="16" 
+			  FontSize="14" 
 			  Foreground="{StaticResource Yellow0}"
 			  Grid.Column="1" 
-			  Grid.Row="4"
-			  Grid.RowSpan="2"
-			  Height="36" 
+			  Grid.Row="3"
+			  Height="30" 
 			  HorizontalAlignment="Left" 
-			  Margin="400,-55,0,0" 
+			  Margin="400,0,0,30" 
 			  Template="{StaticResource HorizontalGradientTemplateYellow}" 
-			  VerticalAlignment="Top" 
+			  VerticalAlignment="Bottom" 
 			  Width="181"/>
 
 		<Button x:Name="button3"
 			Click="LoadMulti_Click"
 			Content="Load Multi A/c's" 
-			FontSize="16" 
+			FontSize="14" 
 			Foreground="{StaticResource Yellow0}"
 			Grid.Column="1" 
-			Grid.Row="4"
-			Grid.RowSpan="2"
-			Height="36" 
+			Grid.Row="3"
+			Height="30" 
 			HorizontalAlignment="Left" 
-			Margin="400,-10,0,0" 
+			Margin="400,0,0,-5" 
 			Template="{StaticResource HorizontalGradientTemplateGreen}" 
-			VerticalAlignment="Top" 
+			VerticalAlignment="Bottom" 
 			Width="181"/>
 
 		<Button x:Name="CloseGenGridBtn" 
 			Click="CloseGenericWindow"
 			Content="Close Query Grids" 
-			FontSize="16" 
+			FontSize="14"
 			Foreground="Red"
 			Grid.Column="1" 
-			Grid.Row="4"
-			Height="36" 
+			Grid.Row="3"
+			Height="30" 
 			HorizontalAlignment="Left" 
-			Margin="401,34,0,0"  
+			Margin="401,0,0,-40"  
 			Opacity="0.6"
 			Template="{StaticResource HorizontalGradientTemplateRed}"
-			VerticalAlignment="Top" 
+			VerticalAlignment="Bottom" 
 			Width="178"/>
 
 		<Label x:Name="DbLabel1" Content="Bank Db to load:" 
@@ -841,6 +948,85 @@
 			Margin="20,126,0,0" 
 			VerticalAlignment="Top" 
 			Width="184" />
+
+		<Button x:Name="ExtractData"
+			  Click="Extract_Click"
+			  Content="Extract Selected Records" 
+			  FontSize="14" 
+			  Foreground="{StaticResource Yellow0}"
+			  Grid.Column="2" 
+			  Grid.Row="3"
+			  Height="36" 
+			  HorizontalAlignment="Left" 
+			  IsEnabled="False"
+			  Margin="14,249,0,0" 
+			  Template="{StaticResource HorizontalGradientTemplateYellow}" 
+			  VerticalAlignment="Top" 
+			  Width="185"/>
+
+		<Button x:Name="SaveData"
+			  Click="SaveDb_Click"
+			  Content="Save Selected Records" 
+			  IsEnabled="false"
+			  FontSize="14" 
+			  Foreground="{StaticResource Yellow0}"
+			  Grid.Column="2" 
+			  Grid.Row="3"
+			  Height="36" 
+			  HorizontalAlignment="Left" 
+			  Margin="208,249,0,0" 
+			  Template="{StaticResource HorizontalGradientTemplateYellow}" 
+			  VerticalAlignment="Top" 
+			  Width="161"/>
+
+		<Path x:Name="arrow2" Data="F1 M 0,0 L 2.667,2.66665 L 5.3334,0 L 5.3334,-1.78168 L 2.6667,0.88501 L0,-1.78168 L0,0 Z" 
+					Fill="{StaticResource White0}"   
+					Grid.Row="3"
+					Grid.Column="2"
+					HorizontalAlignment="Right"
+					Margin="0,256,205,0" 
+					RenderTransformOrigin="0.776,-0.13" 
+					Stretch="Fill" 
+					Width="17" Height="16" VerticalAlignment="Top" >
+			<Path.RenderTransform>
+				<TransformGroup>
+					<ScaleTransform/>
+					<SkewTransform/>
+					<RotateTransform Angle="270.427"/>
+					<TranslateTransform X="3.168" Y="6.738"/>
+				</TransformGroup>
+			</Path.RenderTransform>
+		</Path>
+
+		<TextBox x:Name="ExtractBankDbSaveName" 
+			  Background="{StaticResource Cyan5}"
+			   Foreground="{StaticResource Red5}"
+			   FontWeight="DemiBold"
+			  FontSize="16"
+			  Grid.Column="2" 
+			  Grid.Row="3" 
+			  HorizontalAlignment="Left" 
+			  TextAlignment="Center"
+			  Margin="411,251,0,0" 
+			  Text="Db Name ..." 
+			   Opacity="0.4"
+			   Padding="0 4 0 0"
+			  TextWrapping="Wrap" 
+			  VerticalAlignment="Top" 
+			  Width="175" MouseEnter="BankDb_MouseEnter" Height="33"/>
+		<Button x:Name="CloseLargeGrid"
+			  Click="CloseGrids"
+			  Content="Close 'Special' Grid's" 
+			  FontSize="11" 
+			  Foreground="{StaticResource Yellow0}"
+			  Grid.Column="1"
+			  Height="24" 
+			  HorizontalAlignment="Left" 
+			  Margin="320,0,0,0" 
+			  Template="{StaticResource HorizontalGradientTemplateYellow}" 
+			  VerticalAlignment="Center" 
+			  Width="181"/>
+
 
 		<!--#endregion Data Entry fields-->
 

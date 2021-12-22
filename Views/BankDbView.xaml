@@ -276,7 +276,7 @@
             local:MenuAttachedProperties.MenuItemSelectedBackground="{StaticResource HeaderBrushBlue}"
             local:MenuAttachedProperties.MenuItemBackground="{StaticResource HeaderBorderBrushBlue}"
             local:MenuAttachedProperties.MenuItemForeground="{StaticResource White0}"
-            local:MenuAttachedProperties.MenuSelectedForeground="{StaticResource White0}"
+            local:MenuAttachedProperties.MenuItemSelectedForeground="{StaticResource White0}"
             local:MenuAttachedProperties.MenuFontSize="12"
             local:MenuAttachedProperties.MenuFontWeight="Normal"
             local:MenuAttachedProperties.MenuItemBorderColor="{StaticResource Blue2}"

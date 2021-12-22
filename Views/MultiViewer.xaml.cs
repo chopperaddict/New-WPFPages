@@ -1403,7 +1403,32 @@ namespace WPFPages . Views
 		private void Details_Click ( object sender , RoutedEventArgs e )
 		{
 			// display multi data only
-			ReloadDataAllDataAsMulti ( );
+			//			ReloadDataAllDataAsMulti ( );
+			string s = MultiAccountText . Text;
+			if ( s . Contains ( "<<-" ) || s . Contains ( "Show All" ) )
+			{
+				Flags . IsMultiMode = false;
+				MultiAccountText . Text = "Multi Accounts";
+				//// Set the gradient background
+				ControlTemplate tmp = Utils . GetDictionaryControlTemplate ( "HorizontalGradientTemplateGray" );
+				Multiaccounts . Template = tmp;
+				Brush br = Utils . GetDictionaryBrush ( "HeaderBrushGray" );
+				Multiaccounts . Background = br;
+				Multiaccounts . Content = "Multi A/c Only";
+				MultiAccountText . Text = "Multi A/c Only";
+				Linq6_Click ( null , null );
+			}
+			else
+			{
+				Flags . IsMultiMode = true;
+				ControlTemplate tmp = Utils . GetDictionaryControlTemplate ( "HorizontalGradientTemplateGreen" );
+				Multiaccounts . Template = tmp;
+				Brush br = Utils . GetDictionaryBrush ( "HeaderBrushGreen" );
+				Multiaccounts . Background = br;
+				Multiaccounts . Content = "Show All A/c's";
+				MultiAccountText . Text = "Show All A/c's";
+				Linq5_Click ( null , null );
+			}
 		}
 
 		private async Task ReloadDataAllDataAsMulti ( )

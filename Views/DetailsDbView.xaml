@@ -191,60 +191,62 @@
 			IsTabStop="False"
 			HorizontalAlignment="Left"
 			VerticalAlignment="Stretch"
-			Background="Transparent" 
-          local:MenuAttachedProperties.MenuItemSelectedBackground="{StaticResource HeaderBrushGreen}"
+			Background="Red" 
+			Foreground="White"
+			Grid.ColumnSpan="2">
+          <!--local:MenuAttachedProperties.MenuItemSelectedBackground="{StaticResource HeaderBrushGreen}"
             local:MenuAttachedProperties.MenuItemBackground="{StaticResource HeaderBorderBrushGreen}"
             local:MenuAttachedProperties.MenuItemForeground="{StaticResource White0}"
-            local:MenuAttachedProperties.MenuSelectedForeground="{StaticResource Red2}"
+            local:MenuAttachedProperties.MenuItemSelectedForeground="{StaticResource Red2}"
             local:MenuAttachedProperties.MenuFontSize="14"
             local:MenuAttachedProperties.MenuFontWeight="DemiBold"
-            local:MenuAttachedProperties.MenuItemBorderColor="{StaticResource Blue2}"
+            local:MenuAttachedProperties.MenuItemBorderColor="{StaticResource Green2}"
             local:MenuAttachedProperties.MenuItemBorderThickness="1"
             local:MenuAttachedProperties.MenuItemHeight ="30"
-            local:MenuAttachedProperties.MenuItemMargin="2"
-			Grid.ColumnSpan="2">
+            local:MenuAttachedProperties.MenuItemMargin="2"-->
 
 			<MenuItem
 				Width="80"
+				
+				Background="Transparent"
 				Foreground="{StaticResource Black1}"
 				Header="_Linq Queries">
 				<MenuItem
 					Click="Linq1_Click"
 					Header="A/c Type 1 Only"
-					IsCheckable="false"  
-                    Template="{StaticResource MenuItemCtrlTemplate1}"/>
+					IsCheckable="false"  />
+				<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 
-				<MenuItem
-					Background="#35F6FB"
+				<MenuItem	 					
 					Click="Linq2_Click"
 					Foreground="Black"
 					Header="A/c Type 2 Only"
-					IsCheckable="False"  
-                    Template="{StaticResource MenuItemCtrlTemplate1}"/>
+					IsCheckable="false"  />
+				<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 
 				<MenuItem
 					Click="Linq3_Click"
 					Header="A/c Type 3 Only"
-					IsCheckable="False"   
-                    Template="{StaticResource MenuItemCtrlTemplate1}"/>
+					IsCheckable="false"  />
+				<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 
 				<MenuItem
 					Click="Linq4_Click"
 					Header="A/c Type 4 Only"
-					IsCheckable="False"   
-                    Template="{StaticResource MenuItemCtrlTemplate1}"/>
+					IsCheckable="false"  />
+				<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 
 				<MenuItem
 					Click="Linq5_Click"
 					Header="Multi A/C Holders"
-					IsCheckable="False"   
-                    Template="{StaticResource MenuItemCtrlTemplate1}"/>
+					IsCheckable="false"  />
+				<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 
 				<Separator />
 				<MenuItem Header="All Records"
 						Click="Linq6_Click"
-						IsCheckable="False"   
-                    Template="{StaticResource MenuItemCtrlTemplate1}"/>
+					IsCheckable="false"  />
+				<!--Template="{StaticResource MenuItemCtrlTemplate1}"/>-->
 
 				<Separator />
 			</MenuItem>

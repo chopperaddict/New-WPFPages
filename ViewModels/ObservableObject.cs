@@ -8,7 +8,8 @@ using System . Threading . Tasks;
 
 namespace WPFPages . ViewModels
 {
-	public  class ObservableObject : System . ComponentModel.INotifyPropertyChanged
+      [Serializable]
+      public class ObservableObject : System . ComponentModel.INotifyPropertyChanged
 	{
                 #region INotifyPropertyChanged Members
                 public event PropertyChangedEventHandler PropertyChanged;

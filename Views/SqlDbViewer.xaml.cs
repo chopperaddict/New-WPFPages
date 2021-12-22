@@ -10,30 +10,18 @@ using System . Windows;
 using System . Windows . Controls;
 using System . Windows . Input;
 using System . Windows . Media;
-using System . Windows . Controls . Primitives;
 using System . Data;
 using System . Data . SqlClient;
 using System . Diagnostics;
 using System . Linq;
 using System . Threading;
-using System . Threading . Tasks;
 using System . Windows . Data;
 using WPFPages . Properties;
 using WPFPages . ViewModels;
 using WPFPages . Views;
-using System . IO;
-using System . Security . Permissions;
-using WPFPages;
 using Newtonsoft . Json;
 using Newtonsoft . Json . Linq;
-using System . Windows . Shapes;
-using static System . Net . Mime . MediaTypeNames;
-using System . Configuration;
-using System . CodeDom;
-using System . Runtime . CompilerServices;
 using System . Collections . ObjectModel;
-using System . Reflection;
-using System . Data . Common;
 
 //[assembly: SecurityPermissionAttribute ( SecurityAction . RequestMinimum, Flags = ( SecurityPermissionFlag ) UIPermissionClipboard . AllClipboard )]
 
@@ -223,7 +211,10 @@ namespace WPFPages
 		public Window ThisWindow
 		{
 			get; set;
-		}          // Current selectedIndex for each type of viewer data
+		}          // Current selectedIndex fo
+			     // r each type of viewer data
+
+		#region variables
 		private int SavedBankRow
 		{
 			get; set;
@@ -255,6 +246,7 @@ namespace WPFPages
 			get; set;
 		}
 
+		#endregion variables
 
 		#endregion STD PROPERTIES
 
@@ -1573,6 +1565,7 @@ namespace WPFPages
 				Flags . CurrentDetailsViewer = null;
 				Flags . SqlDetViewer = null;
 			}
+			RemoveFromViewerList ( 99 );
 
 			// We must also clear our "loaded" columns, or else it stopsworking
 			ObservableCollection<DataGridColumn> dgc = BankGrid.Columns;
