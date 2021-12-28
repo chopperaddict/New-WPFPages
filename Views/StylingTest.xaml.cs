@@ -57,7 +57,21 @@ namespace WPFPages . Views
 		{
 			InitializeComponent ( );
 			this . Show ( );
+			MouseMove += Utils . Grab_MouseMove;
+			KeyDown += Window_PreviewKeyDown;
 		}
+
+		private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )
+		{
+			if ( e . Key == Key . F11 )
+			{
+				if ( Utils . ControlsHitList . Count == 0 )
+					return;
+				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
+			}
+		}
+
+
 		TextBox tb;
 		// how to access template named controls in c#
 		public override void OnApplyTemplate ( )
@@ -781,7 +795,7 @@ namespace WPFPages . Views
 
 		private void storyboard_Closing ( object sender , CancelEventArgs e )
 		{
-			if (view1 != null &&  !view1 . IsEmpty )
+			if ( view1 != null && !view1 . IsEmpty )
 				view1 . DetachFromSourceCollection ( );
 			if ( view2 != null && !view2 . IsEmpty )
 				view2 . DetachFromSourceCollection ( );

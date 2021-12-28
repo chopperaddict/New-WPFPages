@@ -177,6 +177,7 @@ namespace WPFPages . Views
 
 			Mouse . OverrideCursor = Cursors . Arrow;
 			Startup = false;
+			MouseMove += Utils . Grab_MouseMove;
 		}
 		private void EventControl_GlobalDataChanged ( object sender , GlobalEventArgs e )
 		{
@@ -830,7 +831,12 @@ namespace WPFPages . Views
 				e . Handled = true;
 				return;
 			}
-
+			if ( e . Key == Key . F11 )
+			{
+				if ( Utils . ControlsHitList . Count == 0 )
+					return;
+				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
+			}
 		}
 
 		private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )

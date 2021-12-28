@@ -35,9 +35,9 @@ namespace WPFPages . Views
 		public ObservableCollection<nwcustomer> nwc2;
 		private string argument = "";
 
-		public  SelectedNwDetails ( string arg = "" )
+		public SelectedNwDetails ( string arg = "" )
 		{
-//			Thread t1;
+			//			Thread t1;
 			InitializeComponent ( );
 			argument = arg;
 			// start our linkage monitor
@@ -47,28 +47,57 @@ namespace WPFPages . Views
 			//t1 . Start ( );
 			//Debug . WriteLine ( t1 . ThreadState . ToString ( ) );
 			LoadNorthWindData ( );
+			MouseMove += Utils . Grab_MouseMove;
+			KeyDown += Window_PreviewGrabKeyDown;
 		}
-		private  void  LoadNorthWindData ( )
+
+
+		private void Window_PreviewGrabKeyDown ( object sender , KeyEventArgs e )
+		{
+			if ( e . Key == Key . F11 )
+			{
+				if ( Utils . ControlsHitList . Count == 0 )
+					return;
+				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
+			}
+		}
+
+
+		private void LoadNorthWindData ( )
 		{
 			nwc2 = new ObservableCollection<nwcustomer> ( );
-			nwc2 =  NwCustomer . LoadSpecificCustomers ( argument, nwc2 );
+			nwc2 = NwCustomer . LoadSpecificCustomers ( argument , nwc2 );
 			CustomersGrid . ItemsSource = nwc2;
 			CustomersGrid . DataContext = NwCustomer;
 			EventControl . NwCustomerSelected += EventControl_NwCustomerSelected;
 			Flags . NwSelectionWindow = this;
-//			return true;
+			//			return true;
 		}
-		public void SwitchCustomer (string arg )
+		public void SwitchCustomer ( string arg )
 		{
 			argument = arg;
 			nwc2 = new ObservableCollection<nwcustomer> ( );
-			nwc2 = NwCustomer . LoadSpecificCustomers ( arg , nwc2);
+			nwc2 = NwCustomer . LoadSpecificCustomers ( arg , nwc2 );
 			CustomersGrid . ItemsSource = null;
 			CustomersGrid . Items . Clear ( );
 			CustomersGrid . ItemsSource = nwc2;
-			CustomersGrid . SelectedIndex= 0;
+
+			MouseMove += Utils . Grab_MouseMove;
+			KeyDown += Window_PreviewKeyDown;
+			CustomersGrid . SelectedIndex = 0;
 
 		}
+
+		private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )
+		{
+			if ( e . Key == Key . F11 )
+			{
+				if ( Utils . ControlsHitList . Count == 0 )
+					return;
+				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
+			}
+		}
+
 
 		#region PropertyChanged
 
@@ -78,7 +107,7 @@ namespace WPFPages . Views
 			PropertyChangedEventHandler handler = PropertyChanged;
 			if ( handler != null )
 			{
-				handler ( this, new PropertyChangedEventArgs ( PropertyName ) );
+				handler ( this , new PropertyChangedEventArgs ( PropertyName ) );
 			}
 		}
 
@@ -189,14 +218,14 @@ namespace WPFPages . Views
 		public ObservableCollection<nwcustomer> nwc;
 
 
-		private void EventControl_NwCustomerSelected ( object sender, NwGridArgs e )
+		private void EventControl_NwCustomerSelected ( object sender , NwGridArgs e )
 		{
 			//handle 
 
 			//CustomersGrid . Items . Clear ( );
 			IsLoading = true;
 			CustomersGrid . ItemsSource = null;
-			CustomersGrid . Items.Clear( );			
+			CustomersGrid . Items . Clear ( );
 			string srchterm = e . ArgumentParameter;
 			SwitchCustomer ( srchterm );
 			IsLoading = false;
@@ -208,7 +237,7 @@ namespace WPFPages . Views
 		{
 			get; set;
 		}
-		private void Window_Loaded ( object sender, RoutedEventArgs e )
+		private void Window_Loaded ( object sender , RoutedEventArgs e )
 		{
 			IsLoading = true;
 			//Load the Customers MAIN database and all others as required
@@ -222,9 +251,9 @@ namespace WPFPages . Views
 			//CustomersGrid . DataContext = nwc;
 			this . Refresh ( );
 		}
-	
 
-		private int FindMatchingRecord ( object srchitem, DataGrid dGrid, string SearchType = "" )
+
+		private int FindMatchingRecord ( object srchitem , DataGrid dGrid , string SearchType = "" )
 		{
 			int index = 0;
 			if ( dGrid == OrdersGrid )
@@ -357,14 +386,14 @@ namespace WPFPages . Views
 				SqlCommand cmd = new SqlCommand ( CmdString, con );
 
 				SqlDataAdapter sda = new SqlDataAdapter ( cmd );
-				sda . TableMappings . Add ( "Table", "Customers" );
-				sda . TableMappings . Add ( "Table1", "Orders" );
-				sda . TableMappings . Add ( "Table2", "OrderDetails" );
-				sda . TableMappings . Add ( "Table3", "Products" );
-				sda . TableMappings . Add ( "Table4", "Categories" );
+				sda . TableMappings . Add ( "Table" , "Customers" );
+				sda . TableMappings . Add ( "Table1" , "Orders" );
+				sda . TableMappings . Add ( "Table2" , "OrderDetails" );
+				sda . TableMappings . Add ( "Table3" , "Products" );
+				sda . TableMappings . Add ( "Table4" , "Categories" );
 				try
 				{
-					sda . Fill ( ds, "AllData" );
+					sda . Fill ( ds , "AllData" );
 				}
 				catch ( Exception ex )
 				{
@@ -388,7 +417,7 @@ namespace WPFPages . Views
 
 			CustomersGrid . SelectedIndex = 0;
 			CustomersGrid . SelectedItem = 0;
-			Utils . SetGridRowSelectionOn ( CustomersGrid, 0 );
+			Utils . SetGridRowSelectionOn ( CustomersGrid , 0 );
 			CustomersTotal = CustomersGrid . Items . Count;
 
 			var v = CustomersGrid . SelectedItem as nwcustomer;
@@ -399,7 +428,7 @@ namespace WPFPages . Views
 			NwOrderCollection nwc = new NwOrderCollection ( v . CustomerId );
 			OrdersGrid . ItemsSource = nwc;
 			int rec = FindMatchingRecord ( v . CustomerId, OrdersGrid );
-			Utils . SetGridRowSelectionOn ( OrdersGrid, rec );
+			Utils . SetGridRowSelectionOn ( OrdersGrid , rec );
 			var v2 = OrdersGrid . SelectedItem as nworder;
 			if ( v2 == null )
 			{
@@ -411,8 +440,8 @@ namespace WPFPages . Views
 			IsLoading = true;
 			NwOrderDetails nwd = new NwOrderDetails ( v2 . OrderId );
 			OrderDetailsGrid . ItemsSource = nwd;
-			rec = FindMatchingRecord ( v2 . OrderId, OrderDetailsGrid );
-			Utils . SetGridRowSelectionOn ( OrderDetailsGrid, rec );
+			rec = FindMatchingRecord ( v2 . OrderId , OrderDetailsGrid );
+			Utils . SetGridRowSelectionOn ( OrderDetailsGrid , rec );
 			OrderCurrent = rec;
 			var v3 = OrderDetailsGrid . SelectedItem as nworderdetail;
 			if ( v3 == null )
@@ -424,8 +453,8 @@ namespace WPFPages . Views
 			IsLoading = true;
 			NwProductCollection nwp = new NwProductCollection ( v3 . ProductId );
 			ProductsGrid . ItemsSource = nwp;
-			rec = FindMatchingRecord ( v3 . ProductId, ProductsGrid );
-			Utils . SetGridRowSelectionOn ( ProductsGrid, rec );
+			rec = FindMatchingRecord ( v3 . ProductId , ProductsGrid );
+			Utils . SetGridRowSelectionOn ( ProductsGrid , rec );
 			ProductsGrid . Refresh ( );
 
 			var v4 = ProductsGrid . SelectedItem as nwproduct;
@@ -438,13 +467,13 @@ namespace WPFPages . Views
 			IsLoading = true;
 			NwCatCollection ncc = new NwCatCollection ( v4 . CategoryId );
 			CategoriesGrid . ItemsSource = ncc;
-			rec = FindMatchingRecord ( v4 . CategoryId, CategoriesGrid );
-			Utils . SetGridRowSelectionOn ( CategoriesGrid, rec );
+			rec = FindMatchingRecord ( v4 . CategoryId , CategoriesGrid );
+			Utils . SetGridRowSelectionOn ( CategoriesGrid , rec );
 			CustomerCurrent = CustomersGrid . SelectedIndex;
 			IsLoading = false;
 
 		}
-		private void CustomerGrid_SelectionChanged ( object sender, SelectionChangedEventArgs e )
+		private void CustomerGrid_SelectionChanged ( object sender , SelectionChangedEventArgs e )
 		{
 			int rec = 0;
 			if ( IsLoading )
@@ -454,8 +483,8 @@ namespace WPFPages . Views
 				return;
 			//Find 1st match in Orders Db Grid and select it
 			IsLoading = true;
-			rec = FindMatchingRecord ( v . CustomerId, OrdersGrid );
-			Utils . SetGridRowSelectionOn ( OrdersGrid, rec );
+			rec = FindMatchingRecord ( v . CustomerId , OrdersGrid );
+			Utils . SetGridRowSelectionOn ( OrdersGrid , rec );
 
 			var v2 = OrdersGrid . SelectedItem as nworder;
 			if ( v2 == null )
@@ -464,8 +493,8 @@ namespace WPFPages . Views
 				return;
 			}
 			//Find 1st match in Orders Db Grid and select it
-			rec = FindMatchingRecord ( v2 . OrderId, OrderDetailsGrid );
-			Utils . SetGridRowSelectionOn ( OrderDetailsGrid, rec );
+			rec = FindMatchingRecord ( v2 . OrderId , OrderDetailsGrid );
+			Utils . SetGridRowSelectionOn ( OrderDetailsGrid , rec );
 			OrderCurrent = rec;
 			var v3 = OrderDetailsGrid . SelectedItem as nworderdetail;
 			if ( v3 == null )
@@ -474,8 +503,8 @@ namespace WPFPages . Views
 				return;
 			}
 			//Find 1st match in Products Db Grid and select it
-			rec = FindMatchingRecord ( v3 . ProductId, ProductsGrid );
-			Utils . SetGridRowSelectionOn ( ProductsGrid, rec );
+			rec = FindMatchingRecord ( v3 . ProductId , ProductsGrid );
+			Utils . SetGridRowSelectionOn ( ProductsGrid , rec );
 			ProductsGrid . Refresh ( );
 
 			var v4 = ProductsGrid . SelectedItem as nwproduct;
@@ -485,13 +514,13 @@ namespace WPFPages . Views
 				return;
 			}
 			//Find 1st match in Products Db Grid and select it
-			rec = FindMatchingRecord ( v4 . CategoryId, CategoriesGrid );
-			Utils . SetGridRowSelectionOn ( CategoriesGrid, rec );
+			rec = FindMatchingRecord ( v4 . CategoryId , CategoriesGrid );
+			Utils . SetGridRowSelectionOn ( CategoriesGrid , rec );
 			CustomerCurrent = CustomersGrid . SelectedIndex;
 			IsLoading = false;
 		}
 
-		private void OrdersGrid_SelectionChanged ( object sender, SelectionChangedEventArgs e )
+		private void OrdersGrid_SelectionChanged ( object sender , SelectionChangedEventArgs e )
 		{
 			if ( IsLoading )
 				return;
@@ -503,7 +532,7 @@ namespace WPFPages . Views
 			NwOrderDetails nwd = new NwOrderDetails ( v . OrderId );
 			OrderDetailsGrid . ItemsSource = nwd;
 			int rec = FindMatchingRecord ( v . OrderId, OrderDetailsGrid );
-			Utils . SetGridRowSelectionOn ( OrderDetailsGrid, rec );
+			Utils . SetGridRowSelectionOn ( OrderDetailsGrid , rec );
 
 			var v3 = OrderDetailsGrid . SelectedItem as nworderdetail;
 			if ( v3 == null )
@@ -515,8 +544,8 @@ namespace WPFPages . Views
 			NwProductCollection npc = new NwProductCollection ( v3 . ProductId );
 			ProductsGrid . ItemsSource = npc;
 			//Find 1st match in Products Db Grid and select it
-			rec = FindMatchingRecord ( v3 . ProductId, ProductsGrid );
-			Utils . SetGridRowSelectionOn ( ProductsGrid, rec );
+			rec = FindMatchingRecord ( v3 . ProductId , ProductsGrid );
+			Utils . SetGridRowSelectionOn ( ProductsGrid , rec );
 			ProductsGrid . Refresh ( );
 
 			var v4 = ProductsGrid . SelectedItem as nwproduct;
@@ -529,13 +558,13 @@ namespace WPFPages . Views
 			//Find 1st match in Products Db Grid and select it
 			NwCatCollection ncc = new NwCatCollection ( v4 . CategoryId);
 			CategoriesGrid . ItemsSource = ncc;
-			rec = FindMatchingRecord ( v4 . CategoryId, CategoriesGrid );
-			Utils . SetGridRowSelectionOn ( CategoriesGrid, rec );
+			rec = FindMatchingRecord ( v4 . CategoryId , CategoriesGrid );
+			Utils . SetGridRowSelectionOn ( CategoriesGrid , rec );
 			this . OrderCurrent = this . OrdersGrid . SelectedIndex;
 
 			IsLoading = false;
 		}
-		private void ProductsGrid_SelectionChanged ( object sender, SelectionChangedEventArgs e )
+		private void ProductsGrid_SelectionChanged ( object sender , SelectionChangedEventArgs e )
 		{
 			if ( IsLoading )
 				return;
@@ -546,15 +575,15 @@ namespace WPFPages . Views
 
 			//Find 1st match in Orders Db Grid and select it
 			int rec = FindMatchingRecord ( v . CategoryId, CategoriesGrid );
-			Utils . SetGridRowSelectionOn ( CategoriesGrid, rec );
+			Utils . SetGridRowSelectionOn ( CategoriesGrid , rec );
 			//Find ProductId in Product Db Grid use it to find OrderId in OrderDetails grid
 			IsLoading = true;
-			rec = FindMatchingRecord ( v . ProductId, OrderDetailsGrid, "PRODUCTID" );
-			Utils . SetGridRowSelectionOn ( OrderDetailsGrid, rec );
+			rec = FindMatchingRecord ( v . ProductId , OrderDetailsGrid , "PRODUCTID" );
+			Utils . SetGridRowSelectionOn ( OrderDetailsGrid , rec );
 			IsLoading = false;
 
 		}
-		private void CategoriesGrid_SelectionChanged ( object sender, SelectionChangedEventArgs e )
+		private void CategoriesGrid_SelectionChanged ( object sender , SelectionChangedEventArgs e )
 		{
 			if ( IsLoading )
 				return;
@@ -564,10 +593,10 @@ namespace WPFPages . Views
 			IsLoading = true;
 			//Find 1st match in Products Db Grid and select it
 			int rec = FindMatchingRecord ( v . CategoryId, ProductsGrid, "PRODUCTID" );
-			Utils . SetGridRowSelectionOn ( ProductsGrid, rec );
+			Utils . SetGridRowSelectionOn ( ProductsGrid , rec );
 			IsLoading = false;
 		}
-		private void OrderDetailsGrid_SelectionChanged ( object sender, SelectionChangedEventArgs e )
+		private void OrderDetailsGrid_SelectionChanged ( object sender , SelectionChangedEventArgs e )
 		{
 			if ( IsLoading )
 				return;
@@ -579,7 +608,7 @@ namespace WPFPages . Views
 			NwProductCollection nwp = new NwProductCollection ( v . ProductId );
 			ProductsGrid . ItemsSource = nwp;
 			int rec = FindMatchingRecord ( v . ProductId, ProductsGrid );
-			Utils . SetGridRowSelectionOn ( ProductsGrid, rec );
+			Utils . SetGridRowSelectionOn ( ProductsGrid , rec );
 			ProductsGrid . Refresh ( );
 
 			var v2 = ProductsGrid . SelectedItem as nwproduct;
@@ -590,8 +619,8 @@ namespace WPFPages . Views
 			}
 			IsLoading = true;
 			//Find 1st match in Products Db Grid and select it
-			rec = FindMatchingRecord ( v2 . CategoryId, CategoriesGrid );
-			Utils . SetGridRowSelectionOn ( CategoriesGrid, rec );
+			rec = FindMatchingRecord ( v2 . CategoryId , CategoriesGrid );
+			Utils . SetGridRowSelectionOn ( CategoriesGrid , rec );
 
 			var v4 = ProductsGrid . SelectedItem as nwproduct;
 			if ( v4 == null )
@@ -603,19 +632,19 @@ namespace WPFPages . Views
 			IsLoading = true;
 			NwCatCollection ncc = new NwCatCollection ( v4 . CategoryId );
 			CategoriesGrid . ItemsSource = ncc;
-			rec = FindMatchingRecord ( v4 . CategoryId, CategoriesGrid );
-			Utils . SetGridRowSelectionOn ( CategoriesGrid, rec );
+			rec = FindMatchingRecord ( v4 . CategoryId , CategoriesGrid );
+			Utils . SetGridRowSelectionOn ( CategoriesGrid , rec );
 
 			IsLoading = false;
 
 		}
-		public static void SelectRowByIndex ( DataGrid dataGrid, int rowIndex )
+		public static void SelectRowByIndex ( DataGrid dataGrid , int rowIndex )
 		{
 			if ( !dataGrid . SelectionUnit . Equals ( DataGridSelectionUnit . FullRow ) )
 				throw new ArgumentException ( "The SelectionUnit of the DataGrid must be set to FullRow." );
 
 			if ( rowIndex < 0 || rowIndex > ( dataGrid . Items . Count - 1 ) )
-				throw new ArgumentException ( string . Format ( "{0} is an invalid row index.", rowIndex ) );
+				throw new ArgumentException ( string . Format ( "{0} is an invalid row index." , rowIndex ) );
 
 			if ( dataGrid . Items . Count == 0 )
 				return;
@@ -658,41 +687,41 @@ namespace WPFPages . Views
 			return;
 		}
 
-		private void CloseReturnButton_PreviewMouseLeftButtonDown ( object sender, MouseButtonEventArgs e )
+		private void CloseReturnButton_PreviewMouseLeftButtonDown ( object sender , MouseButtonEventArgs e )
 		{
 			Close ( );
 		}
 
-		private void CategoriesGrid_DataContextChanged ( object sender, DependencyPropertyChangedEventArgs e )
+		private void CategoriesGrid_DataContextChanged ( object sender , DependencyPropertyChangedEventArgs e )
 		{
-//			int x = 0;
+			//			int x = 0;
 		}
 
-		private void CustomersGrid_DataContextChanged ( object sender, DependencyPropertyChangedEventArgs e )
+		private void CustomersGrid_DataContextChanged ( object sender , DependencyPropertyChangedEventArgs e )
 		{
-//			int x = 0;
+			//			int x = 0;
 		}
 
-		private void OrdersGrid_DataContextChanged ( object sender, DependencyPropertyChangedEventArgs e )
+		private void OrdersGrid_DataContextChanged ( object sender , DependencyPropertyChangedEventArgs e )
 		{
-//			int x = 0;
+			//			int x = 0;
 		}
 
-		private void ProductsGrid_DataContextChanged ( object sender, DependencyPropertyChangedEventArgs e )
+		private void ProductsGrid_DataContextChanged ( object sender , DependencyPropertyChangedEventArgs e )
 		{
-//			int x = 0;
+			//			int x = 0;
 		}
 
-		private void OrderDetailsGrid_DataContextChanged ( object sender, DependencyPropertyChangedEventArgs e )
+		private void OrderDetailsGrid_DataContextChanged ( object sender , DependencyPropertyChangedEventArgs e )
 		{
-//			int x = 0;
+			//			int x = 0;
 		}
 
-		private void Button_Click ( object sender, RoutedEventArgs e )
+		private void Button_Click ( object sender , RoutedEventArgs e )
 		{
 			//Export Orders  data to CSV
 			StringBuilder sb = new StringBuilder ( );
-//			string Output = "";
+			//			string Output = "";
 			//foreach ( var item in OrdersGrid . Items )
 			//{
 			//	nworder nwo = new nworder ( );
@@ -716,7 +745,7 @@ namespace WPFPages . Views
 			//File . WriteAllText ( @"C:\users\ianch\Documents\nworders.csv", Output );
 		}
 
-		private void Import_Click ( object sender, RoutedEventArgs e )
+		private void Import_Click ( object sender , RoutedEventArgs e )
 		{
 			string Output = "";
 			string [ ] lines, fields;
@@ -732,61 +761,61 @@ namespace WPFPages . Views
 
 		}
 
-		private void Std_Click ( object sender, RoutedEventArgs e )
+		private void Std_Click ( object sender , RoutedEventArgs e )
 		{
 			//			NorthWindGrid nwg = new NorthWindGrid ( );
 			//nwg . Show ( );
 		}
 
-		private void MenuItem_Click ( object sender, RoutedEventArgs e )
+		private void MenuItem_Click ( object sender , RoutedEventArgs e )
 		{
 
 		}
 
 
-		private void Window_Closing ( object sender, CancelEventArgs e )
+		private void Window_Closing ( object sender , CancelEventArgs e )
 		{
 			EventControl . NwCustomerSelected -= EventControl_NwCustomerSelected;
 			Flags . NwSelectionWindow = null;
 		}
-		private void ShowOrderDetailedView_Click ( object sender, RoutedEventArgs e )
+		private void ShowOrderDetailedView_Click ( object sender , RoutedEventArgs e )
 		{
 			if ( Flags . NwSelectionWindow != null )
 			{
 				nwcustomer cg = new nwcustomer ( );
 				cg = CustomersGrid . SelectedItem as nwcustomer;
-				EventControl . TriggerNwCustomerSelected ( this, new NwGridArgs { ArgumentParameter = cg . CustomerId } );
+				EventControl . TriggerNwCustomerSelected ( this , new NwGridArgs { ArgumentParameter = cg . CustomerId } );
 			}
 			else
 			{
-			
+
 			}
 		}
 
-		private void ShowDetailedView_Click ( object sender, RoutedEventArgs e )
+		private void ShowDetailedView_Click ( object sender , RoutedEventArgs e )
 		{
 			nwcustomer cg = new nwcustomer ( );
 			cg = CustomersGrid . SelectedItem as nwcustomer;
-			EventControl . TriggerNwCustomerSelected ( this, new NwGridArgs { ArgumentParameter = cg . CustomerId } );
+			EventControl . TriggerNwCustomerSelected ( this , new NwGridArgs { ArgumentParameter = cg . CustomerId } );
 		}
 
-		private void NwStandard_PreviewMouseRightButtonDown ( object sender, MouseButtonEventArgs e )
+		private void NwStandard_PreviewMouseRightButtonDown ( object sender , MouseButtonEventArgs e )
 		{
 			ContextMenu cm = this . FindResource ( "NwContextMenu" ) as ContextMenu;
 			cm . PlacementTarget = this . CustomersGrid as DataGrid;
 			cm . IsOpen = true;
 		}
 
-		private void CloseReturnButton_PreviewMouseMove ( object sender, MouseEventArgs e )
+		private void CloseReturnButton_PreviewMouseMove ( object sender , MouseEventArgs e )
 		{
 			SolidColorBrush scb = new SolidColorBrush ( );
 			CloseReturnButton cb = sender as CloseReturnButton;
-//			scb = cb .Ellipse9.Fill as SolidColorBrush;
-//			Color c = scb . Color;
-//			scb = this . Background as SolidColorBrush;
+			//			scb = cb .Ellipse9.Fill as SolidColorBrush;
+			//			Color c = scb . Color;
+			//			scb = this . Background as SolidColorBrush;
 		}
 
-		private void CloseReturnButton_Loaded ( object sender, RoutedEventArgs e )
+		private void CloseReturnButton_Loaded ( object sender , RoutedEventArgs e )
 		{
 
 		}

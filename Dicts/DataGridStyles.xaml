@@ -1,6 +1,23 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+	<Style x:Key="HeaderStyleGreen" TargetType="DataGridColumnHeader">
+		<Setter Property="Background" Value="{StaticResource HeaderBrushGreen}" />
+		<Setter Property="Foreground" Value="White" />
+		<Setter Property="BorderBrush" Value="{StaticResource HeaderBorderBrushGreen}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="SnapsToDevicePixels" Value="True" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="MinWidth" Value="0" />
+		<Setter Property="MinHeight" Value="30" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Style.Triggers>
+			<Trigger Property="IsMouseOver" Value="true">
+				<Setter Property="Background" Value="{StaticResource HeaderBorderBrushGreen}" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+
 	<!--This is far more simplistic than the Bank control Temlate-->
 	<Style x:Key="GenericGridStyle" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
 		<Setter Property="BorderThickness" Value="0" />

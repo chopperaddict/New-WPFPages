@@ -115,8 +115,10 @@ namespace WPFPages . Views
 				CurrentDbType.Text = "Using Copy Data";
 			else
 				CurrentDbType . Text = "Using Original Data";
-			
+			MouseMove += Grab_MouseMove;
+
 		}
+
 
 		public static ListBox listbox;
 		public static int selected;
@@ -899,6 +901,21 @@ namespace WPFPages . Views
 //			mv . Show ( );
 		}
 
+		private void Grab_MouseMove ( object sender , MouseEventArgs e )
+		{
+			Point pt = e.GetPosition((UIElement)sender);
+			HitTestResult hit = VisualTreeHelper . HitTest ( ( Visual ) sender, pt );
+			if ( hit ?. VisualHit != null )
+			{
+				if ( Utils.ControlsHitList . Count != 0 )
+				{
+					if ( hit . VisualHit == Utils . ControlsHitList [ 0 ] . VisualHit )
+						return;
+				}
+				Utils . ControlsHitList . Clear ( );
+				Utils . ControlsHitList . Add ( hit );
+			}
+		}
 		private void Window_KeyDown ( object sender, KeyEventArgs e )
 		{
 			if ( e . Key == Key . LeftCtrl )
@@ -917,6 +934,19 @@ namespace WPFPages . Views
 				// Major  listof GV[] variables (Guids etc]
 				Debug . WriteLine ( "\nGridview GV[] Variables" );
 				Flags . ListGridviewControlFlags ( 1 );
+				key1 = false;
+				e . Handled = true;
+				return;
+			}
+			else if ( e . Key == Key . F11)     // F11
+			{
+				if ( Utils . ControlsHitList . Count == 0 )
+				{
+					key1 = false;
+					e . Handled = true;
+					return;
+				}
+				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
 				key1 = false;
 				e . Handled = true;
 				return;
@@ -1660,6 +1690,22 @@ namespace WPFPages . Views
 		{
 			MainWindow.ShowAPDatatoConsole ( );
 
+		}
+
+		private void CreateCookie_Click ( object sender , RoutedEventArgs e )
+		{
+			NewCookie  nc = new NewCookie ( );
+			nc . ShowDialog ( );
+		}
+
+		private void ListCookieData_Click ( object sender , RoutedEventArgs e )
+		{
+			Cookies . ShowAllCookieData ( out int total , "" );
+		}
+
+		private void NewCookie_Click ( object sender , RoutedEventArgs e )
+		{
+			Utils . NewCookie_Click ( null , null );
 		}
 	}
 }

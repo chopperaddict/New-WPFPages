@@ -21,7 +21,7 @@
                               <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="True" />
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
-                              <Setter Property="Background" Value="{StaticResource Red4}" />
+                              <Setter Property="Background" Value="{StaticResource Red0}" />
                               <Setter Property="Foreground" Value="{StaticResource White0}" />
                               <Setter Property="FontWeight" Value="DemiBold" />
                         </MultiDataTrigger.Setters>
@@ -38,9 +38,9 @@
                               <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="False" />
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
-                              <Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue2}" />
-                              <Setter Property="Foreground" Value="{StaticResource White0}" />
-                              <Setter Property="FontWeight" Value="Bold"/>
+					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue0}" />
+					<Setter Property="Foreground" Value="{StaticResource White0}" />
+					<Setter Property="FontWeight" Value="Bold"/>
                         </MultiDataTrigger.Setters>
                   </MultiDataTrigger>
 
@@ -75,8 +75,7 @@
                               <Setter Property="Foreground" Value="{StaticResource Black2}" />
                         </MultiDataTrigger.Setters>
                   </MultiDataTrigger>
-                  <!--*************************************************************-->
-
+ 
                   <!--=========================================================================================================-->
                   <!--#### ACTYPE = 2 ####-->
 
@@ -92,9 +91,9 @@
                               <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="True" />
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
-                              <Setter Property="Background" Value="{StaticResource Red4}" />
-                              <Setter Property="Foreground" Value="{StaticResource White0}" />
-                              <Setter Property="FontWeight" Value="DemiBold" />
+					<Setter Property="Background" Value="{StaticResource Red0}" />
+					<Setter Property="Foreground" Value="{StaticResource White0}" />
+					<Setter Property="FontWeight" Value="DemiBold" />
                         </MultiDataTrigger.Setters>
                   </MultiDataTrigger>
 
@@ -110,7 +109,7 @@
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
                               <!--<Setter Property="Background" Value="{StaticResource Red1}" />-->
-					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue2}" />
+					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue0}" />
 					<Setter Property="Foreground" Value="{StaticResource White0}" />
 					<Setter Property="FontWeight" Value="Bold"/>
 				</MultiDataTrigger.Setters>
@@ -146,7 +145,7 @@
                         <MultiDataTrigger.Setters>
                               <!--<Setter Property="Background" Value="{StaticResource Red1}" />-->
                               <Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green4}"/>
-                              <Setter Property="Foreground" Value="{StaticResource Gray4}" />
+                              <Setter Property="Foreground" Value="{StaticResource Black0}" />
                         </MultiDataTrigger.Setters>
                   </MultiDataTrigger>
 
@@ -163,9 +162,9 @@
                               <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="True" />
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
-                              <Setter Property="Background" Value="{StaticResource Red4}" />
-                              <Setter Property="Foreground" Value="{StaticResource White0}" />
-                              <Setter Property="FontWeight" Value="DemiBold" />
+					<Setter Property="Background" Value="{StaticResource Red0}" />
+					<Setter Property="Foreground" Value="{StaticResource White0}" />
+					<Setter Property="FontWeight" Value="DemiBold" />
                         </MultiDataTrigger.Setters>
                   </MultiDataTrigger>
 
@@ -180,7 +179,7 @@
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
                               <!--<Setter Property="Background" Value="{StaticResource Red1}" />-->
-					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue2}" />
+					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue0}" />
 					<Setter Property="Foreground" Value="{StaticResource White0}" />
 					<Setter Property="FontWeight" Value="Bold"/>
 				</MultiDataTrigger.Setters>
@@ -215,7 +214,7 @@
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
                               <!--<Setter Property="Background" Value="{StaticResource Red1}" />-->
-                              <Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Yellow1}"/>
+                              <Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Orange1}"/>
                               <Setter Property="Foreground" Value="{StaticResource Black4}" />
                         </MultiDataTrigger.Setters>
                   </MultiDataTrigger>
@@ -233,9 +232,9 @@
                               <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="True" />
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
-                              <Setter Property="Background" Value="{StaticResource Red4}" />
-                              <Setter Property="Foreground" Value="{StaticResource White0}" />
-                              <Setter Property="FontWeight" Value="DemiBold" />
+					<Setter Property="Background" Value="{StaticResource Red0}" />
+					<Setter Property="Foreground" Value="{StaticResource White0}" />
+					<Setter Property="FontWeight" Value="DemiBold" />
                         </MultiDataTrigger.Setters>
                   </MultiDataTrigger>
 
@@ -250,7 +249,7 @@
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
                               <!--<Setter Property="Background" Value="{StaticResource Red1}" />-->
-					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue2}" />
+					<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Blue0}" />
 					<Setter Property="Foreground" Value="{StaticResource White0}" />
 					<Setter Property="FontWeight" Value="Bold"/>
 				</MultiDataTrigger.Setters>
@@ -287,7 +286,7 @@
                         <MultiDataTrigger.Setters>
                               <!--<Setter Property="Background" Value="{StaticResource Red1}" />-->
                               <Setter Property="Background" Value="{Binding Converter={StaticResource Resource2BrushConvert}, ConverterParameter=Magenta4}"/>
-                              <Setter Property="Foreground" Value="{StaticResource White0}" />
+                              <Setter Property="Foreground" Value="{StaticResource Black0}" />
                         </MultiDataTrigger.Setters>
                   </MultiDataTrigger>
 

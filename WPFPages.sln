@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D3AAE4A0-A392-46B9-B6A9-D32F0E8C6E23}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		UTILSTOLIBRARY.TXT = UTILSTOLIBRARY.TXT
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorSelector", "C:\Users\ianch\source\repos\ColorSelector\ColorSelector.csproj", "{075D63CE-5DCF-4475-8066-A1B0E070B6A1}"
@@ -18,6 +19,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyAnalogClock", "C:\Users\ianch\source\repos\MyAnalogClock\MyAnalogClock.csproj", "{3100ABC3-387B-45D0-961C-CD434F252D85}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfClassLib", "..\Users\ianch\source\WpfClassLib\WpfClassLib.csproj", "{85954B36-0D6C-4E0E-BA99-2A85BD23B5EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilitiesLib", "..\Users\ianch\source\StringLibrary\UtilitiesLib.csproj", "{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +116,26 @@ Global
 		{85954B36-0D6C-4E0E-BA99-2A85BD23B5EC}.Release|x64.Build.0 = Release|Any CPU
 		{85954B36-0D6C-4E0E-BA99-2A85BD23B5EC}.Release|x86.ActiveCfg = Release|Any CPU
 		{85954B36-0D6C-4E0E-BA99-2A85BD23B5EC}.Release|x86.Build.0 = Release|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Debug|ARM.Build.0 = Debug|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Debug|x64.Build.0 = Debug|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Debug|x86.Build.0 = Debug|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Release|ARM.ActiveCfg = Release|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Release|ARM.Build.0 = Release|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Release|ARM64.Build.0 = Release|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Release|x64.ActiveCfg = Release|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Release|x64.Build.0 = Release|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Release|x86.ActiveCfg = Release|Any CPU
+		{BEA8D78F-491A-44D3-B8B9-B3E630B46CD9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

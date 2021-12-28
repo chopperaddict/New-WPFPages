@@ -252,6 +252,10 @@
 			local:MenuAttachedProperties.MenuItemMargin="1"
 			VerticalAlignment="Stretch"
 			Width="440">
+			<!--// Removes that infiriating background//-->
+			<Menu.Style>
+				<Style></Style>
+			</Menu.Style>
 
 			<MenuItem  Header="_Linq Queries" 
 					Width="80" 

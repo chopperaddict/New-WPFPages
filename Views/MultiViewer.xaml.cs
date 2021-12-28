@@ -19,6 +19,8 @@ using System . Xml . Linq;
 using System . Collections . ObjectModel;
 using System . Windows . Documents;
 
+using System . Windows . Media . Animation;
+
 namespace WPFPages . Views
 {
 	/// <summary>
@@ -99,6 +101,7 @@ namespace WPFPages . Views
 			WaitMessage . Refresh ( );
 			this . Refresh ( );
 		}
+
 		private async void Window_Loaded ( object sender , RoutedEventArgs e )
 		{
 			DataGridColumn[] dgc;

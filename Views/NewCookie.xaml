@@ -1,0 +1,62 @@
+﻿<Window x:Class="WPFPages.Views.NewCookie"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFPages.Views"
+        mc:Ignorable="d"
+        Title="Create New Cookie" Height="255" Width="300"
+	  Topmost="True"
+	  PreviewKeyUp="Window_PreviewKeyUp"
+	  WindowStartupLocation="CenterScreen"
+	  Background="Aquamarine">
+
+	<Grid>
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="5" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="40" />
+			<RowDefinition Height="15" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="10" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="10" />
+		</Grid.ColumnDefinitions>
+		<TextBlock x:Name="info" Text="Enter the data you want to have saved as a cookie in the fields below..." HorizontalAlignment="Center" 
+			    Grid.Row="1" Grid.Column="1" Margin="0,15,0,0" TextWrapping="Wrap"
+			 VerticalAlignment="Top" Height="37" Width="214" />
+		<Label x:Name="label" Content="Cookie Name" HorizontalAlignment="Left" Margin="19,56,0,0" 
+			 Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Height="26" Width="89"/>
+		<Label x:Name="label1" Content="Key value" HorizontalAlignment="Left" Margin="19,89,0,0" 
+			 Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Height="26" Width="89"/>
+		<Label x:Name="label2" Content="Content" HorizontalAlignment="Left" Margin="19,122,0,0" 
+			 Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Width="85"/>
+		<TextBox x:Name="Name" HorizontalAlignment="Left" Margin="114,58,0,0" Text="" TextWrapping="Wrap" 
+			 Background="Black" Foreground="Yellow" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Width="120" Height="25" HorizontalContentAlignment="Center"/>
+		<TextBox x:Name="Key" HorizontalAlignment="Left" Margin="114,91,0,0" Text="" TextWrapping="Wrap"
+			   Background="Black" Foreground="Yellow" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Width="120" Height="25" HorizontalContentAlignment="Center"/>
+		<TextBox x:Name="Value" HorizontalAlignment="Left" Margin="114,124,0,0" Text="" TextWrapping="Wrap" 
+			   Background="Black" Foreground="Yellow" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Width="120" Height="25" HorizontalContentAlignment="Center"/>
+
+		<Button x:Name="button" Content="Go"
+			  Click="button_Click"
+			   Grid.Row="2" Grid.Column="1" 
+			  HorizontalAlignment="Right" 
+			  VerticalAlignment="Bottom" Height="40" Width="91"
+			  Foreground="{StaticResource ResourceKey=TextWhiteToBlackHorizontal4}"
+			  Template="{StaticResource HorizontalGradientTemplateBlue}">
+		</Button>
+		<Button x:Name="CancelBtn" Content="Cancel"
+			Click="Cancel_Click"
+			Grid.Row="2" Grid.Column="1" 
+			HorizontalAlignment="Right" 
+			VerticalAlignment="Bottom" Height="40" Width="91"
+			Foreground="{StaticResource ResourceKey=TextWhiteToBlackHorizontal4}"
+			Margin="0 0 100 0"
+			Template="{StaticResource HorizontalGradientTemplateRed}" >
+		</Button>
+
+	</Grid>
+</Window>

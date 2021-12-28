@@ -5,6 +5,8 @@
 
 using Dapper;
 
+using Microsoft . Identity . Client . Extensions . Msal;
+
 using System;
 using System . Collections . Generic;
 using System . Collections . ObjectModel;
@@ -25,7 +27,7 @@ using WPFPages . Views;
 namespace WPFPages . ViewModels
 {
 	[Serializable]
-	public partial class BankAccountViewModel : INotifyPropertyChanged
+	public partial class BankAccountViewModel : INotifyPropertyChanged 
 	{
 
 		#region PropertyChanged

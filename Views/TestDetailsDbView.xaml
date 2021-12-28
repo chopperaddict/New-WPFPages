@@ -104,24 +104,7 @@
 
 		<!--<bank:BankAccountViewModel x:Key="BankViewData"/>-->
 
-		<Style x:Key="HeaderStyleGreen" TargetType="DataGridColumnHeader">
-			<Setter Property="Background" Value="{StaticResource HeaderBrushGreen}" />
-			<Setter Property="Foreground" Value="White" />
-			<Setter Property="BorderBrush" Value="{StaticResource HeaderBorderBrushGreen}" />
-			<Setter Property="BorderThickness" Value="1" />
-			<Setter Property="SnapsToDevicePixels" Value="True" />
-			<Setter Property="HorizontalContentAlignment" Value="Center" />
-			<Setter Property="MinWidth" Value="0" />
-			<Setter Property="MinHeight" Value="30" />
-			<Setter Property="Cursor" Value="Hand" />
-			<Style.Triggers>
-				<Trigger Property="IsMouseOver" Value="True">
-					<Setter Property="Background" Value="{StaticResource HeaderBorderBrushGreen}" />
-				</Trigger>
-			</Style.Triggers>
-		</Style>
-
-
+	
 		<CollectionViewSource x:Key="src" Source="{Binding DetViewerView}" />
 
 	</Window.Resources>

@@ -8,38 +8,28 @@
 
 	<ControlTemplate x:Key="MenuItemCtrlTemplate1" TargetType="{x:Type MenuItem}">
 
-		<!--// Background of items when mouse is over them is set by -->
+		<!--// Background of items when MOUSE IS OVER THEM is set by THESE -->
 		<!--// The border brush + Thickness work on moused over menuitems-->
 		<Border x:Name="templateRoot"
-                    SnapsToDevicePixels="true"
-                    
-                    BorderBrush="{Binding Path=(local1:MenuAttachedProperties.MenuItemBorderColor) ,
+                    SnapsToDevicePixels="true"	                     
+                    Background="{Binding Path=(local1:MenuAttachedProperties.MenuItemBackground) ,
                         RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"
-                    
+                    TextElement.Foreground="{Binding Path=(local1:MenuAttachedProperties.MenuItemForeground) ,
+                        RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"
+			  BorderBrush="{Binding Path=(local1:MenuAttachedProperties.MenuItemBorderColor) ,
+                        RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"                         
                     BorderThickness="{Binding Path=(local1:MenuAttachedProperties.MenuItemBorderThickness) ,
-                        RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"
-                    
+                        RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"	                     
                     Height = "{Binding Path=(local1:MenuAttachedProperties.MenuItemHeight) ,
-                        RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"
-                    
+                        RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"                       
                     Margin = "{Binding Path=(local1:MenuAttachedProperties.MenuItemMargin) ,
-                        RelativeSource={RelativeSource AncestorType={x:Type Menu}}}" 			  
-                >
-			<!--// This doesnt do anything-->
-			<!--Background="{Binding Path=(local1:MenuAttachedProperties.MenuItemSelectedBackground) ,
-                        RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"-->
-			
-			<!--// This doesnt do anything-->
-			<!--Background="{StaticResource Magenta0}">-->
-
-			<Grid Margin="-1" >
+                        RelativeSource={RelativeSource AncestorType={x:Type Menu}}}" 
+			  Width="{Binding Path=(local1:MenuAttachedProperties.MenuDropdownWidth) ,
+                        RelativeSource={RelativeSource AncestorType={x:Type Menu}}}" >
+			<Grid  >
 				<Grid.ColumnDefinitions>
-
-					<ColumnDefinition MinWidth="22" SharedSizeGroup="MenuItemIconColumnGroup" Width="Auto"/>
-					<ColumnDefinition Width="13"/>
+					<ColumnDefinition Width="10"/>
 					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="30"/>
-					<ColumnDefinition SharedSizeGroup="MenuItemIGTColumnGroup" Width="Auto"/>
 					<ColumnDefinition Width="20"/>
 				</Grid.ColumnDefinitions>
 				<ContentPresenter x:Name="Icon"
@@ -47,8 +37,7 @@
                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
-                            Width="16"
-                            Height="16"
+                            Height="22"
                             Margin="3"/>
 				<Border x:Name="GlyphPanel"
                             Visibility="Hidden"
@@ -57,15 +46,13 @@
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
                             ClipToBounds="False"
-                            Margin="-1,0,0,0">
-					<!--// does nothing at all-->
-					<!--Background="{StaticResource Magenta0}"-->
+                            Margin="0,0,0,0" >
+                            <!--Width="16"-->
 
 					<!--BorderBrush="{Binding (local:MenuAttachedProperties.MenuItemBorderColor) ,
 							  RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"
 						    BorderThickness="{Binding (local:MenuAttachedProperties.MenuItemBorderThickness) ,
-							  RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"-->
-					<!--BorderBrush="{StaticResource MenuItem.Selected.Border}"-->
+							  RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"	>-->
 
 					<Path x:Name="Glyph"
                                 Data="{StaticResource Checkmark}"
@@ -75,19 +62,22 @@
                                 Fill="{StaticResource Menu.Static.Foreground}" />
 				</Border>
 				<ContentPresenter x:Name="menuHeaderContainer"
-                            Grid.Column="2"					    
+                            Grid.Column="1"					    
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             ContentSource="Header"
-                            RecognizesAccessKey="True"						    
+                            RecognizesAccessKey="True"	
+							
                             Margin="{TemplateBinding Padding}"
                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
 				<TextBlock x:Name="menuGestureText"
-                            Grid.Column="4"
-                            Text="{TemplateBinding InputGestureText}"
-                            Margin="{TemplateBinding Padding}"
-                            VerticalAlignment="Center"
-                            Opacity="0.7" />
+					Grid.Column="1"
+					FontWeight="{Binding Path=(local1:MenuAttachedProperties.MenuFontWeight)}" 
+  					FontSize="{Binding Path=(local1:MenuAttachedProperties.MenuFontSize)}" 
+					Text="{TemplateBinding InputGestureText}"
+					Margin="{TemplateBinding Padding}"
+					VerticalAlignment="Center"
+					Opacity="1.0" />
 			</Grid>
 
 		</Border>
@@ -105,29 +95,21 @@
 
 			<!--// Properties for all menu items NOT being moused over-->
 			<Trigger Property="IsHighlighted" Value="false">
-
 				<!--// Controls Font Foreground when Mouse is NOT OVER it-->
+				<Setter TargetName="templateRoot" 				
+					Property="Background" 
+					Value="{Binding Path=(local1:MenuAttachedProperties.MenuItemBackground), RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
 				<Setter TargetName="menuHeaderContainer" 				
 					Property="TextElement.Foreground" 
 					Value="{Binding Path=(local1:MenuAttachedProperties.MenuItemForeground), RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
-
 				<Setter TargetName="menuHeaderContainer" 
 					Property="TextElement.FontWeight" 
 					Value="{Binding Path=(local1:MenuAttachedProperties.MenuFontWeight) ,
 					RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
-
 				<Setter TargetName="menuHeaderContainer" 
 					Property="TextElement.FontSize" 
 					Value="{Binding Path=(local1:MenuAttachedProperties.MenuFontSize) ,
 					RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
-
-				<!--// This Colors the MenuItem's Normal Background - NOT Mouse over-->
-				<Setter TargetName="templateRoot" 
-					Property="Background" 
-					Value="Transparent"/>
-					<!--Value="{Binding Path=(local1:MenuAttachedProperties.MenuItemBackground) ,
-					RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>-->
-
 				<!--// This does NOT seem to control any Colors -->
 				<Setter TargetName="GlyphPanel" 
 					Property="BorderBrush" 
@@ -136,10 +118,30 @@
 
 			<!--//  menu item (NB Property = IsHighlighted) == FALSE so Mouseover is FALSE-->
 
-			<Trigger Property="IsHighlighted" Value="False">
+			<Trigger Property="IsHighlighted" Value="true">
+				<!--// This Colors the MenuItem's Normal Background - NOT Mouse over-->
+				<Setter TargetName="templateRoot" 
+					Property="Background" 
+					Value="{Binding Path=(local1:MenuAttachedProperties.MenuItemSelectedBackground), RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
+				<Setter TargetName="menuHeaderContainer" 				
+					Property="TextElement.Foreground" 
+					Value="{Binding Path=(local1:MenuAttachedProperties.MenuItemSelectedForeground), RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
+				<Setter TargetName="menuGestureText" 
+					Property="TextElement.FontSize" 
+					Value="{Binding Path=(local1:MenuAttachedProperties.MenuFontSize)}"/>
+				<Setter TargetName="menuHeaderContainer" 
+					Property="TextElement.FontSize" 
+					Value="{Binding Path=(local1:MenuAttachedProperties.MenuFontSize) ,
+					RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
+			</Trigger>
+
+			<!--Value="{Binding Path=(local1:MenuAttachedProperties.MenuItemBackground) ,
+					RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>-->
+
+			<!--<Trigger Property="IsHighlighted" Value="False">
 				<Setter TargetName="templateRoot" 
                             Property="Background" 
-                            Value="Orange"/>
+                            Value="Orange"/>-->
 				<!--Value="{Binding (local1:MenuAttachedProperties.MenuItemSelectedBackground) ,
                             RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>-->
 
@@ -156,13 +158,18 @@
                             Property="TextBlock.FontWeight" 
                             Value="{Binding Path=(local1:MenuAttachedProperties.MenuFontWeight) ,
                             RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>-->
-			</Trigger>
+			<!--</Trigger>-->
 			<!--// This Colors the MenuIten's Background when Mouse is over it-->
-			<Trigger Property="IsHighlighted" Value="True">
+			<!--<Trigger Property="IsHighlighted" Value="false">
+				<Setter TargetName="templateRoot" 
+                            Property="TextElement.Foreground" 
+                            Value="{StaticResource Black3}"/>
 				<Setter TargetName="templateRoot" 
                             Property="Background" 
-                            Value="red"/>
-				<!--Value="{Binding (local1:MenuAttachedProperties.MenuItemSelectedBackground) ,
+                            Value="{StaticResource HorizontalGreenGradient}"/>-->
+
+
+					<!--Value="{Binding (local1:MenuAttachedProperties.MenuItemSelectedBackground) ,
                             RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>-->
 				
 				<!--<Setter TargetName="menuHeaderContainer"
@@ -178,13 +185,27 @@
                             Property="TextBlock.FontWeight" 
                             Value="{Binding Path=(local1:MenuAttachedProperties.MenuFontWeight) ,
                             RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>-->
-			</Trigger>
+			<!--</Trigger>-->
 
 			<!--Menu item is Disabled-->
-			<Trigger Property="IsEnabled" Value="False">
-				<Setter TargetName="menuHeaderContainer" Property="TextElement.Foreground" Value="{StaticResource Menu.Disabled.Foreground}" />
+			<!--<Trigger Property="IsHighlighted" Value="False">
+				<Setter TargetName="templateRoot" Property="Background" Value="{StaticResource  HorizontalGreenGradient}" />
 				<Setter TargetName="Glyph" Property="Fill" Value="{StaticResource Menu.Disabled.Foreground}" />
-			</Trigger>
+			</Trigger>-->
+			<!--<MultiTrigger>
+				<MultiTrigger.Conditions>
+					<Condition Property="IsHighlighted" Value="false"/>
+				</MultiTrigger.Conditions>
+				<Setter TargetName="templateRoot" Property="Background" Value="{StaticResource HorizontalGreenGradient}" />
+				<Setter TargetName="templateRoot" Property="BorderBrush" Value="{StaticResource White0}" />
+			</MultiTrigger>
+			<MultiTrigger>
+				<MultiTrigger.Conditions>
+					<Condition Property="IsHighlighted" Value="True"/>
+				</MultiTrigger.Conditions>
+				<Setter TargetName="templateRoot" Property="Background" Value="{StaticResource HorizontalBlueGradient}" />
+				<Setter TargetName="templateRoot" Property="BorderBrush" Value="{StaticResource Black0}" />
+			</MultiTrigger>
 			<MultiTrigger>
 				<MultiTrigger.Conditions>
 					<Condition Property="IsHighlighted" Value="True"/>
@@ -192,7 +213,7 @@
 				</MultiTrigger.Conditions>
 				<Setter TargetName="templateRoot" Property="Background" Value="{StaticResource MenuItem.Highlight.Disabled.Background}" />
 				<Setter TargetName="templateRoot" Property="BorderBrush" Value="{StaticResource MenuItem.Highlight.Disabled.Border}" />
-			</MultiTrigger>
+			</MultiTrigger>-->
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 

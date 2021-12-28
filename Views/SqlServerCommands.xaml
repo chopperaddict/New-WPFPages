@@ -5,19 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:WPFPages.Views"
+       xmlns:cmd="clr-namespace:WPFPages.Commands"
          mc:Ignorable="d"
 	  Loaded="Window_Loaded"
 	  MouseRightButtonUp="Window_MouseRightButtonUp"
+	  PreviewKeyDown="Window_PreviewKeyDown"
 	  WindowStartupLocation="CenterScreen"
 	  ResizeMode="CanResizeWithGrip"
        Title="Sql Server Commands" 
 	  MinHeight="675" 
 	  MinWidth="970"
+	  x:Name="SQLServerCommands"
 	  Height="675" 	
 	  Width="970">
 	<!--MouseLeftButtonDown="ChangeFocus"-->
+
 	<Window.Resources>
 
+		<ControlTemplate x:Key="Iconstyle" TargetType="{x:Type MenuItem}">
+			<Grid>
+				<!--<Image/>
+				<TextBlock/>-->
+			</Grid>
+		</ControlTemplate>
 
 		<!--create the style for the RepeatButton and Thumb of the ScrollBar.-->
 		<Style x:Key="RepeatButtonTransparent" TargetType="{x:Type RepeatButton}">
@@ -307,7 +317,7 @@
 											     Width="{Binding ActualWidth, ElementName=SubMenuBorder}"/>
 									</Canvas>
 									<Rectangle Fill="{StaticResource Menu.Static.Separator}" HorizontalAlignment="Left" Margin="29,2,0,2" Width="1"/>
-									<ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Cycle" Grid.IsSharedSizeScope="true" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle"/>
+									<ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Cycle"  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle"/>
 								</Grid>
 							</ScrollViewer>
 						</Border>
@@ -351,7 +361,7 @@
 				  SnapsToDevicePixels="true">
 				<Grid Margin="-1">
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition MinWidth="22" SharedSizeGroup="MenuItemIconColumnGroup" Width="Auto"/>
+						<ColumnDefinition MinWidth="22"  SharedSizeGroup="MenuItemIconColumnGroup" Width="Auto"/>
 						<ColumnDefinition Width="13"/>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="30"/>
@@ -500,6 +510,13 @@
 				</Trigger>
 			</Style.Triggers>
 		</Style>
+		<!--<ItemsPanelTemplate x:Key="MenuItemItemsPanel1">
+			<StackPanel>
+				<TextBlock Text="this is text">
+
+				</TextBlock>
+			</StackPanel>
+		</ItemsPanelTemplate>-->
 
 		<!--#endregion Menu Template-->
 
@@ -583,8 +600,8 @@
 					BorderThickness="0"
 					Height="20"
 					ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle1}" 			    
-					IsEditable="True"   
-					MaxDropDownHeight="142"  
+					IsEditable="False"   
+					MaxDropDownHeight="250"  
 					MouseDoubleClick="DbToCopyCombo_MouseDoubleClick"
 					Margin="98,38,26,12" 
 					OverridesDefaultStyle="False"	   			
@@ -592,6 +609,7 @@
 					SelectedItem="0"	  			   
 					SelectionChanged="DbToCopyCombo_SelectionChanged"
 					Template="{StaticResource ComboBoxEditableTemplate}" Width="106"/>
+
 
 			<TextBlock x:Name="textBlock_Copy" 
 				Foreground="{StaticResource White0}"
@@ -615,54 +633,135 @@
 				VerticalContentAlignment="Center"
 				Text="Enter Table name..." 
 				TextWrapping="Wrap" 
-				Width="175" Height="27" 
+				Width="235" Height="27" TextChanged="DbToBeCreated_TextChanged" 
 				/>
 		</WrapPanel>
+		<Label 
+			FontSize="16"
+			Grid.Row="2"
+			Grid.Column="2"
+			Height="30"
+			HorizontalAlignment="Left"
+			Margin="170,25,31,15" 
+			Background="Transparent"
+			Foreground="{StaticResource White0}"
+			Content="Cookies"
+			Width="Auto"
+			/>
+
+		<ComboBox x:Name="CookiesCombo" 
+			Background="{StaticResource Blue0}"			    
+			Foreground="{StaticResource Red5}"
+			BorderThickness="0"
+			    MinWidth="200"
+			Grid.Row="2"
+			Grid.Column="2"
+			Grid.ColumnSpan="2"
+			Height="30"
+			HorizontalAlignment="Left"
+			IsEditable="True"  
+			ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle1}" 	
+			MaxDropDownHeight="250"  
+			MouseDoubleClick="Cookies_MouseDoubleClick"
+			Margin="242,25,0,15" 
+			OverridesDefaultStyle="False"	   			
+			PreviewMouseLeftButtonDown="Cookies_PreviewMouseLeftButtonDn"
+			PreviewMouseRightButtonDown="CookiesCombo_PreviewMouseRightButtonDown"
+			SelectedItem="0"	  			   
+			SelectionChanged="Cookies_SelectionChanged"
+			Template="{StaticResource ComboBoxEditableTemplate}" 
+			ToolTip="Right Click to list full details of currently selected Cookie...."
+			VerticalContentAlignment="Center" Width="275">
+			<!--<ComboBox.ItemTemplate >
+				<DataTemplate>
+				<WrapPanel Orientation="Horizontal">
+					<TextBlock 	x:Name="Cookiename" Width="100" Height="25"
+							Background="{StaticResource Blue1}"
+							Foreground="{StaticResource Black0}"
+							Text="{Binding cookieKey}"/>
+					<TextBlock 	x:Name="Cookiekey"  Height="25"
+							Text="{Binding cookieValue}"/>
+				</WrapPanel>
+				</DataTemplate>
+			</ComboBox.ItemTemplate>-->
+		</ComboBox>
 
 		<TextBlock x:Name="DbCopiedResult" 
 			Background="{StaticResource Yellow3}"
 			Foreground="{StaticResource Black0}"
 			Grid.Column="2" 
 			Grid.ColumnSpan="3"
-			Height="111"
+			Height="93"
 			HorizontalAlignment="Right"
-			Margin="0,3,1,0"
+			Margin="0,10,1,0"
 			SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical"	    
 			Padding="5"
 			Text="Db Creation result:"
 			TextAlignment="Center"
 			TextWrapping="Wrap" 
-			VerticalAlignment="Top" Grid.RowSpan="3" Width="500"
+			VerticalAlignment="Top" Grid.RowSpan="2" Width="434"
 			/>
 
 		<Button  x:Name="CopyDbBtn"
-			Background="{StaticResource Green4}"
 			Click="CopyDbBtn_Click"
 			Content="Copy Db"
 			Foreground="{StaticResource TextWhiteToBlackHorizontal4}"
 			Grid.Column="1"
 			Grid.Row="2"
 			HorizontalAlignment="Left"
-			Margin="0,15,0,15"
+			Margin="0,15,171,15"
 			Padding="3"
 			PreviewMouseLeftButtonDown="ChangeFocus"
-			Template="{StaticResource HorizontalGradientTemplateBlue}" Width="204"
+			Template="{StaticResource HorizontalGradientTemplateBlue}"
+			Width="100"
 			/>
 
 		<!--// View DB Table-->
 		<Button  x:Name="ViewDbBtn"
-			  Background="{StaticResource Green4}"
 			  Click="ViewDbBtn_Click"
 			  Content="View Db"
 			  Foreground="{StaticResource TextWhiteToBlackHorizontal4}"
 			  Grid.Column="1"
 			  Grid.Row="2"
 			  HorizontalAlignment="Left"
-			  Margin="222,15,0,15"
+			  Margin="110,15,0,15"
 			  Padding="3"
 			  PreviewMouseLeftButtonDown="ChangeFocus"
 			  Template="{StaticResource HorizontalGradientTemplateBlue}" 
-			   Width="204" Grid.ColumnSpan="2"/>
+			   Width="101"/>
+
+		<Button  x:Name="ShowcookiesInfo"
+			Click="showcookie_Click"
+			Content="Cookies Details"
+			Foreground="{StaticResource TextWhiteToBlackHorizontal4}"
+			Grid.Column="1"
+			Grid.ColumnSpan="2"
+			Grid.Row="2"
+			HorizontalAlignment="Left"
+			Margin="216,15,0,15"
+			Padding="3"
+			PreviewMouseLeftButtonDown="ChangeFocus"
+			Template="{StaticResource HorizontalGradientTemplateBlue}" 
+			Width="102"/>
+
+		<Button  x:Name="Cookies_btn"
+			Click="NewCookie_Click"
+			Content="New Cookie"
+			Foreground="{StaticResource TextWhiteToBlackHorizontal4}"
+			Grid.Column="1"
+			Grid.ColumnSpan="2"
+			Grid.Row="2"
+			Height="40"
+			HorizontalAlignment="Left"
+			Margin="330,0,0,0"
+			Opacity="1"
+			Padding="3"
+			Panel.ZIndex="12"
+			Template="{StaticResource HorizontalGradientTemplateBlue}" 
+			Visibility="Visible"
+			Width="102"
+			VerticalAlignment="Center" />
+
 		<!--#endregion Row 1-->
 
 		<!--#region Row 2-->
@@ -692,7 +791,7 @@
 			Grid.Column="1"
 			Grid.ColumnSpan="3"   			   
 			HorizontalContentAlignment="Center"
-			KeyDown="SqlCommandString_KeyDown"
+			PreviewKeyDown="SqlCommandString_KeyDown"
 			LostFocus="SqlCommandString_LostFocus"
 			Margin="118,1,59,17"
 			PreviewMouseLeftButtonUp="SqlCommandString_PreviewMouseLeftButtonUp"
@@ -869,6 +968,23 @@
 			   Visibility="Collapsed"
 			  Width="92" />
 
+		<Button  x:Name="ShowProcComments"
+			Background="{StaticResource Black0}"
+			Click="showcomments"
+			Content="Show SP Comments"
+			FontSize="12"
+			Foreground="{StaticResource Yellow1}"
+			Grid.Row="5"
+			Grid.Column="1"
+			Grid.ColumnSpan="2"
+			HorizontalAlignment="Left"
+			Margin="7,2,0,3"
+			Padding="3"
+			PreviewMouseLeftButtonDown="SPCombo_PreviewMouseRightButtonDown"
+			Template="{StaticResource HorizontalGradientTemplateBlue}"
+			Visibility="Visible" 
+			Width="138" />
+
 		<Button  x:Name="ShowProcCode"
 			Background="{StaticResource Black0}"
 			Click="ListSPs_Click"
@@ -892,74 +1008,71 @@
 			Content="View All S.P. scripts"
 			FontSize="14"
 			Foreground="{StaticResource TextWhiteToBlackHorizontal4}" 
-			Grid.Column="4"
+			Grid.Column="3"
 			Grid.Row="5"
-			Height="40" 
-			HorizontalAlignment="Right"
-			Margin="0,0,0,0"
+			HorizontalAlignment="Left"
+			Height="43" 
+			Margin="90,0,0,0"
 			MaxWidth="138"
 			Padding="3"
 			Template="{StaticResource HorizontalGradientTemplateBlue}" 
-			VerticalAlignment="Top"
+			VerticalAlignment="Center"
 			Visibility="Visible" 
 			Width="140" 
 			   />
 
-		<Button  x:Name="SPArguments"
+		<Button  x:Name="XXXXX"
 			Background="{StaticResource Red5}"
-			Click="SPArguments_Click"
-			Content="Check SP Arguments"
+			Content="XXXXXX"
 			Foreground="{StaticResource Yellow1}" 
-			Grid.Column="1"
+			Grid.Column="4"
 			Grid.Row="5"
 			HorizontalAlignment="Left"
-			Margin="10,2,0,3"
+			Margin="0,0,0,0"
 			Padding="3"
 			PreviewMouseLeftButtonDown="ChangeFocus"
 			Template="{StaticResource HorizontalGradientTemplateBlue}"
 			Visibility="Visible" 
-			Width="138" />
+			Width="140" Grid.ColumnSpan="2" />
+
+		<Button  x:Name="YXXXXX"
+			Background="{StaticResource Red5}"
+			Content="XXXXXX"
+			Foreground="{StaticResource Yellow1}" 
+			Grid.Column="4"
+			Grid.Row="5"
+			HorizontalAlignment="Center"
+			Margin="0,105,0,0"
+			Padding="0"
+			PreviewMouseLeftButtonDown="ChangeFocus"
+			Template="{StaticResource HorizontalGradientTemplateBlue}"
+			Visibility="Visible" 
+			Width="140" />
 
 
 		<Button  x:Name="ViewSPArgs"
 			Click="ViewSPArgs_Click"
 			Content="PreView  S.P Arguments "
 			Foreground="{StaticResource Yellow1}" 
-			Grid.Column="1"
-			Grid.ColumnSpan="3"
+			Grid.Column="2"
+			Grid.ColumnSpan="2"
 			Grid.Row="5"
 			HorizontalAlignment="Left"
-			Margin="446,2,0,0"
+			Margin="186,2,0,0"
 			PreviewMouseLeftButtonDown="ChangeFocus"
 			MaxWidth="235"
 			Padding="3"
 			Template="{StaticResource HorizontalGradientTemplateBlue}"
 			TextOptions.TextFormattingMode="Ideal"
 			Visibility="Visible" 
-			Width="236" 
+			Width="159" 
 			   />
 
-		<Button  x:Name="zzzyhemas"
-			Click="TestGenericLinq"
-			Content="Linq Test"
-			FontSize="14"
-			Foreground="{StaticResource TextWhiteToBlackHorizontal4}"
-			Grid.Column="4" 
-			Grid.Row="6"
-			Height="40" 
-			HorizontalAlignment="Center"
-			Margin="0,0,0,77" 
-			Padding="3"
-			Template="{StaticResource HorizontalGradientTemplateBlue}" 
-			Visibility="Visible" 
-			VerticalAlignment="Bottom" 
-			Width="140" 
-			/>
 
 		<Button  x:Name="ShowGrid"
 			  Background="{StaticResource Yellow1}"
 			  Click="ShowGrid_Click"
-			  Content="Show Grid"
+			  Content="Show/Hide Grid"
 			  Foreground="{StaticResource TextWhiteToBlackHorizontal4}"
 			  Grid.Row="8"
 			  Grid.RowSpan="2"
@@ -1010,7 +1123,7 @@
 					ToolTipService.ShowDuration="2000"
 					ToolTip="Double click to view currently selected item in an editable Text box"	
 					VerticalContentAlignment="Top" 
-					Visibility="Visible" 
+					Visibility="Collapsed" 
 					Width="Auto"
 					/>
 		<!--<DataGrid x:Name="spViewerGrid"
@@ -1095,7 +1208,7 @@
 			ToolTipService.ShowDuration="2000"
 			VerticalContentAlignment="Center"
 			VerticalScrollBarVisibility="Auto"
-			Visibility="Visible" 
+			Visibility="Collapsed" 
 			Grid.ColumnSpan="3" 
 			Grid.RowSpan="4">
 
@@ -1174,10 +1287,16 @@
 		<!--#region Display panel-->
 
 		<!--// Textbox showing SP Args PRIOR to processing it-->
-		<Border  x:Name="SpArgsList" 
+		<Image
+			Grid.Row="1"	
+			 Visibility="Visible"
+			 x:Name="img1" Margin="-1431,17,693,147" Grid.RowSpan="6"
+			 />
+
+		<!--<Border  x:Name="SpArgsList" 
 			Grid.Row="6" 
 			Grid.Column="2"
-			Grid.ColumnSpan="2"
+			Grid.ColumnSpan="2"				   
 			Grid.RowSpan="2"	
 			Background="{StaticResource Blue0}"
 			MinHeight="235"
@@ -1242,7 +1361,7 @@
 					Visibility="{Binding Visibility, ElementName=SpArgsList}" 					
 					    />
 			</StackPanel>
-		</Border>
+		</Border>-->
 		<!--#endregion Display panel-->
 
 		<!--// 'Last Command' label-->
@@ -1277,7 +1396,7 @@
 			ToolTipService.BetweenShowDelay="5"
 			ToolTipService.ShowDuration="2000"
 			ToolTip="Enter a valid Sql command and press Enter, or click the 'Execute' button..."
-			Width="326" />
+			Width="389" />
 
 
 		<!--#region Menu-->
@@ -1285,102 +1404,109 @@
 
 		<!--MenuAttachedProperties control all dropdown items-->
 		<Menu x:Name="Mainmenu" 
+			Background="Black"		
+			BorderThickness="0"
 			Grid.Column="1" 
-			Grid.ColumnSpan="2"
-			Width="Auto" 			
+			Grid.ColumnSpan="3"
+			Height="30"
 			HorizontalAlignment="Left"
 			HorizontalContentAlignment="Left"
-			local:MenuAttachedProperties.MenuItemForeground="{StaticResource Black0}"
-			local:MenuAttachedProperties.MenuItemBackground="{StaticResource Red2}"
-			local:MenuAttachedProperties.MenuItemSelectedBackground="{StaticResource Blue5}"
+			local:MenuAttachedProperties.MenuItemSelectedBackground="{StaticResource YellowToBlack}"
+			local:MenuAttachedProperties.MenuItemBackground="{StaticResource Black0}"
+			local:MenuAttachedProperties.MenuItemForeground="{StaticResource HorizontalYellowGradient}"
 			local:MenuAttachedProperties.MenuItemSelectedForeground="{StaticResource White0}"
+			local:MenuAttachedProperties.MenuFontSize="14"
+			local:MenuAttachedProperties.MenuFontWeight="Normal"
 			local:MenuAttachedProperties.MenuItemBorderColor="{StaticResource Black0}"
-			local:MenuAttachedProperties.MenuItemHeight="25"
-			local:MenuAttachedProperties.MenuFontSize="14"			
-			local:MenuAttachedProperties.MenuItemBorderThickness="2"
-			local:MenuAttachedProperties.MenuItemMargin="2"
+			local:MenuAttachedProperties.MenuItemBorderThickness="0"
+			local:MenuAttachedProperties.MenuItemHeight ="24"
+			local:MenuAttachedProperties.MenuItemMargin="0"
+			local:MenuAttachedProperties.MenuDropdownWidth ="200"
+					    
 			>
-			<!--NOT USED - local:MenuAttachedProperties.MenuBackground="{StaticResource Green5}"-->
+			<!--// Removes that infiriating background//-->
+			<Menu.Style>
+				<Style></Style>
+			</Menu.Style>
 
 			<!--// Foreground controls MAIN menu items foreground color-->
-			<MenuItem x:Name="menu_options" Header="Options" 
-				Background="#D7004573"
+			<MenuItem  Header="Options" 
+				Background="Black"
+				BorderThickness="0"
 				Foreground="{StaticResource White0}"
 				Click="Option1_Click"
 				FontSize="16" 
-				IsHitTestVisible="true"
-				Width="Auto">
-				<!--Style="{DynamicResource MenuItemStyle1}"-->
-
-				<!--MenuItemStyle1 is for use with top level menu items ONLY-->
-
-				<!--Style="{DynamicResource MenuItemStyle1}"   ThemeMenuItem-->
+			     Height="25"
+				Width="80">
 				<!--// Background controls background of all SUB items-->
 				<!--// Foreground controls text color of ALL items irrespective of being selected-->
-				<MenuItem Header="Refresh Both Dropdowns" 
-					    Background="{StaticResource Green1}"
-					    Foreground="White"
-					    Click="RefreshLists_Click"
-					FontSize="16" 
-					Name="Option2"
+				<MenuItem x:Name="MenuName" Header="File selection Dialog" 
+					Click="SelectFile_Click"
 					Template="{StaticResource MenuItemCtrlTemplate1}"
+					FontSize="16" >
+					<MenuItem.Icon>
+						<Image x:Name="MenuIcon"  Source="/Icons/fax.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+
+				<!--Template="{StaticResource MenuItemControlTemplate1}">-->
+				<!--<Image Source="/icons/cursor-arrow.png"
+						  Height="40" Width="40"/>-->
+				<MenuItem Header="Refresh Both Dropdowns" 
+					Click="RefreshLists_Click"
+					FontSize="16" 
+				Template="{StaticResource MenuItemCtrlTemplate1}"
 					Width="Auto"/>
-				<!--Style="{StaticResource ThemeMenuItem}"-->
 				<MenuItem Header="Short Message Box" 
-				    Background="{StaticResource Orange1}"
-					    Foreground="White"
 					Click="Shortmsgbox_Click"
 					FontSize="16" 
 					Name="mboxshort"
 					Template="{StaticResource MenuItemCtrlTemplate1}"
 					Width="Auto"/>
-
 				<MenuItem Header="Full Message Box" 
-				    Background="{StaticResource Orange1}"
-					    Foreground="White"
-					Click="Fullmsgbox_Click"
+					    Click="Fullmsgbox_Click"
 					FontSize="16" 
 					Name="mboxfull"
 					Template="{StaticResource MenuItemCtrlTemplate1}"
 					Width="Auto"/>
 				<MenuItem Header="View current grid content" 
-				    Background="{StaticResource Orange1}"
-					    Foreground="White"
 					Click="ViewGridContent_Click"
 					FontSize="16" 
-					Name="Option3"
 					Template="{StaticResource MenuItemCtrlTemplate1}"
 					Width="Auto"/>
-				<!--Style="{StaticResource ThemeMenuItem}"-->
 				<MenuItem Header="something else...." 
 					Click="RefreshLists_Click"
-				    Background="{StaticResource Red5}"
-					    Foreground="White"
 					FontSize="16" 
-					Name="Option4"
 					Template="{StaticResource MenuItemCtrlTemplate1}"
 					Width="Auto"/>
-				<!--Style="{StaticResource ThemeMenuItem}"-->
 			</MenuItem>
-			<MenuItem Header="Info !" 
+			<MenuItem Header="Info!" 
+				Background="Black"
+				BorderThickness="0"
+				Foreground="{StaticResource Orange3}"
 				Click="info_Click"
 				FontSize="16" 
-				Background="#D7004573"
-				Foreground="{StaticResource White1}"
 				HorizontalContentAlignment="Center"
-				Name="Option7"
-				Style="{DynamicResource MenuItemStyle1}"
-				Width="75"/>
+				Style="{StaticResource MenuItemStyle1}"
+				Width="55"/>
 			<MenuItem Header="Help ?" 
+				BorderThickness="0"
+				Background="Black"
+				Foreground="{StaticResource Green2}"
 				Click="Help_Click"
 				FontSize="16" 
-				Background="#D7004573"
-				Foreground="{StaticResource White2}"
 				HorizontalContentAlignment="Center"
-				Name="Option6"
-				Style="{DynamicResource MenuItemStyle1}" 
-				Width="100"/>
-
+				Style="{StaticResource MenuItemStyle1}" 
+				Width="60"/>
+			<MenuItem Header="Exit..." 
+				BorderThickness="0"
+				Background="Black"
+				Foreground="{StaticResource Red1}"
+				Click="Exit_Click"
+				FontSize="16" 
+				HorizontalContentAlignment="Center"
+				Style="{StaticResource MenuItemStyle1}" 
+				Width="60"/>
 		</Menu>
 		<!--#endregion Menu-->
 
@@ -1392,19 +1518,21 @@
 			Orientation="Horizontal" Width="785"
 			>
 			<!--// Stored Procedures-->
-			<ComboBox Style="{DynamicResource ComboBoxStyle1}" x:Name="SPCombo" 
+			<ComboBox Style="{StaticResource  ComboBoxStyle1}" x:Name="SPCombo" 
 			Background="{StaticResource Blue0}"			    
 			Foreground="{StaticResource Red5}"
 			IsEditable="True"  
 			HorizontalAlignment="Left"
-			ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle1}" 	
+			ItemContainerStyle="{StaticResource ComboBoxItemContainerStyle1}" 	
 			
-			MaxDropDownHeight="142"  
+			MaxDropDownHeight="250"  
 			MouseDoubleClick="SPCombo_MouseDoubleClick" 
 			PreviewMouseLeftButtonDown="SPCombo_PreviewMouseLeftButtonDn"
+			PreviewMouseRightButtonDown="SPCombo_PreviewMouseRightButtonDown"
 			ScrollViewer.HorizontalScrollBarVisibility="Auto"
 			SelectionChanged="SPCombo_SelectionChanged" 
 			SelectedIndex="0" 
+				    ToolTip="Select an SP and then right Click to view any comments in the script"
 			Width="285" />
 
 			<TextBlock Width="20"/>
@@ -1415,8 +1543,7 @@
 				Foreground="{StaticResource ResourceKey=Gray0}"
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Center"
-				KeyDown="SPArgs_KeyDown"
-				LostFocus="SPArgs_LostFocus"
+				PreviewKeyDown="SPArgs_KeyDown"
 				   Padding="1"
 				PreviewMouseLeftButtonUp="DbToBeCreated_PreviewMouseLeftButtonUp"
 				SelectionBrush="{StaticResource Red5}"
@@ -1436,7 +1563,7 @@
 			  Grid.Column="1"
 			   Grid.ColumnSpan="3"
 			  HorizontalAlignment="Left"
-			  Margin="301,2,0,3"
+			  Margin="311,2,0,3"
 			  MaxWidth="134"
 			  Padding="3"
 			   PreviewMouseLeftButtonDown="ChangeFocus"
@@ -1472,23 +1599,29 @@
 			   VerticalAlignment="Top"
 			  Width="140" Height="40" 
 			   Margin="0,19,0,0"/>
-		<Button  x:Name="testing1"
-			  Click="Testing1_Click"
-			  Content="Spare"
-			  FontSize="14"
-			  Foreground="{StaticResource ResourceKey=TextWhiteToBlackHorizontal4}"
-			  Grid.Column="4"
-			  Grid.Row="6"
-			  Height="40" 
-			  HorizontalAlignment="Center"
-			  Margin="0,0,0,123" 
-			  Opacity="0.4"
-			  Padding="3"
-			  Template="{StaticResource HorizontalGradientTemplateBlue}" 
-			  Visibility="Visible" 
-			  VerticalAlignment="Bottom" 
-			  Width="140" 
-					/>
-	
+
+
+		<Button  x:Name="TextViewerBtn"
+			Click="ShowTextViewer"
+			Content="Toggle Text View"
+			FontSize="14"
+			Foreground="{StaticResource TextWhiteToBlackHorizontal4}"
+			Grid.Column="4" 
+			Grid.Row="6"
+			Height="40" 
+			HorizontalAlignment="Center"
+			Margin="0,0,0,79" 
+			Padding="3"
+			Template="{StaticResource HorizontalGradientTemplateBlue}" 
+			Visibility="Visible" 
+			VerticalAlignment="Bottom" 
+			Width="140" 
+			/>
+		<!--<Path x:Name="Glyph" Data="{StaticResource Checkmark}" 
+			Grid.Row="6"
+			Fill="{StaticResource HeaderHorizontalBrushGreenToBlack}" 
+			FlowDirection="LeftToRight" Margin="44,95,165,17" Grid.RowSpan="2" Stretch="Fill" Grid.Column="2"/>-->
+
+
 	</Grid>
 </Window>

@@ -18,7 +18,58 @@
 		WindowStyle="None">
 
 	<Window.Resources>
+		<Style x:Key="MainMenu1" TargetType="{x:Type Menu}">
+			<Setter Property="OverridesDefaultStyle" Value="True" />
+			<Setter Property="SnapsToDevicePixels" Value="True" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Menu}">
+						<Border x:Name="Menuborder" BorderThickness="0">
+							<!--<Border.BorderBrush>
+								<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+									<LinearGradientBrush.GradientStops>
+										<GradientStopCollection>
+											<GradientStop Color="{DynamicResource ControlLightColor}" Offset="0" />
+											<GradientStop Color="#99FF1A22" Offset="1" />
+										</GradientStopCollection>
+									</LinearGradientBrush.GradientStops>
+								</LinearGradientBrush>
+							</Border.BorderBrush>-->
+							<Border.Background>
+								<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+									<GradientStop Color="#FF402300" Offset="0.0" />
+									<GradientStop Color="#1FFFFFFF" Offset="1.0" />
+								</LinearGradientBrush>
+							</Border.Background>
+							<StackPanel ClipToBounds="False"
+                                          Orientation="Horizontal"
+                                          IsItemsHost="True" />
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="False">
+								<Setter Property="Background"  TargetName="Menuborder" Value="{StaticResource Black4}"/>
+							</Trigger>
 
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Background"  TargetName="Menuborder" Value="{StaticResource HeaderHorizontalBrushYellowToBlack}"/>
+								<Setter Property="Foreground"   Value="{StaticResource Black0}"/>
+							</Trigger>
+
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value> 
+				
+			</Setter>
+			<!--<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="False">
+					<Setter Property="Background"  Value="{StaticResource Black4}"/>
+				</Trigger>
+
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter Property="Background"  Value="{StaticResource HeaderHorizontalBrushYellowToBlack}"/>
+				</Trigger>
+			</Style.Triggers>-->
+		</Style>
 		<!--<local:DateOnlyConverter x:Key="dateOnlyConverter"/>-->
 
 		<ContextMenu x:Key="ContextMenu1">
@@ -263,8 +314,12 @@
 			local:MenuAttachedProperties.MenuItemBorderColor="{StaticResource Blue2}"
 			local:MenuAttachedProperties.MenuItemBorderThickness="1"
 			local:MenuAttachedProperties.MenuItemHeight ="30"
-			local:MenuAttachedProperties.MenuItemMargin="2"	     			
-			Width="auto">
+			local:MenuAttachedProperties.MenuItemMargin="2"	
+				Width="auto">
+			<!--// Removes that infiriating background//-->
+			<Menu.Style>
+				<Style></Style>
+			</Menu.Style>
 
 			<MenuItem  Header="_Linq Queries" 
 					Margin="5"

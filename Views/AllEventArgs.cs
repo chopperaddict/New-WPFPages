@@ -4,6 +4,7 @@ using System . Linq;
 using System . Text;
 using System . Threading . Tasks;
 using System . Windows . Controls;
+using System . Windows . Media;
 
 namespace WPFPages . Views
 {
@@ -185,6 +186,12 @@ namespace WPFPages . Views
 		{
 			get; set;
 		}
+	}
+	public class GrabImageArgs : EventArgs
+	{
+		public Visual visual { get; set; }
+		public double height { get; set; }
+		public double width{ get; set; }
 	}
 
 	#endregion EventArg Declarations

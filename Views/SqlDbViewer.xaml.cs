@@ -533,6 +533,7 @@ namespace WPFPages
 			IsLoading = false;
 			if ( WaitMessage . Visibility == Visibility . Visible )
 				WaitMessage . Visibility = Visibility . Collapsed;
+			MouseMove += Utils . Grab_MouseMove;
 		}
 
 		public DragDropEffects DragEffects = new DragDropEffects ( );
@@ -5093,8 +5094,15 @@ namespace WPFPages
 				key1 = false;
 				return;
 			}
+			else if ( key1 == false && e . Key == Key . F11 )
+			{
+				if ( Utils . ControlsHitList . Count == 0 )
+					return;
+				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
+			}
 			else if ( key1 && e . Key == Key . F11 )
 			{
+
 				Debug . WriteLine ( "\nAll Flag. variables" );
 				Flags . ShowAllFlags ( );
 				e . Handled = true;
@@ -6535,78 +6543,6 @@ namespace WPFPages
 				getExportrec . Show ( );
 
 				return;
-
-
-
-
-				//if ( DialogResult == false )
-				//	return;
-
-				//int counter = 0;
-				//if ( NewBanklist . Count > 0 )
-				//{
-				//	// NewBanklist contains the data for the selected records in BankAccountViewModel format
-
-				//	// Get new structure for our data comparison
-				//	Utils . bankrec brec = new Utils . bankrec ( );
-
-				//	// Load a fresh copy of the Details Data
-				//	DataTable dtbank = new DataTable ( );
-				//	BankAccountViewModel bvm = new BankAccountViewModel ( );
-				//	BankCollection OriginalBankcollection = new BankCollection ( );
-
-				//	//Get full Bank data into a DataTable
-				//	dtbank = BankCollection . LoadBankDirect ( dtbank );
-				//	// Get a Details Collection  from the DataTable above
-				//	OriginalBankcollection = BankCollection . LoadBankCollectionDirect ( OriginalBankcollection, dtbank );
-
-				//	int index = 0;
-				//	BankCollection BankUpdatecollection = new BankCollection ( );
-
-				//	// iterate thru our new, full copy of the Details Collection checking for any duplicates
-				//	// by matching the records in our selected recorde table -( NewDetList)
-				//	do
-				//	{
-				//		foreach ( var item in OriginalBankcollection )
-				//		{
-				//			Debug . WriteLine ( $"{item . CustNo},  NewDetList {NewBanklist [ counter ] . CustNo}  -  {NewBanklist [ counter ] . BankNo}" );
-				//			//item is the ORIGINAL DATA Record;
-				//			if ( item . CustNo == NewBanklist [ counter ] . CustNo . ToString ( ) && item . BankNo == NewBanklist [ counter ] . BankNo . ToString ( ) )
-				//			{
-				//				// already in the receiving Db. so ignore it by removing it from the int list<int>
-				//				// AFTER we save its details to our update Details Collection
-				//				//								Detnolist. RemoveAt ( counter );
-				//				NewBanklist . RemoveAt ( counter );
-				//				// We need to restart the iteration thru Original Bank records in case it cae up BEFORE this one !!
-				//				break;
-				//			}
-				//			else if ( item . CustNo == NewBanklist [ counter ] . CustNo . ToString ( ) && item . BankNo != NewBanklist [ counter ] . BankNo . ToString ( ) )
-				//			{
-				//				BankUpdatecollection . Add ( NewBanklist [ counter ] );
-				//				counter++;
-				//				break;
-				//			}
-				//			index++;
-				//		}
-				//		if ( counter >= NewBanklist . Count )
-				//			break;
-				//	} while ( true );
-
-				//	// See if we have any records left to add to Details Db
-				//	if ( BankUpdatecollection . Count > 0 )
-				//	{
-				//		// Yes, so go ahead nd add the to the DetailsDb
-
-				//		foreach ( var item in BankUpdatecollection )
-				//		{
-				//			ImportDbData . InsertSingleBankRecord ( item );
-				//		}
-				//	}
-				//	else
-				//	{
-				//		Debug . WriteLine ( $"No Records added, they already exist in the destination Db....." );
-				//	}
-				//}
 			}
 		}
 		/// <summary>
@@ -6616,7 +6552,7 @@ namespace WPFPages
 		/// <param name="e"></param>
 		private void EventControl_TransferDataUpdated ( object sender , LoadedEventArgs e )
 		{
-#pragma TODO 10/21 - update entire methd
+
 
 			//if ( e . CallerDb == "BANKACCOUNT" && CurrentDb == "DETAILS" )
 			//{
@@ -7456,6 +7392,7 @@ namespace WPFPages
 					currentpos = newpos;
 				}
 			}
+
 		}
 
 		private void Window_PreviewMouseRightButtonUp ( object sender , MouseButtonEventArgs e )
@@ -7585,6 +7522,11 @@ namespace WPFPages
 		private void DetailsGrid_PreviewMouseLeftButtonUp ( object sender , MouseButtonEventArgs e )
 		{
 			ScrollBarMouseMove = false;
+
+		}
+
+		private void Window_PreviewMouseMove_1 ( object sender , MouseEventArgs e )
+		{
 
 		}
 	}

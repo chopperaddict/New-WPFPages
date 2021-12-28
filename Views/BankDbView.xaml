@@ -285,6 +285,10 @@
             local:MenuAttachedProperties.MenuItemMargin="2"
 
             Background="Transparent">
+			<!--// Removes that infiriating background//-->
+			<Menu.Style>
+				<Style></Style>
+			</Menu.Style>
 
 			<MenuItem Header="_Linq Queries"
 				Width="80"

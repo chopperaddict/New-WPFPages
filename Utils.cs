@@ -1,10 +1,12 @@
 ﻿#define SHOWWINDOWDATA
+using Microsoft . Win32;
+
 using System;
 using System . Collections . Generic;
 using System . Configuration;
+using System . Data;
 using System . Diagnostics;
 using System . IO;
-using System . Runtime . InteropServices . WindowsRuntime;
 using System . Threading;
 using System . Threading . Tasks;
 using System . Windows;
@@ -12,19 +14,12 @@ using System . Windows . Controls;
 using System . Windows . Controls . Primitives;
 using System . Windows . Input;
 using System . Windows . Media;
-using Microsoft . Win32;
-using Newtonsoft . Json;
+using System . Windows . Media . Imaging;
+using System . Windows . Shapes;
+
 using WPFPages . Properties;
 using WPFPages . ViewModels;
 using WPFPages . Views;
-using System . Text;
-using Newtonsoft . Json . Linq;
-using System . Windows . Media . Imaging;
-using System . Data;
-using System . Net . Configuration;
-using System . Runtime . CompilerServices;
-using System . IdentityModel . Selectors;
-using static System . Windows . Forms . VisualStyles . VisualStyleElement . Window;
 
 namespace WPFPages
 {
@@ -38,6 +33,10 @@ namespace WPFPages
 		public static Action<DataGrid, int> GridInitialSetup = Utils . SetUpGridSelection;
 		//		public static Func<bool, BankAccountViewModel, CustomerViewModel, DetailsViewModel> IsMatched = CheckRecordMatch; 
 		public static Func<object, object, bool> IsRecordMatched = Utils . CompareDbRecords;
+
+		// list each window that wants to support control capture needs to have so
+		// mousemove can add current item under cursor to the list, and then F11 will display it.
+		public static List<HitTestResult> ControlsHitList = new List<HitTestResult>();
 
 		#region structures
 		public struct bankrec
@@ -237,31 +236,35 @@ namespace WPFPages
 		#endregion play tunes / sounds
 
 
-		// Record the name of the method that called this one.
-		public static void trace( )
+		// Record the names of the method that called this one in an iterative tree.
+		public static string trace ( string prompt = "" )
 		{
 			// logs all the calls made upwards in a tree
 			string output="", tmp="";
 			int indx = 1;
 			var v  = new StackTrace ( 0 );
+			if ( prompt != "" )
+				output = prompt + "\nStackTrace :\n";
 			while ( true )
 			{
 				try
 				{
 
-					tmp=	v. GetFrame ( indx++ ) . GetMethod ( ) . Name + '\n';
+					tmp = v . GetFrame ( indx++ ) . GetMethod ( ) . Name + '\n';
 					if ( tmp . Contains ( "Invoke" ) || tmp . Contains ( "RaiseEvent" ) )
 						break;
 					else
 						output += tmp;
 				}
 				catch ( Exception ex )
-				{ 
+				{
 					Console . WriteLine ( "Crashed...\n" );
+					output += "\nCrashed...\n";
 					break;
 				}
 			}
-			Console . WriteLine ( $"StackTrace :\n{output}\n" );
+			Console . WriteLine ( $"\n{output}\n" );
+			return $"\n{output}\n";
 		}
 		public static void Mbox ( Window win , string string1 = "" , string caption = "" , string string2 = "" , string iconstring = "" , int Btn1 = 1 , int Btn2 = 0 , int defButton = 1 )
 		{
@@ -287,7 +290,8 @@ namespace WPFPages
 				string btn1Text = "" ,
 				string btn2Text = "" ,
 				string btn3Text = "" ,
-				string btn4Text = ""
+				string btn4Text = "" ,
+				bool usedialog = true
 			     )
 		{
 			Msgbox msg = new Msgbox(
@@ -307,85 +311,18 @@ namespace WPFPages
 				btn3Text:btn3Text,
 				btn4Text:btn4Text );
 			//msg . Owner = win;
-			msg . Show ( );
-			//msg . ShowDialog ( );
-		}
-
-		private static string ParseforCR ( string input )
-		{
-			string output="";
-			if ( input . Length == 0 )
-				return input;
-			if ( input . Contains ( "\r\n" ) )
-			{
-				do
-				{
-					string[] fields = input.Split('\r');
-					foreach ( var item in fields )
-					{
-						output += item;
-					}
-					if ( output . Contains ( "\r" ) == false )
-						break;
-				} while ( true );
-			}
+			if ( usedialog )
+				msg . ShowDialog ( );
 			else
-				return input;
-			return output;
-		}
-		public static Brush GetNewBrush ( string color )
-		{
-			if ( color [ 0 ] != '#' )
-				color = "#" + color;
-			return ( Brush ) new BrushConverter ( ) . ConvertFrom ( color );
+				msg . Show ( );
 		}
 
-		//Generic form of Selection forcing code below
-		/// <summary>
-		/// This is a great method that almost guarantees to 
-		/// highlight the selected item in any datagrid.
-		/// Found on StackOverflow (of course)
-		/// </summary>
-		/// <param name="dgrid"></param>
-		/// <param name="index"></param>
-		public static void SetGridRowSelectionOn ( DataGrid dgrid , int index )
-		{
-			if ( dgrid . Items . Count > 0 && index != -1 )
-			{
-				try
-				{
-					// clear anny selection on current record in datagrid
-					DataGridRow r = dgrid . ItemContainerGenerator . ContainerFromIndex ( dgrid.SelectedIndex ) as DataGridRow;
-					if ( r != null )
-						r . IsSelected = false;
-					//Setup new selected index
-					dgrid . SelectedIndex = index;
-					dgrid . SelectedItem = index;
-					dgrid . UpdateLayout ( );
-					dgrid . BringIntoView ( );
-					dgrid . ScrollIntoView ( dgrid . Items [ index ] );
-					r = dgrid . ItemContainerGenerator . ContainerFromIndex ( index ) as DataGridRow;
-					if ( r != null )
-					{
-						// Select new record
-						r . IsSelected = false;
-						r . IsSelected = true;
-					}
-				}
-				catch ( Exception ex )
-				{
-					Debug . WriteLine ( $"{ex . Message}, {ex . Data}" );
-				}
-			}
-		}
 		public static string convertToHex ( double temp )
 		{
 			int intval = ( int ) Convert . ToInt32 ( temp );
 			string hexval = intval . ToString ( "X" );
 			return hexval;
 		}
-
-		#region BRUSHES SUPPORT
 		//Working well 4/8/21
 		/// <summary>
 		/// Accepts color in Colors.xxxx format = "Blue" etc
@@ -412,10 +349,106 @@ namespace WPFPages
 			Brush brush = ( Brush ) new BrushConverter ( ) . ConvertFromString ( color );
 			return brush;
 		}
+		public static bool CheckForExistingGuid ( Guid guid )
+		{
+			bool retval = false;
+			for ( int x = 0 ; x < Flags . DbSelectorOpen . ViewersList . Items . Count ; x++ )
+			{
+				ListBoxItem lbi = new ListBoxItem ( );
+				//lbi.Tag = viewer.Tag;
+				lbi = Flags . DbSelectorOpen . ViewersList . Items [ x ] as ListBoxItem;
+				if ( lbi . Tag == null )
+					return retval;
+				Guid g = ( Guid ) lbi . Tag;
+				if ( g == guid )
+				{
+					retval = true;
+					break;
+				}
+			}
+			return retval;
+		}
+		public static bool CheckRecordMatch (BankAccountViewModel bvm ,CustomerViewModel cvm ,DetailsViewModel dvm )
+		{
+			bool result = false;
+			if ( bvm != null && cvm != null )
+			{
+				if ( bvm . CustNo == cvm . CustNo )
+					result = true;
+			}
+			else if ( bvm != null && dvm != null )
+			{
+				if ( bvm . CustNo == dvm . CustNo )
+					result = true;
+			}
+			else if ( cvm != null && dvm != null )
+			{
+				if ( cvm . CustNo == dvm . CustNo )
+					result = true;
+			}
+			return result;
+		}
+		public static bool CompareDbRecords ( object obj1 , object obj2 )
+		{
+			bool result = false;
+			BankAccountViewModel bvm = new BankAccountViewModel ( );
+			CustomerViewModel cvm = new CustomerViewModel ( );
+			DetailsViewModel dvm = new DetailsViewModel ( );
+			//bvm = null;
+			//cvm = null;
+			//dvm = null;
+			if ( obj1 == null || obj2 == null )
+				return result;
+			if ( obj1 . GetType ( ) == bvm . GetType ( ) )
+				bvm = obj1 as BankAccountViewModel;
+			if ( obj1 . GetType ( ) == cvm . GetType ( ) )
+				cvm = obj1 as CustomerViewModel;
+			if ( obj1 . GetType ( ) == dvm . GetType ( ) )
+				dvm = obj1 as DetailsViewModel;
 
-		#endregion BRUSHES SUPPORT
+			if ( obj2 . GetType ( ) == bvm . GetType ( ) )
+				bvm = obj2 as BankAccountViewModel;
+			if ( obj2 . GetType ( ) == cvm . GetType ( ) )
+				cvm = obj2 as CustomerViewModel;
+			if ( obj2 . GetType ( ) == dvm . GetType ( ) )
+				dvm = obj2 as DetailsViewModel;
 
-		#region drag Drop data conversion Helper mmethods
+			if ( bvm != null && cvm != null )
+			{
+				if ( bvm . CustNo == cvm . CustNo )
+					result = true;
+			}
+			else if ( bvm != null && dvm != null )
+			{
+				if ( bvm . CustNo == dvm . CustNo )
+					result = true;
+			}
+			else if ( cvm != null && dvm != null )
+			{
+				if ( cvm . CustNo == dvm . CustNo )
+					result = true;
+			}
+			result = false;
+			return result;
+		}
+		public static string ConvertInputDate ( string datein )
+		{
+			string YYYMMDD = "";
+			string [ ] datebits;
+			// This filter will strip off the "Time" section of an excel date
+			// and return us a valid YYYY/MM/DD string
+			char [ ] ch = { '/', ' ' };
+			datebits = datein . Split ( ch );
+			if ( datebits . Length < 3 )
+				return datein;
+
+			// check input to see if it needs reversing ?
+			if ( datebits [ 0 ] . Length == 4 )
+				YYYMMDD = datebits [ 0 ] + "/" + datebits [ 1 ] + "/" + datebits [ 2 ];
+			else
+				YYYMMDD = datebits [ 2 ] + "/" + datebits [ 1 ] + "/" + datebits [ 0 ];
+			return YYYMMDD;
+		}
 		public static BankAccountViewModel CreateBankRecordFromString ( string type , string input )
 		{
 			int index = 0;
@@ -551,7 +584,38 @@ namespace WPFPages
 			}
 			return bvm;
 		}
+		
+		public static RenderTargetBitmap CreateControlImage ( FrameworkElement control , string filename = "" , bool savetodisk = false , GrabImageArgs ga = null )
+		{
+			if ( control == null )
+				return null;
+			// Get the Visual (Control) itself and the size of the Visual and its descendants.
+			// This is the clever bit that gets the requested control, not the full window
+			Rect rect = VisualTreeHelper.GetDescendantBounds(control);
 
+			// Make a DrawingVisual to make a screen
+			// representation of the control.
+			DrawingVisual dv = new DrawingVisual();
+
+			// Fill a rectangle the same size as the control
+			// with a brush containing images of the control.
+			using ( DrawingContext ctx = dv . RenderOpen ( ) )
+			{
+				VisualBrush brush = new VisualBrush(control);
+				ctx . DrawRectangle ( brush , null , new Rect ( rect . Size ) );
+			}
+
+			// Make a bitmap and draw on it.
+			int width = (int)control.ActualWidth;
+			int height = (int)control.ActualHeight;
+			if ( height == 0 || width == 0 )
+				return null;
+			RenderTargetBitmap rtb = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+			rtb . Render ( dv );
+			if ( savetodisk && filename != "" )
+				SaveImageToFile ( rtb , filename );
+			return rtb;
+		}
 		public static CustomerDragviewModel CreateCustGridRecordFromString ( string input )
 		{
 			int index = 0;
@@ -609,7 +673,6 @@ namespace WPFPages
 			}
 			return cvm;
 		}
-
 		public static CustomerViewModel CreateCustomerRecordFromString ( string input )
 		{
 			int index = 1;
@@ -661,6 +724,22 @@ namespace WPFPages
 			bvm . CDate = DateTime . Parse ( data [ index ] );
 			return bvm;
 		}
+		public static string CreateDragDataFromRecord ( BankDragviewModel bvm )
+		{
+			if ( bvm == null )
+				return "";
+			string datastring = "";
+			datastring = bvm . RecordType + ",";
+			datastring += bvm . Id + ",";
+			datastring += bvm . CustNo + ",";
+			datastring += bvm . BankNo + ",";
+			datastring += bvm . AcType . ToString ( ) + ",";
+			datastring += bvm . IntRate . ToString ( ) + ",";
+			datastring += bvm . Balance . ToString ( ) + ",";
+			datastring += "'" + bvm . CDate . ToString ( ) + "',";
+			datastring += "'" + bvm . ODate . ToString ( ) + "',";
+			return datastring;
+		}   	
 		public static string CreateFullCsvTextFromRecord ( BankAccountViewModel bvm , DetailsViewModel dvm , CustomerViewModel cvm = null , bool IncludeType = true )
 		{
 			if ( bvm == null && cvm == null && dvm == null )
@@ -706,110 +785,281 @@ namespace WPFPages
 			}
 			return datastring;
 		}
-		public static string CreateDragDataFromRecord ( BankDragviewModel bvm )
+		public static bool DataGridHasFocus ( DependencyObject instance )
 		{
-			if ( bvm == null )
-				return "";
-			string datastring = "";
-			datastring = bvm . RecordType + ",";
-			datastring += bvm . Id + ",";
-			datastring += bvm . CustNo + ",";
-			datastring += bvm . BankNo + ",";
-			datastring += bvm . AcType . ToString ( ) + ",";
-			datastring += bvm . IntRate . ToString ( ) + ",";
-			datastring += bvm . Balance . ToString ( ) + ",";
-			datastring += "'" + bvm . CDate . ToString ( ) + "',";
-			datastring += "'" + bvm . ODate . ToString ( ) + "',";
-			return datastring;
+			//how to fibnd out whether a datagrid has focus or not to handle key previewers
+			IInputElement focusedControl = FocusManager . GetFocusedElement ( instance );
+			if ( focusedControl == null )
+				return true;
+			string compare = focusedControl . ToString ( );
+			if ( compare . ToUpper ( ) . Contains ( "DATAGRID" ) )
+				return true;
+			else
+				return false;
 		}
-
-		#endregion drag Drop data conversion Helper mmethods
-
-		#region System Settings helpers
-		public static void SaveProperty ( string setting , string value )
+		public static DependencyObject FindChild ( DependencyObject o , Type childType )
 		{
-			try
+			DependencyObject foundChild = null;
+			if ( o != null )
 			{
-				if ( value . ToUpper ( ) . Contains ( "TRUE" ) )
-					Settings . Default [ setting ] = true;
-				else if ( value . ToUpper ( ) . Contains ( "FALSE" ) )
-					Settings . Default [ setting ] = false;
-				else
-					Settings . Default [ setting ] = value;
-				Settings . Default . Save ( );
-				Settings . Default . Upgrade ( );
-				ConfigurationManager . RefreshSection ( setting );
-			}
-			catch ( Exception ex )
-			{
-				Debug . WriteLine ( $"Unable to save property {setting} of [{value}]\nError was {ex . Data}, {ex . Message}, Stack trace = \n{ex . StackTrace}" );
-			}
-		}
-
-		public static void AddUpdateAppSettings ( string key , string value )
-		{
-			try
-			{
-				var configFile = ConfigurationManager . OpenExeConfiguration ( ConfigurationUserLevel . None );
-				var settings = configFile . AppSettings . Settings;
-				if ( settings [ key ] == null )
+				int childrenCount = VisualTreeHelper . GetChildrenCount ( o );
+				for ( int i = 0 ; i < childrenCount ; i++ )
 				{
-					settings . Add ( key , value );
-				}
-				else
-				{
-					settings [ key ] . Value = value;
-				}
-				configFile . Save ( ConfigurationSaveMode . Full );
-				ConfigurationManager . RefreshSection ( configFile . AppSettings . SectionInformation . Name );
-			}
-			catch ( ConfigurationErrorsException )
-			{
-				Console . WriteLine ( "Error writing app settings" );
-			}
-		}
-
-		public static string ReadConfigSetting ( string key )
-		{
-			string result = "";
-			try
-			{
-				var appSettings = ConfigurationManager . AppSettings;
-				result = appSettings [ key ] ?? "Not Found";
-				Console . WriteLine ( result );
-			}
-			catch ( ConfigurationErrorsException )
-			{
-				Console . WriteLine ( "Error reading app settings" );
-			}
-			return result;
-		}
-		public static void ReadAllConfigSettings ( )
-		{
-			try
-			{
-				var appSettings = ConfigurationManager . AppSettings;
-
-				if ( appSettings . Count == 0 )
-				{
-					Console . WriteLine ( "AppSettings is empty." );
-				}
-				else
-				{
-					foreach ( var key in appSettings . AllKeys )
+					var child = VisualTreeHelper . GetChild ( o, i );
+					if ( child . GetType ( ) != childType )
 					{
-						Console . WriteLine ( "Key: {0} Value: {1}" , key , appSettings [ key ] );
+						foundChild = FindChild ( child , childType );
+						//if(foundChild == null)
+						//        FindChild ( child, childType );
+					}
+					else
+					{
+						foundChild = child;
+						break;
 					}
 				}
 			}
-			catch ( ConfigurationErrorsException )
+			return foundChild;
+		}
+		public static T FindChild<T> ( DependencyObject parent , string childName )
+			  where T : DependencyObject
+		{
+			// Confirm parent and childName are valid. 
+			if ( parent == null )
+				return null;
+			T foundChild = null;
+			int childrenCount = VisualTreeHelper . GetChildrenCount ( parent );
+			for ( int i = 0 ; i < childrenCount ; i++ )
 			{
-				Console . WriteLine ( "Error reading app settings" );
+				var child = VisualTreeHelper . GetChild ( parent, i );
+				// If the child is not of the request child type child
+				T childType = child as T;
+				if ( childType == null )
+				{
+					// recursively drill down the tree
+					foundChild = FindChild<T> ( child , childName );
+					// If the child is found, break so we do not overwrite the found child. 
+					if ( foundChild != null )
+						break;
+				}
+				else if ( !string . IsNullOrEmpty ( childName ) )
+				{
+					var frameworkElement = child as FrameworkElement;
+					// If the child's name is set for search
+					if ( frameworkElement != null && frameworkElement . Name == childName )
+					{
+						// if the child's name is of the request name
+						foundChild = ( T ) child;
+						break;
+					}
+				}
+				else
+				{
+					// child element found.
+					foundChild = ( T ) child;
+					break;
+				}
+			}
+			return foundChild;
+		}
+		public static int FindMatchingRecord ( string Custno , string Bankno , DataGrid Grid , string currentDb = "" )
+		{
+			int index = 0;
+			if ( currentDb == "BANKACCOUNT" )
+			{
+				foreach ( var item in Grid . Items )
+				{
+					BankAccountViewModel cvm = item as BankAccountViewModel;
+					if ( cvm == null )
+						break;
+					if ( cvm . CustNo == Custno && cvm . BankNo == Bankno )
+					{
+						break;
+					}
+					index++;
+				}
+				if ( index == Grid . Items . Count )
+					index = -1;
+				return index;
+			}
+			else if ( currentDb == "CUSTOMER" )
+			{
+				foreach ( var item in Grid . Items )
+				{
+					CustomerViewModel cvm = item as CustomerViewModel;
+					if ( cvm == null )
+						break;
+					if ( cvm . CustNo == Custno && cvm . BankNo == Bankno )
+					{
+						break;
+					}
+					index++;
+				}
+				if ( index == Grid . Items . Count )
+					index = -1;
+				return index;
+			}
+			else if ( currentDb == "DETAILS" )
+			{
+				foreach ( var item in Grid . Items )
+				{
+					DetailsViewModel dvm = item as DetailsViewModel;
+					if ( dvm == null )
+						break;
+					if ( dvm . CustNo == Custno && dvm . BankNo == Bankno )
+					{
+						break;
+					}
+					index++;
+				}
+				if ( index == Grid . Items . Count )
+					index = -1;
+				return index;
+			}
+			return -1;
+		}
+		public static T FindVisualChildByName<T> ( DependencyObject parent , string name ) where T : DependencyObject
+		{
+			for ( int i = 0 ; i < VisualTreeHelper . GetChildrenCount ( parent ) ; i++ )
+			{
+				var child = VisualTreeHelper . GetChild ( parent, i );
+				string controlName = child . GetValue ( Control . NameProperty ) as string;
+				if ( controlName == name )
+				{
+					return child as T;
+				}
+				else
+				{
+					T result = FindVisualChildByName<T> ( child, name );
+					if ( result != null )
+						return result;
+				}
+			}
+			return null;
+		}
+		public static T FindVisualParent<T> ( UIElement element ) where T : UIElement
+		{
+			UIElement parent = element;
+			while ( parent != null )
+			{
+				var correctlyTyped = parent as T;
+				if ( correctlyTyped != null )
+				{
+					return correctlyTyped;
+				}
+				parent = VisualTreeHelper . GetParent ( parent ) as UIElement;
+			}
+			return null;
+		}
+		public static parentItem FindVisualParent<parentItem> ( DependencyObject obj ) where parentItem : DependencyObject
+		{
+			DependencyObject parent = VisualTreeHelper . GetParent ( obj );
+			while ( parent != null && !parent . GetType ( ) . Equals ( typeof ( parentItem ) ) )
+			{
+				parent = VisualTreeHelper . GetParent ( parent );
+			}
+			return parent as parentItem;
+		}
+		public static bool FindWindowFromTitle ( string searchterm , ref Window handle )
+		{
+			bool result = false;
+			foreach ( Window window in Application . Current . Windows )
+			{
+				if ( window . Title . ToUpper ( ) . Contains ( searchterm . ToUpper ( ) ) )
+				{
+					handle = window;
+					result = true;
+					break;
+				}
+			}
+			return result;
+		}
+		public static Brush GetBrush ( string parameter )
+		{
+			if ( parameter == "BLUE" )
+				return Brushes . Blue;
+			else if ( parameter == "RED" )
+				return Brushes . Red;
+			else if ( parameter == "GREEN" )
+				return Brushes . Green;
+			else if ( parameter == "CYAN" )
+				return Brushes . Cyan;
+			else if ( parameter == "MAGENTA" )
+				return Brushes . Magenta;
+			else if ( parameter == "YELLOW" )
+				return Brushes . Yellow;
+			else if ( parameter == "WHITE" )
+				return Brushes . White;
+			else
+			{
+				//We appear to have received a Brushes Resource Name, so return that Brushes value
+				Brush b = ( Brush ) Utils . GetDictionaryBrush ( parameter . ToString ( ) );
+				return b;
 			}
 		}
+		public static Brush GetBrushFromInt ( int value )
+		{
+			switch ( value )
+			{
+				case 0:
+					return ( Brushes . White );
+				case 1:
+					return ( Brushes . Yellow );
+				case 2:
+					return ( Brushes . Orange );
+				case 3:
+					return ( Brushes . Red );
+				case 4:
+					return ( Brushes . Magenta );
+				case 5:
+					return ( Brushes . Gray );
+				case 6:
+					return ( Brushes . Aqua );
+				case 7:
+					return ( Brushes . Azure );
+				case 8:
+					return ( Brushes . Brown );
+				case 9:
+					return ( Brushes . Crimson );
+				case 10:
+					return ( Brushes . Transparent );
+			}
+			return ( Brush ) null;
+		}
+		public static string GetDataSortOrder ( string commandline )
+		{
+			if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . DEFAULT )
+				commandline += "Custno, BankNo";
+			else if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . ID )
+				commandline += "ID";
+			else if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . BANKNO )
+				commandline += "BankNo, CustNo";
+			else if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . CUSTNO )
+				commandline += "CustNo";
+			else if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . ACTYPE )
+				commandline += "AcType";
+			else if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . DOB )
+				commandline += "Dob";
+			else if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . ODATE )
+				commandline += "Odate";
+			else if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . CDATE )
+				commandline += "Cdate";
+			return commandline;
+		}
+		public static Brush GetDictionaryBrush ( string brushname )
+		{
+			Brush brs = null;
+			try
+			{
+				brs = System . Windows . Application . Current . FindResource ( brushname ) as Brush;
+			}
+			catch
+			{
 
-		#endregion System Settings helpers
-		public static string GetExportFileName ( string filespec )
+			}
+			return brs;
+		}
+		public static string GetExportFileName ( string filespec = "" )
 		// opens  the common file open dialog
 		{
 			OpenFileDialog ofd = new OpenFileDialog ( );
@@ -828,19 +1078,11 @@ namespace WPFPages
 				ofd . Filter = "All Files (*.*) | *.*";
 				ofd . DefaultExt = ".CSV";
 			}
-			//			string initfolder = ofd . InitialDirectory;
-			//			if ( initfolder != "" && fnameonly != "" )
-			//				filespec = initfolder + fnameonly;
 			ofd . FileName = filespec;
-			//if ( filespec == "" )
-			//	ofd . DefaultExt = ".XLS*" ;
-			//else
-			//	ofd . DefaultExt = $".{filespec . ToUpper ( )}" ;
 			ofd . ShowDialog ( );
 			string fnameonly = ofd . SafeFileName;
 			return ofd . FileName;
 		}
-
 		public static string GetImportFileName ( string filespec )
 		// opens  the common file open dialog
 		{
@@ -854,30 +1096,255 @@ namespace WPFPages
 			else if ( filespec . ToUpper ( ) . Contains ( "*.*" ) || filespec == "" )
 				ofd . Filter = "All Files (*.*) | *.*";
 			ofd . AddExtension = true;
-			//if ( filespec == "" )
-			//	ofd . DefaultExt = ".XLS*" ;
-			//else
-			//	ofd . DefaultExt = $".{filespec . ToUpper ( )}" ;
 			ofd . ShowDialog ( );
 			return ofd . FileName;
 		}
-		public static string ConvertInputDate ( string datein )
+		public static Brush GetNewBrush ( string color )
 		{
-			string YYYMMDD = "";
-			string [ ] datebits;
-			// This filter will strip off the "Time" section of an excel date
-			// and return us a valid YYYY/MM/DD string
-			char [ ] ch = { '/', ' ' };
-			datebits = datein . Split ( ch );
-			if ( datebits . Length < 3 )
-				return datein;
-
-			// check input to see if it needs reversing ?
-			if ( datebits [ 0 ] . Length == 4 )
-				YYYMMDD = datebits [ 0 ] + "/" + datebits [ 1 ] + "/" + datebits [ 2 ];
+			if ( color [ 0 ] != '#' )
+				color = "#" + color;
+			return ( Brush ) new BrushConverter ( ) . ConvertFrom ( color );
+		}
+		public static string GetPrettyGridStatistics ( DataGrid Grid , int current )
+		{
+			string output = "";
+			if ( current != -1 )
+				output = $"{current} / {Grid . Items . Count}";
 			else
-				YYYMMDD = datebits [ 2 ] + "/" + datebits [ 1 ] + "/" + datebits [ 0 ];
-			return YYYMMDD;
+				output = $"0 / {Grid . Items . Count}";
+			return output;
+		}
+		public static ControlTemplate GetDictionaryControlTemplate ( string tempname )
+		{
+			ControlTemplate ctmp = System . Windows . Application . Current . FindResource ( tempname ) as ControlTemplate;
+			return ctmp;
+		}
+		public static Style GetDictionaryStyle ( string tempname )
+		{
+			Style ctmp = System . Windows . Application . Current . FindResource ( tempname ) as Style;
+			return ctmp;
+		}
+		public static object GetTemplateControl ( Control RectBtn , string CtrlName )
+		{
+			var template = RectBtn . Template;
+			object v = template . FindName ( CtrlName, RectBtn ) as object;
+			return v;
+		}
+		public static void GetWindowHandles ( )
+		{
+#if SHOWWINDOWDATA
+			Console . WriteLine ( $"Current Windows\r\n" + "===============" );
+			foreach ( Window window in System . Windows . Application . Current . Windows )
+			{
+				if ( ( string ) window . Title != "" && ( string ) window . Content != "" )
+				{
+					Console . WriteLine ( $"Title:  {window . Title },\r\nContent - {window . Content}" );
+					Console . WriteLine ( $"Name = [{window . Name}]\r\n" );
+				}
+			}
+#endif
+		}
+		public static void Grab_MouseMove ( object sender , MouseEventArgs e )
+		{
+			Point pt = e.GetPosition((UIElement)sender);
+			HitTestResult hit = VisualTreeHelper . HitTest ( ( Visual ) sender, pt );
+			if ( hit? . VisualHit != null )
+			{
+				if ( ControlsHitList . Count != 0 )
+				{
+					if ( hit . VisualHit == ControlsHitList [ 0 ] . VisualHit )
+						return;
+				}
+				ControlsHitList . Clear ( );
+				ControlsHitList . Add ( hit );
+			}
+		}
+		public static void Grabscreen ( Window parent , object obj , GrabImageArgs args , Control ctrl = null )
+		{
+			UIElement ui = obj as UIElement;
+			UIElement OBJ=new UIElement();
+			int indx = 0;
+			bool success = false;
+			// try to step up the visual tree ?
+			do
+			{
+				indx++;
+				if ( indx > 30 || indx < 0 )
+					break;
+				switch ( indx )
+				{
+					case 1:
+						OBJ = FindVisualParent<DataGrid> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 2:
+						OBJ = FindVisualParent<Button> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 3:
+						OBJ = FindVisualParent<Slider> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 4:
+						OBJ = FindVisualParent<ListView> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 5:
+						OBJ = FindVisualParent<ListBox> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 6:
+						OBJ = FindVisualParent<ComboBox> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 7:
+						OBJ = FindVisualParent<WrapPanel> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 8:
+						OBJ = FindVisualParent<CheckBox> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 9:
+						OBJ = FindVisualParent<DataGridRow> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 10:
+						OBJ = FindVisualParent<DataGridCell> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 11:
+						OBJ = FindVisualParent<Canvas> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 12:
+						OBJ = FindVisualParent<GroupBox> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 13:
+						OBJ = FindVisualParent<ProgressBar> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 14:
+						OBJ = FindVisualParent<Ellipse> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 15:
+						OBJ = FindVisualParent<RichTextBox> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 16:
+						OBJ = FindVisualParent<TextBlock> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 17:
+						//if(ui Equals TextBox)
+						if ( ui == null )
+							break;
+						DependencyObject v = new DependencyObject();
+						DependencyObject prev = new DependencyObject();
+						//OBJ = FindVisualParent<TextBox> ( ui );
+						do
+						{
+							v = VisualTreeHelper . GetParent ( ui );
+							if ( v == null )
+								break;
+							prev = v;
+							TextBox tb = v as TextBox;
+							if ( tb != null && tb . Text . Length > 0 )
+							{
+								Console . WriteLine ( $"UI = {tb . Text}" );
+								OBJ = tb as UIElement;
+								success = true;
+								break;
+							}
+							Console . WriteLine ( $"UI = {v . ToString ( )}" );
+							//							if ( v . ToString ( ) . Contains ( ".TextBox" ) )
+							//if ( v . ToString ( ) . Contains ( ".TextBox" ) )
+							//{
+							//	OBJ = prev as UIElement;
+							//	success = true;
+							//	break;
+							//}
+							//else
+							ui = v as UIElement;
+						} while ( true );
+						break;
+					case 18:
+						OBJ = FindVisualParent<ContentPresenter> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 19:
+						OBJ = FindVisualParent<Grid> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 20:
+						OBJ = FindVisualParent<Window> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 21:
+						OBJ = FindVisualParent<ScrollContentPresenter> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					case 22:
+						OBJ = FindVisualParent<Rectangle> ( ui );
+						if ( OBJ != null )
+							success = true;
+						break;
+					//case 23:
+					//	OBJ = FindVisualParent<TextBoxLineDrawingVisual> ( ui );
+					//	if ( OBJ != null )
+					//		success = true;
+					//	break;
+					default:
+						OBJ = ui;
+						success = false;
+						break;
+				}
+				if ( success == true && OBJ != null )
+					break;
+			} while ( true );
+			if ( success == false )
+				return;
+			Console . WriteLine ( $"Element Identified for display = : [{OBJ . ToString ( )}]" );
+			//string str = OBJ . ToString ( );
+			//if ( str . Contains ( ".TextBox" ) )
+			//{
+			//	var v  = OBJ.GetType();
+			//	Console . WriteLine ( $"Type is {v}" );
+			//}
+			////OBJ = OBJ . Text;
+			var bmp = Utils . CreateControlImage ( OBJ as FrameworkElement , @"J:\\users\ianch\Documents\capturedimage.png" );
+			if ( bmp == null )
+				return;
+			Grabviewer gv = new Grabviewer(parent,ctrl, bmp);
+			//Setup the  image in our viewer
+			gv . Grabimage . Source = bmp;
+			gv . Title = @"C:\users\ianch\documents\Grabimage.png";
+			gv . Title += $"  :  RESIZE window to magnify the contents ...";
+			gv . Show ( );
+			// Save to disk file
+			Utils . SaveImageToFile ( ( RenderTargetBitmap ) bmp , @"C:\users\ianch\documents\Grabimage.png" , "PNG" );
 		}
 		public static void HandleCtrlFnKeys ( bool key1 , KeyEventArgs e )
 		{
@@ -942,401 +1409,6 @@ namespace WPFPages
 				return;
 			}
 		}
-		private void CloseviewerWindow ( int index )
-		{
-			//Close the specified viewer
-			if ( MainWindow . gv . window != null )
-			{
-				//Fn removes all record of it's very existence
-				MainWindow . gv . window [ index ] . Close ( );
-				Flags . CurrentSqlViewer = null;
-				MainWindow . gv . SqlViewerWindow = null;
-			}
-		}
-
-		/// <summary>
-		/// A Func that takes ANY 2 (of 3 [Bank,Customer,Details] Db type records and returns true if the CustNo and Bankno match
-		/// </summary>
-		/// <param name="obj1"></param>
-		/// <param name="obj2"></param>
-		/// <returns></returns>
-		public static bool CompareDbRecords ( object obj1 , object obj2 )
-		{
-			bool result = false;
-			BankAccountViewModel bvm = new BankAccountViewModel ( );
-			CustomerViewModel cvm = new CustomerViewModel ( );
-			DetailsViewModel dvm = new DetailsViewModel ( );
-			//bvm = null;
-			//cvm = null;
-			//dvm = null;
-			if ( obj1 == null || obj2 == null )
-				return result;
-			if ( obj1 . GetType ( ) == bvm . GetType ( ) )
-				bvm = obj1 as BankAccountViewModel;
-			if ( obj1 . GetType ( ) == cvm . GetType ( ) )
-				cvm = obj1 as CustomerViewModel;
-			if ( obj1 . GetType ( ) == dvm . GetType ( ) )
-				dvm = obj1 as DetailsViewModel;
-
-			if ( obj2 . GetType ( ) == bvm . GetType ( ) )
-				bvm = obj2 as BankAccountViewModel;
-			if ( obj2 . GetType ( ) == cvm . GetType ( ) )
-				cvm = obj2 as CustomerViewModel;
-			if ( obj2 . GetType ( ) == dvm . GetType ( ) )
-				dvm = obj2 as DetailsViewModel;
-
-			if ( bvm != null && cvm != null )
-			{
-				if ( bvm . CustNo == cvm . CustNo )
-					result = true;
-			}
-			else if ( bvm != null && dvm != null )
-			{
-				if ( bvm . CustNo == dvm . CustNo )
-					result = true;
-			}
-			else if ( cvm != null && dvm != null )
-			{
-				if ( cvm . CustNo == dvm . CustNo )
-					result = true;
-			}
-			result = false;
-			return result;
-		}
-
-		public static bool CheckRecordMatch (
-			  BankAccountViewModel bvm ,
-			  CustomerViewModel cvm ,
-			  DetailsViewModel dvm )
-		{
-			bool result = false;
-			if ( bvm != null && cvm != null )
-			{
-				if ( bvm . CustNo == cvm . CustNo )
-					result = true;
-			}
-			else if ( bvm != null && dvm != null )
-			{
-				if ( bvm . CustNo == dvm . CustNo )
-					result = true;
-			}
-			else if ( cvm != null && dvm != null )
-			{
-				if ( cvm . CustNo == dvm . CustNo )
-					result = true;
-			}
-			return result;
-		}
-
-		#region datagrid scrolling / Search helpers
-		public static void SetSelectedItemFirstRow ( object dataGrid , object selectedItem )
-		{
-			//If target datagrid Empty, throw exception
-			if ( dataGrid == null )
-			{
-				throw new ArgumentNullException ( "Target none" + dataGrid + "Cannot convert to DataGrid" );
-			}
-			//Get target DataGrid，If it is empty, an exception will be thrown
-			System . Windows . Controls . DataGrid dg = dataGrid as System . Windows . Controls . DataGrid;
-			if ( dg == null )
-			{
-				throw new ArgumentNullException ( "Target none" + dataGrid + "Cannot convert to DataGrid" );
-			}
-			//If the data source is empty, return
-			if ( dg . Items == null || dg . Items . Count < 1 )
-			{
-				return;
-			}
-
-			dg . SelectedItem = selectedItem;
-			dg . CurrentColumn = dg . Columns [ 0 ];
-			dg . ScrollIntoView ( dg . SelectedItem , dg . CurrentColumn );
-		}
-		/// <summary>
-		/// MASTER UPDATE METHOD
-		/// This handles repositioning of a selected item in any grid perfectly
-		/// </summary>
-		/// <param name="grid"></param>
-		/// <param name="row"></param>
-		public static void SetUpGridSelection ( DataGrid grid , int row = 0 )
-		{
-			//			bool inprogress = false;
-			//			int scrollrow = 0;
-			if ( row == -1 )
-				row = 0;
-			// This triggers the selection changed event
-			grid . SelectedIndex = row;
-			grid . SelectedItem = row;
-			//			grid . SetDetailsVisibilityForItem ( grid . SelectedItem, Visibility . Visible );
-			grid . SelectedIndex = row;
-			grid . SelectedItem = row;
-			Utils . ScrollRecordIntoView ( grid , row );
-			grid . UpdateLayout ( );
-			grid . Refresh ( );
-			//			var v = grid .VerticalAlignment;
-		}
-		public static void SetUpGListboxSelection ( ListBox grid , int row = 0 )
-		{
-			//			bool inprogress = false;
-			//			int scrollrow = 0;
-			if ( row == -1 )
-				row = 0;
-			// This triggers the selection changed event
-			grid . SelectedIndex = row;
-			grid . SelectedItem = row;
-			//			grid . SetDetailsVisibilityForItem ( grid . SelectedItem, Visibility . Visible );
-			grid . SelectedIndex = row;
-			grid . SelectedItem = row;
-			Utils . ScrollLBRecordIntoView ( grid , row );
-			grid . UpdateLayout ( );
-			grid . Refresh ( );
-			//			var v = grid .VerticalAlignment;
-		}
-
-		/// <summary>
-		/// Metohd that almost GUARANTESS ot force a record into view in any DataGrid
-		/// /// This is called by method above - MASTER Updater Method
-		/// </summary>
-		/// <param name="dGrid"></param>
-		/// <param name="row"></param>
-		public static void ScrollRecordInGrid ( DataGrid dGrid , int row )
-		{
-			if ( dGrid . CurrentItem == null )
-				return;
-			dGrid . UpdateLayout ( );
-			dGrid . ScrollIntoView ( dGrid . Items . Count - 1 );
-			dGrid . UpdateLayout ( );
-			dGrid . ScrollIntoView ( row );
-			dGrid . UpdateLayout ( );
-			Utils . ScrollRecordIntoView ( dGrid , row );
-		}
-		public static int FindMatchingRecord ( string Custno , string Bankno , DataGrid Grid , string currentDb = "" )
-		{
-			int index = 0;
-			if ( currentDb == "BANKACCOUNT" )
-			{
-				foreach ( var item in Grid . Items )
-				{
-					BankAccountViewModel cvm = item as BankAccountViewModel;
-					if ( cvm == null )
-						break;
-					if ( cvm . CustNo == Custno && cvm . BankNo == Bankno )
-					{
-						break;
-					}
-					index++;
-				}
-				if ( index == Grid . Items . Count )
-					index = -1;
-				return index;
-			}
-			else if ( currentDb == "CUSTOMER" )
-			{
-				foreach ( var item in Grid . Items )
-				{
-					CustomerViewModel cvm = item as CustomerViewModel;
-					if ( cvm == null )
-						break;
-					if ( cvm . CustNo == Custno && cvm . BankNo == Bankno )
-					{
-						break;
-					}
-					index++;
-				}
-				if ( index == Grid . Items . Count )
-					index = -1;
-				return index;
-			}
-			else if ( currentDb == "DETAILS" )
-			{
-				foreach ( var item in Grid . Items )
-				{
-					DetailsViewModel dvm = item as DetailsViewModel;
-					if ( dvm == null )
-						break;
-					if ( dvm . CustNo == Custno && dvm . BankNo == Bankno )
-					{
-						break;
-					}
-					index++;
-				}
-				if ( index == Grid . Items . Count )
-					index = -1;
-				return index;
-			}
-			return -1;
-		}
-
-
-		public static bool DataGridHasFocus ( DependencyObject instance )
-		{
-			//how to fibnd out whether a datagrid has focus or not to handle key previewers
-			IInputElement focusedControl = FocusManager . GetFocusedElement ( instance );
-			if ( focusedControl == null )
-				return true;
-			string compare = focusedControl . ToString ( );
-			if ( compare . ToUpper ( ) . Contains ( "DATAGRID" ) )
-				return true;
-			else
-				return false;
-		}
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="Dgrid"></param>
-		/// <param name="CurrentRecord"></param>
-		public static void ScrollRecordIntoView ( DataGrid Dgrid , int CurrentRecord )
-		{
-			// Works well 26/5/21
-			double currentTop = 0;
-			double currentBottom = 0;
-			if ( CurrentRecord == -1 )
-				return;
-			if ( Dgrid . Name == "CustomerGrid" || Dgrid . Name == "DataGrid1" )
-			{
-				currentTop = Flags . TopVisibleBankGridRow;
-				currentBottom = Flags . BottomVisibleBankGridRow;
-			}
-			else if ( Dgrid . Name == "BankGrid" || Dgrid . Name == "DataGrid2" )
-			{
-				currentTop = Flags . TopVisibleCustGridRow;
-				currentBottom = Flags . BottomVisibleCustGridRow;
-			}
-			else if ( Dgrid . Name == "DetailsGrid" || Dgrid . Name == "DetailsGrid" )
-			{
-				currentTop = Flags . TopVisibleDetGridRow;
-				currentBottom = Flags . BottomVisibleDetGridRow;
-			}     // Believe it or not, it takes all this to force a scrollinto view correctly
-
-			if ( Dgrid == null || Dgrid . Items . Count == 0 || Dgrid . SelectedItem == null )
-				return;
-
-			//update and scroll to bottom first
-			Dgrid . SelectedIndex = ( int ) CurrentRecord;
-			Dgrid . SelectedItem = ( int ) CurrentRecord;
-			Dgrid . UpdateLayout ( );
-			Dgrid . ScrollIntoView ( Dgrid . Items . Count - 1 );
-			Dgrid . UpdateLayout ( );
-			Dgrid . ScrollIntoView ( Dgrid . SelectedItem );
-			Dgrid . UpdateLayout ( );
-			Flags . CurrentSqlViewer?.SetScrollVariables ( Dgrid );
-		}
-		public static void ScrollLBRecordIntoView ( ListBox Dgrid , int CurrentRecord )
-		{
-			// Works well 26/5/21
-
-			//update and scroll to bottom first
-			Dgrid . SelectedIndex = ( int ) CurrentRecord;
-			Dgrid . SelectedItem = ( int ) CurrentRecord;
-			Dgrid . UpdateLayout ( );
-			Dgrid . ScrollIntoView ( Dgrid . Items . Count - 1 );
-			Dgrid . UpdateLayout ( );
-			Dgrid . ScrollIntoView ( Dgrid . SelectedItem );
-			Dgrid . UpdateLayout ( );
-		}
-
-		#endregion datagrid scrolling / Search helpers
-
-		//		public NewFlags Flags = new NewFlags();
-		//************************************************************************************//
-
-		public static string GetDataSortOrder ( string commandline )
-		{
-			if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . DEFAULT )
-				commandline += "Custno, BankNo";
-			else if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . ID )
-				commandline += "ID";
-			else if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . BANKNO )
-				commandline += "BankNo, CustNo";
-			else if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . CUSTNO )
-				commandline += "CustNo";
-			else if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . ACTYPE )
-				commandline += "AcType";
-			else if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . DOB )
-				commandline += "Dob";
-			else if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . ODATE )
-				commandline += "Odate";
-			else if ( Flags . SortOrderRequested == ( int ) Flags . SortOrderEnum . CDATE )
-				commandline += "Cdate";
-			return commandline;
-		}
-
-		public static bool CheckForExistingGuid ( Guid guid )
-		{
-			bool retval = false;
-			for ( int x = 0 ; x < Flags . DbSelectorOpen . ViewersList . Items . Count ; x++ )
-			{
-				ListBoxItem lbi = new ListBoxItem ( );
-				//lbi.Tag = viewer.Tag;
-				lbi = Flags . DbSelectorOpen . ViewersList . Items [ x ] as ListBoxItem;
-				if ( lbi . Tag == null )
-					return retval;
-				Guid g = ( Guid ) lbi . Tag;
-				if ( g == guid )
-				{
-					retval = true;
-					break;
-				}
-			}
-			return retval;
-		}
-
-		#region Window control/ find methods
-		public static void GetWindowHandles ( )
-		{
-#if SHOWWINDOWDATA
-			Console . WriteLine ( $"Current Windows\r\n" + "===============" );
-			foreach ( Window window in System . Windows . Application . Current . Windows )
-			{
-				if ( ( string ) window . Title != "" && ( string ) window . Content != "" )
-				{
-					Console . WriteLine ( $"Title:  {window . Title },\r\nContent - {window . Content}" );
-					Console . WriteLine ( $"Name = [{window . Name}]\r\n" );
-				}
-			}
-#endif
-		}
-		public static bool FindWindowFromTitle ( string searchterm , ref Window handle )
-		{
-			bool result = false;
-			foreach ( Window window in System . Windows . Application . Current . Windows )
-			{
-				if ( window . Title . ToUpper ( ) . Contains ( searchterm . ToUpper ( ) ) )
-				{
-					handle = window;
-					result = true;
-					break;
-				}
-			}
-			return result;
-		}
-
-		#endregion Window control/ find methods
-
-		public static Style GetDictionaryStyle ( string tempname )
-		{
-			Style ctmp = System . Windows . Application . Current . FindResource ( tempname ) as Style;
-			return ctmp;
-		}
-		public static ControlTemplate GetDictionaryControlTemplate ( string tempname )
-		{
-			ControlTemplate ctmp = System . Windows . Application . Current . FindResource ( tempname ) as ControlTemplate;
-			return ctmp;
-		}
-		public static Brush GetDictionaryBrush ( string brushname )
-		{
-			Brush brs = null;
-			try
-			{
-				brs = System . Windows . Application . Current . FindResource ( brushname ) as Brush;
-			}
-			catch
-			{
-
-			}
-			return brs;
-		}
-		// Utility functions for sensing scrollbars when dragging from a grid etc
 		public static bool HitTestScrollBar ( object sender , MouseButtonEventArgs e )
 		{
 			//			HitTestResult hit = VisualTreeHelper . HitTest ( ( Visual ) sender, e . GetPosition ( ( IInputElement ) sender ) );
@@ -1387,60 +1459,6 @@ namespace WPFPages
 			}
 			return true;
 		}
-		public static string GetPrettyGridStatistics ( DataGrid Grid , int current )
-		{
-			string output = "";
-			if ( current != -1 )
-				output = $"{current} / {Grid . Items . Count}";
-			else
-				output = $"0 / {Grid . Items . Count}";
-			return output;
-		}
-
-		#region drag/Drop automation
-		/// <summary>
-		/// Handles the making of any window to be draggable via a simple click/Drag inside them
-		/// Very useful method
-		/// </summary>
-		/// <param name="inst"></param>
-		public static void SetupWindowDrag ( Window inst )
-		{
-			inst . MouseDown += delegate
-			{
-				try
-				{ inst . DragMove ( ); }
-				catch { return; }
-			};
-		}
-
-		#endregion drag/Drop automation
-
-		/// <summary>
-		/// Creates a BMP from any control passed into it   ???
-		/// </summary>
-		/// <param name="element"></param>
-		/// <returns></returns>
-		public static RenderTargetBitmap RenderBitmap ( FrameworkElement element )
-		{
-			double topLeft = 0;
-			double topRight = 0;
-			int width = ( int ) element . ActualWidth;
-			int height = ( int ) element . ActualHeight;
-			double dpiX = 96; // this is the magic number
-			double dpiY = 96; // this is the magic number
-
-			PixelFormat pixelFormat = PixelFormats . Default;
-			VisualBrush elementBrush = new VisualBrush ( element );
-			DrawingVisual visual = new DrawingVisual ( );
-			DrawingContext dc = visual . RenderOpen ( );
-
-			dc . DrawRectangle ( elementBrush , null , new Rect ( topLeft , topRight , width , height ) );
-			dc . Close ( );
-			RenderTargetBitmap bitmap = new RenderTargetBitmap ( width, height, dpiX, dpiY, pixelFormat );
-			bitmap . Render ( visual );
-			return bitmap;
-		}
-
 		public static void LoadBankDbGeneric ( BankCollection bvm , string caller = "" , bool Notify = false , int lowvalue = -1 , int highvalue = -1 , int maxrecords = -1 )
 		{
 			if ( maxrecords == -1 )
@@ -1453,195 +1471,353 @@ namespace WPFPages
 			}
 
 		}
+		private static string ParseforCR ( string input )
+		{
+			string output="";
+			if ( input . Length == 0 )
+				return input;
+			if ( input . Contains ( "\r\n" ) )
+			{
+				do
+				{
+					string[] fields = input.Split('\r');
+					foreach ( var item in fields )
+					{
+						output += item;
+					}
+					if ( output . Contains ( "\r" ) == false )
+						break;
+				} while ( true );
+			}
+			else
+				return input;
+			return output;
+		}
+		public static void ReadAllConfigSettings ( )
+		{
+			try
+			{
+				var appSettings = ConfigurationManager . AppSettings;
+
+				if ( appSettings . Count == 0 )
+				{
+					Console . WriteLine ( "AppSettings is empty." );
+				}
+				else
+				{
+					foreach ( var key in appSettings . AllKeys )
+					{
+						Console . WriteLine ( "Key: {0} Value: {1}" , key , appSettings [ key ] );
+					}
+				}
+			}
+			catch ( ConfigurationErrorsException )
+			{
+				Console . WriteLine ( "Error reading app settings" );
+			}
+		}
+		public static string ReadConfigSetting ( string key )
+		{
+			string result = "";
+			try
+			{
+				var appSettings = ConfigurationManager . AppSettings;
+				result = appSettings [ key ] ?? "Not Found";
+				Console . WriteLine ( result );
+			}
+			catch ( ConfigurationErrorsException )
+			{
+				Console . WriteLine ( "Error reading app settings" );
+			}
+			return result;
+		}
+		/// <summary>
+		/// Creates a BMP from any control passed into it   ???
+		/// </summary>
+		/// <param name="element"></param>
+		/// <returns></returns>
+		public static RenderTargetBitmap RenderBitmap ( Visual element , double objwidth = 0 , double objheight = 0 , string filename = "" , bool savetodisk = false )
+		{
+			double topLeft = 0;
+			double topRight = 0;
+			int width = 0;
+			int height =0;
+
+			if ( element == null )
+				return null;
+			Rect bounds = VisualTreeHelper.GetDescendantBounds(element);
+			if ( objwidth == 0 )
+				width = ( int ) bounds . Width;
+			if ( objheight == 0 )
+				height = ( int ) bounds . Height;
+			double dpiX = 96; // this is the magic number
+			double dpiY = 96; // this is the magic number
+
+			PixelFormat pixelFormat = PixelFormats . Default;
+			VisualBrush elementBrush = new VisualBrush ( element );
+			DrawingVisual visual = new DrawingVisual ( );
+			DrawingContext dc = visual . RenderOpen ( );
+
+			dc . DrawRectangle ( elementBrush , null , new Rect ( topLeft , topRight , width , height ) );
+			dc . Close ( );
+			RenderTargetBitmap rtb = new RenderTargetBitmap ( (int)(bounds.Width * dpiX / 96.0), (int)(bounds.Height * dpiY / 96.0), dpiX, dpiY, PixelFormats.Pbgra32 );
+			DrawingVisual dv = new DrawingVisual();
+			using ( DrawingContext ctx = dv . RenderOpen ( ) )
+			{
+				VisualBrush vb = new VisualBrush(element);
+				ctx . DrawRectangle ( vb , null , new Rect ( new Point ( ) , bounds . Size ) );
+			}
+			rtb . Render ( dv );
+
+			if ( savetodisk && filename != "" )
+				SaveImageToFile ( rtb , filename );
+			return rtb;
+		}
+		// allows any image to be saved as PNG/GIF/JPG format, defaullt is PNG
+		public static void SaveImageToFile ( RenderTargetBitmap bmp , string file , string imagetype = "PNG" )
+		{
+			string[] items;
+			// Make a PNG encoder.
+			if ( bmp == null )
+				return;
+			if ( file == "" && imagetype != "" )
+				file = @"J:\users\ianch\pictures\defaultimage";
+			items = file . Split ( '.' );
+			file = items [ 0 ];
+			if ( imagetype == "PNG" )
+				file += ".png";
+			else if ( imagetype == "GIF" )
+				file += ".gif";
+			else if ( imagetype == "JPG" )
+				file += ".jpg";
+			using ( FileStream fs = new FileStream ( file ,
+					    FileMode . Create , FileAccess . Write , FileShare . None ) )
+			{
+				if ( imagetype == "PNG" )
+				{
+					PngBitmapEncoder encoder = new PngBitmapEncoder();
+					encoder . Frames . Add ( BitmapFrame . Create ( bmp ) );
+					encoder . Save ( fs );
+				}
+				else if ( imagetype == "GIF" )
+				{
+					GifBitmapEncoder encoder = new GifBitmapEncoder ();
+					encoder . Frames . Add ( BitmapFrame . Create ( bmp ) );
+					encoder . Save ( fs );
+				}
+				else if ( imagetype == "JPG" || imagetype == "JPEG" )
+				{
+					JpegBitmapEncoder encoder = new JpegBitmapEncoder ();
+					encoder . Frames . Add ( BitmapFrame . Create ( bmp ) );
+					encoder . Save ( fs );
+				}
+			}
+		}
+		public static void SaveProperty ( string setting , string value )
+		{
+			try
+			{
+				if ( value . ToUpper ( ) . Contains ( "TRUE" ) )
+					Settings . Default [ setting ] = true;
+				else if ( value . ToUpper ( ) . Contains ( "FALSE" ) )
+					Settings . Default [ setting ] = false;
+				else
+					Settings . Default [ setting ] = value;
+				Settings . Default . Save ( );
+				Settings . Default . Upgrade ( );
+				ConfigurationManager . RefreshSection ( setting );
+			}
+			catch ( Exception ex )
+			{
+				Debug . WriteLine ( $"Unable to save property {setting} of [{value}]\nError was {ex . Data}, {ex . Message}, Stack trace = \n{ex . StackTrace}" );
+			}
+		}
+		/// <summary>
+		/// MASTER UPDATE METHOD
+		/// This handles repositioning of a selected item in any grid perfectly
+		/// </summary>
+		/// <param name="grid"></param>
+		/// <param name="row"></param>
+		/// <summary>
+		/// Metohd that almost GUARANTESS ot force a record into view in any DataGrid
+		/// /// This is called by method above - MASTER Updater Method
+		/// </summary>
+		/// <param name="dGrid"></param>
+		/// <param name="row"></param>
+		public static void ScrollRecordInGrid ( DataGrid dGrid , int row )
+		{
+			if ( dGrid . CurrentItem == null )
+				return;
+			dGrid . UpdateLayout ( );
+			dGrid . ScrollIntoView ( dGrid . Items . Count - 1 );
+			dGrid . UpdateLayout ( );
+			dGrid . ScrollIntoView ( row );
+			dGrid . UpdateLayout ( );
+			Utils . ScrollRecordIntoView ( dGrid , row );
+		}
+
+		public static void ScrollLBRecordIntoView ( ListBox Dgrid , int CurrentRecord )
+		{
+			// Works well 26/5/21
+
+			//update and scroll to bottom first
+			Dgrid . SelectedIndex = ( int ) CurrentRecord;
+			Dgrid . SelectedItem = ( int ) CurrentRecord;
+			Dgrid . UpdateLayout ( );
+			Dgrid . ScrollIntoView ( Dgrid . Items . Count - 1 );
+			Dgrid . UpdateLayout ( );
+			Dgrid . ScrollIntoView ( Dgrid . SelectedItem );
+			Dgrid . UpdateLayout ( );
+		}
+		public static void ScrollRecordIntoView ( DataGrid Dgrid , int CurrentRecord )
+		{
+			// Works well 26/5/21
+			double currentTop = 0;
+			double currentBottom = 0;
+			if ( CurrentRecord == -1 )
+				return;
+			if ( Dgrid . Name == "CustomerGrid" || Dgrid . Name == "DataGrid1" )
+			{
+				currentTop = Flags . TopVisibleBankGridRow;
+				currentBottom = Flags . BottomVisibleBankGridRow;
+			}
+			else if ( Dgrid . Name == "BankGrid" || Dgrid . Name == "DataGrid2" )
+			{
+				currentTop = Flags . TopVisibleCustGridRow;
+				currentBottom = Flags . BottomVisibleCustGridRow;
+			}
+			else if ( Dgrid . Name == "DetailsGrid" || Dgrid . Name == "DetailsGrid" )
+			{
+				currentTop = Flags . TopVisibleDetGridRow;
+				currentBottom = Flags . BottomVisibleDetGridRow;
+			}     // Believe it or not, it takes all this to force a scrollinto view correctly
+
+			if ( Dgrid == null || Dgrid . Items . Count == 0 || Dgrid . SelectedItem == null )
+				return;
+
+			//update and scroll to bottom first
+			Dgrid . SelectedIndex = ( int ) CurrentRecord;
+			Dgrid . SelectedItem = ( int ) CurrentRecord;
+			Dgrid . UpdateLayout ( );
+			Dgrid . ScrollIntoView ( Dgrid . Items . Count - 1 );
+			Dgrid . UpdateLayout ( );
+			Dgrid . ScrollIntoView ( Dgrid . SelectedItem );
+			Dgrid . UpdateLayout ( );
+			Flags . CurrentSqlViewer?.SetScrollVariables ( Dgrid );
+		}
+		//Generic form of Selection forcing code below
 		public static void SelectTextBoxText ( TextBox txtbox )
 		{
 			txtbox . SelectionLength = txtbox . Text . Length;
 			txtbox . SelectionStart = 0;
 			txtbox . SelectAll ( );
 		}
-
-		#region Visual Stlye / Search Helpers
-		/// <summary>
-		/// a different version of FindChild - find by object TYPE
-		/// </summary>
-		/// <param name="o"></param>
-		/// <param name="childType"></param>
-		/// <returns></returns>
-		public static DependencyObject FindChild ( DependencyObject o , Type childType )
+		public static void SetGridRowSelectionOn ( DataGrid dgrid , int index )
 		{
-			DependencyObject foundChild = null;
-			if ( o != null )
+			if ( dgrid . Items . Count > 0 && index != -1 )
 			{
-				int childrenCount = VisualTreeHelper . GetChildrenCount ( o );
-				for ( int i = 0 ; i < childrenCount ; i++ )
+				try
 				{
-					var child = VisualTreeHelper . GetChild ( o, i );
-					if ( child . GetType ( ) != childType )
+					// clear anny selection on current record in datagrid
+					DataGridRow r = dgrid . ItemContainerGenerator . ContainerFromIndex ( dgrid.SelectedIndex ) as DataGridRow;
+					if ( r != null )
+						r . IsSelected = false;
+					//Setup new selected index
+					dgrid . SelectedIndex = index;
+					dgrid . SelectedItem = index;
+					dgrid . UpdateLayout ( );
+					dgrid . BringIntoView ( );
+					dgrid . ScrollIntoView ( dgrid . Items [ index ] );
+					r = dgrid . ItemContainerGenerator . ContainerFromIndex ( index ) as DataGridRow;
+					if ( r != null )
 					{
-						foundChild = FindChild ( child , childType );
-						//if(foundChild == null)
-						//        FindChild ( child, childType );
-					}
-					else
-					{
-						foundChild = child;
-						break;
+						// Select new record
+						r . IsSelected = false;
+						r . IsSelected = true;
 					}
 				}
+				catch ( Exception ex )
+				{
+					Debug . WriteLine ( $"{ex . Message}, {ex . Data}" );
+				}
 			}
-			return foundChild;
 		}
-		public static parentItem FindVisualParent<parentItem> ( DependencyObject obj ) where parentItem : DependencyObject
+		public static void SetSelectedItemFirstRow ( object dataGrid , object selectedItem )
 		{
-			DependencyObject parent = VisualTreeHelper . GetParent ( obj );
-			while ( parent != null && !parent . GetType ( ) . Equals ( typeof ( parentItem ) ) )
+			//If target datagrid Empty, throw exception
+			if ( dataGrid == null )
 			{
-				parent = VisualTreeHelper . GetParent ( parent );
+				throw new ArgumentNullException ( "Target none" + dataGrid + "Cannot convert to DataGrid" );
 			}
-			return parent as parentItem;
-		}
-		public static T FindVisualChildByName<T> ( DependencyObject parent , string name ) where T : DependencyObject
-		{
-			for ( int i = 0 ; i < VisualTreeHelper . GetChildrenCount ( parent ) ; i++ )
+			//Get target DataGrid，If it is empty, an exception will be thrown
+			System . Windows . Controls . DataGrid dg = dataGrid as System . Windows . Controls . DataGrid;
+			if ( dg == null )
 			{
-				var child = VisualTreeHelper . GetChild ( parent, i );
-				string controlName = child . GetValue ( Control . NameProperty ) as string;
-				if ( controlName == name )
-				{
-					return child as T;
-				}
-				else
-				{
-					T result = FindVisualChildByName<T> ( child, name );
-					if ( result != null )
-						return result;
-				}
+				throw new ArgumentNullException ( "Target none" + dataGrid + "Cannot convert to DataGrid" );
 			}
-			return null;
-		}
-		/// <summary>
-		/// a different version of FindChild - find by child NAME (string)
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="parent"></param>
-		/// <param name="childName"></param>
-		/// <returns></returns>
-		public static T FindChild<T> ( DependencyObject parent , string childName )
-			  where T : DependencyObject
-		{
-			// Confirm parent and childName are valid. 
-			if ( parent == null )
-				return null;
-			T foundChild = null;
-			int childrenCount = VisualTreeHelper . GetChildrenCount ( parent );
-			for ( int i = 0 ; i < childrenCount ; i++ )
+			//If the data source is empty, return
+			if ( dg . Items == null || dg . Items . Count < 1 )
 			{
-				var child = VisualTreeHelper . GetChild ( parent, i );
-				// If the child is not of the request child type child
-				T childType = child as T;
-				if ( childType == null )
-				{
-					// recursively drill down the tree
-					foundChild = FindChild<T> ( child , childName );
-					// If the child is found, break so we do not overwrite the found child. 
-					if ( foundChild != null )
-						break;
-				}
-				else if ( !string . IsNullOrEmpty ( childName ) )
-				{
-					var frameworkElement = child as FrameworkElement;
-					// If the child's name is set for search
-					if ( frameworkElement != null && frameworkElement . Name == childName )
-					{
-						// if the child's name is of the request name
-						foundChild = ( T ) child;
-						break;
-					}
-				}
-				else
-				{
-					// child element found.
-					foundChild = ( T ) child;
-					break;
-				}
+				return;
 			}
-			return foundChild;
-		}
-		#endregion Visual Stlye / Search Helpers
-		// Utilities to support converters
-		#region UTILITIES
-		//public class ConverterUtils
-		//{
 
-		public static Brush GetBrushFromInt ( int value )
-		{
-			switch ( value )
-			{
-				case 0:
-					return ( Brushes . White );
-				case 1:
-					return ( Brushes . Yellow );
-				case 2:
-					return ( Brushes . Orange );
-				case 3:
-					return ( Brushes . Red );
-				case 4:
-					return ( Brushes . Magenta );
-				case 5:
-					return ( Brushes . Gray );
-				case 6:
-					return ( Brushes . Aqua );
-				case 7:
-					return ( Brushes . Azure );
-				case 8:
-					return ( Brushes . Brown );
-				case 9:
-					return ( Brushes . Crimson );
-				case 10:
-					return ( Brushes . Transparent );
-			}
-			return ( Brush ) null;
+			dg . SelectedItem = selectedItem;
+			dg . CurrentColumn = dg . Columns [ 0 ];
+			dg . ScrollIntoView ( dg . SelectedItem , dg . CurrentColumn );
 		}
-		public static Brush GetBrush ( string parameter )
+		public static void SetUpGListboxSelection ( ListBox grid , int row = 0 )
 		{
-			if ( parameter == "BLUE" )
-				return Brushes . Blue;
-			else if ( parameter == "RED" )
-				return Brushes . Red;
-			else if ( parameter == "GREEN" )
-				return Brushes . Green;
-			else if ( parameter == "CYAN" )
-				return Brushes . Cyan;
-			else if ( parameter == "MAGENTA" )
-				return Brushes . Magenta;
-			else if ( parameter == "YELLOW" )
-				return Brushes . Yellow;
-			else if ( parameter == "WHITE" )
-				return Brushes . White;
-			else
-			{
-				//We appear to have received a Brushes Resource Name, so return that Brushes value
-				Brush b = ( Brush ) Utils . GetDictionaryBrush ( parameter . ToString ( ) );
-				return b;
-			}
+			//			bool inprogress = false;
+			//			int scrollrow = 0;
+			if ( row == -1 )
+				row = 0;
+			// This triggers the selection changed event
+			grid . SelectedIndex = row;
+			grid . SelectedItem = row;
+			//			grid . SetDetailsVisibilityForItem ( grid . SelectedItem, Visibility . Visible );
+			grid . SelectedIndex = row;
+			grid . SelectedItem = row;
+			Utils . ScrollLBRecordIntoView ( grid , row );
+			grid . UpdateLayout ( );
+			grid . Refresh ( );
+			//			var v = grid .VerticalAlignment;
 		}
-		/// <summary>
-		/// Returns a control that is accessible in code behind from a template control
-		/// </summary>
-		/// <param name="RectBtn"></param>
-		/// <param name="CtrlName"></param>
-		/// <returns></returns>
-		public static object GetTemplateControl ( Control RectBtn , string CtrlName )
+		public static void SetUpGridSelection ( DataGrid grid , int row = 0 )
 		{
-			var template = RectBtn . Template;
-			object v = template . FindName ( CtrlName, RectBtn ) as object;
-			return v;
+			//			bool inprogress = false;
+			//			int scrollrow = 0;
+			if ( row == -1 )
+				row = 0;
+			// This triggers the selection changed event
+			grid . SelectedIndex = row;
+			grid . SelectedItem = row;
+			//			grid . SetDetailsVisibilityForItem ( grid . SelectedItem, Visibility . Visible );
+			grid . SelectedIndex = row;
+			grid . SelectedItem = row;
+			Utils . ScrollRecordIntoView ( grid , row );
+			grid . UpdateLayout ( );
+			grid . Refresh ( );
+			//			var v = grid .VerticalAlignment;
+		}
+		public static void SetupWindowDrag ( Window inst )
+		{
+			inst . MouseDown += delegate
+			{
+				try
+				{ inst . DragMove ( ); }
+				catch { return; }
+			};
 		}
 
 
-		//}
-		#endregion UTILITIES
-
+		//********************************************************************************************************************************************************************************//
+		public static void NewCookie_Click ( object sender , RoutedEventArgs e )
+		//********************************************************************************************************************************************************************************//
+		{
+			NewCookie nc = new NewCookie(sender as Window);
+			nc . ShowDialog ( );
+			defvars . CookieAdded = false;
+		}
 
 	}
 }

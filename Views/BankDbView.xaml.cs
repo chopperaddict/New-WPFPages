@@ -100,7 +100,7 @@ namespace WPFPages . Views
 			// This STOPS all those infuriating binding debug messages from appearing
 			// Add it to any window you do not want these messages to show in
 			System . Diagnostics . PresentationTraceSources . DataBindingSource . Switch . Level = System . Diagnostics . SourceLevels . Critical;
-
+			MouseMove += Utils . Grab_MouseMove;
 		}
 		#region Mouse support
 		//private void DoDragMove ( )
@@ -1014,6 +1014,12 @@ namespace WPFPages . Views
 					Custno . Focus ( );
 					return;
 				}
+				else if ( e . Key == Key . F11 )
+				{
+					if ( Utils . ControlsHitList . Count == 0 )
+						return;
+					Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
+				}
 				return;
 			}
 			else
@@ -1026,12 +1032,18 @@ namespace WPFPages . Views
 					odate . Focus ( );
 					return;
 				}
-				if ( e . Key == Key . Tab && e . Source == Custno )
+				else if ( e . Key == Key . Tab && e . Source == Custno )
 				{
 					e . Handled = true;
 					cdate . Focus ( );
 					//					Debug . WriteLine ( $"KEYDOWN Shift turned OFF" );
 					return;
+				}
+				else if ( e . Key == Key . F11 )
+				{
+					if ( Utils . ControlsHitList . Count == 0 )
+						return;
+					Utils . Grabscreen ( this, Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
 				}
 			}
 		}
@@ -1666,6 +1678,11 @@ namespace WPFPages . Views
 			var selection = int.Parse(Content.ToString());
 			DataGridSupport . SortBankColumns ( BankGrid , DGBankColumnsCollection , selection );
 			BankGrid . Refresh ( );
+		}
+
+		private void bankdbview_PreviewKeyDown ( object sender , KeyEventArgs e )
+		{
+
 		}
 		#endregion CollectionView handlers
 

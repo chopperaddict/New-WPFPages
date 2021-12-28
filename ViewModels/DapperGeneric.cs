@@ -1,27 +1,16 @@
 ﻿using Dapper;
 
-using Microsoft . SqlServer . Management . Smo;
-
 using System;
-using System . CodeDom;
 using System . Collections;
 using System . Collections . Generic;
 using System . Collections . ObjectModel;
 using System . Data;
 using System . Data . SqlClient;
-using System . Drawing . Drawing2D;
-using System . IO;
 using System . Linq;
-using System . Runtime . InteropServices;
-using System . Runtime . Serialization . Formatters . Binary;
 using System . Text;
 using System . Windows;
-using System . Windows . Documents;
-using System . Windows . Forms . VisualStyles;
 
 using WPFPages . Views;
-
-using static System . Net . Mime . MediaTypeNames;
 
 namespace WPFPages . ViewModels
 {
@@ -36,6 +25,7 @@ namespace WPFPages . ViewModels
 	[Serializable]
 	public static class DapperGeneric<T, U, V>
 	{
+		// All these declarations are required
 		public static ObservableCollection<GenericClass>  objG=new ObservableCollection<GenericClass>();
 		public static ObservableCollection<BankAccountViewModel>  objB = new ObservableCollection<BankAccountViewModel>();
 		public static ObservableCollection<CustomerViewModel>  objC = new ObservableCollection<CustomerViewModel>();
@@ -43,7 +33,7 @@ namespace WPFPages . ViewModels
 		public static GenericClass objGclass = new GenericClass();
 		public static List<string> objL=new List<string>();
 
-
+		// Handles SP and Txt requests.....
 		public static IEnumerable<T> ExecuteSPGenericClass (
 			ObservableCollection<T> collection ,
 			string SqlCommand ,
@@ -379,6 +369,7 @@ namespace WPFPages . ViewModels
 			return null;
 		}
 
+		// Handles SP and Txt requests.....
 		public static ObservableCollection<GenericClass> ExecuteSPFullGenericClass<U> (
 			ref U fullCollection ,
 			bool UseFull ,
@@ -387,7 +378,6 @@ namespace WPFPages . ViewModels
 			string Arguments ,
 			string WhereClause ,
 			string OrderByClause ,
-			ref V Typelist ,
 			ref List<GenericClass> genericlist ,
 			out string errormsg )
 		{
@@ -450,7 +440,7 @@ namespace WPFPages . ViewModels
 							}
 							else
 							{
-								// One or No arguments
+								// SP with One or No arguments
 								arg1 = Arguments;
 								if ( arg1 . Contains ( "," ) )              // trim comma off
 									arg1 = arg1 . Substring ( 0 , arg1 . Length - 1 );
@@ -469,6 +459,98 @@ namespace WPFPages . ViewModels
 								// Call Dapper to get results using it's StoredProcedures method which returns
 								// a Dynamic IEnumerable that we then parse via a dictionary into collection of GenericClass  records
 								int colcount = 0, maxcols = 0;
+								var reslt = db . Query ( SqlCommand ,
+																			   null
+																			   ,commandType: CommandType . StoredProcedure );
+
+
+								// How to test the type if a generic
+								if ( typeof ( T ) == typeof ( ObservableCollection<GenericClass> ) )
+								{
+									int k = 0;
+								}
+								if ( reslt != null )
+								{
+									//Although this is duplicated  with the one above we CANNOT make it a method()
+									bool IsSuccess=false;
+									int dictcount = 0;
+									int fldcount = 0;
+									//									int colcount=0;
+									long zero= reslt.LongCount ();
+									try
+									{
+										foreach ( var item in reslt )
+										{
+											// trial to get a new  instance of an anonymous object    - fails	 for bankaccountciewmodel
+											//var  gcx = SqlServerCommands .deepClone( objtype);
+											GenericClass gc = new GenericClass();
+											try
+											{
+												//	Create a dictionary entry for each row of data then add it as a row to the Generic (ObervableCollection<xxxxxx>) Class
+												gc = ParseDapperRowGen ( item , dict , out colcount );
+												dictcount = 1;
+												fldcount = dict . Count;
+												//if ( fldcount == 0 )
+												//{
+												//	//TODO - Oooops, maybe, we will use a Datatable or osething
+												//	//return null;
+												//}
+												foreach ( var pair in dict )
+												{
+													try
+													{
+														if ( pair . Key != null && pair . Value != null )
+														{
+															DapperSupport . AddDictPairToGeneric<GenericClass> ( gc , pair , dictcount++ );
+														}
+
+													}
+													catch ( Exception ex )
+													{
+														Console . WriteLine ( $"Dictionary ERROR : {ex . Message}" );
+														result = ex . Message;
+													}
+												}
+												IsSuccess = true;
+											}
+											catch ( Exception ex )
+											{
+												result = $"SQLERROR : {ex . Message}";
+												Console . WriteLine ( result );
+											}
+
+											objG . Add ( gc );
+											dict . Clear ( );
+											dictcount = 1;
+										}
+										return objG;
+									}
+									catch ( Exception ex )
+									{
+										Console . WriteLine ( $"OUTER DICT/PROCEDURE ERROR : {ex . Message}" );
+										if ( ex . Message . Contains ( "not find stored procedure" ) )
+										{
+											result = $"SQL PARSE ERROR - [{ex . Message}]";
+											errormsg = $"{result}";
+										}
+										else
+										{
+											long x= reslt.LongCount ();
+											if ( x == ( long ) 0 )
+											{
+												result = $"ERROR : [{SqlCommand}] returned ZERO records... ";
+												errormsg = $"DYNAMIC:0";
+												return null;
+											}
+											else
+											{
+												result = ex . Message;
+												errormsg = $"UNKNOWN :{ex . Message}";
+											}
+										}
+									}
+
+								}
 							}
 						}
 						// process a standard sql query string

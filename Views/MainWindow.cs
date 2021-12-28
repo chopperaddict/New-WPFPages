@@ -23,6 +23,9 @@ using System . Windows . Media;
 using WPFPages . AttachedProperties;
 using Microsoft . SqlServer . Management . Smo;
 using static System . Windows . Forms . VisualStyles . VisualStyleElement . TrayNotify;
+using WPFLibrary2021;
+using System . Net;
+using System . Security . Policy;
 
 namespace WPFPages
 {
@@ -31,46 +34,46 @@ namespace WPFPages
 
 	public struct mb
 	{
-		static public int nnull;
-		static public int NNULL;
-		static public int ok;
-		static public int OK;
-		static public int yes;
-		static public int YES;
-		static public int no;
-		static public int NO;
-		static public int cancel;
-		static public int CANCEL;
-		static public int iconexclm;
-		static public int ICONEXCLM;
-		static public int iconwarn;
-		static public int ICONWARN;
-		static public int iconerr;
-		static public int ICONERR;
-		static public int iconinfo;
-		static public int ICONINFO;
+		static public int nnull = 0;
+		static public int NNULL=0;
+		static public int ok=1;
+		static public int OK=1;
+		static public int yes=2;
+		static public int YES=2;
+		static public int no=3;
+		static public int NO=3;
+		static public int cancel=4;
+		static public int CANCEL=4;
+		static public int iconexclm=5;
+		static public int ICONEXCLM=5;
+		static public int iconwarn=6;
+		static public int ICONWARN=6;
+		static public int iconerr=7;
+		static public int ICONERR=7;
+		static public int iconinfo=8;
+		static public int ICONINFO=8;
 	}
 
 	public struct MB
 	{
-		static public int nnull;
-		static public int NNULL;
-		static public int ok;
-		static public int OK;
-		static public int yes;
-		static public int YES;
-		static public int no;
-		static public int NO;
-		static public int cancel;
-		static public int CANCEL;
-		static public int iconexclm;
-		static public int ICONEXCLM;
-		static public int iconwarn;
-		static public int ICONWARN;
-		static public int iconerr;
-		static public int ICONERR;
-		static public int iconinfo;
-		static public int ICONINFO;
+		static public int nnull = 0;
+		static public int NNULL=0;
+		static public int ok=1;
+		static public int OK=1;
+		static public int yes=2;
+		static public int YES=2;
+		static public int no=3;
+		static public int NO=3;
+		static public int cancel=4;
+		static public int CANCEL=4;
+		static public int iconexclm=5;
+		static public int ICONEXCLM=5;
+		static public int iconwarn=6;
+		static public int ICONWARN=6;
+		static public int iconerr=7;
+		static public int ICONERR=7;
+		static public int iconinfo=8;
+		static public int ICONINFO=8;
 	}
 
 	/// <summary>
@@ -115,28 +118,38 @@ namespace WPFPages
 		static public Thickness BorderSize;
 	}
 
+	public struct defvars
+	{
+		public static Uri  cookierootname=new(@"C:\Cookie");
+		public static String CookieDictionarypath=@"J:\users\ianch\documents\CookieDictionary.ser";
+		public static String CookieCollectionpath=@"J:\users\ianch\documents\CookieCollection.ser";
+		public static Dictionary<string , string> Cookiedictionary;
+		public static CookieCollection  Cookiecollection;
+		public static  int NextCookieIndex = 0;
+		public static bool CookieAdded=false;
+	}
+	//public static Dictionary<string, string> cookiedict =new Dictionary<string, string>()	;
 	#endregion My MessageBox arguments
 
 	delegate void DbEditOcurred ( object Sender , EditEventArgs e );
 	delegate void SQLEditOcurred ( object Sender , EditEventArgs e );
+
+	delegate void GrabScreenObject( object Sender , GrabImageArgs e );
 	//	BankAccountViewModel bvm = BankAccountViewModel.bvm;
 
 	public partial class MainWindow : System . ComponentModel . INotifyPropertyChanged
 	{
-		//public static Msgbox msgbox = new Msgbox();
-		public static DlgInput dlgin = new DlgInput();
+//		public static DlgInput dlgin = new DlgInput();
+
 		// Global pointers to Viewmodel classes
 		public static BankAccountViewModel bvm = null;
 		public static CustomerViewModel cvm = null;
 		public static DetailsViewModel dvm = null;
 
-		//		public static NewFlags flags;
-		//		public  static AllFlags Flags;
 		public static EditEventArgs EditArgs = new EditEventArgs ( );
 		public static DataGridController DgControl = new DataGridController ( );
 
-
-		public Frame theFrame;
+//		public Frame theFrame;
 		public static Page _Blank = new BlankPage ( );
 		public static Page _Page0 = new Page0 ( );
 		//public static Page _Page1 = new Page1 ( );
@@ -144,9 +157,9 @@ namespace WPFPages
 		//public static Page _Page3 = new Page3 ( );
 		//public static Page _Page4 = new Page4 ( );
 		//public static Page _Page5 = new Page5 ( );
-		public static string _baseDataText;
-		private string _randomText1 = "button1";
-		private string _randomText2 = "button2";
+//		public static string _baseDataText;
+//		private string _randomText1 = "button1";
+//		private string _randomText2 = "button2";
 		public bool Autoload = false;
 		private bool key1 = false;
 
@@ -174,7 +187,7 @@ namespace WPFPages
 				MB . NNULL = mb . NNULL = 0;
 				MB . OK = mb . OK = 1;
 				MB . YES = mb . YES = 2;
-				MB . NO = mb . NO = 2;
+				MB . NO = mb . NO = 3;
 				MB . CANCEL = mb . CANCEL = 4;
 				MB . ICONEXCLM = mb . ICONEXCLM = 10;
 				MB . ICONWARN = mb . ICONWARN = 11;
@@ -207,9 +220,9 @@ namespace WPFPages
 			// Get Applications development root folder
 			t = Directory . GetParent ( Directory . GetCurrentDirectory ( ) ) . Parent . FullName;
 
-			Utils . AddUpdateAppSettings ( "AppRoot" , t );
+			Library1. AddUpdateAppSettings ( "AppRoot" , t );
 			Utils . SaveProperty ( "AppRoot" , t );
-			Utils . AddUpdateAppSettings ( "AppRoot" , t );
+			Library1 . AddUpdateAppSettings ( "AppRoot" , t );
 
 			// outputs in Output window
 			Utils . ReadAllConfigSettings ( );
@@ -217,7 +230,37 @@ namespace WPFPages
 			// Clean MsgBox data and reload from disk flie
 			ResetMsgBox ( );
 			ReadMsgboxData ( );
+			MouseMove += Utils . Grab_MouseMove;
+			KeyDown += Window_PreviewKeyDown;
+			//Read in our Cookies.CookieDictionary and Cookies. Cookiecollection from disk (Serialized)
+			defvars.Cookiedictionary = Cookies . DeSerialize ( defvars.CookieDictionarypath) as Dictionary<string, string>;
+			if ( defvars . Cookiedictionary != null )
+			{
+				// Set our auto index value for all new cookies paths
+				defvars . NextCookieIndex = defvars . Cookiedictionary . Count;
+			}
+			else
+			{
+				defvars . Cookiedictionary = new Dictionary<string , string> ( );
+				defvars . NextCookieIndex = 1;
+			}
+			defvars . Cookiecollection = Cookies . DeSerialize ( defvars.CookieCollectionpath ) as CookieCollection;
+			if ( defvars.Cookiecollection == null )
+				defvars.Cookiecollection = new CookieCollection ( );
+			
+			// Create some test cookies
+			Cookies.CreateTestCookies ( );
 		}
+		private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )
+		{
+			if ( e . Key == Key . F11 )
+			{
+				if ( Utils . ControlsHitList . Count == 0 )
+					return;
+				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
+			}
+		}
+
 		public static void ResetMsgBox ( )
 		{
 			DlgInput . isClean = true;
@@ -589,6 +632,34 @@ namespace WPFPages
 				Application . Current . Shutdown ( );
 
 		}
+
+		private void GrabScreenObject( object sender , KeyEventArgs e )
+		{
+			if ( e . Key == Key . RightCtrl || e . Key == Key . Home || e . Key == Key . Enter )
+			{
+				Page6_Click ( sender , null );
+				this . Hide ( );
+			}
+			else if ( e . Key == Key . OemQuotes )
+			{
+				EventHandlers . ShowSubscribersCount ( );
+				key1 = false;
+			}
+			else if ( e . Key == Key . LeftCtrl )
+				key1 = true;
+			else if ( e . Key == Key . RWin )
+			{
+				if ( key1 )
+				{
+					Flags . ShowAllFlags ( );
+					key1 = false;
+				}
+			}
+			else if ( e . Key == Key . Escape )
+				Application . Current . Shutdown ( );
+
+		}
+
 
 		private void OntopChkbox_Click ( object sender , RoutedEventArgs e )
 		{

@@ -208,9 +208,21 @@ namespace WPFPages . Views
 			t1 . Start ( );
 			// Reset linkage setting
 			Startup = false;
+			MouseMove += Utils . Grab_MouseMove;
+			KeyDown += Window_PreviewGrabKeyDown;
+
+		}
+		private void Window_PreviewGrabKeyDown ( object sender , KeyEventArgs e )
+		{
+			if ( e . Key == Key . F11 )
+			{
+				if ( Utils . ControlsHitList . Count == 0 )
+					return;
+				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
+			}
 		}
 
-		private  void EventControl_GlobalDataChanged ( object sender, GlobalEventArgs e )
+		private void EventControl_GlobalDataChanged ( object sender, GlobalEventArgs e )
 		{
 			if ( e . CallerType == "DETAILSDBVIEWER" )
 				return;

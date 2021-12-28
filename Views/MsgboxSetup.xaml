@@ -111,34 +111,40 @@
 		<!--<TextBox Text="Message Box Configuration" Grid.Row="0"  Grid.Column="1" Grid.ColumnSpan="3"  IsTabStop="False"
 			   Margin="0 8 0 0" Background="Red" Foreground="White" HorizontalContentAlignment="Center" />-->
 		<TextBox x:Name="info"
-			Background="LightGray" Grid.Row="11" Grid.Column="1" Margin="0,0,62,-27" Grid.RowSpan="2"/>
-		<TextBox x:Name="Memvars"
-			  Background="LightGray" Grid.Row="11" Grid.Column="1" Margin="168,0,4,-30" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
+			Background="LightGray" Grid.Row="11" Grid.Column="1" Margin="0,17,0,-27" Grid.RowSpan="2" Grid.ColumnSpan="2"
+			   VerticalScrollBarVisibility="Auto"/>
+		<!--<TextBox x:Name="Memvars"
+			  Background="LightGray" Grid.Row="11" Grid.Column="1" Margin="168,0,4,-30" Grid.ColumnSpan="2" Grid.RowSpan="2"/>-->
 
-		<Button Grid.Row="11"  Grid.Column="3"  Content="Save..." Width="80"
-			  Background="Orange" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,105"			  
-			  Click="SaveMsgbox" Height="25"  IsTabStop="False"/>
+		<Button Grid.Row="11"  Grid.Column="3"  Content="Save Data" Width="80"   Grid.RowSpan="4" Template="{StaticResource HorizontalGradientTemplateGray}"
+			  Background="Orange" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,76"			  
+			  Click="SaveMsgbox" Height="30"  IsTabStop="False" FontSize="11"/>
 
-		<Button Grid.Row="11"  Grid.Column="3"  Content="Show..." Width="80" Grid.RowSpan="3"
-			  Background="Green" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,35,0,85"			  
-			  Click="ShowMsgbox" Height="25"  IsTabStop="False"/>
+		<Button Grid.Row="11"  Grid.Column="3"  Content="Show Msgbox" Width="80" Grid.RowSpan="4" Template="{StaticResource HorizontalGradientTemplateYellow}"
+			  Background="Green" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,35,0,42"			  
+			  Click="ShowMsgbox" Height="30"  IsTabStop="False" FontSize="11"/>
 
-		<Button Grid.Row="11"  Grid.Column="3"  Content="Show DP's" Width="80"
-			  Background="Violet" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,37" 
-			  Click="ListDps" Height="25"  IsTabStop="False"/>
-		<Button Grid.Row="11"  Grid.Column="3"  Content="Close" Width="80"
-			  Background="Red" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5"			  
-			  Click="Button_Click" Height="25"  IsTabStop="False"/>
+		<Button Grid.Row="11"  Grid.Column="3"  Content="Show Short" Width="80" Grid.RowSpan="3" Template="{StaticResource HorizontalGradientTemplateGreen}"
+			  Background="Green" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,35,0,8"			  
+			  Click="ShowShortMsgbox" Height="30"  IsTabStop="False" FontSize="11"/>
+
+		<!--<Button Grid.Row="11"  Grid.Column="3"  Content="Show DP's" Width="80"  Grid.RowSpan="4" Template="{StaticResource HorizontalGradientTemplateBlue}"
+			  Background="Violet" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,8" 
+			  Click="ListDps" Height="30"  IsTabStop="False" FontSize="11"/>-->
+
+		<Button Grid.Row="11"  Grid.Column="3"  Content="Close Dialog" Width="80"  Grid.RowSpan="4" Template="{StaticResource HorizontalGradientTemplateRed}"
+			  Background="Red" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,-25"			  
+			  Click="Button_Click" Height="30"  IsTabStop="False" FontSize="11"/>
 
 
-		<Slider x:Name="trans" Minimum="0.00" Maximum="255.00" Value="128" Height="19"	ValueChanged="trans_ValueChanged"  
-			  Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="2" Background="Black" Margin="19,0,6,75" VerticalAlignment="Bottom" IsTabStop="False"/>
-		<Slider x:Name="SRed" Minimum="0.00" Maximum="255.00" Value="128" Height="19" ValueChanged	="SRed_ValueChanged"
-			  Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="2" Background="Red" Margin="20,0,5,52" VerticalAlignment="Bottom" IsTabStop="False"/>
-		<Slider x:Name="SGreen" Minimum="0.00" Maximum="255.00" Value="128" Height="19" ValueChanged="SGreen_ValueChanged"
-			  Grid.Column="1" Grid.Row="10"  Grid.ColumnSpan="2" Background="Green" Margin="20,0,5,29" VerticalAlignment="Bottom" IsTabStop="False"/>
-		<Slider x:Name="SBlue" Minimum="0.00" Maximum="255.00" Value="128" Height="19" ValueChanged="SBlue_ValueChanged"
-			  Grid.Column="1" Grid.Row="10"  Grid.ColumnSpan="2" Background="Blue" Margin="20,0,5,5" VerticalAlignment="Bottom" IsTabStop="False"/>
+		<Slider x:Name="trans" Minimum="0.00" Maximum="255.00" Value="128" Height="22"	ValueChanged="trans_ValueChanged"  
+			  Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="3" Background="Black" Margin="4,0,6,70" VerticalAlignment="Bottom" IsTabStop="False"/>
+		<Slider x:Name="SRed" Minimum="0.00" Maximum="255.00" Value="128" Height="22" ValueChanged	="SRed_ValueChanged"
+			  Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="3" Background="Red" Margin="5,28,5,0" VerticalAlignment="Top" IsTabStop="False"/>
+		<Slider x:Name="SGreen" Minimum="0.00" Maximum="255.00" Value="128" Height="22" ValueChanged="SGreen_ValueChanged"
+			  Grid.Column="1" Grid.Row="10"  Grid.ColumnSpan="3" Background="Green" Margin="5,55,5,0" VerticalAlignment="Top" IsTabStop="False"/>
+		<Slider x:Name="SBlue" Minimum="0.00" Maximum="255.00" Value="128" Height="22" ValueChanged="SBlue_ValueChanged"
+			  Grid.Column="1" Grid.Row="10"  Grid.ColumnSpan="3" Background="Blue" Margin="5,83,5,0" VerticalAlignment="Top" IsTabStop="False" Grid.RowSpan="2"/>
 
 	</Grid>
 </Window>

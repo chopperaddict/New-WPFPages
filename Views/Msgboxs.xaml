@@ -43,9 +43,9 @@
 				Visibility="Visible">-->
 				
 				<Image  x:Name="BoxIcon" 
-				Grid.Row="2"  				 
-				Grid.Column="0"
-					  Grid.ColumnSpan="2"
+					Grid.Row="2"  				 
+					Grid.Column="0"
+					Grid.ColumnSpan="2"
 					IsHitTestVisible="True"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Stretch"

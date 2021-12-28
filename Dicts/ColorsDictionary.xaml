@@ -330,14 +330,6 @@
 		<GradientStop Offset="1" Color="White" />
 	</LinearGradientBrush>
 	
-	<!--#endregion-->
-	
-	<!--#region Test of downloaded Datagrid column header Style
-		Gives a really nice top to bottom gradient with 
-		darkest color in horizontal center bar-->
-	
-	<!--#region Datagrid Coloumn header Gradient colors -->
-	
 	<LinearGradientBrush x:Key="HorizontalBlueGradent" StartPoint="0,0" EndPoint="0,1">
 		<GradientStop Offset="0" Color="AliceBlue" />
 		<GradientStop Offset="1" Color="#FF2C50A9" />
@@ -388,18 +380,7 @@
 		<GradientStop Offset="0.4"	 Color="#DA143CAF" />
 		<GradientStop Offset="0.2"	 Color="#F21470E0" />
 		<GradientStop Offset="0"	Color="#FF14A7C1" />
-	</LinearGradientBrush>
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	</LinearGradientBrush>	   	
 	
 	<LinearGradientBrush x:Key="HorizontalYellowGradient" StartPoint="0,0" EndPoint="1,1">
 		<GradientStop Offset="0" Color="AliceBlue" />
@@ -448,8 +429,6 @@
 		<GradientStop Offset="0.2" Color="#FFAF7800" />
 		<GradientStop Offset="0" Color="#FF38320c" />
 	</LinearGradientBrush>
-
-	<!--#region Yellow Horizontal gradient Brushes-->
 	
 	<!--//Tested - verified 20/10/21-->
 	<LinearGradientBrush x:Key="HeaderHorizontalBrushYellowToBlackToYellow" StartPoint="0,0" EndPoint="0,1">
@@ -470,7 +449,6 @@
 		<GradientStop Offset="0.2"	 Color="#FFAF7800" />
 		<GradientStop Offset="0"	Color="#FF38320c" />
 	</LinearGradientBrush>
-	<!--#endregion Yellow Horizontal gradient Brushes-->
 
 	<!--//Tested - verified 20/10/21-->
 	<LinearGradientBrush x:Key="HeaderHorizontalBrushGreenToBlack" StartPoint="0,1" EndPoint="0,0">
@@ -492,12 +470,7 @@
 	<LinearGradientBrush x:Key="VerticalGreenGradient" StartPoint="0,0" EndPoint="1,0">
 		<GradientStop Offset="0" Color="AliceBlue" />
 		<GradientStop Offset="1" Color="#A1005100" />
-	</LinearGradientBrush>
-
-
-
-	
-	
+	</LinearGradientBrush>	 	
 	
 	<LinearGradientBrush x:Key="HeaderBrushGreen" StartPoint="0.5,0" EndPoint="0.5,1">
 		<GradientStop Offset="0" Color="#FF75DD75" />
@@ -537,7 +510,6 @@
 		<GradientStop Offset="0.526" Color="#282829" />
 	</LinearGradientBrush>
 
-
 	<LinearGradientBrush x:Key="HorizontalRedGradient" StartPoint="0,0" EndPoint="0,1">
 		<GradientStop Offset="0" Color="AliceBlue" />
 		<GradientStop Offset="1" Color="#FFdb6069" />
@@ -558,12 +530,17 @@
 		<GradientStop Offset="1" Color="#FFf53d4a" />
 		<GradientStop Offset="0.429" Color="#FFa83e45" />
 		<GradientStop Offset="0.412" Color="#FFd11608" />
-		<GradientStop Offset="0.552" Color="#FF70191f" />
+		<GradientStop Offset="0.552" Color="#FF70191f" />																	
 		<GradientStop Offset="0.546" Color="#ff4f2225" />
 	</LinearGradientBrush>
-	<!--#endregion-->
 
-	<!--=================================================================================================-->
+	<LinearGradientBrush x:Key="YellowToBlack" StartPoint="1,0" EndPoint="1,1">
+		<GradientStop Offset="1" Color="#FFFFE600" />
+		<GradientStop Offset="0.7" Color="#FFFF9D00" />
+		<GradientStop Offset="0.2" Color="#FF977000" />
+		<GradientStop Offset="0" Color="#FF000000" />
+	</LinearGradientBrush>
+
 	<!--//Tested - verified 20/10/21-->
 	<!--Horizontal Yellow To Dark To Yellow-->
 	<LinearGradientBrush x:Key="HeaderHorizontalBrushYellowToDarkToYellow" StartPoint="1,0" EndPoint="1,1">
@@ -609,7 +586,7 @@
 		<GradientStop Offset="0.2"	 Color="#FFAF7800" />
 		<GradientStop Offset="0"	Color="#FF38320c" />
 	</LinearGradientBrush>
-
+  <!--#endregion-->
 
 	<Style x:Key="HeaderStyleYellow" TargetType="DataGridColumnHeader">
 		<Setter Property="Background" Value="{StaticResource HeaderBrushHorizontalYellow}" />
@@ -628,128 +605,12 @@
 		</Style.Triggers>
 	</Style>
 	<!--=================================================================================================-->
-
-
-	<Style x:Key="HGradientBtn">
-		<Setter Property="Control.Background" Value="{StaticResource HeaderBrushBlue}" />
-		<Setter Property="Control.Foreground" Value="White" />
-		<!--<Setter Property="BorderBrush" Value="{StaticResource HeaderBorderBrushBlue}" />-->
-		<Setter Property="Control.BorderThickness" Value="1" />
-		<!--<Setter Property="SnapsToDevicePixels" Value="True" />-->
-		<!--<Setter Property="HorizontalContentAlignment" Value="Center" />-->
-		<Style.Triggers>
-			<Trigger Property="Control.IsMouseOver" Value="True">
-				<Setter Property="Border.Background" Value="{StaticResource HeaderBorderBrushBlue}" />
-				<!--<Setter Property= "Control.Fill" Value="{StaticResource HeaderBorderBrushBlue}"/>-->
-				<Setter Property="Control.BorderBrush" Value="{StaticResource HeaderBorderBrushBlue}" />
-				<Setter Property="Control.Foreground" Value="Red" />
-			</Trigger>
-		</Style.Triggers>
-	</Style>
- 
-	<Style x:Key="HeaderStyleRed" TargetType="DataGridColumnHeader">
-		<Setter Property="Background" Value="{StaticResource HeaderBrushRed}" />
-		<Setter Property="Foreground" Value="White" />
-		<Setter Property="BorderBrush" Value="{StaticResource HeaderBorderBrushRed}" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="SnapsToDevicePixels" Value="True" />
-		<Setter Property="HorizontalContentAlignment" Value="Center" />
-		<Setter Property="MinWidth" Value="0" />
-		<Setter Property="MinHeight" Value="30" />
-		<Setter Property="Cursor" Value="Hand" />
-		<Style.Triggers>
-			<Trigger Property="IsMouseOver" Value="true">
-				<Setter Property="Background" Value="{StaticResource HeaderBorderBrushGreen}" />
-			</Trigger>
-		</Style.Triggers>
-	</Style>
-	
-	<Style x:Key="HeaderStyleGreen" TargetType="DataGridColumnHeader">
-		<Setter Property="Background" Value="{StaticResource HeaderBrushGreen}" />
-		<Setter Property="Foreground" Value="White" />
-		<Setter Property="BorderBrush" Value="{StaticResource HeaderBorderBrushGreen}" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="SnapsToDevicePixels" Value="True" />
-		<Setter Property="HorizontalContentAlignment" Value="Center" />
-		<Setter Property="MinWidth" Value="0" />
-		<Setter Property="MinHeight" Value="30" />
-		<Setter Property="Cursor" Value="Hand" />
-		<Style.Triggers>
-			<Trigger Property="IsMouseOver" Value="true">
-				<Setter Property="Background" Value="{StaticResource HeaderBorderBrushGreen}" />
-			</Trigger>
-		</Style.Triggers>
-	</Style>
-
 	
 	<!--#endregion END OF Test of downloaded Datagrid column header Style
 		Gives a really nice top to bottom gradient with 
 		darkest color in horizontal center bar-->
 
-
-	<!--  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  -->
-	<!--  %%%%%%%%%%%%%%%%%%%%%%%%%% MYCONTROLTEMPLATE %%%%%%%%%%%%%%%%%%%%%%%%%%%%  -->
-	<!--  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  -->
-	<!--
-		A BUTTON WITH A DROP SHADOW THAT DEMONSTRATES THE USE OF [CONTENTPPRESENTER]
-		TO DISPLAY THE TEXT DEFINED IN THE BUTTON CONTROL ITSELF IN ITS XAML CODE
-	-->
-	<ControlTemplate x:Key="MyControlTemplate" TargetType="Button">
-		<Grid>
-			<!--
-				This Is how to create a drop shadow style Rectangle shaped button,
-				using the color defined in the button declaration xaml code
-			-->
-			<Border
-				Margin="5,5,0,0"
-				Background="{TemplateBinding BorderBrush}"
-				CornerRadius="10" />
-			<!--  This border creates the frontmost button outline and fill color/Style  -->
-			<!--
-			<Border BorderBrush="Black" BorderThickness="1"					
-					Background="{TemplateBinding Background}"
-				   CornerRadius="8"
-					Margin="0 0 5 5">
-				-->
-			<!--  Adding this one line lets the control above display the "Content" property  -->
-			<!--
-				<ContentPresenter/>
-			</Border>-->
-		</Grid>
-	</ControlTemplate>
-
-	<!--  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  -->
-	<!--  %%%%%%%%%%%%%%%%%%%%%% MYELLIPSECONTROLTEMPLATE %%%%%%%%%%%%%%%%%%%%%%%%%  -->
-	<!--  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  -->
-	<!--
-		A BUTTON WITH A DROP SHADOW THAT DEMONSTRATES THE USE OF [CONTENTPPRESENTER]
-		TO DISPLAY THE TEXT DEFINED IN THE BUTTON CONTROL ITSELF IN ITS XAML CODE
-	--><!--
-	<ControlTemplate x:Key="MyEllipseButtonTemplate" TargetType="Button">
-		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="{DynamicResource Height}" />
-			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="150" />
-			</Grid.ColumnDefinitions>
-			--><!--
-				This Is how to create a drop shadow, using the color
-				defined in the button declaration xaml code
-				NB we MUST use TemplateBinding to access default properties like Background
-			--><!--
-			<Ellipse Margin="5,5,0,0" Fill="{TemplateBinding Foreground}" />
-			--><!--  This border creates the frontmost button outline and fill color/Style  --><!--
-			<Ellipse Margin="0,0,5,5" Fill="{TemplateBinding Background}" />
-			--><!--  //This is used to show the text Content  --><!--
-			<Border Margin="0" Background="Transparent">
-				--><!--  Adding this one line lets the control above display the "Content" property  --><!--
-				<ContentPresenter />
-			</Border>
-		</Grid>
-
-	</ControlTemplate>-->
-
+											
 	<Style x:Key="MyFocusVisual">
             <Setter Property="Control.Template">
                 <Setter.Value>

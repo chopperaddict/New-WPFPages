@@ -182,9 +182,7 @@ namespace WPFPages . Views
 				Btn4Text = btn4Text;
 
 			CurrentButton = defButton;
-			CurrBtn . Text = defButton . ToString ( );
 			DefaultButton = CurrentButton;
-			DefBtn . Text = DefaultButton . ToString ( );
 
 			// Set up information strings 
 			Row1String = string1;
@@ -222,6 +220,17 @@ namespace WPFPages . Views
 			}
 			CheckForFinalDefaultSettings ( iconstring );
 			this . MouseWheel += Custom_MouseWheel;
+			MouseMove += Utils . Grab_MouseMove;
+			KeyDown += Window_PreviewKeyDown;
+		}
+		private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )
+		{
+			if ( e . Key == Key . F11 )
+			{
+				if ( Utils . ControlsHitList . Count == 0 )
+					return;
+				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
+			}
 		}
 
 		//Set up the basic Dlg colors etc
@@ -334,7 +343,6 @@ namespace WPFPages . Views
 			if ( defButton == Btn )
 			{
 				DefaultButton = Btn;
-				DefBtn . Text = Btn . ToString ( );
 			}
 			if ( Btn >= 0 && Btn <= 4 )
 			{
@@ -398,7 +406,6 @@ namespace WPFPages . Views
 						TabPass = 0;
 					// Reset default to new  button
 					DefaultButton = 0;
-					DefBtn . Text = DefaultButton . ToString ( );
 					SetBtnStatus ( btn , Btn , true , IsMouseOver );
 					if ( TabPass == 2 )
 						TabPass = 0;
@@ -414,7 +421,6 @@ namespace WPFPages . Views
 						TabPass = 0;
 					// Reset default to new  button
 					DefaultButton = btn;
-					DefBtn . Text = DefaultButton . ToString ( );
 					SetBtnStatus ( btn , Btn , false , IsMouseOver );
 					if ( TabPass == 2 )
 						TabPass = 0;
@@ -457,14 +463,18 @@ namespace WPFPages . Views
 					}
 					else if ( TabPass == 2 )
 					{
-						// Setting up focus of NEW NON Default button
-						Btn . Background = BtnMbackground;
+						// Setting up focus of NEW  Default button
+						Btn . Background = DefBtnbackground;
 						SetButtonForeground ( Btn , btnNum == DefaultButton , ismouseover );
 						// mouse is over button
-						th . Left = 0;
-						th . Top = 0;
-						th . Right = 0;
-						th . Bottom = 0;
+						th . Left = 2;
+						th . Top = 1;
+						th . Right = 2;
+						th . Bottom = 5;
+						//th . Left = 0;
+						//th . Top = 0;
+						//th . Right = 0;
+						//th . Bottom = 0;
 					}
 				}
 				else
@@ -503,9 +513,9 @@ namespace WPFPages . Views
 					{
 						// mousehas entered and is over a Default button
 						th . Left = 2;
-						th . Top = 0;
+						th . Top = 1;
 						th . Right = 2;
-						th . Bottom = 0;
+						th . Bottom = 2;
 					}
 					else
 					{
@@ -524,10 +534,10 @@ namespace WPFPages . Views
 					// NOT default button, so it is probably a mouseover entry  ?
 					Btn . Background = BtnMbackground;
 					SetButtonForeground ( Btn , btnNum == DefaultButton , ismouseover );
-					th . Left = 0;
-					th . Top = 0;
-					th . Right = 0;
-					th . Bottom = 0;
+					th . Left = 1;
+					th . Top = 3;
+					th . Right = 1;
+					th . Bottom = 1;
 				}
 				Btn . BorderThickness = th;
 			}
@@ -566,10 +576,15 @@ namespace WPFPages . Views
 		{
 			if ( brdr . Name . Contains ( "1" ) )
 			{
-				if ( DefaultButton == 1 )
+				if ( DefaultButton == 0 )
 				{
-					// IS the defaullt button
-					if ( ismouseover )
+					// We are just resetting to normal
+					Button1Text . Foreground = Btnforeground;
+				}
+				else if ( DefaultButton == 1 )
+					{
+						// IS the defaullt button
+						if ( ismouseover )
 					{
 						Button1Text . Foreground = BtnMforeground;
 					}
@@ -593,7 +608,12 @@ namespace WPFPages . Views
 			}
 			if ( brdr . Name . Contains ( "2" ) )
 			{
-				if ( DefaultButton == 2 )
+				if ( DefaultButton == 0 )
+				{
+					// We are just resetting to normal
+					Button2Text . Foreground = Btnforeground;
+				}
+				else if ( DefaultButton == 2 )
 				{
 					// IS the defaullt button
 					if ( ismouseover )
@@ -620,12 +640,17 @@ namespace WPFPages . Views
 			}
 			if ( brdr . Name . Contains ( "3" ) )
 			{
-				if ( DefaultButton == 3 )
+				if ( DefaultButton == 0 )
+				{
+					// We are just resetting to normal
+					Button3Text . Foreground = Btnforeground;
+				}
+				else if ( DefaultButton == 3 )
 				{
 					// IS the defaullt button
 					if ( ismouseover )
 					{
-						Button3Text . Foreground = DefBtnforeground;
+						Button3Text . Foreground = BtnMforeground;
 					}
 					else
 					{
@@ -647,7 +672,12 @@ namespace WPFPages . Views
 			}
 			if ( brdr . Name . Contains ( "4" ) )
 			{
-				if ( DefaultButton == 4 )
+				if ( DefaultButton == 0 )
+				{
+					// We are just resetting to normal
+					Button4Text . Foreground = Btnforeground;
+				}
+				else if ( DefaultButton == 4 )
 				{
 					// IS the defaullt button
 					if ( ismouseover )
@@ -673,49 +703,6 @@ namespace WPFPages . Views
 				}
 			}
 			return;
-			//			if ( isdefault == true && ismouseover == true )
-			//				Button1Text . Foreground = DefBtnforeground;
-			//			else if ( isdefault == true && ismouseover == false )
-			//				Button1Text . Foreground = DefBtnforeground;
-			//			else if ( isdefault == false && ismouseover == true )
-			//				Button1Text . Foreground = BtnMforeground;
-			//			else if ( isdefault == false && ismouseover == false )
-			//				Button1Text . Foreground = Btnforeground;
-			//		}
-			//			else if (brdr . Name . Contains ( "2" ) )
-			//			{
-			//				if (isdefault == true && ismouseover == true )
-			//					Button2Text . Foreground = DefBtnforeground;
-			//				else if (isdefault == true && ismouseover == false )
-			//					Button2Text . Foreground = DefBtnforeground;
-			//				else if (isdefault == false && ismouseover == true )
-			//					Button3Text . Foreground = BtnMforeground;
-			//				else if (isdefault == false && ismouseover == false )
-			//					Button3Text . Foreground = Btnforeground;
-			//			}
-			//			else if (brdr . Name . Contains ( "3" ) )
-			//			{
-			//				if (isdefault == true && ismouseover == true )
-			//					Button3Text . Foreground = DefBtnforeground;
-			//				else if (isdefault == true && ismouseover == false )
-			//					Button3Text . Foreground = DefBtnforeground;
-			//				else if (isdefault == false && ismouseover == true )
-			//					Button3Text . Foreground = BtnMforeground;
-			//				else if (isdefault == false && ismouseover == false )
-			//					Button3Text . Foreground = Btnforeground;
-			//			}
-			//			else if ( brdr . Name . Contains ( "4" ) )
-			//{
-			//	if ( isdefault == true && ismouseover == true )
-			//		Button4Text . Foreground = DefBtnforeground;
-			//	else if ( isdefault == true && ismouseover == false )
-			//		Button4Text . Foreground = DefBtnforeground;
-			//	else if ( isdefault == false && ismouseover == true )
-			//		Button4Text . Foreground = BtnMforeground;
-			//	else if ( isdefault == false && ismouseover == false )
-			//		Button4Text . Foreground = Btnforeground;
-			//}
-
 		}
 
 		#endregion main button color handling
@@ -744,16 +731,16 @@ namespace WPFPages . Views
 			Dlgresult . returnstring = "a string - honestly";
 			Dlgresult . returnerror = "No Error";
 			Dlgresult . result = false;
-			GenericClass v = DlgInput.obj as GenericClass;
-			if ( v != null )
-				Console . WriteLine ( $"genericClass object :{v . field1}..." );
-			else
-				Console . WriteLine ( "Not  a genericClass object..." );
-			ObservableCollection < GenericClass > vv= DlgInput . obj as ObservableCollection< GenericClass>;
-			if ( vv != null )
-				Console . WriteLine ( $"ObservableColllection identified : count = {vv . Count}" );
-			else
-				Console . WriteLine ( "Not  a ObservableColllection object..." );
+			//GenericClass v = DlgInput.obj as GenericClass;
+			//if ( v != null )
+			//	Console . WriteLine ( $"genericClass object :{v . field1}..." );
+			//else
+			//	Console . WriteLine ( "Not  a genericClass object..." );
+			//ObservableCollection < GenericClass > vv= DlgInput . obj as ObservableCollection< GenericClass>;
+			//if ( vv != null )
+			//	Console . WriteLine ( $"ObservableColllection identified : count = {vv . Count}" );
+			//else
+			//	Console . WriteLine ( "Not  a ObservableColllection object..." );
 			Dlgresult . obj = DlgInput . obj;
 			DlgInput . MsgboxWin = null;
 			this . Close ( );
@@ -823,15 +810,12 @@ namespace WPFPages . Views
 				)
 			{
 				CurrentButton = 0;
-				CurrBtn . Text = "0";
-				CurrBtn . Text = CurrBtn . ToString ( );
 
 				UpdateButtonX ( 1 , Button1 , IsTabbing );
 
 				if ( Button2 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 2;
-					CurrBtn . Text = "2";
 					UpdateButtonX ( 2 , Button2 , IsTabbing );
 					Button2 . Focus ( );
 					changed = true;
@@ -839,7 +823,6 @@ namespace WPFPages . Views
 				else if ( Button3 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 3;
-					CurrBtn . Text = "3";
 					UpdateButtonX ( 3 , Button3 , IsTabbing );
 					Button3 . Focus ( );
 					changed = true;
@@ -847,7 +830,6 @@ namespace WPFPages . Views
 				else if ( Button4 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 4;
-					CurrBtn . Text = "4";
 					UpdateButtonX ( 4 , Button4 , IsTabbing );
 					Button4 . Focus ( );
 					changed = true;
@@ -855,7 +837,6 @@ namespace WPFPages . Views
 				if ( changed == false )
 				{
 					CurrentButton = 1;
-					CurrBtn . Text = "1";
 					UpdateButtonX ( 1 , Button1 , IsTabbing );
 					Button1 . Focus ( );
 				}
@@ -872,7 +853,6 @@ namespace WPFPages . Views
 				if ( Button4 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 4;
-					CurrBtn . Text = "4";
 					UpdateButtonX ( 4 , Button4 , IsTabbing );
 					Button4 . Focus ( );
 					changed = true;
@@ -880,7 +860,6 @@ namespace WPFPages . Views
 				else if ( Button3 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 3;
-					CurrBtn . Text = "3";
 					UpdateButtonX ( 3 , Button3 , IsTabbing );
 					Button3 . Focus ( );
 					changed = true;
@@ -888,7 +867,6 @@ namespace WPFPages . Views
 				else if ( Button2 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 2;
-					CurrBtn . Text = "2";
 					UpdateButtonX ( 2 , Button2 , IsTabbing );
 					Button2 . Focus ( );
 					changed = true;
@@ -896,7 +874,6 @@ namespace WPFPages . Views
 				if ( changed == false )
 				{
 					CurrentButton = 1;
-					CurrBtn . Text = "1";
 					UpdateButtonX ( 1 , Button1 , IsTabbing );
 					Button1 . Focus ( );
 				}
@@ -919,7 +896,6 @@ namespace WPFPages . Views
 				if ( Button3 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 3;
-					CurrBtn . Text = "3";
 					UpdateButtonX ( 3 , Button3 , IsTabbing );
 					Button3 . Focus ( );
 					changed = true;
@@ -927,7 +903,6 @@ namespace WPFPages . Views
 				else if ( Button4 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 4;
-					CurrBtn . Text = "4";
 					UpdateButtonX ( 4 , Button4 , IsTabbing );
 					Button4 . Focus ( );
 					changed = true;
@@ -935,7 +910,6 @@ namespace WPFPages . Views
 				else if ( Button1 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 1;
-					CurrBtn . Text = "1";
 					UpdateButtonX ( 1 , Button1 , IsTabbing );
 					Button1 . Focus ( );
 					changed = true;
@@ -943,7 +917,6 @@ namespace WPFPages . Views
 				if ( changed == false )
 				{
 					CurrentButton = 2;
-					CurrBtn . Text = "2";
 					UpdateButtonX ( 2 , Button2 , IsTabbing );
 					Button2 . Focus ( );
 				}
@@ -959,7 +932,6 @@ namespace WPFPages . Views
 				if ( Button1 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 1;
-					CurrBtn . Text = "1";
 					UpdateButtonX ( 1 , Button1 , IsTabbing );
 					Button1 . Focus ( );
 					changed = true;
@@ -967,7 +939,6 @@ namespace WPFPages . Views
 				else if ( Button4 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 4;
-					CurrBtn . Text = "4";
 					UpdateButtonX ( 4 , Button4 , IsTabbing );
 					Button4 . Focus ( );
 					changed = true;
@@ -975,7 +946,6 @@ namespace WPFPages . Views
 				else if ( Button3 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 3;
-					CurrBtn . Text = "3";
 					UpdateButtonX ( 3 , Button3 , IsTabbing );
 					Button3 . Focus ( );
 					changed = true;
@@ -983,7 +953,6 @@ namespace WPFPages . Views
 				if ( changed == false )
 				{
 					CurrentButton = 2;
-					CurrBtn . Text = "2";
 					UpdateButtonX ( 2 , Button2 , IsTabbing );
 					Button2 . Focus ( );
 				}
@@ -1006,7 +975,6 @@ namespace WPFPages . Views
 				if ( Button4 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 4;
-					CurrBtn . Text = "4";
 					UpdateButtonX ( 4 , Button4 , IsTabbing );
 					changed = true;
 					Button4 . Focus ( );
@@ -1014,7 +982,6 @@ namespace WPFPages . Views
 				else if ( Button1 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 1;
-					CurrBtn . Text = "1";
 					changed = true;
 					UpdateButtonX ( 1 , Button1 , IsTabbing );
 					Button1 . Focus ( );
@@ -1022,7 +989,6 @@ namespace WPFPages . Views
 				else if ( Button2 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 2;
-					CurrBtn . Text = "2";
 					UpdateButtonX ( 2 , Button2 , IsTabbing );
 					Button2 . Focus ( );
 					changed = true;
@@ -1030,7 +996,6 @@ namespace WPFPages . Views
 				if ( changed == false )
 				{
 					CurrentButton = 3;
-					CurrBtn . Text = "3";
 					UpdateButtonX ( 3 , Button3 , IsTabbing );
 					Button3 . Focus ( );
 				}
@@ -1044,7 +1009,6 @@ namespace WPFPages . Views
 				if ( Button2 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 2;
-					CurrBtn . Text = "2";
 					UpdateButtonX ( 2 , Button2 , IsTabbing );
 					changed = true;
 					Button2 . Focus ( );
@@ -1052,7 +1016,6 @@ namespace WPFPages . Views
 				else if ( Button1 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 1;
-					CurrBtn . Text = "1";
 					UpdateButtonX ( 1 , Button1 , IsTabbing );
 					changed = true;
 					Button1 . Focus ( );
@@ -1060,7 +1023,6 @@ namespace WPFPages . Views
 				else if ( Button4 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 4;
-					CurrBtn . Text = "4";
 					UpdateButtonX ( 4 , Button4 , IsTabbing );
 					changed = true;
 					Button4 . Focus ( );
@@ -1068,7 +1030,6 @@ namespace WPFPages . Views
 				if ( changed == false )
 				{
 					CurrentButton = 3;
-					CurrBtn . Text = "3";
 					UpdateButtonX ( 3 , Button3 , IsTabbing );
 					Button3 . Focus ( );
 				}
@@ -1090,8 +1051,7 @@ namespace WPFPages . Views
 
 				if ( Button1 . Visibility == Visibility . Visible )
 				{
-					CurrentButton = 1;
-					CurrBtn . Text = "1";
+					CurrentButton = 1;					
 					UpdateButtonX ( 1 , Button1 , IsTabbing );
 					changed = true;
 					Button1 . Focus ( );
@@ -1099,7 +1059,6 @@ namespace WPFPages . Views
 				else if ( Button2 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 2;
-					CurrBtn . Text = "2";
 					UpdateButtonX ( 2 , Button2 , IsTabbing );
 					changed = true;
 					Button2 . Focus ( );
@@ -1107,7 +1066,6 @@ namespace WPFPages . Views
 				else if ( Button3 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 3;
-					CurrBtn . Text = "3";
 					UpdateButtonX ( 3 , Button3 , IsTabbing );
 					changed = true;
 					Button3 . Focus ( );
@@ -1115,7 +1073,6 @@ namespace WPFPages . Views
 				if ( changed == false )
 				{
 					CurrentButton = 4;
-					CurrBtn . Text = "4";
 					UpdateButtonX ( 4 , Button4 , IsTabbing );
 					Button4 . Focus ( );
 				}
@@ -1129,7 +1086,6 @@ namespace WPFPages . Views
 				if ( Button3 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 3;
-					CurrBtn . Text = "3";
 					UpdateButtonX ( 3 , Button3 , IsTabbing );
 					changed = true;
 					Button3 . Focus ( );
@@ -1137,7 +1093,6 @@ namespace WPFPages . Views
 				else if ( Button2 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 2;
-					CurrBtn . Text = "2";
 					UpdateButtonX ( 2 , Button2 , IsTabbing );
 					changed = true;
 					Button2 . Focus ( );
@@ -1145,7 +1100,6 @@ namespace WPFPages . Views
 				else if ( Button1 . Visibility == Visibility . Visible )
 				{
 					CurrentButton = 1;
-					CurrBtn . Text = "1";
 					UpdateButtonX ( 1 , Button1 , IsTabbing );
 					changed = true;
 					Button1 . Focus ( );
@@ -1154,7 +1108,6 @@ namespace WPFPages . Views
 				if ( changed == false )
 				{
 					CurrentButton = 4;
-					CurrBtn . Text = "4";
 					UpdateButtonX ( 4 , Button4 , IsTabbing );
 					Button4 . Focus ( );
 				}
@@ -1709,25 +1662,21 @@ namespace WPFPages . Views
 		{
 			Button1 . Focus ( );
 			CurrentButton = 1;
-			CurrBtn . Text = "1";
 		}
 		private void Button2_PreviewMouseRightButtonUp ( object sender , MouseButtonEventArgs e )
 		{
 			Button2 . Focus ( );
 			CurrentButton = 2;
-			CurrBtn . Text = "2";
 		}
 		private void Button3_PreviewMouseRightButtonUp ( object sender , MouseButtonEventArgs e )
 		{
 			Button3 . Focus ( );
 			CurrentButton = 3;
-			CurrBtn . Text = "3";
 		}
 		private void Button4_PreviewMouseRightButtonUp ( object sender , MouseButtonEventArgs e )
 		{
 			Button4 . Focus ( );
 			CurrentButton = 4;
-			CurrBtn . Text = "4";
 		}
 
 

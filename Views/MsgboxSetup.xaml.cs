@@ -38,7 +38,18 @@ namespace WPFPages . Views
 			InitializeComponent ( );
 			Utils . SetupWindowDrag ( this );
 			ReadDlgInput ( );
-			
+			MouseMove += Utils . Grab_MouseMove;
+			KeyDown += Window_PreviewKeyDown;
+
+		}
+		private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )
+		{
+			if ( e . Key == Key . F11 )
+			{
+				if ( Utils . ControlsHitList . Count == 0 )
+					return;
+				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
+			}
 		}
 
 		private void ReadDlgInput ( )
@@ -665,13 +676,15 @@ namespace WPFPages . Views
 
 		private void ShowMsgbox ( object sender , RoutedEventArgs e )
 		{
+			DlgInput . stringin = "this is  the string passed in...";
+			DlgInput . intin = 12345;
 			Utils . Mssg ( 
 				caption: "*** SQL Query Error ***" ,
 				string1: $"This is the Middle, and main row of data used to \ncreate the information provided.\nThis is  the duplicate to make it longer than the window should be able to use, and  this is  This is  the duplicate to make it longer than the window should be able to use" ,
 				string2: "string  2 goes here" ,
 				string3: "" ,
 				title: "" ,
-				iconstring: "\\icons\\error.png" ,
+				iconstring: "\\icons\\information2.png" ,
 				defButton: 1 ,
 				Btn1: 1 ,
 				Btn2: 2 ,
@@ -680,7 +693,8 @@ namespace WPFPages . Views
 				btn1Text: "" ,
 				btn2Text: "Get on with it" ,
 				btn3Text: "Bale out" ,
-				btn4Text: ""
+				btn4Text: "",
+				usedialog:true
 	     );
 		}
 
@@ -707,7 +721,7 @@ namespace WPFPages . Views
 			output += GetValue ( Msgbox . MouseoverBackGroundProperty ) . ToString ( ) + "\n";
 			output += GetValue ( Msgbox . MouseoverForeGroundProperty ) . ToString ( ) + "\n";
 			output += GetValue ( Msgbox . BorderColorProperty ) . ToString ( ) + "\n";
-			info . Text = output;
+			//info . Text = output;
 			output = DlgInput.dlgbackground . ToString ( ) + "\n";
 			output += DlgInput .dlgforeground .ToString ( ) + "\n";
 			output += DlgInput . btnbackground . ToString ( ) + "\n";
@@ -717,7 +731,7 @@ namespace WPFPages . Views
 			output += DlgInput.Btnborder.ToString() + "\n";
 			output += DlgInput . defbtnbackground . ToString ( ) + "\n";
 			output += DlgInput . defbtnforeground . ToString ( ) + "\n";
-			Memvars . Text = output;
+			//Memvars . Text = output;
 		}
 
 		#region focusing
@@ -758,5 +772,10 @@ namespace WPFPages . Views
 			textBox8 . Focus ( );
 		}
 		#endregion focusing
+
+		private void ShowShortMsgbox ( object sender , RoutedEventArgs e )
+		{
+			Utils . Mbox ( this , string1: "This is  the short version MessageBox...." , string2: "Quite nice really ?" , caption: "Place your vote !" , iconstring: "\\icons\\Information2.png" , Btn1: MB.YES , Btn2: MB . NO , defButton: MB . YES);
+		}
 	}
 }

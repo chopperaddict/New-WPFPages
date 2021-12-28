@@ -214,7 +214,8 @@ namespace WPFPages . Views
 
 		// Using a DependencyProperty as the backing store for ForegroundMouseover.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty ForegroundMouseoverProperty =
-			DependencyProperty.RegisterAttached("ForegroundMouseover", typeof(Brush), typeof(DataGridColorCtrlAp), new PropertyMetadata((Brush)Brushes.Black));
+			DependencyProperty.RegisterAttached("ForegroundMouseover", typeof(Brush), typeof(DataGridColorCtrlAp), 
+				  new PropertyMetadata(Brushes.Black));
 		#endregion ForegroundMouseover
 
 		#region ForegroundSelected

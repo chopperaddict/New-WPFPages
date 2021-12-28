@@ -2,6 +2,7 @@
 using System . Windows;
 using System . Windows . Controls;
 using System . Windows . Data;
+using System . Windows . Input;
 
 using WPFPages . Commands;
 
@@ -51,11 +52,23 @@ namespace WPFPages . Views
                         CollectionView view = ( CollectionView ) CollectionViewSource . GetDefaultView ( Lv1. ItemsSource );
                         view . SortDescriptions . Add ( new SortDescription ( "OrderId", ListSortDirection . Ascending ) );
                         nwOrder = view . CurrentItem as nworder;
-//                        nwOrder = Lv1 . SelectedItem as nworder;
+                  //                        nwOrder = Lv1 . SelectedItem as nworder;
+                  MouseMove += Utils . Grab_MouseMove;
+                  KeyDown += Window_PreviewKeyDown;
 
-                }
+            }
 
-                private void Items_CurrentChanging ( object sender, System . ComponentModel . CurrentChangingEventArgs e )
+            private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )
+            {
+                  if ( e . Key == Key . F11 )
+                  {
+                        if ( Utils . ControlsHitList . Count == 0 )
+                              return;
+                        Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
+                  }
+            }
+
+            private void Items_CurrentChanging ( object sender, System . ComponentModel . CurrentChangingEventArgs e )
                 {
                         // This gets called when loading the grid !!!
                 }

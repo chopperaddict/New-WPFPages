@@ -1,0 +1,43 @@
+﻿<Window x:Class="WPFPages.Views.Grabviewer"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:WPFPages.Views"
+		mc:Ignorable="d"
+		Title="Grabviewer" Height="350" Width="700"
+		Background="CadetBlue"
+		PreviewKeyDown="GrabWin_PreviewKeyDown"
+		PreviewMouseRightButtonDown="GrabWin_PreviewMouseRightButtonDown"
+		ResizeMode="CanResizeWithGrip"
+		SizeChanged="GrabWin_SizeChanged"
+		Topmost="True"
+		ToolTip="Hit F12 or Right Click to dismiss Viewer..."
+		WindowStartupLocation="CenterScreen"
+	  MinHeight="150" MinWidth="300"
+		Name="GrabWin"	>
+	<Window.Effect>
+		<DropShadowEffect
+			ShadowDepth="60"
+			Color="Red"
+			BlurRadius="40"
+			Opacity="0.6">				
+		</DropShadowEffect>
+	</Window.Effect>
+	<Grid x:Name="GrabGrid"
+		Height="{Binding ElementName=GrabWin, Path=Height}"
+		Width="{Binding ElementName=GrabWin, Path=Width}">
+		<Viewbox x:Name="GrabViewBox" Stretch="Fill"
+				Height="{Binding ElementName=GrabGrid, Path=Height}"
+				Width="{Binding ElementName=GrabGrid, Path=Width}"
+			   >
+			<Image x:Name="Grabimage"
+				Height="{Binding ElementName=GrabViewBox, Path=Height}"
+				Width="{Binding ElementName=GrabViewBox, Path=Width}"
+				HorizontalAlignment="Left"
+				 VerticalAlignment="Top"
+				 Margin="0 0 0 0"	/>
+		</Viewbox>
+		</Grid>
+
+</Window>

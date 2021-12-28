@@ -15,7 +15,7 @@ namespace WPFPages .Views
             // Using a DependencyProperty as the backing store for MenuBackground.  This enables animation, styling, binding, etc...
             public static readonly DependencyProperty MenuBackgroundProperty =
                       DependencyProperty.RegisterAttached("MenuBackground", typeof(Brush), typeof(MenuAttachedProperties), 
-                            new PropertyMetadata((Brush)default));
+                            new PropertyMetadata(Brushes.AliceBlue));
 
             public static Brush GetMenuBackground ( DependencyObject obj )
             {
@@ -39,7 +39,7 @@ namespace WPFPages .Views
             }
             public static readonly DependencyProperty MenuItemBackgroundProperty =
                   DependencyProperty .RegisterAttached("MenuItemBackground", typeof(Brush), typeof(MenuAttachedProperties), 
-                        new PropertyMetadata((Brush)default));
+                        new PropertyMetadata(Brushes.AliceBlue));
             #endregion MenuItemBackground 
 
             #region MenuItemBorderColor
@@ -93,6 +93,21 @@ namespace WPFPages .Views
                             new PropertyMetadata((double)12));
             #endregion MenuFontSize
 
+            #region MenuDropdownWidth 
+            public static double GetMenuDropdownWidth ( DependencyObject obj )
+		{
+			return ( double ) obj . GetValue ( MenuDropdownWidthProperty );
+		}
+		public static void SetMenuDropdownWidth ( DependencyObject obj , double value )
+		{
+			obj . SetValue ( MenuDropdownWidthProperty , value );
+		}
+
+		// Using a DependencyProperty as the backing store for MenuDropdownWidth.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty MenuDropdownWidthProperty =
+                  DependencyProperty.RegisterAttached("MenuDropdownWidth", typeof(double), typeof(MenuAttachedProperties), new PropertyMetadata((double)200));
+            #endregion MenuDropdownWidth 
+
             #region MenuFontWeight
             public static string  GetMenuFontWeight ( DependencyObject obj )
             {
@@ -125,7 +140,7 @@ namespace WPFPages .Views
             // Using a DependencyProperty as the backing store for MenuForeground.  This enables animation, styling, binding, etc...
             public static readonly DependencyProperty MenuItemForegroundProperty =
                   DependencyProperty.RegisterAttached("MenuItemForeground", typeof(Brush), typeof(MenuAttachedProperties), 
-                        new PropertyMetadata((Brush)default));
+                        new PropertyMetadata(Brushes.AliceBlue));
             #endregion MenuItemForeground 
 
             #region MenuItemHeight
@@ -162,8 +177,6 @@ namespace WPFPages .Views
                             new PropertyMetadata((double)0));
             #endregion MenuItemMargin
 
-
-
             #region MenuItemSelectedBackground 
             public static Brush GetMenuItemSelectedBackground ( DependencyObject obj )
             {
@@ -178,7 +191,7 @@ namespace WPFPages .Views
             // Using a DependencyProperty as the backing store for MenuItemSelectedBackground.  This enables animation, styling, binding, etc...
             public static readonly DependencyProperty MenuItemSelectedBackgroundProperty =
                   DependencyProperty.RegisterAttached("MenuItemSelectedBackground", typeof(Brush ), typeof(MenuAttachedProperties), 
-                        new PropertyMetadata((Brush)Brushes.Yellow));
+                        new PropertyMetadata(Brushes.Yellow));
             #endregion MenuItemSelectedBackground 
 
             #region MenuItemSelectedForeground
@@ -195,7 +208,7 @@ namespace WPFPages .Views
             // Using a DependencyProperty as the backing store for MenuItemSelectedForeground.  This enables animation, styling, binding, etc...
             public static readonly DependencyProperty MenuItemSelectedForegroundProperty =
                   DependencyProperty.RegisterAttached("MenuItemSelectedForeground", typeof(Brush), typeof(MenuAttachedProperties), 
-                        new PropertyMetadata((Brush)default));
+                        new PropertyMetadata(Brushes.AliceBlue));
             #endregion MenuItemSelectedForeground
             
       }

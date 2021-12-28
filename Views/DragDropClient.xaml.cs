@@ -242,23 +242,26 @@ namespace WPFPages . Views
 		}
 		private void PreviewKeyDownCombo ( object sender , KeyEventArgs e )
 		{
-			if ( ( string ) e . OriginalSource == "" && e . Key == Key . Enter )
+			try
 			{
-				SaveAll_Click ( sender , null );
-				e . Handled = true;
-			}
-			else if ( e . Key == Key . Escape )
-			{
-				CancelBtn_Click ( sender , null );
-				e . Handled = true;
-			}
-			else
-			{
-				// Clear Text name fields as user  types into it
-				if ( CombinedSaveName . Text . Contains ( "Enter Name for " ) )
-					CombinedSaveName . Text = "";
-				e . Handled = false;
-			}
+				if ( ( string ) e . OriginalSource == "" && e . Key == Key . Enter )
+				{
+					SaveAll_Click ( sender , null );
+					e . Handled = true;
+				}
+				else if ( e . Key == Key . Escape )
+				{
+					CancelBtn_Click ( sender , null );
+					e . Handled = true;
+				}
+				else
+				{
+					// Clear Text name fields as user  types into it
+					if ( CombinedSaveName . Text . Contains ( "Enter Name for " ) )
+						CombinedSaveName . Text = "";
+					e . Handled = false;
+				}
+			}catch(Exception ex ) {; }
 		}
 		private void CloseBtn_Click ( object sender , RoutedEventArgs e )
 		{

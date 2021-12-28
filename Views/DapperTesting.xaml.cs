@@ -170,7 +170,8 @@ namespace WPFPages . Views
 			GenericGrid1 . Focus ( );
 			Mouse . OverrideCursor = Cursors . Arrow;
 			string errormsg="";
-
+			MouseMove += Utils . Grab_MouseMove;
+			KeyDown += Window_PreviewKeyDown;
 			//testing
 			//			ObservableCollection<GenericClass> gc = new ObservableCollection<GenericClass>();
 			////			ObservableCollection<BankAccountViewModel> newcollection = new ObservableCollection<BankAccountViewModel>();
@@ -222,6 +223,17 @@ namespace WPFPages . Views
 			//ToggleBtn_Click(null,null);
 		}
 		#endregion STARTUP/CLOSEDOWN  METHODS
+
+		private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )
+		{
+			if ( e . Key == Key . F11 )
+			{
+				if ( Utils . ControlsHitList . Count == 0 )
+					return;
+				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null, sender as Control );
+				e . Handled = true;
+			}
+		}
 
 		#region Async Data loaded handlers
 		//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -1463,6 +1475,13 @@ namespace WPFPages . Views
 		{
 			if ( e . Key == Key . Enter )
 				UseSelectClause ( sender , null );
+			if ( e . Key == Key . F11 )
+			{
+				if ( Utils . ControlsHitList . Count == 0 )
+					return;
+				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
+				e . Handled = true;
+			}
 		}
 		#endregion KEY HANDLERS
 
@@ -2096,7 +2115,7 @@ namespace WPFPages . Views
 					caption: "Sql Error" ,
 					Btn1: mb . OK ,
 					Btn2: mb . NNULL,
-					defButton: mb . OK);
+					defButton: mb . OK );
 
 				Mouse . OverrideCursor = Cursors . Arrow;
 			}
@@ -2205,9 +2224,9 @@ namespace WPFPages . Views
 					string2: "",
 					caption: "" ,
 					iconstring: "\\icons\\Information.png" ,
-					Btn1: MB . OK,
+					Btn1: MB . OK ,
 					Btn2: MB . CANCEL ,
-					defButton: MB . OK	);
+					defButton: MB . OK );
 
 
 

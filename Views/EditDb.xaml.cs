@@ -11,6 +11,7 @@ using System . Windows . Data;
 using System . Windows . Input;
 using System . Windows . Media;
 
+using WPFLibrary2021;
 using WPFPages . ViewModels;
 
 namespace WPFPages . Views
@@ -1123,7 +1124,7 @@ namespace WPFPages . Views
 					dg . SelectedIndex--;
 
 				if ( dg . SelectedItem != null )
-					Utils . ScrollRecordInGrid ( dg, dg . SelectedIndex );
+					Utils.ScrollRecordInGrid ( dg, dg . SelectedIndex );
 				key1 = false;
 			}
 			else if ( e . Key == Key . Down )

@@ -16,6 +16,7 @@ namespace WPFPages
 		WindowExceptionHandler _exceptionHandler;
 #endif
 
+		
 		public App ( )
 		{
 			//SetTheme ( "aero" , "normalcolor" );

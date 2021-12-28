@@ -44,137 +44,6 @@
                   <GradientStop Offset="1" Color="#FFFF33D6" />
             </LinearGradientBrush>
             <!--#endregion-->
-            <!--#region multilevel gradients-->
-            <!--======================================================================================--><!--
-            <LinearGradientBrush x:Key="MultiBlue" StartPoint="0.5,0" EndPoint="0.5,1">
-                  <GradientStop Offset="1.0" Color="#FF70CADA" />
-                  <GradientStop Offset="0.9" Color="#D270B2D8" />
-                  <GradientStop Offset="0.7" Color="#D2709AD8" />
-                  <GradientStop Offset="0.5" Color="#D27081E0" />
-                  <GradientStop Offset="0.2" Color="#D27069C3" />
-                  <GradientStop Offset="0.0" Color="#D27035C3" />
-            </LinearGradientBrush>
-            <LinearGradientBrush x:Key="HeaderBorderBrushBlue" StartPoint="0.5,0" EndPoint="0.5,1">
-                  <GradientStop Offset="0.514" Color="#FF1D4855" />
-                  <GradientStop Offset="0.753" Color="#FF007F96" />
-                  <GradientStop Offset="1" Color="#FF0AEAFA" />
-            </LinearGradientBrush>
-
-            --><!--Good example of a dummy "Dome" button--><!--
-            <RadialGradientBrush x:Key="MultiBlueRadial" GradientOrigin="0.1,0.3" Center="0.5,0.5" RadiusX="0.8" RadiusY="0.8">
-                  <GradientStop Offset="0.0" Color="#FF70CADA" />
-                  <GradientStop Offset="0.3" Color="#FC494BFB" />
-                  <GradientStop Offset="0.4" Color="#FC7374FB" />
-                  <GradientStop Offset="0.5" Color="#FC5052CC" />
-                  <GradientStop Offset="0.8" Color="#FC5077FD" />
-                  <GradientStop Offset="1.0" Color="#FF70CADA" />
-            </RadialGradientBrush>
-
-            --><!--======================================================================================--><!--
-
-            <LinearGradientBrush x:Key="MultiRed" StartPoint="0.5,0" EndPoint="0.5,1">
-                  <GradientStop Offset="1.0" Color="#FBD0D1D2" />
-                  <GradientStop Offset="0.9" Color="#FDD40000" />
-                  <GradientStop Offset="0.7" Color="#FDB20000" />
-                  <GradientStop Offset="0.5" Color="#FD8E0000" />
-                  <GradientStop Offset="0.2" Color="#FDFF0000" />
-                  <GradientStop Offset="0.0" Color="#FBD0D1D2" />
-            </LinearGradientBrush>
-
-            <LinearGradientBrush x:Key="HeaderBorderBrushRed" StartPoint="0.5,0" EndPoint="0.5,1">
-                  <GradientStop Offset="0.314" Color="#ff4f2225" />
-                  <GradientStop Offset="0.553" Color="#FF9c2129" />
-                  <GradientStop Offset="1" Color="#FFdb6069" />
-            </LinearGradientBrush>
-
-            --><!--Good example of a dummy "Dome" button--><!--
-            <RadialGradientBrush x:Key="MultiRedRadial" GradientOrigin="0.5,0.5" Center="0.5,0.5" RadiusX="0.8" RadiusY="0.8">
-                  <GradientStop Offset="0.0" Color="#FCFFD4D3" />
-                  <GradientStop Offset="0.2" Color="#FDD40000" />
-                  <GradientStop Offset="0.5" Color="#FDD40000" />
-                  <GradientStop Offset="0.4" Color="#FDB20000" />
-                  <GradientStop Offset="0.7" Color="#FFCB6A6B" />
-                  <GradientStop Offset="0.9" Color="#FCFFD4D3" />
-            </RadialGradientBrush>
-
-            --><!--======================================================================================--><!--
-
-            <LinearGradientBrush x:Key="MultiYellow" StartPoint="0.1,0" EndPoint="0.5,1">
-                  <GradientStop Offset="1.0" Color="#FEFBFF00" />
-                  <GradientStop Offset="0.9" Color="#FFf5d816" />
-                  <GradientStop Offset="0.7" Color="#70C5CB00" />
-                  <GradientStop Offset="0.5" Color="#D9C5B400" />
-                  <GradientStop Offset="0.2" Color="#FEE6B400" />
-                  <GradientStop Offset="0.0" Color="#708D9200" />
-            </LinearGradientBrush>
-
-            <LinearGradientBrush x:Key="HeaderBorderBrushYellow" StartPoint="0.5,0" EndPoint="0.5,1">
-                  <GradientStop Offset="0.114" Color="#FF595013" />
-                  <GradientStop Offset="0.853" Color="#FF7d7015" />
-                  <GradientStop Offset="0.5" Color="#F5d816" />
-            </LinearGradientBrush>
-
-            --><!--Good example of a dummy "Dome" button--><!--
-            <RadialGradientBrush x:Key="MultiYellowRadial" GradientOrigin="0.5,0.5" Center="0.5,0.5" RadiusX="0.8" RadiusY=".8">
-                  <GradientStop Offset="0.0" Color="#FDFFFFD3" />
-                  <GradientStop Offset="0.2" Color="#FDFEFF00" />
-                  <GradientStop Offset="0.5" Color="#FDE7E71A" />
-                  <GradientStop Offset="0.4" Color="#FDC4B700" />
-                  <GradientStop Offset="0.7" Color="#FDA28B1A" />
-                  <GradientStop Offset="0.9" Color="#FDA2A21A" />
-            </RadialGradientBrush>
-
-            --><!--======================================================================================--><!--
-
-            <LinearGradientBrush x:Key="MultiGreen" StartPoint="0.5,0" EndPoint="0.5,1">
-                  <GradientStop Offset="1.0" Color="#FCE1FFE3" />
-                  <GradientStop Offset="0.9" Color="#FE00D300" />
-                  <GradientStop Offset="0.7" Color="#FE00AF00" />
-                  <GradientStop Offset="0.5" Color="#FE00D300" />
-                  <GradientStop Offset="0.2" Color="#FE00AF00" />
-                  <GradientStop Offset="0.0" Color="#FE009600" />
-            </LinearGradientBrush>
-            <LinearGradientBrush x:Key="HeaderBorderBrushGreen" StartPoint="0.5,0" EndPoint="0.5,1">
-                  <GradientStop Offset="0.314" Color="#FF224022" />
-                  <GradientStop Offset="0.553" Color="#FF336633" />
-                  <GradientStop Offset="1" Color="#FF00FF00" />
-            </LinearGradientBrush>
-
-            --><!--Good example of a dummy "Dome" button--><!--
-            <RadialGradientBrush x:Key="MultiGreenRadial" GradientOrigin="0.1,0.3" Center="0.5,0.5" RadiusX="0.8" RadiusY="0.8">
-                  <GradientStop Offset="0.0" Color="#FE00FC00" />
-                  <GradientStop Offset="0.2" Color="#FE00AF00" />
-                  <GradientStop Offset="0.5" Color="#FC3E963F" />
-                  <GradientStop Offset="0.4" Color="#FE00AF00" />
-                  <GradientStop Offset="0.7" Color="#FC3E503F" />
-                  <GradientStop Offset="0.9" Color="#FC3E6C3F" />
-            </RadialGradientBrush>
-
-            --><!--======================================================================================--><!--
-
-            <LinearGradientBrush x:Key="MultiGray" StartPoint="0.5,0" EndPoint="0.5,1">
-                  <GradientStop Offset="1.0" Color="#FBD0D1D2" />
-                  <GradientStop Offset="0.9" Color="#FBB4B3B5" />
-                  <GradientStop Offset="0.7" Color="#FB989797" />
-                  <GradientStop Offset="0.5" Color="#FBD0D1D2" />
-                  <GradientStop Offset="0.2" Color="#FB696869" />
-                  <GradientStop Offset="0.0" Color="#FB4A4C4A" />
-            </LinearGradientBrush>
-
-            <LinearGradientBrush x:Key="BorderGray" StartPoint="0.5,0" EndPoint="0.5,1">
-                  <GradientStop Offset="0.314" Color="#FBB4B3B5" />
-                  <GradientStop Offset="0.553" Color="#FB696869" />
-                  <GradientStop Offset="1" Color="#d5d3db" />
-            </LinearGradientBrush>
-
-            <RadialGradientBrush x:Key="MultiGrayRadial" GradientOrigin="0.1,0.5" Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
-                  <GradientStop Offset="1.0" Color="#FBD0D1D2" />
-                  <GradientStop Offset="0.9" Color="#FBB4B3B5" />
-                  <GradientStop Offset="0.7" Color="#FB989797" />
-                  <GradientStop Offset="0.5" Color="#FBB4B3B5" />
-                  <GradientStop Offset="0.2" Color="#FBB4B3B5" />
-                  <GradientStop Offset="0.0" Color="#FBD0D1D2" />
-            </RadialGradientBrush>-->
             <Storyboard x:Key="Storyboard1">
                   <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="newImageButton">
                         <EasingDoubleKeyFrame KeyTime="0:0:1" Value="677"/>
@@ -385,8 +254,7 @@
                                     Height="Auto" 
                                      Width="Auto" 
                                      Foreground="White"
-                                     FontSize="12"
-                                     SkewPadding="23"
+                                        SkewPadding="23"
                                      SkewX="-65"
                                      SkewY="20"
                                      CornerRadius="35"
@@ -414,7 +282,7 @@
 
             <userctrl:ImageButton x:Name="Phonewifi"
                   Margin="14,120,751,266"
-                                    Source="/icons/phone-wifi.png"
+                                    Source="/Icons/phone-wifi.png"
                                     Background="Yellow" 
                                     Height="Auto" Width="Auto" 
                                     ImgWidth="35"

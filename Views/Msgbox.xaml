@@ -130,7 +130,7 @@
 		</ControlTemplate>
 
 		<Style x:Key="BorderStyle1" TargetType="{x:Type Border}">
-			<Style.Triggers>
+			<!--<Style.Triggers>
 				<MultiTrigger>
 					<MultiTrigger.Conditions>
 						<Condition Property="IsMouseOver" Value="false"/>
@@ -151,7 +151,7 @@
 						<Setter Property="BorderThickness" Value="2" />
 					</MultiTrigger.Setters>
 				</MultiTrigger>
-			</Style.Triggers>
+			</Style.Triggers>-->
 		</Style>
 
 	</Window.Resources>
@@ -181,6 +181,7 @@
 			Grid.Row="2"
 		     Grid.Column="1" >
 			<Image  x:Name="BoxIcon" 
+				  
 				  Source="/Icons/message.png"
 				  Height="Auto"
 				  Width="Auto"/>
@@ -341,14 +342,7 @@
 		</WrapPanel>
 
 		<WrapPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,37,0,0" Grid.RowSpan="2"
-			     VerticalAlignment="Bottom">
-			<Label Content="Default Button :"/>
-			<TextBox x:Name="DefBtn" Foreground="Red" Height="20" Width="60"	HorizontalContentAlignment="Center"
-			   Text=""	     />
-			<Label Content="Current Button :"/>
-			<TextBox x:Name="CurrBtn" Foreground="Red" Height="20" Width="60"	HorizontalContentAlignment="Center"
-			   Text=""	     />
-		</WrapPanel>
+			     VerticalAlignment="Bottom"/>
 		<!--#endregion Buttons-->
 	</Grid>
 	<!--</Border>-->
