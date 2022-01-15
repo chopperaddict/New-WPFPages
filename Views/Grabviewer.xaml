@@ -5,39 +5,27 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:WPFPages.Views"
 		mc:Ignorable="d"
-		Title="Grabviewer" Height="350" Width="700"
 		Background="CadetBlue"
+		Name="GrabWin"
+	  MouseDoubleClick="GrabWin_MouseDoubleClick"
+		MouseMove="ChecksMouseMove"
 		PreviewKeyDown="GrabWin_PreviewKeyDown"
 		PreviewMouseRightButtonDown="GrabWin_PreviewMouseRightButtonDown"
 		ResizeMode="CanResizeWithGrip"
 		SizeChanged="GrabWin_SizeChanged"
 		Topmost="True"
-		ToolTip="Hit F12 or Right Click to dismiss Viewer..."
-		WindowStartupLocation="CenterScreen"
-	  MinHeight="150" MinWidth="300"
-		Name="GrabWin"	>
-	<Window.Effect>
-		<DropShadowEffect
-			ShadowDepth="60"
-			Color="Red"
-			BlurRadius="40"
-			Opacity="0.6">				
-		</DropShadowEffect>
-	</Window.Effect>
-	<Grid x:Name="GrabGrid"
-		Height="{Binding ElementName=GrabWin, Path=Height}"
-		Width="{Binding ElementName=GrabWin, Path=Width}">
-		<Viewbox x:Name="GrabViewBox" Stretch="Fill"
-				Height="{Binding ElementName=GrabGrid, Path=Height}"
-				Width="{Binding ElementName=GrabGrid, Path=Width}"
-			   >
-			<Image x:Name="Grabimage"
-				Height="{Binding ElementName=GrabViewBox, Path=Height}"
-				Width="{Binding ElementName=GrabViewBox, Path=Width}"
-				HorizontalAlignment="Left"
-				 VerticalAlignment="Top"
-				 Margin="0 0 0 0"	/>
+		Title="Screen Control Grab Viewer" 
+		ToolTip="Hit F12 or Right Click to dismiss Viewer..."	   		
+		WindowStartupLocation="CenterScreen">
+	<!--<Grid x:Name="GrabGrid"
+		Height="{Binding ElementName=GrabWin, Path=ActualHeight}"
+		Width="{Binding ElementName=GrabWin, Path=ActualWidth}">-->
+		<Viewbox x:Name="GrabViewBox" Stretch="Uniform"  StretchDirection="Both"
+		>
+			<Image x:Name="Grabimage"  Stretch="UniformToFill"
+				Height="{Binding ElementName=Grabimage, Path=ActualHeight}"
+				Width="{Binding ElementName=Grabimage, Path=ActualWidth}"
+					/>
 		</Viewbox>
-		</Grid>
-
+	<!--</Grid>-->
 </Window>

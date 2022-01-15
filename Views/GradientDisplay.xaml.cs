@@ -28,5 +28,12 @@ namespace WPFPages . Views
 		{
 			Close ( );
 		}
+		private void ChecksMouseMove ( object sender , MouseEventArgs e )
+		{
+			e . Handled = true;
+			if ( e . RightButton == MouseButtonState . Pressed )
+				return;
+		}
+
 	}
 }

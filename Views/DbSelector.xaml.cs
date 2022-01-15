@@ -92,6 +92,12 @@ namespace WPFPages . Views
 			//	Debug . WriteLine ( $"\r\nDBSELECTOR - Viewer ADDED to List of Current Viewers \r\n" );
 			//}
 		}
+		private void ChecksMouseMove ( object sender , MouseEventArgs e )
+		{
+			e . Handled = true;
+			if ( e . RightButton == MouseButtonState . Pressed )
+				return;
+		}
 
 		//Constructor
 		public DbSelector ( )
@@ -115,7 +121,10 @@ namespace WPFPages . Views
 				CurrentDbType.Text = "Using Copy Data";
 			else
 				CurrentDbType . Text = "Using Original Data";
-			MouseMove += Grab_MouseMove;
+			//			MouseMove += Grab_MouseMove;
+			SysMenu sym = new SysMenu();
+				sym . Show ( );
+			//ags . DbSelectorOpen . Visibility = Visibility . Hidden;
 
 		}
 
@@ -901,8 +910,10 @@ namespace WPFPages . Views
 //			mv . Show ( );
 		}
 
-		private void Grab_MouseMove ( object sender , MouseEventArgs e )
+		private void Grab_GetObject( object sender , MouseEventArgs e )
 		{
+			if ( e . RightButton == MouseButtonState . Pressed )
+				return;
 			Point pt = e.GetPosition((UIElement)sender);
 			HitTestResult hit = VisualTreeHelper . HitTest ( ( Visual ) sender, pt );
 			if ( hit ?. VisualHit != null )
@@ -915,6 +926,7 @@ namespace WPFPages . Views
 				Utils . ControlsHitList . Clear ( );
 				Utils . ControlsHitList . Add ( hit );
 			}
+			e . Handled = true;
 		}
 		private void Window_KeyDown ( object sender, KeyEventArgs e )
 		{
@@ -1435,8 +1447,6 @@ namespace WPFPages . Views
 			rsp . Show ( );
 		}
 		private void ToggleEnable ( bool value) {
-			BankViewer . IsEnabled = value;
-			CustViewer . IsEnabled = value;
 			SelectBtn . IsEnabled = value;
 			MultiViewer . IsEnabled = value;
 			MultiViewer . IsEnabled = value;
@@ -1445,9 +1455,9 @@ namespace WPFPages . Views
 			SelectViewerBtn . IsEnabled = value;
 			sqlSelector . IsEnabled = value;
 			ViewersList . IsEnabled = value;
-			menu1 . IsEnabled = value;
-			menu2 . IsEnabled = value;
-			menu3 . IsEnabled = value;
+			//menu1 . IsEnabled = value;
+			//menu2 . IsEnabled = value;
+			//menu3 . IsEnabled = value;
 		}
 		private void Execute_Click ( object sender, RoutedEventArgs e )
 		{
@@ -1500,20 +1510,6 @@ namespace WPFPages . Views
 		private void ContextShowJson_Click ( object sender, RoutedEventArgs e )
 		{
 
-		}
-
-		private void TestDet_Click(object sender, RoutedEventArgs e)
-		{
-			// load test observable collections testing window(s)
-			TestDetailsDbView tddv = new TestDetailsDbView();
-			tddv.Show();
-		}
-
-		private void TestBank_Click(object sender, RoutedEventArgs e)
-		{
-			// load test observable collections testing window(s)
-			TestBankDbView tbdv = new TestBankDbView();
-			tbdv .Show ( );
 		}
 
 		private void UserListbox_Click ( object sender, RoutedEventArgs e )
@@ -1637,12 +1633,7 @@ namespace WPFPages . Views
 			fw .Show ( );
 		}
 
-		private void NorthWind_Click ( object sender , RoutedEventArgs e )
-		{
-			TestNWView tnv = new TestNWView();
-			tnv . Show ( );
-		}
-
+	
 		private void ItemsControl_Click ( object sender , RoutedEventArgs e )
 		{
 			ItemsControlDemo id = new ItemsControlDemo();
@@ -1706,6 +1697,26 @@ namespace WPFPages . Views
 		private void NewCookie_Click ( object sender , RoutedEventArgs e )
 		{
 			Utils . NewCookie_Click ( null , null );
+		}
+
+		private void Menu_Select ( object sender , RoutedEventArgs e )
+		{
+			if ( MainWindow . sysmenu == null )
+			{
+				SysMenu sm = new SysMenu();
+				sm . Show ( );
+			}
+			else
+			{
+				MainWindow . sysmenu . Focus ( );
+				return;
+			}
+		}
+
+		private void Context_DbViewers ( object sender , RoutedEventArgs e )
+		{
+			var mnu = FindResource ( "Context_DbViewers" ) as ContextMenu;
+			mnu . IsOpen = true;
 		}
 	}
 }

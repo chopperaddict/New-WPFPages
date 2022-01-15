@@ -46,10 +46,7 @@
 		B="255"
 		G="100"
 		R="4" />
-	<SolidColorBrush x:Key="BorderBrush" Color="#ECECEC" />
-	<SolidColorBrush x:Key="BorderBrushDark" Color="DarkGoldenrod" />
-
-
+	
 	<!--  Mouse down colors  -->
 	<Color
 		x:Key="MousedownBackgroundColor1"

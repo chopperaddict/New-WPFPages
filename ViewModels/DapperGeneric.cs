@@ -283,7 +283,7 @@ namespace WPFPages . ViewModels
 											dictcount = 1;
 											fldcount = dict . Count;
 											if ( fldcount == 0 )
-											{
+											{										   
 												//no problem, we will get a Datatable anyway
 												return null;
 											}

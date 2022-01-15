@@ -15,7 +15,6 @@
 		<ResourceDictionary >
 		<ResourceDictionary.MergedDictionaries>
 
-                  <ResourceDictionary Source="Dicts\Menus.xaml" />
                   <ResourceDictionary Source="Dicts\StylesDict.xaml" />
                   <ResourceDictionary Source="Dicts\ColorsDictionary.xaml" />
                   <ResourceDictionary Source="Dicts\ButtonsMaster.xaml" />
@@ -45,6 +44,7 @@
 			<ResourceDictionary Source="DataTemplates\NWDataTemplates.xaml" />
 			<ResourceDictionary Source="Dicts\GenericMenu.xaml" />
 			<ResourceDictionary Source="Dicts\DataGridStyles.xaml" />
+			<!--<ResourceDictionary Source="Dicts\Menus.xaml" />-->
 
 				<!--// new theme ??-->
 			<!--<ResourceDictionary Source="TThemes\ExpressionLight.xaml"/>-->

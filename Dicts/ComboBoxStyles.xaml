@@ -20,29 +20,6 @@
 		</Setter>
 	</Style>
 	
-	<!--// Having an effect
-	//=============-->
-	<!--// Background color of (unselected)  item that has mouse over it-->
-	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewHover.Background" Color="#CCFF0500"/>
-	<!--// Background color of all items in dropdown that do NOT have mouse over it-->
-	<SolidColorBrush x:Key="ComboBoxItemForegroundNoFocus" Color="#CCFfFFFF"/>
-
-	<SolidColorBrush x:Key="ComboBoxItemForegroundUnselected" Color="#CCFEFF00"/>
-	<!--<SolidColorBrush x:Key="ComboBoxItemForegroundSelected" Color="#CCFEFFFF"/>-->
-	<!--// used in many places !!-->
-	<SolidColorBrush x:Key="ComboBoxItemForegroundDefault" Color="#CCFEFF00"/>
-	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewHover.Border" Color="#CCFEFFFF"/>
-	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewSelected.Background" Color="#CC9D0075"/>
-	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewSelected.Border" Color="#FFA44211"/>
-	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewSelectedHover.Background" Color="#6DFF00F1"/>
-	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewSelectedHover.Border" Color="#6DFF00F1"/>
-	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewSelectedNoFocus.Background" Color="#FFA436DD"/>
-	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewSelectedNoFocus.Border" Color="#FFDADADA"/>
-	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewFocus.Border" Color="#FF947C2F"/>
-	<!--<SolidColorBrush x:Key="ComboBoxItem.ItemsviewHoverFocus.Background" Color="#5426A0DA"/>-->
-	<!--<SolidColorBrush x:Key="ComboBoxItem.ItemsviewHoverFocus.Border" Color="#FF0000FF"/>-->
-	<!--<SolidColorBrush x:Key="ComboBoxItem.ItemsviewForeground" Color="#FF111C00"/>-->
-
 	<Style x:Key="ComboBoxItemContainerStyle1" TargetType="{x:Type ComboBoxItem}">
 		<Setter Property="SnapsToDevicePixels" Value="True"/>
 		<Setter Property="Padding" Value="4,1"/>

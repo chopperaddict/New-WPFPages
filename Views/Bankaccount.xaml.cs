@@ -56,6 +56,13 @@ namespace WPFPages . Views
 			changefiltertype . Items . Add ( "INTEREST" );
 			changefiltertype . Items . Add ( "BALANCE" );
 		}
+		public void ChecksMouseMove ( object sender , MouseEventArgs e )
+		{
+			e . Handled = true;
+			if ( e . RightButton == MouseButtonState . Pressed )
+				return;
+		}
+
 		private async void bankgrid_Loaded ( object sender , RoutedEventArgs e )
 		{
 			bool isloaded = false;

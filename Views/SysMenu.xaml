@@ -1,0 +1,353 @@
+﻿<Window x:Class="WPFPages.Views.SysMenu"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFPages.Views"
+        mc:Ignorable="d"
+	  Closed="Window_Closed"
+        Title="Temporary System Menu" Height="77" Width="880"
+	  WindowStyle="ToolWindow"
+	  >
+	<Window.Resources>
+
+	</Window.Resources>
+	<Window.Background>
+		<LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+			<GradientStop Offset="0" Color="#FF1D4835" />
+			<GradientStop Offset="0.3" Color="#FF6B8E95" />
+			<GradientStop Offset="0.609" Color="#FF6B8E95" />
+			<GradientStop Offset="1" Color="#FF14A7C1" />
+			<GradientStop Offset="0" Color="#FF193A44" />
+		</LinearGradientBrush>
+	</Window.Background>
+
+	<Grid Margin="0,0,0,0">
+		<!--#region Main MENU-->
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="45" />
+			<!--<RowDefinition Height="*" />-->
+			<RowDefinition Height="5" />
+		</Grid.RowDefinitions>
+		<!--<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="10" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="10" />
+		</Grid.ColumnDefinitions>-->
+
+		<!--This topmost Background and foreground have NO EFFECT-->
+		<Menu	x:Name="Menu1"
+			local:MenuAttachedProperties.MenuItemSelectedBackground="{StaticResource YellowToBlack}"
+			local:MenuAttachedProperties.MenuItemBackground="{StaticResource Black0}"
+			local:MenuAttachedProperties.MenuItemForeground="{StaticResource HorizontalYellowGradient}"
+			local:MenuAttachedProperties.MenuItemSelectedForeground="{StaticResource White0}"
+			local:MenuAttachedProperties.MenuFontSize="14"
+			local:MenuAttachedProperties.MenuFontWeight="Normal"
+			local:MenuAttachedProperties.MenuItemBorderColor="{StaticResource Black0}"
+			local:MenuAttachedProperties.MenuItemBorderThickness="1"
+			local:MenuAttachedProperties.MenuItemHeight ="24"
+			local:MenuAttachedProperties.MenuItemMargin="0"
+			local:MenuAttachedProperties.MenuDropdownWidth ="210"
+			Background="Transparent"
+			Grid.Column="0"
+			Grid.Row="0"
+			Height="45"
+			VerticalAlignment="Center"
+			HorizontalAlignment="Stretch"
+			Width="860">
+			<!--<Menu.Style>
+				<Style>
+				</Style>
+			</Menu.Style>-->
+			
+			<!--Menu ONE Drag Client-->
+			<MenuItem  Header="Drag Win."
+			     Background="Black"
+				Name ="menu1"
+				Click="LoadDragClient_Click"
+				Foreground="Red"
+				FontWeight="Bold"
+				     Height="45"
+				Width="69"/>
+			<!--//=================================//-->
+			<MenuItem  Header="Data Viewers"
+					Name ="menu2"
+					Background="Black"
+				     Foreground="White"
+					BorderThickness="1"
+					BorderBrush="Red"
+					FontWeight="DemiBold" Width="85">
+				<!--//=================================//-->
+
+				<MenuItem  Header="Bank A/C Viewer"
+							Click="LoadBankDbView_Click" 
+							Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem  Header="Customer A/C Viewer"
+							Click="LoadCustDbView_Click"
+							Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem  Header="Details A/C Viewer"
+							Click="LoadDetailsDbView_Click"
+							Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem  Header="Full NorthWind database"
+							Click="LoadFullNorthwind_Click"
+							Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem  Header="Selected N/W database"
+							Click="LoadSelectedNorthwind_Click"
+							Template="{StaticResource MenuItemCtrlTemplate1}"/>
+
+				<!--//=================================//-->
+
+				<Separator
+						Style="{StaticResource Menu_Separator}"
+						Height="3"
+						HorizontalAlignment="Center"
+						Background="Black"
+						Foreground="Red"
+						ClipToBounds="True"/>
+
+				<!--//=================================//-->
+
+				<MenuItem  Header="Multi A/C Viewer"
+						Click="LoadMultiView_Click"
+						Template="{StaticResource MenuItemCtrlTemplate1}" />
+					<MenuItem  Header="TreeView Viewer"
+						Click="TreeView_Click"
+						Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem  Header="Multi View Listbox/Views"
+						Click="UserListbox_Click"
+						Template="{StaticResource MenuItemCtrlTemplate1}"/>
+
+			</MenuItem>
+			<!--================================================-->
+
+			<MenuItem  Header="Execute Sys"
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+				     Name ="menu3"
+					FontWeight="DemiBold"
+					IsTabStop="False"
+					>
+
+				<!--//=================================//-->
+
+				<MenuItem  Header="Execute File/Program"
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+					Click="Execute_Click"
+					MinWidth="200"
+					Padding="5,2,5,0"
+					IsTabStop="False"
+					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem  Header="Maintain Search paths"
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+					Click="Paths_Click"
+					MinWidth="200"
+					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+			</MenuItem>
+
+			<!--================================================
+			Menu entries - FOUR single menu options (No dropdown)
+		Background="Transparent"-->
+
+			<!--<MenuItem  Header="All Colors"
+				Background="Black"
+				Foreground="{StaticResource HorizontalYellowGradient}"				    
+				Name ="Colors"
+				Click="Colors_Click"
+				FontWeight="DemiBold"
+				IsTabStop="False"
+				/>-->
+
+			<!--//=================================//-->
+
+			<MenuItem Header="Sys. Colors" 
+				Click="sysColors_Click" 						
+				FontWeight="DemiBold"
+				Background="Black"
+				Foreground="{StaticResource HorizontalRedGradient}"
+				/>
+			<!--//=================================//-->
+
+			<MenuItem Header="Animation" 
+				Background="Black"
+				Click="Animate_Click" 						
+				FontWeight="DemiBold"
+				Foreground="{StaticResource VerticalBlueGradient}"/>
+
+			<!--================================================-->
+
+			<MenuItem Header="Testing" 				    
+					FontWeight="DemiBold"
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+					Click="MenuItem_Click">
+				<MenuItem Header="  BankAccount Window" 
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+					Click="Bankaccount_Click" 	
+		                   Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem Header="  BtnTest" 
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+					Click="ButtonTesting_Click" 						
+				       Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem Header="  More Testing" 
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+					Click="MoreTesting_Click" 						
+					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem Header=" Buttons and dapper" 
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+					Click="Dapper_Testing_Click" 						
+					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+
+				<MenuItem Header=" Create New Cookie" 
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+					Click="NewCookie_Click" 						
+					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+
+			</MenuItem>
+
+			<!--================================================-->
+
+			<MenuItem Header="Others" 
+					FontWeight="DemiBold"
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}" Width="53">
+				<MenuItem Header=" Create new Cookie" 
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+				    Click="CreateCookie_Click" 	
+					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem Header=" Show  full Cookie info" 
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+				    Click="ListCookieData_Click" 	
+					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem Header=" Create new Cookie" 
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+				    Click="CreateCookie_Click" 	
+					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem Header=" Styled Grid " 
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+				    Click="Styled_Click" 	
+					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem Header=" Grouped Accounts" 
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+				    Click="Grouping_Click" 		
+					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem Header=" Items Control" 
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+				    Click="ItemsControl_Click"	
+					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem Header=" Styling Tests" 
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+				    Click="StoryBoard_Click"	
+					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+				<MenuItem Header=" Att'd Props " 
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+				    Click="Attached_Click"	
+					Template="{StaticResource MenuItemCtrlTemplate1}"/>
+			</MenuItem>
+
+			<!--//=================================//-->
+
+			<MenuItem Header="SQL / Dapper" 
+				FontWeight="Bold"
+				Background="Black"
+				Foreground="{StaticResource HorizontalGreenGradient}" Width="96">
+
+				<!--//=================================//-->
+
+				<MenuItem Header="Dapper " 
+					Click="Dapper_Testing_Click"
+					FontWeight="Bold"
+					Background="Black"
+					Template="{StaticResource MenuItemCtrlTemplate1}"
+					Foreground="{StaticResource HorizontalGreenGradient}"/>
+				<MenuItem Header="SQL Server" 
+					Click="SQLServer_Click"
+					FontWeight="Bold"
+					Background="Black"
+					Template="{StaticResource MenuItemCtrlTemplate1}"
+					Foreground="{StaticResource HorizontalGreenGradient}"/>
+
+				<!--//=================================//-->
+				<MenuItem Header="About..." 
+					FontWeight="Bold"
+					Background="Black"
+					Foreground="{StaticResource HorizontalYellowGradient}"				    
+					Template="{StaticResource MenuItemCtrlTemplate1}"
+					Click="CustomMsgbox_Click"  />
+			</MenuItem>
+
+			<MenuItem Header="Msg Boxes" 
+				FontWeight="Bold"
+				Background="DarkGreen"
+				Foreground="{StaticResource HorizontalYellowGradient}"	
+				HorizontalContentAlignment="Center"
+				Width="80"
+				    >
+
+				<MenuItem Header="1 liner MsgBox" 
+					FontWeight="Bold"
+					Background="Red"
+					Click="Smallmb_Click"
+					Foreground="{StaticResource HorizontalYellowGradient}"	
+					Grid.ColumnSpan="3"
+					    />
+				<MenuItem Header="Small MsgBox" 
+					FontWeight="Bold"
+					Background="Red"
+					Foreground="{StaticResource HorizontalYellowGradient}"	
+					Grid.ColumnSpan="3"
+					Click="Smb_Click"
+					    />
+
+				<MenuItem Header="Full MsgBox" 
+					FontWeight="Bold"
+					Background="Red"
+					Foreground="{StaticResource HorizontalYellowGradient}"	
+					Grid.ColumnSpan="3"
+					Click="fmb_Click"
+					    />
+				<MenuItem Header="MsgBox Settings" 
+					FontWeight="Bold"
+					Background="Red"
+					Foreground="{StaticResource HorizontalYellowGradient}"	
+					Grid.ColumnSpan="3"
+					Click="mbsettings_Click"
+					    />
+			</MenuItem>
+
+			<MenuItem Header="Start Win" 
+				FontWeight="Bold"
+			     Background="{StaticResource Green9}"
+				Foreground="{StaticResource Black0}"	
+			    Grid.ColumnSpan="3"
+				Click="Startwin_Click"
+				    Width="70"/>
+			<MenuItem Header="Exit..." 
+				FontWeight="Bold"
+			     Background="Red"
+				Foreground="{StaticResource HorizontalYellowGradient}"	
+			    Grid.ColumnSpan="3"
+				Click="Exit_Click"
+				    Width="50"/>
+
+			<!--Style="{DynamicResource MenuItemStyle1}" />
+		================================================-->
+		</Menu>
+
+	</Grid>
+</Window>

@@ -96,7 +96,7 @@
 						Grid.Column="1"
 						Orientation="Vertical" Margin="0,0,11,0"
 						>
-                        <Label x:Name="Title" Grid.Row="2 " 
+                        <Label x:Name="AboutTitle" Grid.Row="2 " 
 					       Grid.Column="1" 
 					     Foreground="White" 
 					       HorizontalAlignment="Left"  

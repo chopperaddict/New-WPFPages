@@ -38,7 +38,12 @@ namespace WPFPages . Views
 		#region FULL Properties
 
 		BreakCommand Mynewcommand = new BreakCommand ( );
-
+		private void ChecksMouseMove ( object sender , MouseEventArgs e )
+		{
+			e . Handled = true;
+			if ( e . RightButton == MouseButtonState . Pressed )
+				return;
+		}
 		public BreakCommand MynewCommand
 		{
 			get
@@ -135,13 +140,17 @@ namespace WPFPages . Views
 			im . Name = "NewImage";
 			im . UpdateLayout ( );
 
-			// Subclass the MouseMove event
-			MouseMove += ButtonTesting_MouseMove;
 			//Declare a new delegate for our mouse handlers
 
 			commandtest = "12345 67890";
-			MouseMove += Utils . Grab_MouseMove;
+			MouseMove += Grab_MouseMove;
 			KeyDown += Window_PreviewKeyDown;
+		}
+		private void Grab_MouseMove ( object sender , MouseEventArgs e )
+		{
+			if ( e . LeftButton == MouseButtonState . Pressed )
+				Utils . Grab_MouseMove ( sender , e );
+			e . Handled = true;
 		}
 
 
@@ -149,6 +158,8 @@ namespace WPFPages . Views
 		{
 			if ( e . Key == Key . F11 )
 			{
+				var pos = Mouse . GetPosition ( this);
+				Utils . Grab_Object ( sender , pos );
 				if ( Utils . ControlsHitList . Count == 0 )
 					return;
 				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );

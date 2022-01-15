@@ -2,9 +2,11 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="clr-namespace:WPFPages">
-	
-      <!--#region solid colors-->
-	<!--  Std Color Definitions  -->
+
+
+
+	<!--#region solid colors  (COLOR) 
+	  Std Color Definitions-->  
       <Color x:Key="ClrYellow0">#FFFDBC11</Color>
       <Color x:Key="ClrYellow1">#FEFDFF00</Color>
       <Color x:Key="ClrYellow2">#AFFDFF00</Color>
@@ -87,7 +89,44 @@
       <Color x:Key="ClrMagenta7">#FFFEA7E4</Color>
        <!--#endregion-->	
  
-	<!--#region SolidColorBushes -->
+	<!--#region SolidColorBushes  (SOLIDCOLORBRUSH)-->
+	
+	<!--// General declarations-->
+	<SolidColorBrush x:Key="Menu.Static.Border" Color="#FF999999"/>
+	<SolidColorBrush x:Key="Menu.Static.Background" Color="#F1943EB9"/>
+	<SolidColorBrush x:Key="Menu.Static.Separator" Color="#FFD7D7D7"/>
+	<SolidColorBrush x:Key="Menu.Static.Foreground" Color="#FF212121" />
+
+	<SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD" />
+	<SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070" />
+	<SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD" />
+	<SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1" />
+	<SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6" />
+	<SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B" />
+	<SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4" />
+	<SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5" />
+	<SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383" />
+	<SolidColorBrush x:Key="BorderBrush" Color="#ECECEC" />
+	<SolidColorBrush x:Key="BorderBrushDark" Color="DarkGoldenrod" />
+
+	<!--// Background color of (unselected)  item that has mouse over it-->
+	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewHover.Background" Color="#CCFF0500"/>
+	<!--// Background color of all items in dropdown that do NOT have mouse over it-->
+	<SolidColorBrush x:Key="ComboBoxItemForegroundNoFocus" Color="#CCFfFFFF"/>
+
+	<SolidColorBrush x:Key="ComboBoxItemForegroundUnselected" Color="#CCFEFF00"/>
+	<!--// used in many places !!-->
+	<SolidColorBrush x:Key="ComboBoxItemForegroundDefault" Color="#CCFEFF00"/>
+	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewHover.Border" Color="#CCFEFFFF"/>
+	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewSelected.Background" Color="#CC9D0075"/>
+	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewSelected.Border" Color="#FFA44211"/>
+	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewSelectedHover.Background" Color="#6DFF00F1"/>
+	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewSelectedHover.Border" Color="#6DFF00F1"/>
+	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewSelectedNoFocus.Background" Color="#FFA436DD"/>
+	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewSelectedNoFocus.Border" Color="#FFDADADA"/>
+	<SolidColorBrush x:Key="ComboBoxItem.ItemsviewFocus.Border" Color="#FF947C2F"/>
+
+	<!--// My own colors-->
 	<SolidColorBrush x:Key="White0" Color="#FFFFFFFF" />
 	<SolidColorBrush x:Key="White1" Color="#FFE3E4E4" />
 	<SolidColorBrush x:Key="White2" Color="#FFD6D7D6" />
@@ -97,25 +136,25 @@
 	<SolidColorBrush x:Key="White6" Color="#FF969596" />
 	<SolidColorBrush x:Key="White7" Color="#FF858483" />
 
-	<SolidColorBrush x:Key="Black0" Color="#FD000401" />
-	<SolidColorBrush x:Key="Black1" Color="#FD242627" />
-	<SolidColorBrush x:Key="Black2" Color="#FD3A3C3A" />
-	<SolidColorBrush x:Key="Black3" Color="#FF525051" />
-	<SolidColorBrush x:Key="Black4" Color="#FF646363" />
-	<SolidColorBrush x:Key="Black5" Color="#FF7D7C7B" />
-	<SolidColorBrush x:Key="Black6" Color="#FFA09FAB" />
-	<SolidColorBrush x:Key="Black7" Color="#FFABACB9" />
+	<SolidColorBrush x:Key="Black0" Color="#FF000000" />
+	<SolidColorBrush x:Key="Black1" Color="#FF151515" />
+	<SolidColorBrush x:Key="Black2" Color="#FF303030" />
+	<SolidColorBrush x:Key="Black3" Color="#FF4A4A4A" />
+	<SolidColorBrush x:Key="Black4" Color="#FF5A5A5A" />
+	<SolidColorBrush x:Key="Black5" Color="#FF7F7F7F"/>
+	<SolidColorBrush x:Key="Black6" Color="#FFA1A1A1" />
+	<SolidColorBrush x:Key="Black7" Color="#FFB2B2B2" />
 	<SolidColorBrush x:Key="Black8" Color="#FFC1C0CE" />
 
 	<SolidColorBrush x:Key="Gray0" Color="#FF797983" />
 	<SolidColorBrush x:Key="Gray1" Color="#FF84838E" />
 	<SolidColorBrush x:Key="Gray2" Color="#FF8D8994" />
 	<SolidColorBrush x:Key="Gray3" Color="#FF93929E" />
-	<SolidColorBrush x:Key="Gray4" Color="#EFEEEF" />
-	<SolidColorBrush x:Key="Gray5" Color="#EFEEEF" />
-	<SolidColorBrush x:Key="Gray6" Color="#EFEEEF" />
-	<SolidColorBrush x:Key="Gray7" Color="#EFEEEF" />
-	<SolidColorBrush x:Key="Gray8" Color="#EFEEEF" />
+	<SolidColorBrush x:Key="Gray4" Color="#FFA1A1A1" />
+	<SolidColorBrush x:Key="Gray5" Color="#FFB1B1B1" />
+	<SolidColorBrush x:Key="Gray6" Color="#FFD4D4D4" />
+	<SolidColorBrush x:Key="Gray7" Color="#FFE1E1E1" />
+	<SolidColorBrush x:Key="Gray8" Color="#FFE1E1E1" />
 
 	<SolidColorBrush x:Key="Orange0" Color="#FFFE7808" />
 	<SolidColorBrush x:Key="Orange1" Color="#FFFE8808" />
@@ -127,11 +166,11 @@
 	<SolidColorBrush x:Key="Orange7" Color="#FFFEC807" />
 
 	<SolidColorBrush x:Key="Yellow0" Color="#FFFFFF00" />
-	<SolidColorBrush x:Key="Yellow1" Color="#BCFFFF00" />
-	<SolidColorBrush x:Key="Yellow2" Color="#9CFFFF00" />
-	<SolidColorBrush x:Key="Yellow3" Color="#84FFFF00" />
-	<SolidColorBrush x:Key="Yellow4" Color="#50FFFF00" />
-	<SolidColorBrush x:Key="Yellow5" Color="#28FFFF00" />
+	<SolidColorBrush x:Key="Yellow1" Color="#FFDDD200" />
+	<SolidColorBrush x:Key="Yellow2" Color="#FFBCBC00" />
+	<SolidColorBrush x:Key="Yellow3" Color="#FFAFA500" />
+	<SolidColorBrush x:Key="Yellow4" Color="#FF828000" />
+	<SolidColorBrush x:Key="Yellow5" Color="#FF6D6F00" />
 
 	<SolidColorBrush x:Key="Green0" Color="#FF05560A" />
 	<SolidColorBrush x:Key="Green1" Color="#FF055F0A" />
@@ -148,13 +187,13 @@
 	<SolidColorBrush x:Key="Red1" Color="#FF710303" />
 	<SolidColorBrush x:Key="Red2" Color="#FF7F0303" />
 	<SolidColorBrush x:Key="Red3" Color="#FF8E0303" />
-	<SolidColorBrush x:Key="Red4" Color="#FFA10303" />
+	<SolidColorBrush x:Key="Red4" Color="#FFFF2829" />
 	<SolidColorBrush x:Key="Red5" Color="#FFE85150" />
-	<SolidColorBrush x:Key="Red6" Color="#FFB15150" />
-	<SolidColorBrush x:Key="Red7" Color="#FFFE6C6E" />
-	<SolidColorBrush x:Key="Red8" Color="#FFFE797D" />
-	<SolidColorBrush x:Key="Red9" Color="#94FA828F" />
-	<SolidColorBrush x:Key="Red10" Color="#66FA828F" />
+	<SolidColorBrush x:Key="Red6" Color="#FFFF4545" />
+	<SolidColorBrush x:Key="Red7" Color="#FFFF6768" />
+	<SolidColorBrush x:Key="Red8" Color="#FFFF8482" />
+	<SolidColorBrush x:Key="Red9" Color="#FFFF9FA1" />
+	<SolidColorBrush x:Key="Red10" Color="#FFFFB8BA" />
 
 	<SolidColorBrush x:Key="Cyan0" Color="#FF5C72CE" />
 	<SolidColorBrush x:Key="Cyan1" Color="#FF409DF8" />
@@ -178,101 +217,44 @@
 	<SolidColorBrush x:Key="Blue8" Color="#FF9FB8BD" />
 	<SolidColorBrush x:Key="Blue9" Color="#FFAEC8DB" />
 
-	<SolidColorBrush x:Key="Magenta0" Color="#FFFE377F" />
-	<SolidColorBrush x:Key="Magenta1" Color="#FFFE3D98" />
-	<SolidColorBrush x:Key="Magenta2" Color="#FFFE3DB0" />
-	<SolidColorBrush x:Key="Magenta3" Color="#FFFE4AB2" />
-	<SolidColorBrush x:Key="Magenta4" Color="#FFFE4ACB" />
-	<SolidColorBrush x:Key="Magenta5" Color="#FFFE88CF" />
-	<SolidColorBrush x:Key="Magenta6" Color="#FFFE9AE5" />
-	<SolidColorBrush x:Key="Magenta7" Color="#FFFEA7E4" />
-	<SolidColorBrush x:Key="Magenta8" Color="#FFFEB6F7" />
+	<SolidColorBrush x:Key="Magenta0" Color="#4C84008E" />
+	<SolidColorBrush x:Key="Magenta1" Color="#7B84008E" />
+	<SolidColorBrush x:Key="Magenta2" Color="#A384008E" />
+	<SolidColorBrush x:Key="Magenta3" Color="#D084008E" />
+	<SolidColorBrush x:Key="Magenta4" Color="#FF93008E" />
+	<SolidColorBrush x:Key="Magenta5" Color="#FFD100D1" />
+	<SolidColorBrush x:Key="Magenta6" Color="#FFFF8CFF" />
+	<SolidColorBrush x:Key="Magenta7" Color="#FFFFAFFF" />
+	<SolidColorBrush x:Key="Magenta8" Color="#FFFFCCFF" />
 
-	<SolidColorBrush x:Key="BorderBrush" Color="#ECECEC" />
-	<SolidColorBrush x:Key="BorderBrushDark" Color="DarkGoldenrod" />
+	<SolidColorBrush x:Key="Item.MouseOver.Background" Color="#FF5A0FFF"/>
+	<SolidColorBrush x:Key="Item.MouseOver.Border" Color="#FF1C26DA"/>
+	<SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#FFFD2600"/>
+	<SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#FF8E0300"/>
+	<SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#FFFD2600"/>
+	<SolidColorBrush x:Key="Item.SelectedActive.Foreground" Color="#FF8EFEFE"/>
+	<SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FFFD2600"/>
+
+	<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#6598FD" />
+	<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrush}" Color="#FFFFFF" />
+
+
+	<!--<SolidColorBrush x:Key="BorderBrushDark" Color="DarkGoldenrod"/>
+	<SolidColorBrush x:Key="BorderBrushLight" Color="DarkGray"/>-->
+	<SolidColorBrush x:Key="BackgroundUnselected" Color="LightBlue"/>
+	<SolidColorBrush x:Key="BackgroundSelected" Color="Gold"/>
+	<SolidColorBrush x:Key="BackgroundMouseOver" Color="Red"/>
+	<SolidColorBrush x:Key="ForegroundMouseOver" Color="White"/>
+	<SolidColorBrush x:Key="ForegroundSelected" Color="Magenta"/>
+	<SolidColorBrush x:Key="ForegroundUnselected" Color="Black"/>
+	<SolidColorBrush x:Key="TextBoxForeground" Color="Blue"/>
+	<SolidColorBrush x:Key="TextBoxBackground" Color="Green"/>
+	<SolidColorBrush x:Key="ListViewItemBackground" Color="Green"/>
+
 	<!--#endregion-->
+
+	<!--#region LinearGradientBrush (LINEARGRADIENTBRUSH)-->
 	
-	<!--#region Sundry Colors -->
-	<Color
-		x:Key="BackgroundColor1"
-		A="255"
-		B="226"
-		G="147"
-		R="126" />
-	<Color
-		x:Key="BackgroundColor2"
-		A="255"
-		B="119"
-		G="5"
-		R="2" />
-	<Color
-		x:Key="MouseOverBackgroundColor1"
-		A="255"
-		B="238"
-		G="189"
-		R="176" />
-	<Color
-		x:Key="MouseOverBackgroundColor2"
-		A="255"
-		B="227"
-		G="10"
-		R="4" />
-	<Color
-		x:Key="IsNotEnabledBackgroundColor1"
-		A="28"
-		B="227"
-		G="128"
-		R="128" />
-	<Color
-		x:Key="IsNotEnabledBackgroundColor2"
-		A="255"
-		B="255"
-		G="100"
-		R="4" />
-	<!--#endregion-->
-
-	<!--  #region Mouse down colors  -->
-	<Color
-		x:Key="MousedownBackgroundColor1"
-		A="255"
-		B="54"
-		G="4"
-		R="187" />
-	<Color
-		x:Key="MousedownBackgroundColor2"
-		A="255"
-		B="217"
-		G="203"
-		R="254" />
-	<Color
-		x:Key="MousePressedBackgroundColor1"
-		A="255"
-		B="54"
-		G="4"
-		R="187" />
-	<Color
-		x:Key="MousePressedBackgroundColor2"
-		A="255"
-		B="217"
-		G="203"
-		R="254" />
-
-	<!--  Button Disabled colors  -->
-	<Color
-		x:Key="DisabledBackgroundColor1"
-		A="255"
-		B="220"
-		G="163"
-		R="171" />
-	<Color
-		x:Key="DisabledBackgroundColor2"
-		A="255"
-		B="250"
-		G="133"
-		R="163" />
-	<!--#endregion  -->
-
-	<!--#region Menu Text Options -->	
 	<LinearGradientBrush x:Key="TextBlackToWhiteHorizontal" StartPoint="0,1" EndPoint="1,0">
 		<GradientStop Offset="1" Color="Black" />
 		<GradientStop Offset="0" Color="White" />
@@ -340,13 +322,11 @@
 		<GradientStop Offset="1" Color="#FF2C50A9" />
 	</LinearGradientBrush>
 
-	<LinearGradientBrush x:Key="HeaderBrushBlue" StartPoint="0.5,0" EndPoint="0.5,1">
-		<GradientStop Offset="0" Color="#FF6B8E95" />
-		<GradientStop Offset="1" Color="#FF14A7C1" />
-		<GradientStop Offset="0.509" Color="#FF1E424E" />
-		<GradientStop Offset="0.542" Color="#FF1D4855" />
-		<GradientStop Offset="0.542" Color="#FF1D4855" />
-		<GradientStop Offset="0.526" Color="#FF193A44" />
+	<LinearGradientBrush x:Key="HeaderBrushBlue" StartPoint="0,0" EndPoint="0,1">
+		<GradientStop Offset="0" Color="#330000FF" />
+		<!--<GradientStop Offset="0.2" Color="#580000FF" />-->
+		<GradientStop Offset="0.6" Color="#FF90BAFF" />
+		<GradientStop Offset="1." Color="#FF6FD5FF" />
 	</LinearGradientBrush>
 
 	<LinearGradientBrush x:Key="HeaderBorderBrushBlue" StartPoint="0.2,0" EndPoint="0.2,1">
@@ -401,13 +381,11 @@
 		<GradientStop Offset="0" Color="#FF38320c" />
 	</LinearGradientBrush>
 
-	<LinearGradientBrush x:Key="HeaderBrushHorizontalYellow" StartPoint="1,1" EndPoint="1,0">
-		<GradientStop Offset="0" Color="#FF38320c" />
-		<GradientStop Offset="0.2" Color="#FFAF7800" />
-		<GradientStop Offset="0.409" Color="#FFF5BC00" />
-		<GradientStop Offset="0.62" Color="#FFE79500" />
-		<GradientStop Offset="0.82" Color="#FFf5d816" />
-		<GradientStop Offset="1" Color="#FFFFFF00" />
+	<LinearGradientBrush x:Key="HeaderBrushHorizontalYellow" StartPoint="1,0" EndPoint="1,1">
+		<GradientStop Offset="0" Color="#FF967E00" />
+		<GradientStop Offset="0.409" Color="#FFAFA500" />
+		<GradientStop Offset="0.82" Color="#FFD1C800" />
+		<GradientStop Offset="1" Color="#FFF6EC00" />
 	</LinearGradientBrush>
 
 
@@ -472,22 +450,18 @@
 		<GradientStop Offset="1" Color="#A1005100" />
 	</LinearGradientBrush>	 	
 	
-	<LinearGradientBrush x:Key="HeaderBrushGreen" StartPoint="0.5,0" EndPoint="0.5,1">
-		<GradientStop Offset="0" Color="#FF75DD75" />
-		<GradientStop Offset="1" Color="#FF00FF00" />
-		<GradientStop Offset="0.509" Color="#A1005100" />
-		<GradientStop Offset="0.542" Color="#A1007700" />
-		<GradientStop Offset="0.542" Color="#95009400" />
-		<GradientStop Offset="0.526" Color="#FF00FF00" />
+	<LinearGradientBrush x:Key="HeaderBrushGreen" StartPoint="0,0" EndPoint="0,1">
+		<GradientStop Offset="0.1" Color="#FF007200" />
+		<GradientStop Offset="0.3" Color="#A1007700" />
+		<GradientStop Offset="0.6" Color="#7A00C900" />
+		<GradientStop Offset="0.8" Color="#FFBBFFC2" />
 	</LinearGradientBrush>
 
-	<LinearGradientBrush x:Key="HeaderBrushGreenReversed" StartPoint="0.5,0" EndPoint="0.5,1">
-		<GradientStop Offset="0" Color="#A1005100" />
-		<GradientStop Offset="1" Color="#A1007700" />
-		<GradientStop Offset="0.509" Color="#95009400" />
-		<GradientStop Offset="0.542" Color="#95009400" />
-		<GradientStop Offset="0.542" Color="#A1007700" />
-		<GradientStop Offset="0.526" Color="#FF00FF00" />
+	<LinearGradientBrush x:Key="HeaderBrushGreenReversed" StartPoint="0,1" EndPoint="0,0">
+		<GradientStop Offset="0.1" Color="#FF007200" />
+		<GradientStop Offset="0.3" Color="#A1007700" />
+		<GradientStop Offset="0.6" Color="#7A00C900" />
+		<GradientStop Offset="0.8" Color="#FFBBFFC2" />
 	</LinearGradientBrush>
 
 	<LinearGradientBrush x:Key="HeaderBorderBrushGreen" StartPoint="0.5,0" EndPoint="0.5,1">
@@ -587,10 +561,12 @@
 		<GradientStop Offset="0"	Color="#FF38320c" />
 	</LinearGradientBrush>
   <!--#endregion-->
+	
+	<!--#region Styles (STYLES)-->
 
 	<Style x:Key="HeaderStyleYellow" TargetType="DataGridColumnHeader">
 		<Setter Property="Background" Value="{StaticResource HeaderBrushHorizontalYellow}" />
-		<Setter Property="Foreground" Value="{StaticResource White0}" />
+		<Setter Property="Foreground" Value="{StaticResource Black1}" />
 		<Setter Property="BorderBrush" Value="{StaticResource Black4}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />
@@ -606,8 +582,7 @@
 	</Style>
 	<!--=================================================================================================-->
 	
-	<!--#endregion END OF Test of downloaded Datagrid column header Style
-		Gives a really nice top to bottom gradient with 
+		<!--Gives a really nice top to bottom gradient with 
 		darkest color in horizontal center bar-->
 
 											
@@ -755,5 +730,6 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<!--#endregion Styles (STYLES)-->
 
 </ResourceDictionary>

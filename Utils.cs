@@ -7,6 +7,7 @@ using System . Configuration;
 using System . Data;
 using System . Diagnostics;
 using System . IO;
+using System . Runtime . CompilerServices;
 using System . Threading;
 using System . Threading . Tasks;
 using System . Windows;
@@ -266,13 +267,17 @@ namespace WPFPages
 			Console . WriteLine ( $"\n{output}\n" );
 			return $"\n{output}\n";
 		}
-		public static void Mbox ( Window win , string string1 = "" , string caption = "" , string string2 = "" , string iconstring = "" , int Btn1 = 1 , int Btn2 = 0 , int defButton = 1 )
+		public static void Mbox ( Window win , string string1 = "" , string string2 = "" , string caption = "" , string iconstring = "" , int Btn1 = 1 , int Btn2 = 0 , int Btn3 = 0 , int Btn4 = 0 , int defButton = 1 , bool minsize = false , bool modal = false )
 		{
 			// We NEED to remove any \r as part of \r\n as textboxes ONLY accept \n on its own for Cr/Lf
 			string1 = ParseforCR ( string1 );
-			Msgboxs m = new Msgboxs( string1:string1,  string2:string2, caption:caption ,Btn1:Btn1, Btn2 : Btn2, defButton : defButton , iconstring:iconstring );
+			Msgboxs m = new Msgboxs( string1:string1,  string2:string2, caption:caption ,Btn1:Btn1, Btn2 : Btn2, Btn3 : Btn3, Btn4 : Btn4, defButton : defButton , iconstring:iconstring, MinSize:minsize , modal:modal);
 			//			m . Owner = win;
-			m . ShowDialog ( );
+
+			if ( modal == false )
+				m . Show ( );
+			else
+				m . ShowDialog ( );
 		}
 
 		public static void Mssg (
@@ -368,7 +373,7 @@ namespace WPFPages
 			}
 			return retval;
 		}
-		public static bool CheckRecordMatch (BankAccountViewModel bvm ,CustomerViewModel cvm ,DetailsViewModel dvm )
+		public static bool CheckRecordMatch ( BankAccountViewModel bvm , CustomerViewModel cvm , DetailsViewModel dvm )
 		{
 			bool result = false;
 			if ( bvm != null && cvm != null )
@@ -584,7 +589,6 @@ namespace WPFPages
 			}
 			return bvm;
 		}
-		
 		public static RenderTargetBitmap CreateControlImage ( FrameworkElement control , string filename = "" , bool savetodisk = false , GrabImageArgs ga = null )
 		{
 			if ( control == null )
@@ -739,7 +743,7 @@ namespace WPFPages
 			datastring += "'" + bvm . CDate . ToString ( ) + "',";
 			datastring += "'" + bvm . ODate . ToString ( ) + "',";
 			return datastring;
-		}   	
+		}
 		public static string CreateFullCsvTextFromRecord ( BankAccountViewModel bvm , DetailsViewModel dvm , CustomerViewModel cvm = null , bool IncludeType = true )
 		{
 			if ( bvm == null && cvm == null && dvm == null )
@@ -1073,6 +1077,8 @@ namespace WPFPages
 				ofd . Filter = "Comma seperated data (*.csv) | *.csv";
 			else if ( filespec . ToUpper ( ) . Contains ( "*.*" ) )
 				ofd . Filter = "All Files (*.*) | *.*";
+			if ( filespec . ToUpper ( ) . Contains ( "PNG" ) )
+				ofd . Filter = "Image (*.png*) | *.pb*";
 			else if ( filespec == "" )
 			{
 				ofd . Filter = "All Files (*.*) | *.*";
@@ -1101,6 +1107,8 @@ namespace WPFPages
 		}
 		public static Brush GetNewBrush ( string color )
 		{
+			if ( color == "" )
+				return null;
 			if ( color [ 0 ] != '#' )
 				color = "#" + color;
 			return ( Brush ) new BrushConverter ( ) . ConvertFrom ( color );
@@ -1148,7 +1156,22 @@ namespace WPFPages
 		{
 			Point pt = e.GetPosition((UIElement)sender);
 			HitTestResult hit = VisualTreeHelper . HitTest ( ( Visual ) sender, pt );
-			if ( hit? . VisualHit != null )
+			if ( hit?.VisualHit != null )
+			{
+				if ( ControlsHitList . Count != 0 )
+				{
+					if ( hit . VisualHit == ControlsHitList [ 0 ] . VisualHit )
+						return;
+				}
+				ControlsHitList . Clear ( );
+				ControlsHitList . Add ( hit );
+			}
+		}
+		public static void Grab_Object ( object sender , Point pt )
+		{
+			//Point pt = e.GetPosition((UIElement)sender);
+			HitTestResult hit = VisualTreeHelper . HitTest ( ( Visual ) sender, pt );
+			if ( hit?.VisualHit != null )
 			{
 				if ( ControlsHitList . Count != 0 )
 				{
@@ -1334,17 +1357,17 @@ namespace WPFPages
 			//	Console . WriteLine ( $"Type is {v}" );
 			//}
 			////OBJ = OBJ . Text;
-			var bmp = Utils . CreateControlImage ( OBJ as FrameworkElement , @"J:\\users\ianch\Documents\capturedimage.png" );
+			var bmp = Utils . CreateControlImage ( OBJ as FrameworkElement );
 			if ( bmp == null )
 				return;
+			Utils . SaveImageToFile ( ( RenderTargetBitmap ) bmp , "C:\\WPFPages-11nov21\\Icons\\Grabimage.png" , "PNG" );
 			Grabviewer gv = new Grabviewer(parent,ctrl, bmp);
 			//Setup the  image in our viewer
 			gv . Grabimage . Source = bmp;
-			gv . Title = @"C:\users\ianch\documents\Grabimage.png";
+			gv . Title = "C:\\WPFPages-11nov21\\Icons\\Grabimage.png";
 			gv . Title += $"  :  RESIZE window to magnify the contents ...";
 			gv . Show ( );
 			// Save to disk file
-			Utils . SaveImageToFile ( ( RenderTargetBitmap ) bmp , @"C:\users\ianch\documents\Grabimage.png" , "PNG" );
 		}
 		public static void HandleCtrlFnKeys ( bool key1 , KeyEventArgs e )
 		{
@@ -1590,27 +1613,35 @@ namespace WPFPages
 				file += ".gif";
 			else if ( imagetype == "JPG" )
 				file += ".jpg";
-			using ( FileStream fs = new FileStream ( file ,
-					    FileMode . Create , FileAccess . Write , FileShare . None ) )
+			try
 			{
-				if ( imagetype == "PNG" )
+				using ( FileStream fs = new FileStream ( file ,
+						    FileMode . Create , FileAccess . Write , FileShare . ReadWrite ) )
 				{
-					PngBitmapEncoder encoder = new PngBitmapEncoder();
-					encoder . Frames . Add ( BitmapFrame . Create ( bmp ) );
-					encoder . Save ( fs );
+					if ( imagetype == "PNG" )
+					{
+						PngBitmapEncoder encoder = new PngBitmapEncoder();
+						encoder . Frames . Add ( BitmapFrame . Create ( bmp ) );
+						encoder . Save ( fs );
+					}
+					else if ( imagetype == "GIF" )
+					{
+						GifBitmapEncoder encoder = new GifBitmapEncoder ();
+						encoder . Frames . Add ( BitmapFrame . Create ( bmp ) );
+						encoder . Save ( fs );
+					}
+					else if ( imagetype == "JPG" || imagetype == "JPEG" )
+					{
+						JpegBitmapEncoder encoder = new JpegBitmapEncoder ();
+						encoder . Frames . Add ( BitmapFrame . Create ( bmp ) );
+						encoder . Save ( fs );
+					}
+					fs . Close ( );
 				}
-				else if ( imagetype == "GIF" )
-				{
-					GifBitmapEncoder encoder = new GifBitmapEncoder ();
-					encoder . Frames . Add ( BitmapFrame . Create ( bmp ) );
-					encoder . Save ( fs );
-				}
-				else if ( imagetype == "JPG" || imagetype == "JPEG" )
-				{
-					JpegBitmapEncoder encoder = new JpegBitmapEncoder ();
-					encoder . Frames . Add ( BitmapFrame . Create ( bmp ) );
-					encoder . Save ( fs );
-				}
+			}
+			catch ( Exception ex )
+			{
+				Utils . Mbox ( null , string1: "The image could not be saved for the following reason " , string2: $"{ex . Message}" , caption: "" , iconstring: "\\icons\\Information.png" , Btn1: MB . OK , Btn2: MB . NNULL , defButton: MB . OK );
 			}
 		}
 		public static void SaveProperty ( string setting , string value )
@@ -1799,14 +1830,42 @@ namespace WPFPages
 			grid . Refresh ( );
 			//			var v = grid .VerticalAlignment;
 		}
+
+		public static void IsMouseMove ( object sender , MouseEventArgs e )
+		{
+			e . Handled = true;
+			if ( e . RightButton == MouseButtonState . Pressed )
+				return;
+		}
+
 		public static void SetupWindowDrag ( Window inst )
 		{
-			inst . MouseDown += delegate
+			try
 			{
-				try
-				{ inst . DragMove ( ); }
-				catch { return; }
-			};
+				//Handle the button NOT being the left mouse button
+				// which will crash the DragMove Fn.....
+				MouseButtonState mbs =   Mouse. RightButton ;
+				Console . WriteLine ( $"{mbs . ToString ( )}" );
+				if ( mbs == MouseButtonState . Pressed )
+					return;
+				inst . MouseDown += delegate
+				{
+					{
+						try
+						{
+							inst?.DragMove ( );
+						}
+						catch ( Exception ex )
+						{
+							return;
+						}
+					}
+				};
+			}
+			catch ( Exception ex )
+			{
+				return;
+			}
 		}
 
 

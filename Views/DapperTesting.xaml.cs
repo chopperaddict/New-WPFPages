@@ -170,7 +170,7 @@ namespace WPFPages . Views
 			GenericGrid1 . Focus ( );
 			Mouse . OverrideCursor = Cursors . Arrow;
 			string errormsg="";
-			MouseMove += Utils . Grab_MouseMove;
+			MouseMove += Grab_MouseMove;
 			KeyDown += Window_PreviewKeyDown;
 			//testing
 			//			ObservableCollection<GenericClass> gc = new ObservableCollection<GenericClass>();
@@ -222,12 +222,27 @@ namespace WPFPages . Views
 			//tFlags . current = 0;
 			//ToggleBtn_Click(null,null);
 		}
+		private void ChecksMouseMove ( object sender , MouseEventArgs e )
+		{
+			e . Handled = true;
+			if ( e . RightButton == MouseButtonState . Pressed )
+				return;
+		}
+		private void Grab_MouseMove ( object sender , MouseEventArgs e )
+		{
+			if ( e . LeftButton == MouseButtonState . Pressed )
+				Utils . Grab_MouseMove ( sender , e );
+			e . Handled = true;
+		}
+
 		#endregion STARTUP/CLOSEDOWN  METHODS
 
 		private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )
 		{
 			if ( e . Key == Key . F11 )
 			{
+				var pos = Mouse . GetPosition ( this);
+				Utils . Grab_Object ( sender , pos );
 				if ( Utils . ControlsHitList . Count == 0 )
 					return;
 				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null, sender as Control );
@@ -1477,6 +1492,8 @@ namespace WPFPages . Views
 				UseSelectClause ( sender , null );
 			if ( e . Key == Key . F11 )
 			{
+				var pos = Mouse . GetPosition ( this);
+				Utils . Grab_Object ( sender , pos );
 				if ( Utils . ControlsHitList . Count == 0 )
 					return;
 				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
@@ -2088,8 +2105,6 @@ namespace WPFPages . Views
 			// Get the data from the selected Db and display it in generic grid
 			// Generic call that wil return the results of any valid SQL select command as an Observable colection<GenericClass>
 			e . Handled = true;
-//			goto TestMsgbox;
-
 			Dictionary < string, string > dic = new Dictionary<string, string>();
 			GenericClass gcc = new GenericClass();
 			ObservableCollection< GenericClass > generic = new ObservableCollection<GenericClass> ( );
@@ -2104,12 +2119,10 @@ namespace WPFPages . Views
 			{
 				MessageBox . Show ( $"The SQL Query you entered returned the following Error ?\n\n[{errmsg . ToUpper ( )}]" , "SQL error?" );
 				Mouse . OverrideCursor = Cursors . Arrow;
-				goto TestMsgbox;
+				return;
 			}
 			if ( generic . Count == 0 )
 			{
-				//MessageBox . Show ( $"The selected Data table \n\n[{DbList.SelectedItem.ToString().ToUpper()}] \n\nwas read successfully but returned Zero records" , "SQL error?" );
-
 				Utils . Mbox ( this,
 					string1: $"The selected Data table \n\n[{DbList . SelectedItem . ToString ( ) . ToUpper ( )}] \n\nwas read successfully but returned Zero records" ,
 					caption: "Sql Error" ,
@@ -2119,7 +2132,6 @@ namespace WPFPages . Views
 
 				Mouse . OverrideCursor = Cursors . Arrow;
 			}
-
 			UniversalGrid . ItemsSource = null;
 			UniversalGrid . Items . Clear ( );
 			UniversalGrid . ItemsSource = generic;
@@ -2128,110 +2140,8 @@ namespace WPFPages . Views
 			UniversalGrid . Refresh ( );
 			UniversalGrid . Focus ( );
 			tFlags . current = 0;
-			ToggleBtn_Click ( null , null );
-			
-			
+			ToggleBtn_Click ( null , null );   
 			return;
-
-
-		TestMsgbox:
-			// How to get a Brush from my Extensions Class
-			// WORKS
-			Brush b = "#FF00FF00".ToSolidBrush();
-			// How to get a LinerGradientBrush from my Extensions Class
-			// WORKS
-			Brush l = "TextWhiteToBlackHorizontal4" .ToLinearGradientBrush();
-
-			// Set the parameter required for the message boxes
-			DlgInput . resetdata = true;
-			DlgInput . UseIcon = true;
-			DlgInput . UseDarkMode = false;
-			//DlgInput . resultboolin = false;
-			//DlgInput . intin = 0;
-			//DlgInput . stringin = "";
-			//DlgInput . obj = null;
-			//DlgInput . bground = "#9DFFFFFB" . ToSolidBrush ( );
-			//DlgInput . fground = "#FF000000" . ToSolidBrush ( );
-			//DlgInput . border = "#C1000000" . ToSolidBrush ( );
-			//DlgInput . Buttonforeground = null;
-			//DlgInput . Buttonbackground = null;
-			//DlgInput . iconstring = "";
-			//DlgInput . image = null;
-
-			int go= 1;
-			if ( go == 1 )
-			{
-				// Snippet  is <msgbf>
-				Msgbox mbox  = new Msgbox(
-				caption: "*** SQL Query Error ***" ,
-				string1:$"This is the Middle, and main row of data used to \ncreate the information provided.\nThis is  the duplicate to make it longer than the window should be able to use, and  this is  This is  the duplicate to make it longer than the window should be able to use" ,
-				string2: "string  2 goes here" ,
-				string3:"This is string3, a full width footer style row that can be used,",
-				title:"",
-				iconstring:"\\icons\\text-message.png" ,
-				defButton:2,
-				Btn1:1,
-				Btn2:2 ,
-				Btn3:3,
-				Btn4:4,
-				btn1Text:"",
-				btn2Text:"Get on with it" ,
-				btn3Text:"Bale out quick"   ,
-				btn4Text:""
-			     );
-				mbox . ShowDialog ( );
-			}
-			else if ( go == 2 )
-			{
-				Msgbox mboxs  = new Msgbox(
-				caption: "*** SQL Query Error ***" ,
-				string1:$"This is the Middle, and main row of data used to \ncreate the information provided.\nThis is  the duplicate to make it longer than the window should be able to use, and  this is  This is  the duplicate to make it longer than the window should be able to use" ,
-				string2: "" ,
-				title:"",
-				iconstring:"\\icons\\check-mark-icon-5375.png" ,
-				defButton: 1,
-				Btn1:3,
-				Btn2: 4 ,
-				btn1Text:"",
-				btn2Text:"Get on with it" ,
-				btn3Text:"Bale out quick"   ,
-				btn4Text:""
-
-			     );
-				mboxs . ShowDialog ( );
-			}
-			else if ( go == 3 )
-			{
-				// Snippet  is <mcfg>
-				//DlgInput . resetdata = false;
-				//DlgInput . resultboolin = false;
-				//DlgInput . UseDarkMode = false;
-				//DlgInput . UseIcon = true;
-				//DlgInput . intin = 0;
-				//DlgInput . stringin = "";
-				//DlgInput . obj = null;
-				//DlgInput . bground = "#9DFFFFFB" . ToSolidBrush ( );
-				//DlgInput . fground = "#FF000000" . ToSolidBrush ( );
-				//DlgInput . border = "#C1000000" . ToSolidBrush ( );
-				//DlgInput . Buttonforeground = null;
-				//DlgInput . Buttonbackground = null;
-				//DlgInput . iconstring = "";
-				//DlgInput . image = null;
-				 
-				// Snippet  is <mss>
-				Utils . Mbox (this,
-					string1: "long Message to show how it wraps in a default message box like this ...." ,
-					string2: "",
-					caption: "" ,
-					iconstring: "\\icons\\Information.png" ,
-					Btn1: MB . OK ,
-					Btn2: MB . CANCEL ,
-					defButton: MB . OK );
-
-
-
-
-			}
 		}
 
 		private void DbList_MouseDoubleClick ( object sender , MouseButtonEventArgs e )

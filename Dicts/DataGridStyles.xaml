@@ -2,8 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 	<Style x:Key="HeaderStyleGreen" TargetType="DataGridColumnHeader">
-		<Setter Property="Background" Value="{StaticResource HeaderBrushGreen}" />
-		<Setter Property="Foreground" Value="White" />
+		<Setter Property="Background" Value="{StaticResource HeaderBrushGreenReversed}" />
+		<Setter Property="Foreground" Value="Black" />
+		<Setter Property="FontWeight" Value="SemiBold" />
 		<Setter Property="BorderBrush" Value="{StaticResource HeaderBorderBrushGreen}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />
@@ -23,9 +24,11 @@
 		<Setter Property="BorderThickness" Value="0" />
 		<Setter Property="BorderBrush" Value="{StaticResource Black0}" />
 		<Setter Property="Background" Value="{StaticResource Cyan5}" />
+		<Setter Property="Height" Value="21" />
 		<Style.Triggers>
 			<!--//=======================================================================================//-->
 			<!--// Handle Background and Foreground colors of SELECTED row-->
+			
 			<!--NO MOUSE  / NOT SELECTED -->
 			<!--// Handle Background and Foreground colors of NON SELECTED row-->
 			<MultiDataTrigger>
@@ -35,7 +38,7 @@
 					<!--<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsKeyboardFocusWithin}" Value="False" />-->
 				</MultiDataTrigger.Conditions>
 				<MultiDataTrigger.Setters>
-					<Setter Property="Background" Value="{StaticResource Gray3}" />
+					<Setter Property="Background" Value="Transparent" />
 					<Setter Property="Foreground" Value="{StaticResource Black0}" />
 					<Setter Property="FontWeight" Value="Normal" />
 				</MultiDataTrigger.Setters>
@@ -48,8 +51,8 @@
 					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="false" />
 				</MultiDataTrigger.Conditions>
 				<MultiDataTrigger.Setters>
-					<Setter Property="Background" Value="{StaticResource Cyan5}" />
-					<Setter Property="Foreground" Value="{StaticResource Black2}" />
+					<Setter Property="Background" Value="{StaticResource Red5}" />
+					<Setter Property="Foreground" Value="{StaticResource White0}" />
 					<Setter Property="FontWeight" Value="DemiBold" />
 				</MultiDataTrigger.Setters>
 			</MultiDataTrigger>
@@ -78,7 +81,7 @@
 					<Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="true" />
 				</MultiDataTrigger.Conditions>
 				<MultiDataTrigger.Setters>
-					<Setter Property="Background" Value="{StaticResource Red0}" />
+					<Setter Property="Background" Value="{StaticResource Black5}" />
 					<Setter Property="Foreground" Value="{StaticResource Cyan0}" />
 					<Setter Property="FontWeight" Value="Bold" />
 				</MultiDataTrigger.Setters>

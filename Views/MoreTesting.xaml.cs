@@ -39,8 +39,14 @@ namespace WPFPages . Views
                         InitializeComponent ( );
                         Utils . SetupWindowDrag ( this );
                 }
+            private void ChecksMouseMove ( object sender , MouseEventArgs e )
+            {
+                  e . Handled = true;
+                  if ( e . RightButton == MouseButtonState . Pressed )
+                        return;
+            }
 
-                private void Moretesting_Loaded ( object sender, RoutedEventArgs e )
+            private void Moretesting_Loaded ( object sender, RoutedEventArgs e )
                 {
                         NwOrders . Clear ( );
                         Lv1 . Items . Clear ( );
@@ -53,15 +59,23 @@ namespace WPFPages . Views
                         view . SortDescriptions . Add ( new SortDescription ( "OrderId", ListSortDirection . Ascending ) );
                         nwOrder = view . CurrentItem as nworder;
                   //                        nwOrder = Lv1 . SelectedItem as nworder;
-                  MouseMove += Utils . Grab_MouseMove;
+                  MouseMove += Grab_MouseMove;
                   KeyDown += Window_PreviewKeyDown;
 
+            }
+            private void Grab_MouseMove ( object sender , MouseEventArgs e )
+            {
+                  if ( e . LeftButton == MouseButtonState . Pressed )
+                        Utils . Grab_MouseMove ( sender , e );
+                  e . Handled = true;
             }
 
             private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )
             {
                   if ( e . Key == Key . F11 )
                   {
+                        var pos = Mouse . GetPosition ( this);
+                        Utils . Grab_Object ( sender , pos );
                         if ( Utils . ControlsHitList . Count == 0 )
                               return;
                         Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );

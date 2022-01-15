@@ -164,6 +164,13 @@ namespace WPFPages . Views
 			Mouse . OverrideCursor = Cursors . Arrow;
 			isLoading = false;
 		}
+		private void ChecksMouseMove ( object sender , MouseEventArgs e )
+		{
+			e . Handled = true;
+			if ( e . RightButton == MouseButtonState . Pressed )
+				return;
+		}
+
 		private void Window_Closing ( object sender , System . ComponentModel . CancelEventArgs e )
 		{
 			// Unsubscribe from Bank data change event notificatoin

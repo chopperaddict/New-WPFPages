@@ -109,6 +109,12 @@ namespace WPFPages . Views
 			catch { return; }
 		}
 		#endregion Mouse support
+		private void ChecksMouseMove ( object sender , MouseEventArgs e )
+		{
+			e . Handled = true;
+			if ( e . RightButton == MouseButtonState . Pressed )
+				return;
+		}
 
 		#region Startup/ Closedown
 		private async void Window_Loaded ( object sender , RoutedEventArgs e )
@@ -177,8 +183,15 @@ namespace WPFPages . Views
 
 			Mouse . OverrideCursor = Cursors . Arrow;
 			Startup = false;
-			MouseMove += Utils . Grab_MouseMove;
+			MouseMove += Grab_MouseMove;
 		}
+		private void Grab_MouseMove ( object sender , MouseEventArgs e )
+		{
+			if ( e . LeftButton == MouseButtonState . Pressed )
+				Utils . Grab_MouseMove ( sender , e );
+			e . Handled = true;
+		}
+
 		private void EventControl_GlobalDataChanged ( object sender , GlobalEventArgs e )
 		{
 			if ( e . CallerType == "CUSTDBVIEWER" )
@@ -833,6 +846,8 @@ namespace WPFPages . Views
 			}
 			if ( e . Key == Key . F11 )
 			{
+				var pos = Mouse . GetPosition ( this);
+				Utils . Grab_Object ( sender , pos );
 				if ( Utils . ControlsHitList . Count == 0 )
 					return;
 				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );

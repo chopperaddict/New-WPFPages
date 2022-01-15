@@ -9,6 +9,7 @@
         xmlns:cmd="clr-namespace:WPFPages.Commands"
          mc:Ignorable="d"
         IsHitTestVisible="True"
+	  MouseMove="ChecksMouseMove"
         Title="ButtonTesting"
         Name="buttontest"
         Height="569" Width="971"

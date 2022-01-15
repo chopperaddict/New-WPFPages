@@ -4,147 +4,849 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFPages.Views"
-        xmlns:conv="clr-namespace:WPFPages.Converts"
-        mc:Ignorable="d"
+        xmlns:conv="clr-namespace:WPFPages.Converts" 	  
+	  Name="MsgboxSetUp"
+	  mc:Ignorable="d"
 	  Closing="Window_Closing"
 	  WindowStartupLocation="CenterOwner"
-        Title="Application Configuration System" Height="640" Width="450">
-	<Window.Resources>
-		<conv:HexStringToBrush x:Key="Hex2string"/>
+	  PreviewKeyDown="Window_PreviewKeyDown"
+        Title="Message Box  Configuration System  - Hit F1 to show configuration details in 'Output'" 
+	  Height="830" 
+	  Width="1070">
 
+	<Window.Resources>
+		<conv:GetBrushfromhexvalue  x:Key="Hex2string"/>
 	</Window.Resources>
+
 	<Window.Background>
 		<SolidColorBrush Color="LightBlue"/>
 	</Window.Background>
-	<Grid>
+	<Window.DataContext>
+		<Binding Path="MsgboxSetup"/>
+	</Window.DataContext>
+
+	<Grid x:Name="MainGrid" Margin="0,8,2,-8">
 
 
 		<Grid.RowDefinitions>
-			<RowDefinition Height="5" x:Name="Row1" />
-			<RowDefinition Height="35" />
-			<RowDefinition Height="35" />
-			<RowDefinition Height="35" />
-			<RowDefinition Height="35" />
-			<RowDefinition Height="35" />
-			<RowDefinition Height="35" />
-			<RowDefinition Height="35" />
-			<RowDefinition Height="35" />
-			<RowDefinition Height="35" />
+			<RowDefinition Height="25" x:Name="Row1" />
+			<RowDefinition Height="30" />
+			<RowDefinition Height="30" />
+			<RowDefinition Height="30" />
+			<RowDefinition Height="30" />
+			<RowDefinition Height="30" />
+			<RowDefinition Height="30" />
+			<RowDefinition Height="30" />
+			<RowDefinition Height="30" />
+			<RowDefinition Height="30" />
 			<RowDefinition Height="95" />
 			<RowDefinition Height="135" />
+			<RowDefinition Height="30" />
+			<RowDefinition Height="30" />
 			<RowDefinition Height="15" />
+			<RowDefinition Height="104*"/>
+			<RowDefinition Height="21*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="10" />
 			<ColumnDefinition Width="220" />
 			<ColumnDefinition Width="110" />
 			<ColumnDefinition Width="90" />
+			<ColumnDefinition Width="1*"/>
+			<ColumnDefinition Width="253" />
+			<ColumnDefinition Width="150" />
 			<ColumnDefinition Width="10" />
 		</Grid.ColumnDefinitions>
 
-		<Label x:Name="label" Content="Dialog BackGround" Grid.Column="1"  Grid.Row="1" FontSize="14" 
-			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
-		<Label x:Name="label1" Content="Dialog ForeGround"  Grid.Column="1"  Grid.Row="2" FontSize="14" 
-			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
-		<Label x:Name="label2" Content="Button's BackGround"  Grid.Column="1"  Grid.Row="3" FontSize="14" 
-			 HorizontalAlignment="Right"  Margin="0,-5,6,0" VerticalAlignment="Center" Height="30" Width="Auto" />
-		<Label x:Name="label3" Content="Button's ForeGround"  Grid.Column="1"  Grid.Row="4" FontSize="14" 
-			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
-		<Label x:Name="label4" Content="Button Border Color"  Grid.Column="1"  Grid.Row="5" FontSize="14" 
-			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
-		<Label x:Name="label5" Content="Mouseover Button's BackGround"  Grid.Column="1"  Grid.Row="6" FontSize="14" 
-			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
-		<Label x:Name="label6" Content="Mouseover Button's ForeGround"  Grid.Column="1"  Grid.Row="7" FontSize="14" 
-			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
-		<Label x:Name="label7" Content="Default Button's BackGround"  Grid.Column="1"  Grid.Row="8" FontSize="14" 
-			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
-		<Label x:Name="label8" Content="Default Button's ForeGround"  Grid.Column="1"  Grid.Row="9" FontSize="14" 
-			 HorizontalAlignment="Right" Margin="0,-5,0,0" VerticalAlignment="Center" Height="30" Width="Auto"/>
+		<!--#region Color Selection panels Text descriptions -->
 
-		<TextBox x:Name="textBox" Grid.Column="2"   Grid.Row="1"  Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox_KeyUp"
-			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FFFF0000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95" 
-			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox_GotFocus"/>
-		<TextBox x:Name="textBox1"  Grid.Column="2"   Grid.Row="2" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox1_KeyUp"
-			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FFFF0000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95"  
-			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox1_GotFocus"/>
-		<TextBox x:Name="textBox2"  Grid.Column="2"   Grid.Row="3" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox2_KeyUp"
-			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95" 
-			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox2_GotFocus"/>
-		<TextBox x:Name="textBox3"  Grid.Column="2"   Grid.Row="4" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox3_KeyUp"
-			HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95" 
-			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox3_GotFocus"/>
-		<TextBox x:Name="textBox4"  Grid.Column="2"   Grid.Row="5" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox4_KeyUp"
-			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95"
-			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox4_GotFocus"/>
-		<TextBox x:Name="textBox5" Grid.Column="2"   Grid.Row="6" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox5_KeyUp"
-			   HorizontalAlignment="Left" Margin="10,3,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Top" Width="95"  
-			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox5_GotFocus" Grid.RowSpan="4"/>
-		<TextBox x:Name="textBox6"  Grid.Column="2"   Grid.Row="7" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox6_KeyUp"
-			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95" 
-			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox6_GotFocus"/>
-		<TextBox x:Name="textBox7"  Grid.Column="2"   Grid.Row="8" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox7_KeyUp"
-			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95" 
-			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox7_GotFocus"/>
-		<TextBox x:Name="textBox8"  Grid.Column="2"   Grid.Row="9" Height="30" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox8_KeyUp"
-			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95" 
-			   BorderBrush="Black" BorderThickness="1" FontSize="16 " GotFocus="textBox8_GotFocus"/>
+		<Label x:Name="label0" Content="Normal Mode Settngs"  Grid.Column="1" FontSize="16"  FontStyle="Oblique"   FontWeight="Bold"
+			  HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="184" Margin="31,-6,0,0" />
 
-		<Border x:Name="color1" Grid.Row="1"  Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color1_PreviewMouseDown"
-			  Background="{Binding ElementName=textBox, Path=Text, Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" Margin="5,4,5,4" />
-		<Border x:Name="color2" Grid.Row="2"  Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color2_PreviewMouseDown"
-			  Background="{Binding ElementName=textBox1, Path=Text, Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" />
-		<Border x:Name="color3" Grid.Row="3"  Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color3_PreviewMouseDown"
-			  Background="{Binding ElementName=textBox2, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" />
-		<Border x:Name="color4" Grid.Row="4"  Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color4_PreviewMouseDown"
-			  Background="{Binding ElementName=textBox3, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" />
-		<Border x:Name="color5" Grid.Row="5"  Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color5_PreviewMouseDown"
-			  Background="{Binding ElementName=textBox4, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" />
-		<Border x:Name="color6" Grid.Row="6"  Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color6_PreviewMouseDown"
-			  Background="{Binding ElementName=textBox5, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" />
-		<Border x:Name="color7" Grid.Row="7" Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color7_PreviewMouseDown"
-			  Background="{Binding ElementName=textBox6, Path=Text,   Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" />
-		<Border x:Name="color8" Grid.Row="8"  Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color8_PreviewMouseDown"
-			  Background="{Binding ElementName=textBox7, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" />
-		<Border x:Name="color9" Grid.Row="9" Grid.Column="3" Width="80" Height="27" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color9_PreviewMouseDown"
-			  Background="{Binding ElementName=textBox8, Path=Text,   Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" />
+		<Label x:Name="line1" Grid.Column="1"  Grid.Row="2" FontSize="11" BorderBrush="Black" BorderThickness="1"  Grid.ColumnSpan="4"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="1" Width="378" Margin="35,29,0,0"/>
 
-		<!--<TextBox Text="Message Box Configuration" Grid.Row="0"  Grid.Column="1" Grid.ColumnSpan="3"  IsTabStop="False"
-			   Margin="0 8 0 0" Background="Red" Foreground="White" HorizontalContentAlignment="Center" />-->
-		<TextBox x:Name="info"
-			Background="LightGray" Grid.Row="11" Grid.Column="1" Margin="0,17,0,-27" Grid.RowSpan="2" Grid.ColumnSpan="2"
-			   VerticalScrollBarVisibility="Auto"/>
-		<!--<TextBox x:Name="Memvars"
-			  Background="LightGray" Grid.Row="11" Grid.Column="1" Margin="168,0,4,-30" Grid.ColumnSpan="2" Grid.RowSpan="2"/>-->
+		<Label x:Name="label" Content="Dialog BackGround" Grid.Column="1"  Grid.Row="1" FontSize="11"    Foreground="{StaticResource Blue0}"
+			 HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Width="194" Grid.ColumnSpan="2" Margin="40,0,0,0" FontWeight="SemiBold"/>
+		<Label x:Name="label1" Content="Dialog ForeGround"  Grid.Column="1"  Grid.Row="2" FontSize="11"   Foreground="{StaticResource Blue0}"
+			 HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Width="194" Grid.ColumnSpan="2" Margin="40,0,0,0" FontWeight="SemiBold"/>
 
-		<Button Grid.Row="11"  Grid.Column="3"  Content="Save Data" Width="80"   Grid.RowSpan="4" Template="{StaticResource HorizontalGradientTemplateGray}"
-			  Background="Orange" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,76"			  
-			  Click="SaveMsgbox" Height="30"  IsTabStop="False" FontSize="11"/>
+		<Label Grid.Column="1"  Grid.Row="2" FontSize="11" BorderBrush="Black" BorderThickness="1"  Grid.ColumnSpan="4"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="1" Width="378" Margin="35,29,0,0"/>
 
-		<Button Grid.Row="11"  Grid.Column="3"  Content="Show Msgbox" Width="80" Grid.RowSpan="4" Template="{StaticResource HorizontalGradientTemplateYellow}"
-			  Background="Green" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,35,0,42"			  
-			  Click="ShowMsgbox" Height="30"  IsTabStop="False" FontSize="11"/>
+		<Label x:Name="label2" Content="Button's BackGround"  Grid.Column="1"  Grid.Row="3" FontSize="11"  FontWeight="SemiBold"
+			 HorizontalAlignment="Left"  Margin="40,3,0,0" VerticalAlignment="Top" Height="30" Width="194" Grid.RowSpan="2" Grid.ColumnSpan="2" />
+		<Label x:Name="label3" Content="Button's ForeGroun"   Grid.Column="1"  Grid.Row="4" FontSize="11"    FontWeight="SemiBold"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="194" Margin="40,3,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+		<Label x:Name="label4" Content="Button Shadow"  Grid.Column="1"  Grid.Row="5" FontSize="11"   FontWeight="SemiBold"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="194" Margin="40,3,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
 
-		<Button Grid.Row="11"  Grid.Column="3"  Content="Show Short" Width="80" Grid.RowSpan="3" Template="{StaticResource HorizontalGradientTemplateGreen}"
-			  Background="Green" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,35,0,8"			  
-			  Click="ShowShortMsgbox" Height="30"  IsTabStop="False" FontSize="11"/>
+		<Label x:Name="line2" Grid.Column="1"  Grid.Row="6" FontSize="11" BorderBrush="Black" BorderThickness="1"  Grid.ColumnSpan="4"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="1" Width="378" Margin="35,0,0,0"/>
 
-		<!--<Button Grid.Row="11"  Grid.Column="3"  Content="Show DP's" Width="80"  Grid.RowSpan="4" Template="{StaticResource HorizontalGradientTemplateBlue}"
-			  Background="Violet" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,8" 
-			  Click="ListDps" Height="30"  IsTabStop="False" FontSize="11"/>-->
-
-		<Button Grid.Row="11"  Grid.Column="3"  Content="Close Dialog" Width="80"  Grid.RowSpan="4" Template="{StaticResource HorizontalGradientTemplateRed}"
-			  Background="Red" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,-25"			  
-			  Click="Button_Click" Height="30"  IsTabStop="False" FontSize="11"/>
+		<Label x:Name="label5" Content="Mouseover Button's BackGround"  Grid.Column="1"  Grid.Row="6" FontSize="11"  Foreground="{StaticResource Orange0}" 
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="194" Margin="40,3,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2"  FontWeight="SemiBold"/>
+		<Label x:Name="label6" Content="Mouseover Button's ForeGround"  Grid.Column="1"  Grid.Row="7" FontSize="11"   Foreground="{StaticResource Orange0}"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="194" Margin="40,5,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2"  FontWeight="SemiBold" />
+		<Label x:Name="label7" Content="Default Button's BackGround"  Grid.Column="1"  Grid.Row="8" FontSize="12"  Foreground="{StaticResource Black0}" FontStyle="Italic"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="194" Margin="40,7,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2" FontWeight="Bold"/>
+		<Label x:Name="label8" Content="Default Button's ForeGround"  Grid.Column="1"  Grid.Row="9" FontSize="12"   Foreground="{StaticResource Black0}" FontStyle="Italic"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="194" Margin="40,7,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2" FontWeight="Bold"/>
 
 
-		<Slider x:Name="trans" Minimum="0.00" Maximum="255.00" Value="128" Height="22"	ValueChanged="trans_ValueChanged"  
-			  Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="3" Background="Black" Margin="4,0,6,70" VerticalAlignment="Bottom" IsTabStop="False"/>
-		<Slider x:Name="SRed" Minimum="0.00" Maximum="255.00" Value="128" Height="22" ValueChanged	="SRed_ValueChanged"
-			  Grid.Column="1" Grid.Row="10" Grid.ColumnSpan="3" Background="Red" Margin="5,28,5,0" VerticalAlignment="Top" IsTabStop="False"/>
-		<Slider x:Name="SGreen" Minimum="0.00" Maximum="255.00" Value="128" Height="22" ValueChanged="SGreen_ValueChanged"
-			  Grid.Column="1" Grid.Row="10"  Grid.ColumnSpan="3" Background="Green" Margin="5,55,5,0" VerticalAlignment="Top" IsTabStop="False"/>
-		<Slider x:Name="SBlue" Minimum="0.00" Maximum="255.00" Value="128" Height="22" ValueChanged="SBlue_ValueChanged"
-			  Grid.Column="1" Grid.Row="10"  Grid.ColumnSpan="3" Background="Blue" Margin="5,83,5,0" VerticalAlignment="Top" IsTabStop="False" Grid.RowSpan="2"/>
+		<Label x:Name="line3" Grid.Column="1"  Grid.Row="10" FontSize="11" BorderBrush="Black" BorderThickness="1"  Grid.ColumnSpan="4"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="1" Width="378" Margin="35,7,0,0"/>
+
+		<Label x:Name="line9" Grid.Column="1"  Grid.Row="8" FontSize="11" BorderBrush="Black" BorderThickness="1"  Grid.ColumnSpan="4"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="1" Width="378" Margin="35,3,0,0"/>
+
+
+		<Label x:Name="line5" Grid.Column="1"  Grid.Row="10" FontSize="11" BorderBrush="Black" BorderThickness="1"  Grid.ColumnSpan="4"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="1" Width="378" Margin="35,40,0,0"/>
+
+		<!--// Dark mode labels-->
+		<Label x:Name="label01" Content="Dark Mode Settings "  Grid.Column="1"  Grid.Row="10" FontSize="16"  FontStyle="Oblique" FontWeight="Bold"
+			HorizontalAlignment="Left" VerticalAlignment="Top" Height="31" Width="178" Margin="31,11,0,0"/>
+
+		<Label x:Name="label9" Content="Border Shadow :"  Grid.Column="1" Grid.Row="10" FontSize="11"    FontWeight="SemiBold"
+			HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="194" Margin="31,49,0,0" Grid.ColumnSpan="2"/>
+		<Label x:Name="label10" Content="Button Background :"  Grid.Column="1"  Grid.Row="10" FontSize="11"   FontWeight="SemiBold"
+			HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="194" Margin="31,80,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+		<Label x:Name="label11" Content="Button Foreground :"  Grid.Column="1" Grid.Row="11" FontSize="11"  FontWeight="SemiBold"
+			HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="194" Margin="31,15,0,0" Grid.ColumnSpan="2"/>
+
+
+		<Label x:Name="label12" Content="Mouseover Shadow :"  Grid.Column="1" Grid.Row="11" FontSize="11"     Foreground="{StaticResource Orange0}"
+			  HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="208" Margin="31,47,0,0" Grid.ColumnSpan="2"   FontWeight="SemiBold"/>
+		<Label x:Name="label13" Content="Mousover Button Background :"  Grid.Column="1"  Grid.Row="11" FontSize="11"    Foreground="{StaticResource Orange0}"
+			HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="214" Margin="30,76,0,0" Grid.ColumnSpan="2"  FontWeight="SemiBold"/>
+		<Label x:Name="label14" Content="Mouseover Button Foreground :"  Grid.Column="1" Grid.Row="11" FontSize="11"  Foreground="{StaticResource Orange0}"
+			HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="220" Margin="27,107,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2"  FontWeight="SemiBold"/>
+
+		<Label x:Name="label15" Content="Default Button's BackGround :"  Grid.Column="1"  Grid.Row="12" FontSize="12"    Foreground="{StaticResource Black0}"   FontStyle="Italic"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="194" Margin="31,3,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2" FontWeight="Bold"/>
+		<Label x:Name="label16" Content="Default Button's ForeGround :"  Grid.Column="1"  Grid.Row="13" FontSize="12"   Foreground="{StaticResource Black0}" FontStyle="Italic"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="194" Margin="31,3,0,0" Grid.RowSpan="2" Grid.ColumnSpan="2" FontWeight="Bold"/>
+
+		<Label x:Name="label17" Content="Border"  Grid.Column="1"  Grid.Row="14" FontSize="16"   Foreground="{StaticResource Red0}"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="60" Margin="15,9,0,0" Grid.RowSpan="2" FontWeight="DemiBold"/>
+		<Label x:Name="label172" Content="Left :"  Grid.Column="1"  Grid.Row="14" FontSize="14"   Foreground="{StaticResource Red0}"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="33" Margin="79,10, 0 ,0" Grid.RowSpan="2" FontWeight="DemiBold"/>
+		<Label x:Name="label18" Content="Top"  Grid.Column="1"  Grid.Row="14" FontSize="14"   Foreground="{StaticResource Red0}"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="32" Margin="158,10,0,0" Grid.RowSpan="2" FontWeight="DemiBold"/>
+		<Label x:Name="label19" Content="Right"  Grid.Column="2"  Grid.Row="14" FontSize="14"   Foreground="{StaticResource Red0}"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="42" Margin="17,10,0,0" Grid.RowSpan="2" FontWeight="DemiBold"/>
+		<Label x:Name="label20" Content="Bottom"  Grid.Column="3"  Grid.Row="14" FontSize="14"   Foreground="{StaticResource Red0}"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="54" Margin="0,10,0,0" Grid.RowSpan="2" FontWeight="DemiBold"/>
+
+		<Label x:Name="line4" Grid.Column="1"  Grid.Row="11" FontSize="11" BorderBrush="Black" BorderThickness="1"  Grid.ColumnSpan="4"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="1" Width="378" Margin="37,43,0,0"/>
+
+		<Label x:Name="line7" Grid.Column="1"  Grid.Row="12" FontSize="11" BorderBrush="Black" BorderThickness="1"  Grid.ColumnSpan="4"
+			 HorizontalAlignment="Left" VerticalAlignment="Top" Height="1" Width="378" Margin="37,0,0,0"/>
+
+		<Label x:Name="line6" Grid.Column="1"  Grid.Row="14" FontSize="11" BorderBrush="Black" BorderThickness="1"  Grid.ColumnSpan="3"
+			 HorizontalAlignment="Center" VerticalAlignment="Top" Height="1" Width="378" Margin="35 0 0 0"/>
+		<!--#endregion Color Selection panels Text descriptions -->
+
+		<!--#region Color Selection panels #FF112233 etc -->
+
+		<TextBox x:Name="textBox" Grid.Column="2"   Grid.Row="1"  Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,0,0,4" Text="#FFFF0000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95"   PreviewMouseLeftButtonUp="color1_PreviewMouseDown"
+			   BorderBrush="Black" BorderThickness="1" FontSize="12 " GotFocus="textBox_GotFocus" TabIndex="0"/>
+		<TextBox x:Name="textBox1"  Grid.Column="2"   Grid.Row="2" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox1_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,0,0,4" Text="#FFFF0000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95"    PreviewMouseLeftButtonUp="color2_PreviewMouseDown"
+			   BorderBrush="Black" BorderThickness="1" FontSize="12" GotFocus="textBox1_GotFocus" TabIndex="1"/>
+		<TextBox x:Name="textBox2"  Grid.Column="2"   Grid.Row="3" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox2_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95" PreviewMouseLeftButtonUp="color3_PreviewMouseDown"
+			   BorderBrush="Black" BorderThickness="1" FontSize="12" GotFocus="textBox2_GotFocus" TabIndex="2"/>
+		<TextBox x:Name="textBox3"  Grid.Column="2"   Grid.Row="4" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox3_KeyUp"
+			HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95"   PreviewMouseLeftButtonUp="color4_PreviewMouseDown"
+			   BorderBrush="Black" BorderThickness="1" FontSize="12 " GotFocus="textBox3_GotFocus" TabIndex="3"/>
+		<TextBox x:Name="textBox4"  Grid.Column="2"   Grid.Row="5" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox4_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95"  PreviewMouseLeftButtonUp="color5_PreviewMouseDown"
+			   BorderBrush="Black" BorderThickness="1" FontSize="12 " GotFocus="textBox4_GotFocus" TabIndex="4"/>
+		<TextBox x:Name="textBox5" Grid.Column="2"   Grid.Row="6" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox5_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95"    PreviewMouseLeftButtonUp="color6_PreviewMouseDown"
+			   BorderBrush="Black" BorderThickness="1" FontSize="12 " GotFocus="textBox5_GotFocus" TabIndex="5"/>
+		<TextBox x:Name="textBox6"  Grid.Column="2"   Grid.Row="7" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox6_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,0,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95"   PreviewMouseLeftButtonUp="color7_PreviewMouseDown"
+			   BorderBrush="Black" BorderThickness="1" FontSize="12 " GotFocus="textBox6_GotFocus" TabIndex="6"/>
+		<TextBox x:Name="textBox7"  Grid.Column="2"   Grid.Row="8" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox7_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,8,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95"   PreviewMouseLeftButtonUp="color8_PreviewMouseDown"
+			   BorderBrush="Black" BorderThickness="1" FontSize="12" GotFocus="textBox7_GotFocus" TabIndex="7"/>
+		<TextBox x:Name="textBox8"  Grid.Column="2"   Grid.Row="9" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox8_KeyUp"
+			   HorizontalAlignment="Left" Margin="10,8,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Center" Width="95"  PreviewMouseLeftButtonUp="color9_PreviewMouseDown"
+			   BorderBrush="Black" BorderThickness="1" FontSize="12 " GotFocus="textBox8_GotFocus" TabIndex="8"/>
+
+		<!--// Dark mode Color values-->
+		<TextBox x:Name="textBox9"  Grid.Column="2"   Grid.Row="10" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox9_KeyUp"
+			HorizontalAlignment="Center" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Top" Width="96"   PreviewMouseLeftButtonUp="color10_PreviewMouseDown"
+			BorderBrush="Black" BorderThickness="1" FontSize="12 " GotFocus="textBox9_GotFocus" Margin="0,47,0,0" TabIndex="9"/>
+		<TextBox x:Name="textBox10"  Grid.Column="2"   Grid.Row="10" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox10_KeyUp"
+			HorizontalAlignment="Center" Margin="0,80,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Top" Width="96"   PreviewMouseLeftButtonUp="color11_PreviewMouseDown"
+			BorderBrush="Black" BorderThickness="1" FontSize="12" GotFocus="textBox10_GotFocus" TabIndex="10" Grid.RowSpan="2"/>
+		<TextBox x:Name="textBox11"  Grid.Column="2"   Grid.Row="11" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox11_KeyUp"
+			  HorizontalAlignment="Center" Margin="0,16,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Top" Width="96"   PreviewMouseLeftButtonUp="color12_PreviewMouseDown"
+			  BorderBrush="Black" BorderThickness="1" FontSize="12" GotFocus="textBox11_GotFocus" TabIndex="11"/>
+
+
+		<TextBox x:Name="textBox12"  Grid.Column="2"   Grid.Row="11" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox12_KeyUp"
+			  HorizontalAlignment="Center"  Margin="0,48,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Top" Width="96"   PreviewMouseLeftButtonUp="color13_PreviewMouseDown"
+			  BorderBrush="Black" BorderThickness="1" FontSize="12 " GotFocus="textBox12_GotFocus" TabIndex="12"/>
+		<TextBox x:Name="textBox13"  Grid.Column="2"   Grid.Row="11" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox13_KeyUp"
+			  HorizontalAlignment="Center" Margin="0,78,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Top" Width="96"   PreviewMouseLeftButtonUp="color14_PreviewMouseDown"
+			  BorderBrush="Black" BorderThickness="1" FontSize="12" GotFocus="textBox13_GotFocus" TabIndex="13"/>
+		<TextBox x:Name="textBox14"  Grid.Column="2"   Grid.Row="11" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox14_KeyUp"
+			  HorizontalAlignment="Center" Margin="0,108,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Top" Width="96"   PreviewMouseLeftButtonUp="color15_PreviewMouseDown"
+			  BorderBrush="Black" BorderThickness="1" FontSize="12" GotFocus="textBox14_GotFocus" TabIndex="14"/>
+
+		<TextBox x:Name="textBox15"  Grid.Column="2"   Grid.Row="12" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox15_KeyUp"
+			  HorizontalAlignment="Center" Margin="0,8,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Top" Width="96"   PreviewMouseLeftButtonUp="color16_PreviewMouseDown"
+			  BorderBrush="Black" BorderThickness="1" FontSize="12" GotFocus="textBox15_GotFocus" TabIndex="15"/>
+		<TextBox x:Name="textBox16"  Grid.Column="2"   Grid.Row="13" Height="20" Background="{StaticResource Black7}" Foreground="Black" KeyUp="textBox16_KeyUp"
+			  HorizontalAlignment="Center" Margin="0,4,0,0" Text="#FF000000" TextWrapping="Wrap" VerticalAlignment="Top" Width="96"   PreviewMouseLeftButtonUp="color17_PreviewMouseDown"
+			  BorderBrush="Black" BorderThickness="1" FontSize="12" GotFocus="textBox16_GotFocus" TabIndex="16"/>
+
+		<!--// Border size fields-->
+		<TextBox x:Name="textBox17"  Grid.Column="2"   Grid.Row="14" Height="25" Background="{StaticResource Gray6}" Foreground="Black" KeyUp="textBox17_KeyUp"
+			  HorizontalAlignment="Center" TextAlignment="Center" Margin="-295,12,0,0" Text="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="25"   PreviewMouseLeftButtonUp="color18_PreviewMouseDown"
+			  BorderBrush="Black" BorderThickness="1" FontSize="18" GotFocus="textBox16_GotFocus" TabIndex="17" Grid.RowSpan="2" TextChanged="textBox17_TextChanged"/>
+		<TextBox x:Name="textBox18"  Grid.Column="2"   Grid.Row="14" Height="25" Background="{StaticResource Gray6}" Foreground="Black" KeyUp="textBox18_KeyUp"
+			  HorizontalAlignment="Center" TextAlignment="Center"  Margin="-140,12,0,0" Text="3" VerticalAlignment="Top" Width="25"   PreviewMouseLeftButtonUp="color19_PreviewMouseDown"
+			  BorderBrush="Black" BorderThickness="1" FontSize="18" GotFocus="textBox16_GotFocus" TabIndex="18" Grid.RowSpan="2" TextChanged="textBox18_TextChanged"/>
+
+		<TextBox x:Name="textBox19"  Grid.Column="2"   Grid.Row="14" Height="25" Background="{StaticResource Gray6}" Foreground="Black" KeyUp="textBox19_KeyUp"
+			  HorizontalAlignment="Center"  TextAlignment="Center" Margin="45,12,0,0"  Text="3" VerticalAlignment="Top" Width="25"   PreviewMouseLeftButtonUp="color20_PreviewMouseDown"
+			  BorderBrush="Black" BorderThickness="1" FontSize="18" GotFocus="textBox16_GotFocus" TabIndex="19" Grid.RowSpan="2" TextChanged="textBox19_TextChanged"/>
+
+		<TextBox x:Name="textBox20"  Grid.Column="3"   Grid.Row="14" Height="25" Background="{StaticResource Gray6}" Foreground="Black" KeyUp="textBox20_KeyUp"
+			  HorizontalAlignment="Center"  TextAlignment="Center" Margin="50,12,0,0" Text="8"  VerticalAlignment="Top" Width="25"   PreviewMouseLeftButtonUp="color21_PreviewMouseDown"
+			  BorderBrush="Black" BorderThickness="1" FontSize="18" GotFocus="textBox16_GotFocus" TabIndex="20" Grid.RowSpan="2" TextChanged="textBox20_TextChanged"/>
+
+		<!--#endregion Color Selection panels colors text descriptions-->
+
+		<!-- Font sizes - Both dialog text lines-->
+
+		<!--#region  Font Size fields-->
+		<TextBox x:Name="fontsizesmall1"  Grid.Column="6"   Grid.Row="4" Height="24" Background="{StaticResource Gray8}" Foreground="Red" KeyUp="fontsizesmall1_KeyUp"
+			HorizontalAlignment="Left"  TextAlignment="Center" Text="13"  VerticalAlignment="Center" Width="28"   PreviewMouseLeftButtonUp="fontsizesmall1_PreviewMouseDown"
+			BorderBrush="Black" BorderThickness="1" FontSize="16" GotFocus="fontsizesmall1_GotFocus" TabIndex="20" TextChanged="fontsizesmall1_TextChanged" Panel.ZIndex="5"
+			ToolTip="Change size of font for this main paragraph" Margin="28,0,0,0"/>
+		<TextBox x:Name="fontsizesmall2"  Grid.Column="6"   Grid.Row="6" Height="24" Background="{StaticResource Gray8}" Foreground="Red" KeyUp="fontsizesmall2_KeyUp"
+			HorizontalAlignment="Left"  TextAlignment="Center" Margin="28,6,0,0" Text="13"  VerticalAlignment="Top" Width="28"   PreviewMouseLeftButtonUp="fontsizesmall2_PreviewMouseDown"
+			BorderBrush="Black" BorderThickness="1" FontSize="16" GotFocus="fontsizesmall2_GotFocus" TabIndex="20" TextChanged="fontsizesmall2_TextChanged" Panel.ZIndex="5"
+			ToolTip="Change size of font for this second paragraph"/>
+
+		<!-- Font sizes - large dialog lines-->
+		<TextBox x:Name="fontsizelarge1"  Grid.Column="6"   Grid.Row="11" Height="24" Background="{StaticResource Gray8}" Foreground="Red" KeyUp="fontlarge1_KeyUp"
+			HorizontalAlignment="Left"  TextAlignment="Center" Margin="86,13,0,0" Text="13"  VerticalAlignment="Top" Width="28"   PreviewMouseLeftButtonUp="fontlarge1_PreviewMouseDown"
+			BorderBrush="Black" BorderThickness="1" FontSize="16" GotFocus="fontlarge1_GotFocus" TabIndex="20" TextChanged="fontlarge1_TextChanged" Panel.ZIndex="5"
+			ToolTip="Change size of font for this main paragraph"/>
+		<!--<TextBox x:Name="fontsizelarge2"  Grid.Column="6"   Grid.Row="11" Height="24" Background="{StaticResource Gray8}" Foreground="Red" KeyUp="fontlarge2_KeyUp"
+			HorizontalAlignment="Center"  TextAlignment="Center" Margin="50,47,0,0" Text="13"  VerticalAlignment="Top" Width="28"   PreviewMouseLeftButtonUp="fontlarge2_PreviewMouseDown"
+			BorderBrush="Black" BorderThickness="1" FontSize="16" GotFocus="fontlarge2_GotFocus" TabIndex="20" TextChanged="fontlarge2_TextChanged" Panel.ZIndex="5"
+			ToolTip="Change size of font for this second paragraph"/>-->
+		<TextBox x:Name="fontsizelarge3"  Grid.Column="6"   Grid.Row="11" Height="24" Background="{StaticResource Gray8}" Foreground="Red" KeyUp="fontlarge3_KeyUp"
+			HorizontalAlignment="Center"  TextAlignment="Center" Margin="50,101,0,0" Text="13"  VerticalAlignment="Top" Width="28"   PreviewMouseLeftButtonUp="fontlarge3_PreviewMouseDown"
+			BorderBrush="Black" BorderThickness="1" FontSize="16" GotFocus="fontlarge3_GotFocus" TabIndex="20" TextChanged="fontlarge3_TextChanged" Panel.ZIndex="5" 
+			ToolTip="Change size of font for this bottom paragraph"/>
+		<!--#endregion  Font Size fields-->
+
+
+		<!--#region Color Selection panels (Borders)-->
+
+		<!--// Normal mode-->
+		<Border x:Name="color1" Grid.Row="1"  Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color1_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox, Path=Text, Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" Margin="5,2,5,8" />
+		<Border x:Name="color2" Grid.Row="2"  Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color2_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox1, Path=Text, Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" Margin="5,2,5,8" />
+		<Border x:Name="color3" Grid.Row="3"  Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color3_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox2, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" Margin="5,4,5,4" />
+		<Border x:Name="color4" Grid.Row="4"  Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color4_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox3, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" Margin="5,4,5,4" />
+		<Border x:Name="color5" Grid.Row="5"  Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color5_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox4, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" Margin="5,4,5,4" />
+		<Border x:Name="color6" Grid.Row="6"  Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color6_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox5, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" Margin="5,4,5,4" />
+		<Border x:Name="color7" Grid.Row="7" Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color7_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox6, Path=Text,   Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" Margin="5,4,5,4" />
+		<Border x:Name="color8" Grid.Row="8"  Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color8_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox7, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" Margin="5,9,5,1" />
+		<Border x:Name="color9" Grid.Row="9" Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color9_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox8, Path=Text,   Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" Margin="5,9,5,1" />
+
+		<!--// Dark mode Color Panels -->
+		<Border x:Name="color10" Grid.Row="10" Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color10_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox9, Path=Text,  Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" Margin="5,48,5,27"/>
+		<Border x:Name="color11" Grid.Row="10" Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color11_PreviewMouseDown" 
+			  Background="{Binding ElementName=textBox10, Path=Text, Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" Margin="5,80,5,128" Grid.RowSpan="2" />
+		<Border x:Name="color12" Grid.Row="11" Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color12_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox11, Path=Text, Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" Margin="5,17,5,98"/>
+		<Border x:Name="color13" Grid.Row="11" Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color13_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox12, Path=Text, Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" Margin="5,48,5,67"/>
+		<Border x:Name="color14" Grid.Row="11" Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color14_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox13, Path=Text, Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" Margin="5,78,5,37"/>
+		<Border x:Name="color15" Grid.Row="11" Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color15_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox14, Path=Text, Converter={StaticResource Hex2string},  UpdateSourceTrigger=PropertyChanged}"  Margin="5,109,5,6"/>
+
+
+		<Border x:Name="color16" Grid.Row="12"  Grid.RowSpan="2" Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color16_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox15, Path=Text,  Converter={StaticResource Hex2string},UpdateSourceTrigger=PropertyChanged}" Margin="5,-21,5,4" />
+		<Border x:Name="color17" Grid.Row="13" Grid.Column="3" BorderBrush="Black" BorderThickness="1" PreviewMouseDown="color17_PreviewMouseDown"
+			Height="20 " Background="{Binding ElementName=textBox16, Path=Text,   Converter={StaticResource Hex2string}, UpdateSourceTrigger=PropertyChanged}" Margin="5,4,5,5" />
+
+		<!--#endregion Color Selection panels (Borders)-->
+
+		<!--#region Activated Dummy Buttons-->
+
+		<Rectangle 
+			Grid.Row="15"
+		     Grid.Column="4" Grid.ColumnSpan="3" 
+			StrokeThickness="4"			     
+			Fill="{StaticResource Cyan2}" 
+			Height="86" 
+			HorizontalAlignment="Left"
+			Panel.ZIndex="1"
+			Margin="22,84,0,0"
+			Stroke="Red" 
+			VerticalAlignment="Top"
+			Width="592"/>
+
+		<!--#region Mode Bar-->
+
+		<Button x:Name="normalmode" 
+			  Content="Normal Mode Settings" 
+			  Grid.Row="15" Grid.Column="4" Grid.ColumnSpan="3" Template="{StaticResource HorizontalGradientTemplateBlue}"
+			  VerticalAlignment="Top" Margin="0,17,184,0" Width="185"	  
+			  Click="darkmode_Click" Height="52"  IsTabStop="False" FontSize="11" Panel.ZIndex="4" TabIndex="-1"/>
+
+		<Button x:Name="darkmode" 
+			  Content="Dark Mode Settings" 
+			  Grid.Row="15" Grid.Column="4" Grid.ColumnSpan="3" Template="{StaticResource HorizontalGradientTemplateGray}"
+			  VerticalAlignment="Top" Margin="220,17,0,0"		Width="185"	  
+			  Click="darkmode_Click" Height="52"  IsTabStop="False" FontSize="11" Panel.ZIndex="4" TabIndex="-1"/>
+
+		<!--#endregion Mode Bar-->
+
+		<!--#region Buttons Bar-->
+		<Button x:Name="ctrlbtn1" 
+			  Content="Save Data" 
+			  Grid.Row="15" Grid.Column="4" Grid.ColumnSpan="2"
+			  Width="100" Template="{StaticResource HorizontalGradientTemplateGray}"
+			  Background="Orange" Foreground="Black" VerticalAlignment="Top" Margin="0,103,280,0"			  
+			  Click="SaveMsgbox" Height="52"  IsTabStop="False" FontSize="11" Panel.ZIndex="4" TabIndex="-1"/>
+
+		<Button x:Name="ctrlbtn2" 
+			  Content="Show Full" 
+			  Grid.Row="15" Grid.Column="4"  Grid.ColumnSpan="2" 
+			  Width="100" Template="{StaticResource HorizontalGradientTemplateYellow}"
+			  Background="Green" Foreground="White"  VerticalAlignment="Top" Margin="0,103,50,0"			  
+			  Click="ShowMsgbox" Height="52"  IsTabStop="False" FontSize="11" Panel.ZIndex="4" TabIndex="-1" />
+
+		<Button x:Name="ctrlbtn3" 
+			  Content="Show 2  liner" 
+			  Grid.Row="15" Grid.Column="5" Grid.ColumnSpan="2"
+			  Width="100" Template="{StaticResource HorizontalGradientTemplateGreen}"
+			  Background="Green" Foreground="White" VerticalAlignment="Top" Margin="0,103,190,0"			  
+			  Click="ShowShortMsgbox" Height="52"  IsTabStop="False" FontSize="11" Panel.ZIndex="4" TabIndex="-1"/>
+
+		<Button x:Name="ctrlbtn3b"
+			  Content="Show One liner" 
+			  Grid.Row="15" Grid.Column="5"   Grid.ColumnSpan="2"
+			  Width="100" Template="{StaticResource HorizontalGradientTemplateGreen}"
+			  Background="Green" Foreground="White" VerticalAlignment="Top" Margin="30,103,0,0"			  
+			  Click="ShowMinMsgbox" Height="52"  IsTabStop="False" FontSize="11" Panel.ZIndex="4" TabIndex="-1"/>
+
+		<Button x:Name="ctrlbtn4" 
+			  Content="Close Dialog" 
+			  Grid.Row="15" Grid.Column="6"  
+			  Width="100"  
+			  Template="{StaticResource HorizontalGradientTemplateRed}"
+			  Background="Red" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,103,0,0"			  
+			  Click="Button_Click" Height="52"  IsTabStop="False" FontSize="11" Panel.ZIndex="4"  TabIndex="-1"/>
+		<!--#endregion Buttons Bar-->
+
+		<!--#endregion Activated Dummy Buttons-->
+
+		<!--#region Sliders-->
+		<Slider x:Name="trans" Minimum="0.00" Maximum="255.00" Value="128" Height="30"	ValueChanged="trans_ValueChanged" Grid.Row="15" Grid.ColumnSpan="3" Background="Black" Margin="32,30,5,0" VerticalAlignment="Top" IsTabStop="False" Grid.Column="1"/>
+		<Slider x:Name="SRed" Minimum="0.00" Maximum="255.00" Value="128" Height="30" ValueChanged	="SRed_ValueChanged"  Grid.Row="15" Grid.ColumnSpan="3" Background="Red" Margin="32,66,5,0" VerticalAlignment="Top" IsTabStop="False" Grid.Column="1"/>
+		<Slider x:Name="SGreen" Minimum="0.00" Maximum="255.00" Value="128" Height="30" ValueChanged="SGreen_ValueChanged" Grid.Row="15"  Grid.ColumnSpan="3" Background="Green" Margin="32,104,5,0" VerticalAlignment="Top" IsTabStop="False" Grid.Column="1" />
+		<Slider x:Name="SBlue" Minimum="0.00" Maximum="255.00" Value="128" Height="30" ValueChanged="SBlue_ValueChanged" Grid.Row="15"  Grid.ColumnSpan="3" Background="Blue" Margin="32,143,5,0" VerticalAlignment="Top" IsTabStop="False" Grid.Column="1"/>
+		<!--#endregion Sliders-->
+
+		<!--#region other controls (buttons etc)-->
+		<!--<CheckBox x:Name="darkmode" 
+			    Content=" -> Click for Dark Mode settings" HorizontalAlignment="Left"  
+			    Click ="darkmode_Click" Grid.Row="15"  Grid.Column="4"  
+			    Foreground="Red" Background="Transparent"	 FontWeight="Bold" FontSize="16"
+			    VerticalAlignment="Top" Height="28" Width="400" Panel.ZIndex="22"
+			    Padding="0 0 0 0"  IsChecked="False"
+			    Visibility="Visible" Margin="140,16,0,0" TabIndex="20" Grid.ColumnSpan="3" />-->
+		<!--#endregion other controls (buttons etc)-->
+
+
+
+		<!--#region display dialogs-->
+
+		<Label Content="  Test MessageBox's : Mouse over BUTTONS  to Test the selected colors ...."
+			Background="Red"
+			FontSize="14"
+			Foreground="White"
+			Grid.Column="4"
+			Grid.ColumnSpan="3"
+			Grid.RowSpan="2"
+			Margin="22,1,14,10"
+			Padding="0 11 0 0" />
+
+		<!--#region Small Dialog-->
+
+		<!--// SMALL DIALOG-->
+		<Border  x:Name="image1"
+			Background="Transparent"
+			BorderBrush="Black" 
+			BorderThickness="2 0 2 2"
+			Grid.Column="4" 
+			Grid.ColumnSpan="3"
+			Grid.Row="2" 
+			Grid.RowSpan="8"
+			Height="234" 
+			Margin="92,0,86,0" 
+			Panel.ZIndex="1" 	  			  
+			PreviewMouseRightButtonDown="Img1Bannerrow_PreviewMouseLeftButtonDown"
+			ToolTip="Right click to toggle through available configurations"
+			VerticalAlignment="Center" >
+
+			<!--// Inner border-->
+			<Border  x:Name="Image1Border"
+				Background="{StaticResource Gray5}" 
+				BorderBrush="{StaticResource Red6}" 
+				BorderThickness="4 0 4 4"				   
+				Panel.ZIndex="2">
+
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="35" />
+						<RowDefinition Height="5" />
+						<RowDefinition Height="70" />
+						<RowDefinition Height="45" />
+						<RowDefinition Height="15" />
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="10" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="3*" />
+						<ColumnDefinition Width="10" />
+					</Grid.ColumnDefinitions>
+
+					<TextBox  x:Name="Img1Bannerrow"
+						Background="{StaticResource Red1}"  
+						BorderThickness="0 1 0 1"
+						Grid.Row="0" 
+						Grid.Column="0" 
+						Grid.ColumnSpan="4"  
+						Grid.RowSpan="1"
+						IsReadOnly="True"
+						IsTabStop="False"
+						HorizontalAlignment="Stretch" 
+						Margin="0 0  0 0"
+						Padding="0 7 0 0"
+						Panel.ZIndex="3" 
+						Text="Small MessageBox Example" 
+						Foreground="{StaticResource White0}"/>
+
+					<Image x:Name="Icon1"
+						Grid.Row="2" 
+						Grid.Column="1" 
+						Grid.ColumnSpan="1"  
+						Grid.RowSpan="3"
+						Margin="2,23,8,-14"
+						Panel.ZIndex="9" 
+						 Source="/icons/3d red cross.png"/>
+
+					<TextBox x:Name="img1CaptionRow" 
+						Background="{StaticResource Red6}"
+						BorderThickness="1 1 1 0"
+						BorderBrush="Black"
+						FontSize="13"
+						FontWeight="Bold"
+						Foreground="{StaticResource White0}"
+						Grid.Column="0"
+						Grid.ColumnSpan="4"
+						Grid.Row="1"
+						Grid.RowSpan="1" 
+						Height="35"
+						HorizontalAlignment="Stretch"
+						IsReadOnly="True"
+						Margin="-5 -39 -5 0"
+						Panel.ZIndex="3" 
+						Padding="3 6 0 0"
+						PreviewMouseRightButtonDown="Img1Bannerrow_PreviewMouseLeftButtonDown"
+						IsTabStop="False"
+						Text="Caption bar for an 'Error' style Dialog box" 
+						TextAlignment="Center"
+						ToolTip="Right click to toggle through available configurations"
+						VerticalAlignment="Stretch" />
+
+					<TextBox  x:Name="img1MainText1" 
+						AcceptsReturn="False"
+						Background="{StaticResource Gray5}" 
+						BorderThickness="0"
+						FontSize="13"
+						FontWeight="Normal"
+						Foreground="{StaticResource Black0}"
+						Grid.Column="2"
+						Grid.ColumnSpan="1"
+						Grid.Row="2"
+						Grid.RowSpan="1" 
+						HorizontalAlignment="Left"
+						IsReadOnly="True"
+						Panel.ZIndex="3" 
+						Padding="3"
+						IsTabStop="False"
+						TextWrapping="Wrap" 
+						Margin="0,0,0,0"
+						Text="This is  the Main Row of text (in the Small Dialog) that will contain the relevant information to display to the End User...." 
+						VerticalAlignment="Stretch"/>
+
+					<TextBox  x:Name="img1MainText2" 
+						AcceptsReturn="False"
+						Background="{StaticResource Gray5}" 
+						BorderThickness="0"
+						FontSize="13"
+						FontWeight="Normal"
+						Foreground="{StaticResource Black0}"
+						Grid.Column="2"
+						Grid.ColumnSpan="1"
+						Grid.Row="3"
+						Grid.RowSpan="2" 
+						HorizontalAlignment="Left"
+						IsReadOnly="True"
+						Panel.ZIndex="3" 
+						Padding="3"
+						IsTabStop="False"
+						TextWrapping="Wrap" 
+						Margin="0,0,0,0"
+						Text="This is the 2nd row of Text to contain additional info or to prompt for your user..." 
+						VerticalAlignment="Stretch"/>
+
+					<Button x:Name="Button4"
+						FocusVisualStyle="{x:Null}" 
+						FontSize="13"
+						Content="Normal"
+						Grid.Column="2"
+						Grid.Row="4"						  
+						Height="35"
+						HorizontalAlignment="Right"
+						IsTabStop="false"
+						Margin="0,23,0,-43"
+						MouseEnter="Button4_MouseEnter"
+						MouseLeave="Button4_MouseLeave"
+						Panel.ZIndex="8" 
+						Style="{StaticResource RoundedButton}"	 
+						Visibility="Visible"
+						Width="88" />
+
+					<Button x:Name="Button3"
+						Content="Default Btn"
+						FocusVisualStyle="{x:Null}" 
+						FontSize="13"
+						FontWeight="DemiBold"
+						Grid.Column="2"
+						Grid.Row="4"						  
+						Grid.RowSpan="2"						  
+						Height="35"
+						HorizontalAlignment="Right"
+						IsTabStop="false"
+						Margin="0,23,100,-43"
+						MouseEnter="Button3_MouseEnter"
+						MouseLeave="Button3_MouseLeave"
+						Panel.ZIndex="8" 
+						Style="{StaticResource RoundedButton}"	 
+						Visibility="Visible"
+						Width="88" 
+							/>
+				</Grid>
+				<!--Text="This is the Middle, and main row of data used to create the main  information the dialog needs to provide to your user."-->
+			</Border>
+		</Border>
+
+		<!--#endregion Small Dialog-->
+
+		<!--#region LARGE Dialog-->
+
+		<!--// Full size dialog-->
+		<Border x:Name="image2" 	 			 
+			Grid.Column="4" 
+			Grid.ColumnSpan="3"
+			Grid.Row="10" 
+			Grid.RowSpan="6"
+			Background="{StaticResource Gray5}" 
+			BorderBrush="Black" 
+			BorderThickness="1 0 1 1"				   
+			Margin="30,15,26,176"
+			Panel.ZIndex="2"
+			PreviewMouseRightButtonDown="Img2Bannerrow_PreviewMouseLeftButtonDown"
+  			ToolTip="Right click to toggle through available configurations">
+
+			<Border  x:Name="Image2Border"
+				Background="{StaticResource Gray5}" 
+				BorderBrush="{StaticResource Green6}" 
+				BorderThickness="4 0 4 5"				   
+				Panel.ZIndex="2" Margin="0,0,0,1">
+
+				<Grid Margin="0,0,0,4">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="35" />
+						<RowDefinition Height="5" />
+						<RowDefinition Height="80" />
+						<RowDefinition Height="50" />
+						<RowDefinition Height="50" />
+						<RowDefinition Height="60" />
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="10" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="3*" />
+						<ColumnDefinition Width="10" />
+					</Grid.ColumnDefinitions>
+
+					<Image x:Name="Icon2"
+						Grid.Row="2" 
+						Grid.Column="1" 
+						Grid.ColumnSpan="1"  
+						Grid.RowSpan="3"
+						Margin="0,56,10,34"
+						Panel.ZIndex="9" 
+						Source="/icons/3d green tick base.png"
+/>
+
+					<!--<TextBox  x:Name="Img2Bannerrow"							
+							BorderBrush="Black"
+							BorderThickness="0 3 0 0"
+							Grid.Row="0" 
+							Grid.Column="0" 
+							Grid.ColumnSpan="4"  
+							Grid.RowSpan="1"
+							Background="{StaticResource Red1}"  
+							HorizontalAlignment="Stretch" 
+							Margin="0 0  0 0"
+							Padding="15 7 0 0"
+							Panel.ZIndex="3" 
+							IsTabStop="False"
+							Text="Full  MessageBox Example" 
+							Foreground="{StaticResource White0}"/>-->
+
+					<TextBox x:Name="img2CaptionRow" 
+							Background="{StaticResource Green6}"
+							BorderThickness="1 1 1 0"
+							BorderBrush="Black"
+							FontSize="13"
+							FontWeight="Bold"
+							Foreground="{StaticResource White0}"
+							Grid.Column="0"
+							Grid.ColumnSpan="4"
+							Grid.Row="0"
+							Grid.RowSpan="1" 
+							HorizontalAlignment="Stretch"
+							IsTabStop="False"
+							IsReadOnly="True"
+							Margin="-5 0 -5 0"
+							Panel.ZIndex="3" 
+							Padding="0 7 0 0"
+							PreviewMouseRightButtonDown="Img2Bannerrow_PreviewMouseLeftButtonDown"
+							Text="Caption bar for an 'Information' style Dialog box" 
+							TextAlignment="Center"
+							TextWrapping="Wrap"
+							ToolTip="Right click to toggle through available configurations"
+							VerticalAlignment="Stretch" />
+
+					<TextBox  x:Name="img2MainText1" 
+							Background="Transparent"
+							BorderThickness="0"
+							AcceptsReturn="False"
+							FontSize="13"
+							FontWeight="Normal"
+							Grid.Column="2"											  
+							Grid.ColumnSpan="1"
+							Grid.Row="2" 
+							HorizontalAlignment="Left"
+							IsReadOnly="True"
+							Panel.ZIndex="3" 
+							Padding="3"
+							IsTabStop="False"
+							TextWrapping="Wrap" 
+							Margin="0,0,0,1"
+							Text="This is the (Large Dialog) main text row that should contain the probable reason(s) why this dialog has been spawned to notify the user ...."/>
+
+					<TextBox  x:Name="img2MainText2" 
+							AcceptsReturn="False"
+							Background="Transparent"
+							BorderThickness="0"
+							FontSize="13"
+							FontWeight="Normal"
+							Grid.Column="2"
+							Grid.ColumnSpan="1"
+							Grid.Row="3" 
+							HorizontalAlignment="Left"
+							IsReadOnly="True"
+							Panel.ZIndex="3" 
+							Padding="3"
+							IsTabStop="False"
+							TextWrapping="Wrap" 
+							Margin="0,0,0,1"
+							Text="This is the 2nd row (of the Large Dialog) which is perfect for additional info or to prompt for your user's actions..."/>
+
+					<TextBox  x:Name="img2MainText3" 
+							AcceptsReturn="False"
+							Background="Transparent"
+							BorderThickness="0"
+							FontSize="13"
+							FontWeight="Normal"
+							Grid.Column="2"
+							Grid.ColumnSpan="1"
+							Grid.Row="4" 
+							HorizontalAlignment="Left"
+							IsReadOnly="True"
+							Panel.ZIndex="3" 
+							Padding="3"
+							IsTabStop="False"
+							TextWrapping="Wrap" 
+							Margin="0,0,0,2"
+							Text="This is the 'extra' 3rd row of Text that is great to let you give a specific prompt for your user..."/>
+
+					<!--#region 4 Dlg Buttons-->
+					<WrapPanel Orientation="Horizontal"						     
+					     Background="Transparent"
+					     HorizontalAlignment="Right"
+						VerticalAlignment="Center"
+	     					Grid.Column="2"					 
+						Grid.Row="5"
+						Margin="0 0 0 20"
+						 Panel.ZIndex="5">
+
+						<Border x:Name="Button23" 
+							BorderBrush="{Binding BorderColor}"
+							BorderThickness="1,1 1,1"
+							CornerRadius="10"
+							Height="40"
+							HorizontalAlignment="Right"
+							Margin="0 0 0 0" 
+							Panel.ZIndex="10" 	
+							MouseEnter="Button23_MouseEnter"
+							MouseLeave="Button23_MouseLeave"
+							Visibility="Visible"
+							Width="88" >
+							<TextBlock  x:Name="Button23Text" 
+								FontSize="12"
+								FontWeight="DemiBold"
+								Height="17" 
+								HorizontalAlignment="Center"
+								Padding="0,0,0,0" 
+								Panel.ZIndex="10"
+								MouseEnter="Button23_MouseEnter"
+								MouseLeave="Button23_MouseLeave"
+								Text="Normal"
+								TextAlignment="Center" 
+								VerticalAlignment="Center" 
+								Visibility="Visible"
+								Width="80"/>
+						</Border>
+
+						<Border x:Name="Button2" 
+							BorderThickness="1,1 1,1"
+							CornerRadius="10"
+							Height="40"
+							HorizontalAlignment="Right"
+							Margin="10,0,0,0" 
+							Panel.ZIndex="10" 	
+							MouseEnter="Button2_MouseEnter"
+							MouseLeave="Button2_MouseLeave"
+							Visibility="Visible"
+							Width="88">
+							<TextBlock  x:Name="Button2Text" 
+								FontSize="12"
+								FontWeight="DemiBold"
+								Height="17" 
+								HorizontalAlignment="Left"
+								Margin="14,9,0,0"
+								Padding="0,0,0,0" 
+								Panel.ZIndex="10"
+								MouseEnter="Button2_MouseEnter"
+								MouseLeave="Button2_MouseLeave"
+								Text="Normal"
+								TextAlignment="Center" 
+								VerticalAlignment="Top" 
+								Visibility="Visible"
+								Width="60"/>
+						</Border>
+
+						<Border x:Name="Button1" 
+							CornerRadius="10"
+							Height="40"
+							HorizontalAlignment="Right"
+							Margin="10 0 0 0" 
+							Panel.ZIndex="10"
+							MouseEnter="Button1_MouseEnter"	
+							MouseLeave="Button1_MouseLeave"
+							Visibility="Visible"
+							Width="88" >
+							<TextBlock  x:Name="Button1Text" 
+								FontSize="12"
+								FontWeight="DemiBold"
+								Height="17" 
+								HorizontalAlignment="Center"
+								Margin="0 10 0 0"
+								Padding="0,0,0,0" 
+								Panel.ZIndex="10"
+								MouseEnter="Button1_MouseEnter"	
+								MouseLeave="Button1_MouseLeave"
+								Text="Default Btn"
+								TextAlignment="Center" 
+								VerticalAlignment="Top" 
+								Visibility="Visible"  />
+						</Border>
+
+						<Border x:Name="Button22" 
+							BorderThickness="1,1 1,1"
+							CornerRadius="10"
+							Height="40"
+							HorizontalAlignment="Right"
+							Margin="10 0 0 0" 
+							Panel.ZIndex="10" 	
+							MouseEnter="Button22_MouseEnter"
+							MouseLeave="Button22_MouseLeave"
+							Visibility="Visible"
+							Width="88">
+							<TextBlock  x:Name="Button22Text" 
+								FontSize="12"
+								FontWeight="DemiBold"
+								Height="17" 
+								HorizontalAlignment="Right"
+								Margin="0,7,5,0"
+								Padding="0,0,0,0" 
+								Panel.ZIndex="10"
+								MouseEnter="Button22_MouseEnter"
+								MouseLeave="Button22_MouseLeave"
+								Text="Normal"
+								TextAlignment="Center" 
+								VerticalAlignment="Top" 
+								Visibility="Visible"
+								Width="70"/>
+						</Border>
+					</WrapPanel>
+					<!--#endregion 4 Dlg Buttons-->
+
+				</Grid>
+			</Border>
+		</Border>
+
+
+
+		<!--#endregion LARGE Dialog-->
+
+		<!--#endregion display dialogs-->
 
 	</Grid>
 </Window>

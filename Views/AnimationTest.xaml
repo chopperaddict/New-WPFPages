@@ -13,6 +13,7 @@
       x:Name="AnimWin"
       Height="590" Width="648"
       MinHeight="510" MinWidth="590"
+	MouseMove="ChecksMouseMove"
       Loaded="AnimWin_Loaded"
       WindowStartupLocation="CenterScreen"
       WindowStyle="ThreeDBorderWindow">
@@ -379,13 +380,13 @@
             </DataTemplate>
 
             <!--// Default Listbox template //-->
-            <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#FF5A0FFF"/>
+            <!--<SolidColorBrush x:Key="Item.MouseOver.Background" Color="#FF5A0FFF"/>
             <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#FF1C26DA"/>
             <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#FFFD2600"/>
             <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#FF8E0300"/>
             <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#FFFD2600"/>
             <SolidColorBrush x:Key="Item.SelectedActive.Foreground" Color="#FF8EFEFE"/>
-            <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FFFD2600"/>
+            <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FFFD2600"/>-->
 
             <Style x:Key="ListBoxItemStyle1" TargetType="{x:Type ListBoxItem}">
                   <Setter Property="SnapsToDevicePixels" Value="True"/>

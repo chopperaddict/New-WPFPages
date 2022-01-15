@@ -14,7 +14,8 @@
 	IsTabStop="False"
 	Loaded="Window_Loaded"
 	MinHeight="490"
-	MinWidth="760"	 
+	MinWidth="760"	
+	  MouseMove="ChecksMouseMove"
 	PreviewKeyDown="Window_PreviewKeyDown" 
 	PreviewKeyUp="Window_PreviewKeyUp"
   	Title="Customer Account Editor"
@@ -227,7 +228,7 @@
 			<!--create an elegant left to right light-> Dark gradient as a background-->
 			<LinearGradientBrush EndPoint="0.0,0" StartPoint="1.3,1">
 				<GradientStop Color="#FFf5d816" Offset="0.0"/>
-				<GradientStop Color="#FF595013" Offset="1"/>
+				<GradientStop Color="#FF7D7200" Offset="1"/>
 			</LinearGradientBrush>
 		</Grid.Background>
 
@@ -586,7 +587,7 @@
 
 
 			<DataGrid.Resources>
-				<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#F5d816"/>
+				<!--<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#F5d816"/>-->
 				<Style TargetType="DataGridCell">
 					<Style.Triggers>
 						<Trigger Property="DataGridCell.IsSelected" Value="True">

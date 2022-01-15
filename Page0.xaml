@@ -19,7 +19,7 @@
 		<!--<local:FormatServicePeriodConvertor x:Key="formatServicePeriodConvertor"/>-->
 
 		<!--Define some colors for use in Resources-->
-		<SolidColorBrush x:Key="BorderBrushDark" Color="DarkGoldenrod"/>
+		<!--<SolidColorBrush x:Key="BorderBrushDark" Color="DarkGoldenrod"/>
 		<SolidColorBrush x:Key="BorderBrushLight" Color="DarkGray"/>
 		<SolidColorBrush x:Key="BackgroundUnselected" Color="LightBlue"/>
 		<SolidColorBrush x:Key="BackgroundSelected" Color="Gold"/>
@@ -29,7 +29,7 @@
 		<SolidColorBrush x:Key="ForegroundUnselected" Color="Black"/>
 		<SolidColorBrush x:Key="TextBoxForeground" Color="Blue"/>
 		<SolidColorBrush x:Key="TextBoxBackground" Color="Green"/>
-		<SolidColorBrush x:Key="ListViewItemBackground" Color="Green"/>
+		<SolidColorBrush x:Key="ListViewItemBackground" Color="Green"/>-->
 
 		<!--We can either define the DataTemplate here, or down in the Items code as here (See above)-->
 		<DataTemplate x:Key="MyItemTemplate" >

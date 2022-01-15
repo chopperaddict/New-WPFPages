@@ -9,6 +9,7 @@
         mc:Ignorable="d"
 	  MinHeight=" 650"
 	  MinWidth="850"
+	  MouseMove="ChecksMouseMove"
 	  Loaded="Window_Loaded"
 	  ResizeMode="CanResizeWithGrip"
  	  Closing="Window_Closing"
@@ -31,7 +32,7 @@
             <local:nwcustomer x:Key="customerdatacontext" />
             <!--<local:NorthWindFullData x:Key="Commands" />-->
 
-            <SolidColorBrush x:Key="Blue4" Color="#FF5579BD" />
+            <!--<SolidColorBrush x:Key="Blue4" Color="#FF5579BD" />-->
 
             <LinearGradientBrush x:Key="HeaderBlue" StartPoint="0.5,0" EndPoint="0.5,1">
                   <GradientStop Offset="0" Color="#FF6B8E95" />
@@ -41,6 +42,7 @@
                   <GradientStop Offset="0.542" Color="#FF1D4855" />
                   <GradientStop Offset="0.526" Color="#FF193A44" />
             </LinearGradientBrush>
+		
             <Style x:Key="dgStyle1" TargetType="DataGridRow">
                   <!--<Style.Triggers>
 				<Trigger Property="IsSelected" Value="True" />
@@ -203,10 +205,10 @@
 			RowHeight="20"
 			MinHeight="80"
 			VerticalAlignment="Stretch"
-			RowStyle="{StaticResource dgStyle1}"
 			SelectionMode="Single"
 			SelectionUnit="FullRow"
 			SelectionChanged="CustomerGrid_SelectionChanged">
+			<!--RowStyle="{StaticResource dgStyle1}"-->
                   <!--VirtualizingStackPanel.IsVirtualizing="False"-->
                   <!--Loaded="CustomersGrid_Loaded"-->
 
@@ -366,7 +368,7 @@
                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}, Path=IsMouseOver}" Value="false" />
                                           </MultiDataTrigger.Conditions>
                                           <MultiDataTrigger.Setters>
-                                                <Setter Property="Background" Value="{StaticResource Magenta1}" />
+                                                <Setter Property="Background" Value="{StaticResource Red6}" />
                                                 <Setter Property="Foreground" Value="White" />
                                                 <Setter Property="BorderBrush" Value="{StaticResource White1}" />
                                           </MultiDataTrigger.Setters>
@@ -505,7 +507,7 @@
                                           </MultiDataTrigger.Conditions>
                                           <MultiDataTrigger.Setters>
                                                 <!--<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Cyan4}" />-->
-                                                <Setter Property="Background" Value="{StaticResource Cyan0}" />
+                                                <Setter Property="Background" Value="{StaticResource Red5}" />
                                                 <Setter Property="Foreground" Value="White" />
                                                 <Setter Property="BorderBrush" Value="{StaticResource Black1}" />
                                                 <Setter Property="Height" Value="30" />
@@ -525,7 +527,7 @@
                                           </MultiDataTrigger.Conditions>
                                           <MultiDataTrigger.Setters>
                                                 <!--<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Cyan4}" />-->
-                                                <Setter Property="Background" Value="{StaticResource Blue1}" />
+                                                <Setter Property="Background" Value="{StaticResource Blue0}" />
                                                 <Setter Property="Foreground" Value="White" />
                                                 <Setter Property="BorderBrush" Value="{StaticResource White3}" />
                                                 <Setter Property="Height" Value="30" />
@@ -660,7 +662,7 @@
                                           </MultiDataTrigger.Conditions>
                                           <MultiDataTrigger.Setters>
                                                 <!--<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Cyan4}" />-->
-                                                <Setter Property="Background" Value="{StaticResource Green4}" />
+                                                <Setter Property="Background" Value="{StaticResource Red5}" />
                                                 <Setter Property="Foreground" Value="White" />
                                                 <Setter Property="BorderBrush" Value="{StaticResource Black1}" />
                                                 <Setter Property="Height" Value="30" />
@@ -680,7 +682,7 @@
                                           </MultiDataTrigger.Conditions>
                                           <MultiDataTrigger.Setters>
                                                 <!--<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Cyan4}" />-->
-                                                <Setter Property="Background" Value="{StaticResource Red0}" />
+                                                <Setter Property="Background" Value="{StaticResource Green0}" />
                                                 <Setter Property="Foreground" Value="White" />
                                                 <Setter Property="BorderBrush" Value="{StaticResource White3}" />
                                                 <Setter Property="Height" Value="30" />
@@ -846,7 +848,7 @@
                                           </MultiDataTrigger.Conditions>
                                           <MultiDataTrigger.Setters>
                                                 <!--<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Cyan4}" />-->
-                                                <Setter Property="Background" Value="{StaticResource Blue3}" />
+                                                <Setter Property="Background" Value="{StaticResource Red5}" />
                                                 <Setter Property="Foreground" Value="White" />
                                                 <Setter Property="BorderBrush" Value="{StaticResource Black1}" />
                                                 <Setter Property="Height" Value="30" />
@@ -866,7 +868,7 @@
                                           </MultiDataTrigger.Conditions>
                                           <MultiDataTrigger.Setters>
                                                 <!--<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Cyan4}" />-->
-                                                <Setter Property="Background" Value="{StaticResource Red0}" />
+                                                <Setter Property="Background" Value="{StaticResource Blue1}" />
                                                 <Setter Property="Foreground" Value="White" />
                                                 <Setter Property="BorderBrush" Value="{StaticResource White3}" />
                                                 <Setter Property="Height" Value="30" />

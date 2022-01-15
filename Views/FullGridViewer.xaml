@@ -1,0 +1,138 @@
+﻿<Window x:Class="WPFPages.Views.FullGridViewer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFPages.Views" 
+	  d:DataContext="{d:DesignInstance Type=local:FullGridViewer}"
+	  mc:Ignorable="d"
+  	  ResizeMode="CanResizeWithGrip"
+	  x:Name="FullGridView"
+        Title="Full Grid Viewer" Height="650" Width="1000">
+
+	<Window.Background>
+		<LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+			<GradientStop Offset="0" Color="#FF1D4835" />
+			<GradientStop Offset="0.3" Color="#FF6B8E95" />
+			<GradientStop Offset="0.609" Color="#FF6B8E95" />
+			<GradientStop Offset="1" Color="#FF14A7C1" />
+			<GradientStop Offset="0" Color="#FF193A44" />
+		</LinearGradientBrush>
+	</Window.Background>
+	<Window.Resources>
+		
+	</Window.Resources>
+
+	<Grid>
+
+			<Grid.RowDefinitions>
+			<RowDefinition Height="35" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="45"/>
+			<RowDefinition Height="5" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="10" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="2*" />
+			<ColumnDefinition Width="10" />
+		</Grid.ColumnDefinitions>
+
+		<Menu x:Name="ViewMenu" 
+			local:MenuAttachedProperties.MenuItemSelectedBackground="{StaticResource YellowToBlack}"
+			local:MenuAttachedProperties.MenuItemBackground="{StaticResource Black0}"
+			local:MenuAttachedProperties.MenuItemForeground="{StaticResource HorizontalYellowGradient}"
+			local:MenuAttachedProperties.MenuItemSelectedForeground="{StaticResource White0}"
+			local:MenuAttachedProperties.MenuFontSize="14"
+			local:MenuAttachedProperties.MenuFontWeight="Normal"
+			local:MenuAttachedProperties.MenuItemBorderColor="{StaticResource Black0}"
+			local:MenuAttachedProperties.MenuItemBorderThickness="1"
+			local:MenuAttachedProperties.MenuItemHeight ="24"
+			local:MenuAttachedProperties.MenuItemMargin="0"
+			local:MenuAttachedProperties.MenuDropdownWidth ="210"
+			Background="Transparent"
+			Grid.Column="1"
+			Height="45"
+			VerticalAlignment="Center"
+			HorizontalAlignment="Left" Width="933">
+			<Menu.Style><Style></Style></Menu.Style>
+			<!--Menu ONE Drag Client-->
+
+			<MenuItem Header="Options" 
+				Background="Black"
+				Foreground="Green"
+				FontWeight="Bold"
+				Height="45"
+				Width="83">
+
+				<MenuItem Header="Save" 
+					Background="Black"
+					Click="Save_Click"
+					Foreground="Red"
+					FontWeight="Bold"
+					Height="45"
+					Template="{StaticResource MenuItemCtrlTemplate1}"
+					Width="83"/>
+
+				<MenuItem Header="Print" 
+					Background="Black"
+					Click="Print_Click"
+					Foreground="Red"
+					FontWeight="Bold"
+					Height="45"
+					Template="{StaticResource MenuItemCtrlTemplate1}"
+					Width="83"/>
+			</MenuItem>
+		</Menu>
+		
+		<DataGrid x:Name="UniversalGrid"
+			    AlternatingRowBackground="{StaticResource Yellow5}"
+			    Grid.Column="1" 
+			    Grid.ColumnSpan="2"
+			    Grid.Row="1" 
+			    CellStyle="{StaticResource GenericGridStyle}"
+			    PreviewMouseRightButtonDown="UniversalGrid_PreviewMouseRightButtonDown"
+			    />
+		
+		<Button Background="{StaticResource HeaderBorderBrushBlue}"
+			  Content="Close" 
+			  Click="Close_Click"
+			  FontSize="18"
+			  Foreground="{StaticResource White0}" 
+			  Grid.Column="2" 
+			  Grid.Row="2" 
+			  HorizontalAlignment="Right"
+			  Height="40" 
+			  Width="120" 
+			  />
+
+		<TextBox x:Name="Reccount"
+			Background="{StaticResource Blue1}"
+			FontSize="24"
+			Foreground="{StaticResource White0}"
+			Grid.Column="1" 
+			Grid.Row="2" 
+			Height="35"
+			HorizontalAlignment="left"
+			HorizontalContentAlignment="Center"
+			Text="{Binding  Path=reccount}"
+			VerticalAlignment="Center"
+			VerticalContentAlignment="Center"
+			Width="100"/>
+		<TextBox x:Name="DbNameLabel"
+			Background="{StaticResource Blue1}"
+			FontSize="24"
+			Foreground="{StaticResource White0}"
+			Grid.Column="1" 
+			Grid.ColumnSpan="2"
+			Grid.Row="2" 
+			Height="35"
+			HorizontalAlignment="left"
+			HorizontalContentAlignment="Center"
+			   Margin="120 0 0 0"
+			Text="{Binding Path=Tablename}"
+			VerticalAlignment="Center"
+			VerticalContentAlignment="Center"
+			Width="300"/> 
+	</Grid>
+</Window>

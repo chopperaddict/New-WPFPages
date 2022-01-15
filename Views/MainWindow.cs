@@ -93,29 +93,45 @@ namespace WPFPages
 	/// <summary>
 	/// Input parameters for my Message Box
 	/// </summary>
-	public struct DlgInput
+	public  struct DlgInput
 	{
-		static public Window MsgboxWin;
+		static public Msgbox MsgboxWin;
+		static public Msgboxs MsgboxSmallWin;
+		static public Msgboxs MsgboxMinWin;
+		public static SysMenu sysmenu;
 		static public bool isClean;
 		static public bool resultboolin;
 		static public bool UseDarkMode;
 		static public bool resetdata;
 		static public bool UseIcon;
 		static public int intin;
+		static public int returnint;
 		static public string stringin;
 		static public object obj;
 		static public string iconstring;
+		static public Thickness thickness;
 		static public Image image;
 		static public Brush dlgbackground;
 		static public Brush dlgforeground;
 		static public Brush btnbackground;
 		static public Brush btnforeground;
 		static public Brush Btnborder;
-		static public Brush mousebackground;
-		static public Brush mouseforeground;
+		static public Brush Btnmousebackground;
+		static public Brush Btnmouseforeground;
 		static public Brush defbtnbackground;
 		static public Brush defbtnforeground;
-		static public Thickness BorderSize;
+		// Dark mode
+		static public Brush BtnborderDark;
+		static public Brush btnforegroundDark;
+		static public Brush btnbackgroundDark;
+		static public Brush defbtnforegroundDark;
+		static public Brush defbtnbackgroundDark;
+		static public Brush mouseborderDark;
+		static public Brush mousebackgroundDark;
+		static public Brush mouseforegroundDark;
+
+		static public Thickness BorderSizeNormal;				 // Normal display shadow
+		static public Thickness BorderSizeDefault;		// Mouse over / (current Default) display
 	}
 
 	public struct defvars
@@ -127,6 +143,7 @@ namespace WPFPages
 		public static CookieCollection  Cookiecollection;
 		public static  int NextCookieIndex = 0;
 		public static bool CookieAdded=false;
+		public static bool FullViewer=false;
 	}
 	//public static Dictionary<string, string> cookiedict =new Dictionary<string, string>()	;
 	#endregion My MessageBox arguments
@@ -139,7 +156,7 @@ namespace WPFPages
 
 	public partial class MainWindow : System . ComponentModel . INotifyPropertyChanged
 	{
-//		public static DlgInput dlgin = new DlgInput();
+		public static  DlgInput  dlgdata;
 
 		// Global pointers to Viewmodel classes
 		public static BankAccountViewModel bvm = null;
@@ -165,6 +182,7 @@ namespace WPFPages
 
 		public static GridViewer gv = new GridViewer ( );
 		public static DbSelector dbs = null;
+		public static SysMenu sysmenu;
 
 		public SqlDbViewer tw = null;
 
@@ -230,7 +248,7 @@ namespace WPFPages
 			// Clean MsgBox data and reload from disk flie
 			ResetMsgBox ( );
 			ReadMsgboxData ( );
-			MouseMove += Utils . Grab_MouseMove;
+			MouseMove += Grab_MouseMove;
 			KeyDown += Window_PreviewKeyDown;
 			//Read in our Cookies.CookieDictionary and Cookies. Cookiecollection from disk (Serialized)
 			defvars.Cookiedictionary = Cookies . DeSerialize ( defvars.CookieDictionarypath) as Dictionary<string, string>;
@@ -251,10 +269,19 @@ namespace WPFPages
 			// Create some test cookies
 			Cookies.CreateTestCookies ( );
 		}
+		private void Grab_MouseMove ( object sender , MouseEventArgs e )
+		{
+			if ( e . LeftButton == MouseButtonState . Pressed )
+				Utils . Grab_MouseMove ( sender , e );
+			e . Handled = true;
+		}
+
 		private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )
 		{
 			if ( e . Key == Key . F11 )
 			{
+				var pos = Mouse . GetPosition ( this);
+				Utils . Grab_Object ( sender , pos );
 				if ( Utils . ControlsHitList . Count == 0 )
 					return;
 				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
@@ -272,7 +299,7 @@ namespace WPFPages
 			DlgInput . stringin = "";
 			DlgInput . obj = null;
 			DlgInput . dlgbackground = "#9DFFFFFB" . ToSolidBrush ( );
-			DlgInput . mouseforeground = "#FF000000" . ToSolidBrush ( );
+			DlgInput . Btnmouseforeground = "#FF000000" . ToSolidBrush ( );
 			DlgInput . Btnborder = "#C1000000" . ToSolidBrush ( );
 			DlgInput . btnforeground = "#FF000000" . ToSolidBrush ( );
 			DlgInput . btnbackground = "#9DFFFFFB" . ToSolidBrush ( );
@@ -292,9 +319,9 @@ namespace WPFPages
 														// Button Foreground
 			DlgInput . btnbackground = Utils . GetNewBrush ( "#FFFFFFFF" );     // White
 														// Button MouseOver Background
-			DlgInput . mousebackground = Utils . GetNewBrush ( "#95848284" );     // Mid grey
+			DlgInput . Btnmousebackground = Utils . GetNewBrush ( "#95848284" );     // Mid grey
 														 // Button MouseOver Foreground
-			DlgInput . mouseforeground = Utils . GetNewBrush ( "#FFFFFFFF" );           /// White
+			DlgInput . Btnmouseforeground = Utils . GetNewBrush ( "#FFFFFFFF" );           /// White
 
 			// Button Border
 			DlgInput . Btnborder = Utils . GetNewBrush ( "#FFFF0000" );      // Red
@@ -471,6 +498,9 @@ namespace WPFPages
 		{
 			//Handle the button NOT being the left mouse button
 			// which will crash the DragMove Fn.....
+			MouseButtonState mbs =   Mouse. RightButton ;
+			if (mbs == MouseButtonState.Pressed)
+				return;
 			try
 			{
 				this . DragMove ( );
@@ -556,12 +586,21 @@ namespace WPFPages
 			else
 			{
 				//Create a new Db Selector Window system.
-				DbSelector dbs = new DbSelector ( );
-				gv . DbSelectorWindow = dbs;
+				DbSelector dbss = new DbSelector ( );
+				gv . DbSelectorWindow = dbss;
+				dbs = dbss;
 
 				dbs . Show ( );
+
 				//Store the "Handle" to this Db Selector window
 				Flags . DbSelectorOpen = dbs;
+
+				if ( MainWindow . sysmenu != null )
+				{
+					dbs . Visibility = Visibility . Collapsed;
+					dbs. Visibility = Visibility . Hidden;
+				}
+
 				// Load and display a new viewer for the selected Db Type
 				// (returned in the selected var from dbSelector window)
 				Mouse . OverrideCursor = Cursors . Wait;

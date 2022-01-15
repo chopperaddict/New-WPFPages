@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:WPFPages.Views"
         xmlns:templates="clr-namespace:WPFPages.DataTemplates"
         mc:Ignorable="d"
+  	MouseMove="ChecksMouseMove"
 	  Background="LightCoral"
 	  Loaded="bankgrid_Loaded"
 	  x:Name="bankgrid"

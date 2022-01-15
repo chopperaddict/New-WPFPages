@@ -23,20 +23,25 @@ namespace WPFPages . Views
 	/// </summary>
 	public partial class NewCookie : Window
 	{
-		public NewCookie (Window win=null )
+		public NewCookie ( Window win = null )
 		{
 			InitializeComponent ( );
 			Library1 . SetupWindowDrag ( this );
-			Name . Focus ( );
+			name . Focus ( );
 		}
 		private void button_Click ( object sender , RoutedEventArgs e )
-{
+		{
 			string result = "";
-			result = Cookies . CreateCookie ( defvars.cookierootname , Key . Text , Value . Text);
-			if(result != "")
-				MessageBox . Show ( $"Cookie                                                         \n{result }\nkey ={Key.Text}\nvalue = {Value.Text}\nhas been created successfully...                      ", "Cookie Created !");
+			if ( name . Text == "" || label1 . Content == "" || label2 . Content == "" )
+			{
+				Utils . Mbox ( this , string1: "All 3 fields must contain some data to allow a Cookie to be created !" , string2: "Cookie entry error" , caption: "Cookie system" , iconstring: "\\icons\\error.png" , Btn1: MB . OK , Btn2: MB . NNULL , defButton: MB . OK );
+				return;
+			}
+			result = Cookies . CreateCookie ( defvars . cookierootname , Key . Text , Value . Text );
+			if ( result != "" )
+				MessageBox . Show ( $"Cookie                                                         \n{result }\nkey ={Key . Text}\nvalue = {Value . Text}\nhas been created successfully...                      " , "Cookie Created !" );
 			defvars . CookieAdded = true;
-			this .Close ( );
+			this . Close ( );
 		}
 
 		private void Cancel_Click ( object sender , RoutedEventArgs e )

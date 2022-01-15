@@ -4,11 +4,11 @@ using System . Windows . Data;
 
 namespace WPFPages . Converts
 {
-       /// <summary>
-       /// Converts a Numeric value to a Hex value returned in 0X[xx] format 
-       /// where  if values have odd count of converted digits then a leading zero is inserted
-       /// </summary>
-       public class HexConvert : IValueConverter
+	/// <summary>
+	/// Converts a Numeric value to a Hex value returned in 0X[xx] format 
+	/// where  if values have odd count of converted digits then a leading zero is inserted
+	/// </summary>
+	public class HexConvert : IValueConverter
         {
                 public object Convert ( object value, Type targetType, object parameter, CultureInfo culture )
                 {

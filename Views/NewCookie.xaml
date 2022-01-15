@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:WPFPages.Views"
         mc:Ignorable="d"
         Title="Create New Cookie" Height="255" Width="300"
-	  Topmost="True"
 	  PreviewKeyUp="Window_PreviewKeyUp"
+	  WindowChrome.IsHitTestVisibleInChrome="True"
+	  WindowStyle="ToolWindow"
 	  WindowStartupLocation="CenterScreen"
 	  Background="Aquamarine">
 
@@ -33,7 +34,7 @@
 			 Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Height="26" Width="89"/>
 		<Label x:Name="label2" Content="Content" HorizontalAlignment="Left" Margin="19,122,0,0" 
 			 Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Width="85"/>
-		<TextBox x:Name="Name" HorizontalAlignment="Left" Margin="114,58,0,0" Text="" TextWrapping="Wrap" 
+		<TextBox x:Name="name" HorizontalAlignment="Left" Margin="114,58,0,0" Text="" TextWrapping="Wrap" 
 			 Background="Black" Foreground="Yellow" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Width="120" Height="25" HorizontalContentAlignment="Center"/>
 		<TextBox x:Name="Key" HorizontalAlignment="Left" Margin="114,91,0,0" Text="" TextWrapping="Wrap"
 			   Background="Black" Foreground="Yellow" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Width="120" Height="25" HorizontalContentAlignment="Center"/>

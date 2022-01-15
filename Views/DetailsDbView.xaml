@@ -13,6 +13,7 @@
 	IsTabStop="False"
 	Loaded="Window_Loaded"
 	MinHeight="500"
+	  MouseMove="ChecksMouseMove"
 	  ResizeMode="CanResizeWithGrip"
  	MinWidth="760"
 	PreviewKeyDown="Window_PreviewKeyDown"
@@ -125,7 +126,7 @@
 
 		<!--<bank:BankAccountViewModel x:Key="BankViewData"/>-->
 
-	
+
 
 		<CollectionViewSource x:Key="src" Source="{Binding DetViewerView}" />
 
@@ -159,8 +160,8 @@
 		<Grid.Background>
 			<!--  create an elegant left to right light-> Dark gradient as a background  -->
 			<LinearGradientBrush StartPoint="1,0" EndPoint="0,1">
-				<GradientStop Offset="0" Color="#00FF00" />
-				<GradientStop Offset="1" Color="#00000000" />
+				<GradientStop Offset="1" Color="#FF009900" />
+				<GradientStop Offset="0" Color="#FF004500" />
 			</LinearGradientBrush>
 		</Grid.Background>
 
@@ -170,14 +171,11 @@
 			x:Name="DetailsDbViewMenu"
 			Grid.Row="0"
 			Grid.Column="1"
-			Height="50"
 			Width="420"
 			IsTabStop="False"
 			HorizontalAlignment="Left"
-			VerticalAlignment="Stretch"
 			Background="Transparent" 
-			Foreground="White"
-			Grid.ColumnSpan="2">
+			Foreground="White" Margin="0,0,0,5">
 			<!--// Removes that infiriating background//-->
 			<Menu.Style>
 				<Style></Style>
@@ -198,7 +196,7 @@
 				Width="80"
 				
 				Background="Transparent"
-				Foreground="{StaticResource Black1}"
+				Foreground="{StaticResource White0}"
 				Header="_Linq Queries">
 				<MenuItem
 					Click="Linq1_Click"
@@ -243,7 +241,7 @@
 			<MenuItem
 				Width="60"
 				Click="Filter_Click"
-				Foreground="{StaticResource Black1}"
+				Foreground="{StaticResource White0}"
 				Header="Filtering">
 
 				<MenuItem
@@ -292,7 +290,7 @@
 			<MenuItem
 				Width="50"
 				Click="Options_Click"
-				Foreground="{StaticResource Black1}"
+				Foreground="{StaticResource White0}"
 				Header="Options" />
 
 			<MenuItem Header ="Larger Font"
@@ -316,14 +314,9 @@
 			<MenuItem
 				Width="50"
 				Command="command:MyCommands.CloseWin"
-				Foreground="{StaticResource Black2}"				
-				Header="Exit...">
-				<!--<MenuItem Header="Setup Filter"
-					    Background="#35F6FB"
-					    Click="Filter_Click"
-					    Foreground="Black"
-					    IsCheckable="false"/>-->
-			</MenuItem>
+				Foreground="{StaticResource White0}"				
+				Header="Exit..."/>
+
 		</Menu>
 
 		<!--AlternatingRowBackground="{StaticResource Green4}"-->
@@ -494,14 +487,14 @@
 				Background="DarkGray"				
 				FontSize="23"
 				FontWeight="DemiBold"
-				Foreground="{StaticResource Black0}"
+				Foreground="{StaticResource White0}"
 				Height="30"
 				MaxLength="1"				
 				PreviewKeyUp="DisplayType_PreviewKeyUp"				
 				Padding="-3"
 				Text="0"
 				TextAlignment="Center"
-				VerticalAlignment="Top" Margin="320,104,42,0"
+				VerticalAlignment="Top" Margin="320,119,42,0"
 				/>
 			</Border>
 			<TextBlock
@@ -806,6 +799,7 @@
 			Template="{StaticResource HorizontalGradientTemplateGreen}" />
 		<CheckBox
 			x:Name="OntopChkbox"
+			Foreground="{StaticResource White0}"
 			Grid.Row="2"
 			Grid.Column="3"
 			Width="100"
@@ -817,7 +811,7 @@
 			Click="OntopChkbox_Click"
 			Content="Keep on Top"
 			FontWeight="Medium"
-			Foreground="Black"
+
 			IsChecked="true" />
 
 		<CheckBox
@@ -829,7 +823,7 @@
 			Margin="9,14,7,80"
 			Click="LinkRecords_Click"
 			Content="Link to ALL&#x0a;Open Viewers"
-			Foreground="Red" />
+			Foreground="White" />
 
 		<CheckBox
 			x:Name="LinkToParent"
@@ -839,7 +833,7 @@
 			Margin="9,55,7,43"
 			Click="LinkToParent_Click"
 			Content="Link  => to Details&#x0a;Viewer Only"
-			Foreground="Red"
+			Foreground="White"
 			RenderTransformOrigin="0.49,1.56" />
 
 		<CheckBox
@@ -850,7 +844,7 @@
 			  Margin="9,92,7,8"
 			  Click="LinkToMulti_Click"
 			  Content="Link  => to Multi &#x0a;Viewer Only"
-			  Foreground="Red"
+			  Foreground="White"
 			  RenderTransformOrigin="0.49,1.56" />
 		<Button
 	  Background="{StaticResource HeaderBrushGray}"

@@ -8,6 +8,7 @@
 
 	  ResizeMode="CanResizeWithGrip"
          mc:Ignorable="d"
+	  MouseMove="ChecksMouseMove"
         Title="Gradient Demonstation Display" Height="450" Width="600">
 
 	<Window.Resources>

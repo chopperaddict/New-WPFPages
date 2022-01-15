@@ -293,9 +293,10 @@
     <Compile Include="Converts\Date2UTCConverter.cs" />
     <Compile Include="Converts\DateTime2ShortDateConvertor.cs" />
     <Compile Include="Converts\DateTimeToShortStringConverter.cs" />
+    <Compile Include="Converts\GetBrushfromhexvalue.cs" />
     <Compile Include="Converts\GetImageConverter.cs" />
     <Compile Include="Converts\HexConvert.cs" />
-    <Compile Include="Converts\HexStringToBrush.cs" />
+    <Compile Include="Views\HexStringToBrush.cs" />
     <Compile Include="Converts\Int2BrushConverter.cs" />
     <Compile Include="Converts\MoveTextblockToTop.cs" />
     <Compile Include="Converts\MultiConverterTemplate.cs" />
@@ -391,6 +392,12 @@
     </Compile>
     <Compile Include="Views\DataGridUtilities.cs" />
     <Compile Include="Views\FocusVisualTreeChanger.cs" />
+    <Compile Include="Views\FullGridViewer.xaml.cs">
+      <DependentUpon>FullGridViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GenericEdit.xaml.cs">
+      <DependentUpon>GenericEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Grabviewer.xaml.cs">
       <DependentUpon>Grabviewer.xaml</DependentUpon>
     </Compile>
@@ -528,8 +535,8 @@
     <Compile Include="Views\StylingTest.xaml.cs">
       <DependentUpon>StylingTest.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TestNWView.xaml.cs">
-      <DependentUpon>TestNWView.xaml</DependentUpon>
+    <Compile Include="Views\SysMenu.xaml.cs">
+      <DependentUpon>SysMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ViewFilter.cs" />
     <Compile Include="Views\SupportMethods.cs" />
@@ -537,13 +544,7 @@
       <DependentUpon>SysColors.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TestBankCollection.cs" />
-    <Compile Include="Views\TestBankDbView.xaml.cs">
-      <DependentUpon>TestBankDbView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\TestDetailsCollection.cs" />
-    <Compile Include="Views\TestDetailsDbView.xaml.cs">
-      <DependentUpon>TestDetailsDbView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UserControls\ThreeDeeBtnControl.xaml.cs">
       <DependentUpon>ThreeDeeBtnControl.xaml</DependentUpon>
     </Compile>
@@ -659,14 +660,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dicts\MainMenu.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dicts\Menus.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dicts\Menusbad.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -834,6 +827,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\FullGridViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GenericEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\GetExportRecords.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -966,19 +967,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\TestBankDbView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\TestDetailsDbView.xaml">
+    <Page Include="Views\SysMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\ThreeDeeBtnControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\TestNWView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1009,13 +1002,43 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Icons\blue info.png" />
+    <Resource Include="Icons\3d-yellow-shriek.png" />
+    <Resource Include="Icons\3d green tick base.png" />
+    <Resource Include="Icons\3d red cross.png" />
+    <Resource Include="Icons\3d-red-shriek.png" />
+    <Resource Include="Icons\yellow-shriek-icon.png" />
+    <Resource Include="Icons\blue-info-icon.png" />
+    <Resource Include="Icons\green-tick.png" />
+    <Resource Include="Icons\red-cross-icon.png" />
+    <Resource Include="Icons\errstop.png" />
+    <Resource Include="Icons\exclamation.png" />
+    <Resource Include="Icons\target-green-center.png" />
+    <Resource Include="Icons\warning2.png" />
+    <Resource Include="Icons\error-red.png" />
+    <Resource Include="Icons\exclm-1.png" />
+    <Resource Include="Icons\square.png" />
+    <Resource Include="Icons\ex1.png" />
+    <Resource Include="Icons\transparent1.png" />
+    <Resource Include="Icons\transparent.png" />
+    <Resource Include="Icons\Myexclaim1.png" />
+    <Resource Include="Icons\Warning.PNG" />
+    <Resource Include="Icons\large-light-msgbox.png" />
+    <Resource Include="Icons\small-light-msgbox.PNG" />
+    <Resource Include="Icons\small-dark-msgbox.PNG" />
+    <Resource Include="Icons\large-dark-msgbox.PNG" />
+    <Resource Include="Icons\mydialog11.png" />
+    <Resource Include="Icons\mydialog1.PNG" />
+    <Resource Include="Icons\mydialog2.PNG" />
+    <Resource Include="Icons\mydialog3.PNG" />
+    <Resource Include="Icons\exclaim1.png" />
+    <Resource Include="Icons\transparentcheckmark.png" />
     <Resource Include="Icons\laptop-wifi2.png" />
     <Resource Include="Icons\Error2.png" />
     <Resource Include="Icons\checkmark2.png" />
     <Resource Include="Icons\Information3.png" />
     <Resource Include="Icons\Information2.png" />
     <Resource Include="Icons\Error.PNG" />
-    <Resource Include="Icons\Exclamation.PNG" />
     <Resource Include="Icons\Information.PNG" />
     <Resource Include="Icons\check-mark-icon-5375.png" />
     <Resource Include="Icons\checkmark-no.png" />
@@ -1040,7 +1063,6 @@
     <Resource Include="Icons\Wrench.png" />
     <Resource Include="Icons\laptop-wifi.png" />
     <Resource Include="Icons\left-arrow.png" />
-    <Resource Include="Icons\loading againCapture.PNG" />
     <Resource Include="Icons\magnify minus.png" />
     <Resource Include="Icons\magnify plus.png" />
     <Resource Include="Icons\mailbox-receive-message.png" />

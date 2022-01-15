@@ -17,35 +17,19 @@ using System . Windows . Controls;
 using System . Windows . Input;
 using System . Windows . Media;
 using System . Windows . Media . Imaging;
-using System . Windows . Media . Media3D;
-using System . Xml . Linq;
 
 using WPFPages . ViewModels;
 using UtilityLibraries;
 using WPFLibrary2021;
-using Newtonsoft . Json . Linq;
-using System . Windows . Markup;
-using System . Net;
-using System . Reflection;
-using Microsoft . SqlServer . Management . Smo;
+using static Microsoft . SqlServer . Management . Sdk . Sfc . RequestObjectInfo;
 using System . Windows . Documents;
-
-
-
-//using static WPFPages . ViewModels . LinqSupport<T , U, V>;
-//using static WPFPages . ViewModels . LinqSupport;
+using System . Security . AccessControl;
 
 namespace WPFPages . Views
 {
-	//StartsWithUpper
-	/// <summary>
-	/// Interaction logic for SqlServerCommands.xaml
-	/// </summary>
 	public partial class SqlServerCommands : Window
 	{
-		//		GrabScreenObject screengrab =  Grabscreen;
-
-		//public delegate bool LinqDelegate ( T s1 , T s2 );
+		public ObservableCollection<GenericClass> Generics = new ObservableCollection<GenericClass>();
 		public DapperClass Db = new DapperClass ();
 		public List<string> ReceivedDbData = new List<string>();
 
@@ -54,7 +38,7 @@ namespace WPFPages . Views
 		public delegate bool LinqDelegate2<T> ( T s1 );
 		public delegate bool LinqDelegate3<T, U, V> ( T s1 , U s2 , V s3 );
 
-
+		public static FullGridViewer fgviewer;
 		private string[] datastring =
 			{
 				"3, 4193116, 1055023, 1, 3476.65, 1.27, '1961/04/13', '2000/01/01'",
@@ -109,11 +93,7 @@ namespace WPFPages . Views
 		{
 			var v = StringLib.StartsWithUpper ( "gsdfgdgfhd" );
 			string[] tmp;
-			string Output="";
 			DataContext = this;
-			//			var b=UtilsLib.GetBrush ( "#FF553377" );
-			//this . Background = b;
-			string dbnametoopen = "";
 			Library1 . SetupWindowDrag ( this );
 			// hide grid
 			togglevisibility ( false , "" );
@@ -121,21 +101,20 @@ namespace WPFPages . Views
 			LoadTablesCombo ( );
 			LoadSPCombo ( );
 			// make sure info panel is hidden
-//			SpArgsList . Visibility = Visibility . Hidden;
-			//testing only
-			List<string> constr = new List<string>();
-			//constr = DapperSupport . GetConnectionStrings ( );
-			//foreach ( var item in constr )
-			//{
-			//	Console . WriteLine ( $"{item}" );
-			//}
 			// Subclass the MouseMove event
-			MouseMove += Utils . Grab_MouseMove;
+			MouseMove += Grab_MouseMove;
 			Cookies . LoadCookiesToCombo ( CookiesCombo , out CookiesList );
-			//CookiesCombo . ItemsSource = CookiesList;
 			DisplayGrid . ItemsSource = null;
 			DisplayGrid . Visibility = Visibility . Hidden;
+			SetViewButtons ( 1 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 
+		}
+
+		private void Grab_MouseMove ( object sender , MouseEventArgs e )
+		{
+			if ( e . LeftButton == MouseButtonState . Pressed )
+				Utils . Grab_MouseMove ( sender , e );
+			e . Handled = true;
 		}
 
 
@@ -222,7 +201,7 @@ namespace WPFPages . Views
 					{
 						// This call perfoms the Copy process
 						//int result = DapperSupport . PerformSqlExecuteCommand ( SqlCommand , out errormsg);
-						ObservableCollection<GenericClass> Generics = new ObservableCollection<GenericClass>();
+						//						ObservableCollection<GenericClass> Generics = new ObservableCollection<GenericClass>();
 						ObservableCollection<BankAccountViewModel> bvmparam = new ObservableCollection<BankAccountViewModel>();
 						Dictionary <string, object>dict = new Dictionary<string, object>();
 						List<string> genericlist = new List<string>();
@@ -429,11 +408,13 @@ namespace WPFPages . Views
 		{
 			bool flagstatus = ShowGridFlag;
 			//ShowGrid . Focus ( );
-			if ( DisplayGrid.Visibility ==  Visibility.Visible)
+			if ( DisplayGrid . Visibility == Visibility . Visible )
 			{
 				// grid  visible
 				// hide grid
 				DisplayGrid . Visibility = Visibility . Hidden;
+				SetViewButtons ( 1 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
+				UpdateUniversalViewer ( );
 				//togglevisibility ( false , "" );
 				//if ( GridData_Display . Visibility == Visibility . Hidden )
 				//	GridData_Display . Visibility = Visibility . Visible;
@@ -458,11 +439,14 @@ namespace WPFPages . Views
 				}
 				else
 				{
-					GridData_Display . Visibility = Visibility . Hidden;
+					//					GridData_Display . Visibility = Visibility . Hidden;
 					DisplayGrid . Visibility = Visibility . Visible;
 				};
 
+				UpdateUniversalViewer ( );
 				BankNameLabel . Text = CurrentDbName;
+				SetViewButtons ( 1 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
+				togglevisibility ( true );
 				DisplayGrid . Refresh ( );
 				DisplayGrid . Focus ( );
 			}
@@ -491,7 +475,8 @@ namespace WPFPages . Views
 		{
 			string buffer="";
 			GridData_Display . Visibility = Visibility . Visible;
-			DisplayGrid . Visibility = Visibility . Hidden;
+			//DisplayGrid . Visibility = Visibility . Hidden;
+			SetViewButtons ( 2 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 			buffer = DisplayGrid . SelectedItem?.ToString ( );
 			if ( buffer == null )
 				return;
@@ -521,22 +506,23 @@ namespace WPFPages . Views
 			if ( mode )
 			{
 				// show grid
-				DisplayGrid . Visibility = Visibility . Visible;
 				GridCount . Visibility = Visibility . Visible;
 				NameLabel . Visibility = Visibility . Visible;
 				BankNameLabel . Visibility = Visibility . Visible;
 				GridCount . Text = DisplayGrid . Items . Count . ToString ( );
 				BankNameLabel . Text = DbName;
+				//				DisplayGrid . Visibility = Visibility . Visible;
+				//				SetViewButtons ( 1 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 			}
 			else
 			{
 				// hide grid
-				DisplayGrid . Visibility = Visibility . Collapsed;
-				GridCount . Visibility = Visibility . Collapsed;
-				NameLabel . Visibility = Visibility . Collapsed;
-				BankNameLabel . Visibility = Visibility . Collapsed;
+				GridCount . Visibility = Visibility . Hidden;
+				NameLabel . Visibility = Visibility . Hidden;
+				BankNameLabel . Visibility = Visibility . Hidden;
+				//				DisplayGrid . Visibility = Visibility . Hidden;
+				//				SetViewButtons ( 1 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 			}
-
 			Utils . trace ( );
 		}
 
@@ -668,7 +654,8 @@ namespace WPFPages . Views
 					{
 						//						MessageBox . Show ( $"The command you have entered\n\n{SqlCommandString . Text }]\n\nhas not been recognized");
 						Mouse . OverrideCursor = Cursors . Arrow;
-						DlgInput . mouseforeground = FindResource ( "Black0" ) as Brush;
+						DlgInput . Btnmouseforeground = FindResource ( "Black0" ) as Brush;
+						Mouse . OverrideCursor = Cursors . Arrow;
 						Utils . Mbox ( this , string1: $"The command you have entered\n[{SqlCommandString . Text }]\nhas not been recognized" , string2: "This is the footr string " , caption: "Tis is  the caption string" , iconstring: "" , Btn1: 1 , Btn2: 0 , defButton: 1 );
 						DbCopiedResult . Text = $"SQL command\n[{SqlCommandString . Text} failed to execute...";
 						//  						MessageBox . Show ("fdgffhhdhh","",MessageBoxButton.OK,MessageBoxImage.Error);
@@ -681,7 +668,7 @@ namespace WPFPages . Views
 				SqlCommand = SqlCommandString . Text;
 				try
 				{
-					ObservableCollection<GenericClass> generics = new ObservableCollection<GenericClass>();
+					//					ObservableCollection<GenericClass> generics = new ObservableCollection<GenericClass>();
 					Dictionary <string, object>dict = new     Dictionary <string, object>();
 					ObservableCollection<BankAccountViewModel> bvmparam = new  ObservableCollection<BankAccountViewModel>();
 					List<string> genericlist = new List<string>     ();
@@ -689,7 +676,7 @@ namespace WPFPages . Views
 
 					// Return a list<string> from any "Select " query
 					DapperSupport . CreateGenericCollection (
-					ref generics ,
+					ref Generics ,
 					SqlCommand ,
 					"" ,
 					"" ,
@@ -698,7 +685,7 @@ namespace WPFPages . Views
 					ref errormsg );
 					// We want a list<string> from this call
 
-					if ( generics . Count == 0 )
+					if ( Generics . Count == 0 )
 					{
 						SetDumyGridRow ( DisplayGrid );
 					}
@@ -714,6 +701,7 @@ namespace WPFPages . Views
 						}
 						else
 						{
+							Mouse . OverrideCursor = Cursors . Arrow;
 							Utils . Mbox ( this , string1: $"SQL processing error: \n[{errormsg}]\n" , string2: "hey ho" , caption: "SqlError" , Btn1: mb . OK , defButton: mb . OK , iconstring: "" );
 						}
 					}
@@ -830,20 +818,22 @@ namespace WPFPages . Views
 			OriginalSqlCommand = "";
 			SqlCommand = "";
 			CurrentCommandLabel . Text = "";
+			togglevisibility ( false );
 		}
 		//********************************************************************************************************************************************************************************//
 		public void SetDumyGridRow ( DataGrid Grid )
 		//********************************************************************************************************************************************************************************//
 		{
-			ObservableCollection<GenericClass> db= new ObservableCollection<GenericClass>();
+			//			ObservableCollection<GenericClass> db= new ObservableCollection<GenericClass>();
 			GenericClass gc = new GenericClass();
 			Grid . ItemsSource = null;
 			Grid . Items . Clear ( );
 			Grid . Refresh ( );
 			gc . field1 = "       No Current Selection ...       ";
-			db . Add ( gc );
-			LoadActiveRowsOnlyInGrid ( Grid , db , 1 );
-
+			Generics . Clear ( );
+			Generics . Add ( gc );
+			LoadActiveRowsOnlyInGrid ( Grid , Generics , 1 );
+			UpdateUniversalViewer ( );
 		}
 
 		#region LoadDbGrid
@@ -862,7 +852,8 @@ namespace WPFPages . Views
 			string datain="";
 			int totalfields = 0;
 			// Post process data string received 
-			ObservableCollection<GenericClass> genericcollection = new ObservableCollection<GenericClass>();
+			//			ObservableCollection<GenericClass> genericcollection = new ObservableCollection<GenericClass>();
+			Generics . Clear ( );
 			for ( int x = 0 ; x < ReceivedDbData . Count ; x++ )
 			{
 				datain = ReceivedDbData [ x ];
@@ -940,11 +931,14 @@ namespace WPFPages . Views
 					}
 					catch ( Exception ex ) { }
 				}
-				genericcollection . Add ( genclass );
+				Generics . Add ( genclass );
 			}
 			if ( LoadGrid == true )
-				LoadActiveRowsOnlyInGrid ( dgrid , genericcollection , totalfields );
-			return genericcollection;
+			{
+				LoadActiveRowsOnlyInGrid ( dgrid , Generics , totalfields );
+				UpdateUniversalViewer ( );
+			}
+			return Generics;
 		}
 
 		//********************************************************************************************************************************************************************************//
@@ -1148,7 +1142,7 @@ namespace WPFPages . Views
 			// dummy Fn so we can call it drectly
 
 			// Check for it being an SP in the text field - cever eh ?
-			ObservableCollection <GenericClass>Checklist= new ObservableCollection<GenericClass>();
+			//			ObservableCollection <GenericClass>Checklist= new ObservableCollection<GenericClass>();
 			GetSPCheckList ( SqlCommand );
 			if ( CheckForSPCommand ( SqlCommandString . Text ) )
 			{
@@ -1172,7 +1166,7 @@ namespace WPFPages . Views
 			string errormsg="";
 			string  WhereClause="", OrderByClause="";
 			bool CheckingArgsOnly = false;
-			ObservableCollection<GenericClass> Generics = new ObservableCollection<GenericClass>();
+			//			ObservableCollection<GenericClass> Generics = new ObservableCollection<GenericClass>();
 			if ( generics != null )
 				Generics = generics;
 			ObservableCollection<BankAccountViewModel> bvmparam = new ObservableCollection<BankAccountViewModel>();
@@ -1210,7 +1204,7 @@ namespace WPFPages . Views
 						CheckingArgsOnly = true;
 					}
 				}
-				else if( DbName != "COMMENTS")
+				else if ( DbName != "COMMENTS" )
 				{
 					//var reslt = MessageBox . Show ( "This will get the @ARGS for the currently selected SP in the Combo above\nClick Yes to proceed or No to select a  different SP in the combo'??" , "Confirmation required" ,
 					//	  MessageBoxButton.YesNoCancel, MessageBoxImage .Question);
@@ -1221,8 +1215,10 @@ namespace WPFPages . Views
 						showall = true;
 					else
 						showall = false;
+					UpdateUniversalViewer ( );
 					CheckingArgsOnly = true;
 					GridData_Display . Visibility = Visibility . Hidden;
+					SetViewButtons ( 2 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 				}
 			}
 			//****************************************************************************//
@@ -1267,9 +1263,6 @@ namespace WPFPages . Views
 				{
 					return Generics;
 				}
-				//DisplayGrid . ItemsSource = null;
-				//DisplayGrid . Items . Clear ( );
-				//GridData_Display . Visibility = Visibility . Hidden;
 
 				if ( errormsg == "" )
 				{
@@ -1312,7 +1305,7 @@ namespace WPFPages . Views
 							count++;
 						}
 
-						if( DbName == "COMMENTS")
+						if ( DbName == "COMMENTS" )
 						{
 							string output="";
 							string[] flds = outbuffer.Split('\n');
@@ -1329,34 +1322,40 @@ namespace WPFPages . Views
 								}
 							}
 							catch ( Exception ex ) {; }
-							if(output == "")
-							{ 
-								Utils . Mbox ( this , string1: "No comments were found in the currently selected script" , string2: "" , caption: "SP Comments !" , iconstring: "\\icons\\Information.png" , Btn1: MB . OK , Btn2: MB . NNULL, defButton: MB . OK );
+							if ( output == "" )
+							{
+								Mouse . OverrideCursor = Cursors . Arrow;
+								Utils . Mbox ( this , string1: "No comments were found in the currently selected script" , string2: "" , caption: "SP Comments !" , iconstring: "\\icons\\Information.png" , Btn1: MB . OK , Btn2: MB . NNULL , defButton: MB . OK );
 								return null;
 							}
 							// hide grid
-							togglevisibility ( false, "" );
+							togglevisibility ( false , "" );
 							GridData_Display . Visibility = Visibility . Visible;
 							GridData_Display . Text = output;
-							DisplayGrid . Visibility = Visibility . Hidden;
+							//DisplayGrid . Visibility = Visibility . Hidden;
+							SetViewButtons ( 1 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
+							UpdateUniversalViewer ( );
 							GridData_Display . Focus ( );
 							return null;
 						}
 						if ( SqlCommand != "spGetSpecificSchema" )
 						{
 							LoadActiveRowsOnlyInGrid ( DisplayGrid , Generics , columncount );
-							GridData_Display . Visibility = Visibility . Hidden;
+							//GridData_Display . Visibility = Visibility . Hidden;
 							DisplayGrid . SelectedIndex = 0;
 							DisplayGrid . Visibility = Visibility . Visible;
 							GridCount . Text = DisplayGrid . Items . Count . ToString ( );
+							UpdateUniversalViewer ( );
 							DisplayGrid . Refresh ( );
 							DisplayGrid . Focus ( );
 							//Show Grid
+							SetViewButtons ( 1 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 							togglevisibility ( true , "" );
 						}
 						else
 						{
-							DisplayGrid . Visibility = Visibility . Hidden;
+							//							DisplayGrid . Visibility = Visibility . Hidden;
+							ShowGrid . Content = "Show Grid Viewer";
 							if ( CheckingArgsOnly )
 							{
 								store = ParseforArgsLines ( outbuffer , showall );
@@ -1369,12 +1368,15 @@ namespace WPFPages . Views
 									store = "\nONLY Lines with lines containing @' in the HEADER block alone of the selected script are shown :\n\n" + store;
 								GridData_Display . Text = store;
 								GridData_Display . Visibility = Visibility . Visible;
+								UpdateUniversalViewer ( );
 								GridData_Display . Focus ( );
 								// hide grid
 								togglevisibility ( false , "" );
+								SetViewButtons ( 2 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 							}
 							else
 							{
+								Mouse . OverrideCursor = Cursors . Arrow;
 								Utils . Mbox ( this , string1: "The selected stored procedure does not appear to require ANY Arguments..." , string2: "" , caption: "SP Argument check" , iconstring: "\\icons\\Information.png" , Btn1: MB . OK , Btn2: MB . NNULL , defButton: MB . OK );
 								return null;
 							}
@@ -1400,6 +1402,7 @@ namespace WPFPages . Views
 					Console . WriteLine ( $"Db has {Generics . Count} records and {colcount} columns" );
 					//LoadActiveRowsOnlyInGrid ( spViewerGrid , Generics , colcount );
 					LoadActiveRowsOnlyInGrid ( DisplayGrid , Generics , colcount );
+					UpdateUniversalViewer ( );
 					DisplayGrid . SelectedIndex = 0;
 					//spViewerGrid . SelectedIndex = 0;
 					//spViewerGrid . Refresh ( );
@@ -1473,7 +1476,7 @@ namespace WPFPages . Views
 									dr = MessageBox . Show ( "The request succeeded, but the selected SP does not require any Arguments\nDo you want to view the full Script contents ?" , "Sql Information" , MessageBoxButton . YesNo , MessageBoxImage . Information );
 									return null;
 								}
-								DisplayGrid . Visibility = Visibility . Hidden;
+								//DisplayGrid . Visibility = Visibility . Hidden;
 								GridData_Display . Visibility = Visibility . Visible;
 								GridData_Display . Text = buff;
 								CurrentCommandLabel . Text = $"[{SqlCommand}]";
@@ -1485,22 +1488,23 @@ namespace WPFPages . Views
 								}
 								// hide grid
 								togglevisibility ( false , "" );
+								SetViewButtons ( 2 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 							}
 							return null;
 						}
 						// Loads JUST the rows we actually have, not the full 20 columns !!
 						//Much cleaner and more pleasant to view
 						LoadActiveRowsOnlyInGrid ( DisplayGrid , Generics , columncount );
-						//LoadActiveRowsOnlyInGrid ( spViewerGrid , Generics , columncount );
+						UpdateUniversalViewer ( );
 						//Show Grid
-						togglevisibility ( true , GetDbNameFromCommand ( SqlCommand ) );
 						if ( Arguments != "" )
 							DbCopiedResult . Text = $"The Stored Procedure [{SqlCommand} [{Arguments}]] \nwas executed successfuly...";
 						else
 							DbCopiedResult . Text = $"The Stored Procedure [{SqlCommand}] \nwas executed successfuly...";
-						GridData_Display . Visibility = Visibility . Hidden;
 						DisplayGrid . SelectedIndex = 0;
 						DisplayGrid . Visibility = Visibility . Visible;
+						SetViewButtons ( 2 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
+						togglevisibility ( true , GetDbNameFromCommand ( SqlCommand ) );
 						GridCount . Text = DisplayGrid . Items . Count . ToString ( );
 						DisplayGrid . Refresh ( );
 						DisplayGrid . Focus ( );
@@ -1612,11 +1616,13 @@ namespace WPFPages . Views
 					GridData_Display . Text += output;
 					GridData_Display . Text += $"\n\nPress ENTER to execute {SPCombo . SelectedItem . ToString ( ) . ToUpper ( )}\nor ESCAPE to exit the process...\n";
 					GridData_Display . Visibility = Visibility . Visible;
+					SetViewButtons ( 2 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 					GridData_Display . Focus ( );
 				}
 				else
 				{
-					Utils . Mbox ( this , string1: $"Procedure [{SPCombo . SelectedItem . ToString ( ) . ToUpper ( )}] \ndoes not Support / Require any arguments" , string2: "Stored Procedure Arguments" , caption: "" , iconstring: "\\icons\\Information.png" , Btn1: MB . OK , Btn2: MB . NNULL, defButton: MB . OK );
+					Mouse . OverrideCursor = Cursors . Arrow;
+					Utils . Mbox ( this , string1: $"Procedure [{SPCombo . SelectedItem . ToString ( ) . ToUpper ( )}] \ndoes not Support / Require any arguments" , string2: "" , caption: "" , iconstring: "\\icons\\Information.png" , Btn1: MB . OK , Btn2: MB . NNULL , defButton: MB . OK );
 				}
 			}
 			return output;
@@ -1916,14 +1922,18 @@ namespace WPFPages . Views
 				}
 				//spViewerGrid . Visibility = Visibility . Visible;
 				//			DisplayGrid . ItemsSource = Generics;
-				DisplayGrid . Visibility = Visibility . Hidden;
+				//DisplayGrid . Visibility = Visibility . Hidden;
+				ShowGrid . Content = "Show Grid Viewer";
 				GridData_Display . Text = sb . ToString ( );
 				GridData_Display . Visibility = Visibility . Visible;
+				UpdateUniversalViewer ( );
 				// hide grid
 				togglevisibility ( false , "" );
+				SetViewButtons ( 2 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 			}
 			else
 			{
+				Mouse . OverrideCursor = Cursors . Arrow;
 				Utils . Mbox ( this , string1: "SQL request failed...." , string2: "Data error" , caption: "Oops" , iconstring: "\\icons\\error.png" , Btn1: MB . OK , Btn2: MB . NNULL , defButton: MB . OK );
 			}
 			return;
@@ -1941,10 +1951,11 @@ namespace WPFPages . Views
 			ExecuteStoredProcedure ( SqlCommand , Generics , "" , "" , null );
 			LoadActiveRowsOnlyInGrid ( DisplayGrid , Generics , 1 );
 			//			DisplayGrid . ItemsSource = collection;
-			GridData_Display . Visibility = Visibility . Hidden;
+			//GridData_Display . Visibility = Visibility . Hidden;
+			UpdateUniversalViewer ( );
 			DisplayGrid . Visibility = Visibility . Visible;
 			DbCopiedResult . Text = $"Sp [SPGETSTOREDPROCS] command to display Full list of  Stored Procedures in Data Grid completed successfully ...";
-
+			SetViewButtons ( 1 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 			return;
 		}
 		//********************************************************************************************************************************************************************************//
@@ -1999,16 +2010,23 @@ namespace WPFPages . Views
 				{
 					LoadActiveRowsOnlyInGrid ( DisplayGrid , collection , DapperSupport . GetGenericColumnCount ( collection ) );
 					UpdateInfoPanels ( ActiveDbName );
+					UpdateUniversalViewer ( );
 					//Show Grid
 					togglevisibility ( true , GetDbNameFromCommand ( SqlCommand ) );
-					GridData_Display . Visibility = Visibility . Collapsed;
+					GridData_Display . Visibility = Visibility . Hidden;
+					DisplayGrid . Visibility = Visibility . Visible;
+					SetViewButtons ( 1 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 				}
 				else
 				{
 					DisplayGrid . ItemsSource = null;
 					DisplayGrid . Items . Clear ( );
 					SetDumyGridRow ( DisplayGrid );
-					//GridData_Display . Visibility = Visibility . Visible;
+					UpdateUniversalViewer ( );
+					GridData_Display . Visibility = Visibility . Visible;
+					SetViewButtons ( 2 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
+					togglevisibility ( false , GetDbNameFromCommand ( SqlCommand ) );
+					//					TextViewerBtn . Content = "Hide Text Viewer";
 					MessageBox . Show ( "Table cannot be shown, probable reason is that it is currently\nempty as it may just be a ' temporary table ' created by one or \nmore of our Stored procedure(s)" , "Db Table Empty !" , MessageBoxButton . OK , MessageBoxImage . Information );
 				}
 				// Enable view  button
@@ -2024,6 +2042,87 @@ namespace WPFPages . Views
 				MessageBox . Show ( $"SQL ERROR 1125 - {ex . Message}" );
 				SetDumyGridRow ( DisplayGrid );
 				return;
+			}
+		}
+
+		//********************************************************************************************************************************************************************************//
+		private void SetViewButtons ( int caller , bool TextVis , bool GridVis )
+		//********************************************************************************************************************************************************************************//
+		{
+			// caller == 1 grid made the call
+			// caller == 2 text made the call
+			if ( caller == 1 )
+			{ // Grid button hit
+				if ( TextVis == true && GridVis == true )
+				{
+					//	both viewers visible , grid ontop
+					TextViewerBtn . Content = "Show Text Viewer";
+					ShowGrid . Content = "Hide Grid Viewer";
+					GridData_Display . Visibility = Visibility . Hidden;
+					DisplayGrid . Visibility = Visibility . Visible;
+					DisplayGrid . BringIntoView ( );
+				}
+				else if ( TextVis == false && GridVis == false )
+				{
+					//	both  hidden
+					TextViewerBtn . Content = "Show Text Viewer";
+					ShowGrid . Content = "Show Grid Viewer";
+				}
+				else if ( TextVis == true && GridVis == false )
+				{
+					//	Text viewer visible, grid hidden
+					// Showing grid 
+					TextViewerBtn . Content = "Show Text Viewer";
+					ShowGrid . Content = "Hide Grid Viewer";
+					GridData_Display . Visibility = Visibility . Visible;
+					DisplayGrid . Visibility = Visibility . Hidden;
+					GridData_Display . BringIntoView ( );
+				}
+				else if ( TextVis == false && GridVis == true )
+				{
+					//	grid  only visible 
+					TextViewerBtn . Content = "Show Text Viewer";
+					ShowGrid . Content = "Hide Grid Viewer";
+					GridData_Display . Visibility = Visibility . Hidden;
+					DisplayGrid . Visibility = Visibility . Visible;
+					DisplayGrid . BringIntoView ( );
+				}
+			}
+			else    // Text calling
+			{
+				if ( TextVis == true && GridVis == true )
+				{
+					//	both viewers visible , grid ontop
+					TextViewerBtn . Content = "Hide Text Viewer";
+					ShowGrid . Content = "Show Grid Viewer";
+					GridData_Display . Visibility = Visibility . Visible;
+					DisplayGrid . Visibility = Visibility . Hidden;
+					GridData_Display . BringIntoView ( );
+				}
+				else if ( TextVis == false && GridVis == false )
+				{
+					//	both  hidden
+					TextViewerBtn . Content = "Show Text Viewer";
+					ShowGrid . Content = "Show Grid Viewer";
+				}
+				else if ( TextVis == true && GridVis == false )
+				{
+					//	Text viewer visible, grid hidden
+					TextViewerBtn . Content = "Hide Text Viewer";
+					ShowGrid . Content = "Show Grid Viewer";
+					GridData_Display . Visibility = Visibility . Visible;
+					DisplayGrid . Visibility = Visibility . Hidden;
+					GridData_Display . BringIntoView ( );
+				}
+				else if ( TextVis == false && GridVis == true )
+				{
+					//	grid  only visible 
+					TextViewerBtn . Content = "Show Text Viewer";
+					ShowGrid . Content = "Hide Grid Viewer";
+					GridData_Display . Visibility = Visibility . Visible;
+					DisplayGrid . Visibility = Visibility . Hidden;
+					GridData_Display . BringIntoView ( );
+				}
 			}
 		}
 		//********************************************************************************************************************************************************************************//
@@ -2145,13 +2244,6 @@ namespace WPFPages . Views
 			Mouse . SetCursor ( Cursors . Arrow );
 		}
 		//********************************************************************************************************************************************************************************//
-		private void DbToCopyCombo_PreviewMouseLeftButtonDn ( object sender , MouseButtonEventArgs e )
-		//********************************************************************************************************************************************************************************//
-		{
-			//			if ( DbToCopyCombo . IsDropDownOpen == false )
-			//				DbToCopyCombo . IsDropDownOpen = true;
-			e . Handled = false;
-		}
 		//********************************************************************************************************************************************************************************//
 		private void SPCombo_PreviewMouseLeftButtonDn ( object sender , MouseButtonEventArgs e )
 		//********************************************************************************************************************************************************************************//
@@ -2250,8 +2342,10 @@ namespace WPFPages . Views
 		{
 			if ( GridData_Display . Visibility == Visibility . Visible )
 			{
-				GridData_Display . Visibility = Visibility . Hidden;
+				//GridData_Display . Visibility = Visibility . Hidden;
 				DisplayGrid . Visibility = Visibility . Visible;
+				UpdateUniversalViewer ( );
+				SetViewButtons ( 1 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 			}
 		}
 		//********************************************************************************************************************************************************************************//
@@ -2669,6 +2763,7 @@ namespace WPFPages . Views
 
 			// hide grid
 			togglevisibility ( false , "" );
+			SetViewButtons ( 2 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 			GridData_Display . Focus ( );
 		}
 		//********************************************************************************************************************************************************************************//
@@ -2676,7 +2771,10 @@ namespace WPFPages . Views
 		//********************************************************************************************************************************************************************************//
 		{
 			if ( e . Key == Key . Escape )
+			{
 				GridData_Display . Visibility = Visibility . Hidden;
+				SetViewButtons ( 1 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
+			}
 		}
 		//********************************************************************************************************************************************************************************//
 		private void CheckKeyPress ( KeyEventArgs e )
@@ -2696,13 +2794,13 @@ namespace WPFPages . Views
 		private void SpArgsList_KeyDown ( object sender , KeyEventArgs e )
 		//********************************************************************************************************************************************************************************//
 		{
-//			CheckKeyPress ( e );
+			//			CheckKeyPress ( e );
 		}
 		//********************************************************************************************************************************************************************************//
 		private void SpArgsListtbox_MouseDoubleClick ( object sender , MouseButtonEventArgs e )
 		//********************************************************************************************************************************************************************************//
 		{
-//			SpArgsList . Visibility = Visibility . Hidden;
+			//			SpArgsList . Visibility = Visibility . Hidden;
 		}
 		//********************************************************************************************************************************************************************************//
 		private void TextBlock_PreviewKeyDown ( object sender , KeyEventArgs e )
@@ -2714,13 +2812,13 @@ namespace WPFPages . Views
 		private void Button_Click ( object sender , RoutedEventArgs e )
 		//********************************************************************************************************************************************************************************//
 		{
-//			SpArgsList . Visibility = Visibility . Hidden;
+			//			SpArgsList . Visibility = Visibility . Hidden;
 		}
 		//********************************************************************************************************************************************************************************//
 		private void CloseViewer_PreviewMouseDown ( object sender , MouseButtonEventArgs e )
 		//********************************************************************************************************************************************************************************//
 		{
-//			SpArgsList . Visibility = Visibility . Hidden;
+			//			SpArgsList . Visibility = Visibility . Hidden;
 		}
 		//********************************************************************************************************************************************************************************//
 		private void CloseViewer_MouseEnter ( object sender , MouseEventArgs e )
@@ -2827,15 +2925,27 @@ namespace WPFPages . Views
 		{
 
 
+			Mouse . OverrideCursor = Cursors . Arrow;
 			Utils . Mbox (
 				this ,
 					string1: "long Message to show how it wraps in a default message box like this ...." ,
-					string2: "" ,
-					caption: "" ,
+					string2: "This is the lower row of data" ,
+					caption: "This is  the caption at top of dialog" ,
 					iconstring: "\\icons\\Information.png" ,
-					Btn1: MB . OK ,
-					Btn2: MB . NNULL ,
-					defButton: MB . OK );
+					Btn1: MB . YES ,
+					Btn2: MB . NO ,
+					0,0,
+					defButton: MB . NO , false );
+			//Utils . Mbox (
+			//		this ,
+			//			string1: "Short Message to show how it is smaller...." ,
+			//			string2: "" ,
+			//			caption: "" ,
+			//			iconstring: "\\icons\\Information.png" ,
+			//			Btn1: MB .OK ,
+			//			Btn2: MB . NNULL ,
+			//			defButton: MB . OK , true );
+
 
 			//MessageBox . Show ( "" , "" , MessageBoxButton .YesNoCancel, MessageBoxImage.Warning);
 		}
@@ -2848,16 +2958,16 @@ namespace WPFPages . Views
 				string2: "string  2 goes here" ,
 				string3: "This is string3, a full width footer style row that can be used," ,
 				title: "" ,
-				iconstring: "\\icons\\error.png" ,
+				iconstring: "\\icons\\exclaim2.png" ,
 				defButton: 2 ,
 				Btn1: 1 ,
 				Btn2: 2 ,
 				Btn3: 3 ,
 				Btn4: 4 ,
-				btn1Text: "" ,
+				btn1Text: "Ok" ,
 				btn2Text: "Get on with it" ,
 				btn3Text: "Bale out quick" ,
-				btn4Text: ""
+				btn4Text: "Run !!!"
 			     );
 		}
 
@@ -2876,14 +2986,18 @@ namespace WPFPages . Views
 		private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )
 		//********************************************************************************************************************************************************************************//
 		{
+			//Utils . Grab_GetObject ( sender , e );
+			//if ( Utils . ControlsHitList . Count == 0 )
+			//	return;
+
+			e . Handled = true;
 			if ( e . Key == Key . F11 )
 			{
-				if ( Utils . ControlsHitList . Count == 0 )
-					return;
+				var pos = Mouse . GetPosition ( this);
+				Utils . Grab_Object ( sender , pos );
+				//Utils . Grabscreen ( SQLServerCommands , pos, null , sender as Control );
 				Utils . Grabscreen ( SQLServerCommands , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
-				e . Handled = true;
 			}
-
 		}
 
 		//********************************************************************************************************************************************************************************//
@@ -2952,6 +3066,7 @@ namespace WPFPages . Views
 			GridData_Display . Text = output;
 			togglevisibility ( false );
 			CookiesCombo . SelectedItem = DbToCopyCombo . SelectedIndex;
+			SetViewButtons ( 2 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 		}
 
 		//********************************************************************************************************************************************************************************//
@@ -2988,7 +3103,7 @@ namespace WPFPages . Views
 		}
 
 		//********************************************************************************************************************************************************************************//
-		public  void NewCookie_Click ( object sender , RoutedEventArgs e )
+		public void NewCookie_Click ( object sender , RoutedEventArgs e )
 		//********************************************************************************************************************************************************************************//
 		{
 			NewCookie nc = new NewCookie(this);
@@ -3016,12 +3131,13 @@ namespace WPFPages . Views
 			GridData_Display . Text += $"\nFull Details of ALL {total} Cookies \n";
 			GridData_Display . Text += info;
 			GridData_Display . Text += $"\n\nPress Esc or Dbl-Click to hide this viewer...\n";
-			GridData_Display . Visibility = Visibility . Visible;
+			TextViewerBtn . Content = "Hide Text Viewer";
 			// hide grid
 			togglevisibility ( false , "" );
 			DbCopiedResult . Text = $"Show All Cookies Command completed successfully ...";
+			GridData_Display . Visibility = Visibility . Visible;
+			SetViewButtons ( 1 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 			GridData_Display . Focus ( );
-
 		}
 
 		//********************************************************************************************************************************************************************************//
@@ -3032,50 +3148,142 @@ namespace WPFPages . Views
 			string tmp="";
 			string[] flds;
 			ComboBox cb = sender as ComboBox;
-			tmp = cb.SelectedItem . ToString ( );
+			tmp = cb . SelectedItem . ToString ( );
 			string input = CookiesCombo.SelectedItem.ToString();
 			flds = input . Split ( '=' );
 			tmp = flds [ 1 ] . Substring ( 1 , flds [ 1 ] . Length - 2 );
 			//CookiesList =  Cookies . ListAllCookies ( );
 			tmp = Cookies . ShowAllCookieData ( out int total , tmp );
 			GridData_Display . Text = $"\nPress Esc or Dbl-Click to hide this viewer...\n";
-			GridData_Display . Text += $"\nFull Details for Cookie [{flds[1]}]\n\n";
+			GridData_Display . Text += $"\nFull Details for Cookie [{flds [ 1 ]}]\n\n";
 			GridData_Display . Text += tmp;
 			GridData_Display . Text += $"\nPress Esc or Dbl-Click to hide this viewer...\n";
 			GridData_Display . Visibility = Visibility . Visible;
 			// hide grid
 			togglevisibility ( false , "" );
+			SetViewButtons ( 2 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 			GridData_Display . Focus ( );
 		}
 
 		private void ShowTextViewer ( object sender , RoutedEventArgs e )
 		{
 			if ( GridData_Display . Visibility == Visibility . Hidden )
+			{
 				GridData_Display . Visibility = Visibility . Visible;
+				SetViewButtons ( 2 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
+			}
 			else
+			{
 				GridData_Display . Visibility = Visibility . Hidden;
+				SetViewButtons ( 2 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
+			}
 		}
 
 		private void SPCombo_PreviewMouseRightButtonDown ( object sender , MouseButtonEventArgs e )
 		{
 			// Show comments in selected SP
 			string spname = SPCombo . SelectedItem . ToString ( );
-//			SPArguments . Focus ( );
 			SqlCommand = "spGetSpecificSchema";
 			showall = false;
 			string output = GetSpecificSPArguments ( spname , "COMMENTS" , showall );
 			DbCopiedResult . Text = $"Sp [SPGETSPECIFICSCHEMA] command to display comments from currently selected Stored Procedure completed successfully ...";
+			togglevisibility ( false );
+			SetViewButtons ( 2 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
 			e . Handled = true;
 		}
 
 		private void showcomments ( object sender , RoutedEventArgs e )
 		{
-			SPCombo_PreviewMouseRightButtonDown( null, null);
+			SPCombo_PreviewMouseRightButtonDown ( null , null );
 		}
 
 		private void Exit_Click ( object sender , RoutedEventArgs e )
 		{
 			this . Close ( );
+		}
+
+		private void IsMouseMove ( object sender , MouseEventArgs e )
+		{
+			Utils . IsMouseMove ( sender , e );
+		}
+
+		private void DbToCopyCombo_PreviewMouseRightButtonUp ( object sender , MouseButtonEventArgs e )
+		{
+			// Get the data from the selected Db and display it in generic grid
+			// Generic call that wil return the results of any valid SQL select command as an Observable colection<GenericClass>
+			Dictionary < string, string > dic = new Dictionary<string, string>();
+			GenericClass gcc = new GenericClass();
+			ObservableCollection< GenericClass > generic = new ObservableCollection<GenericClass> ( );
+			string errmsg="";
+			generic = DapperGeneric<Dictionary<string , string> , GenericClass , bool> . CreateFromDictionary (
+				 dic ,
+				gcc ,
+				$"select * from {DbToCopyCombo . SelectedItem . ToString ( )}" ,
+				 ref errmsg );
+
+			if ( errmsg != "" )
+			{
+				MessageBox . Show ( $"The SQL Query you entered returned the following Error ?\n\n[{errmsg . ToUpper ( )}]" , "SQL error?" );
+				Mouse . OverrideCursor = Cursors . Arrow;
+				return;
+			}
+			if ( generic . Count == 0 )
+			{
+				Mouse . OverrideCursor = Cursors . Arrow;
+				Utils . Mbox ( this ,
+					string1: $"The selected Data table \n\n[{DbToCopyCombo . SelectedItem . ToString ( ) . ToUpper ( )}] \n\nwas read successfully but returned Zero records" ,
+					caption: "Sql Error" ,
+					Btn1: mb . OK ,
+					Btn2: mb . NNULL ,
+					defButton: mb . OK );
+
+				Mouse . OverrideCursor = Cursors . Arrow;
+			}
+			DisplayGrid . ItemsSource = null;
+			DisplayGrid . Items . Clear ( );
+			DisplayGrid . ItemsSource = generic;
+			DisplayGrid . SelectedIndex = 0;
+			DisplayGrid . Visibility = Visibility . Visible;
+			UpdateUniversalViewer ( );
+			togglevisibility ( true , DbToCopyCombo . SelectedItem . ToString ( ) . ToUpper ( ) );
+			SetViewButtons ( 1 , ( GridData_Display . Visibility == Visibility . Visible ? true : false ) , ( DisplayGrid . Visibility == Visibility . Visible ? true : false ) );
+			DisplayGrid . Refresh ( );
+			DisplayGrid . Focus ( );
+			e . Handled = true;
+			return;
+		}
+
+		private void FullGridView_Click ( object sender , RoutedEventArgs e )
+		{
+			// load the new Edit Window that lets the data from a GenericClass grid entry to be edited and even saved to a table
+			// Setup the Datagrid here after load but before show
+			Mouse . OverrideCursor = Cursors . Wait;
+			FullGridViewer fgv = new FullGridViewer( );
+			// pass to the View window grid the itemssource for the table selected so it can display it...
+			fgv . UniversalGrid . ItemsSource = DisplayGrid.ItemsSource;
+			string rec  = DisplayGrid.SelectedItem.ToString();
+			fgv . currec = rec;
+			// Set the total recs counter on the viewer window
+			FullGridViewer . reccount = Generics . Count;
+			// show Table name on viewer window
+			FullGridViewer . Tablename = BankNameLabel.Text;
+
+			// save a pointer ot the viewer window in global
+			fgviewer = fgv;
+			fgv . Show ( );
+			Mouse . OverrideCursor = Cursors . Arrow;
+		}
+		public void UpdateUniversalViewer ( )
+		{
+			if ( defvars . FullViewer )
+			{
+				fgviewer . UniversalGrid . ItemsSource = DisplayGrid . ItemsSource;
+				FullGridViewer . reccount = Generics . Count;
+				fgviewer . UniversalGrid_Loaded1 (null, null );
+				string tmp = BankNameLabel . Text != "" ? BankNameLabel . Text : "Unknown";
+				fgviewer . Title = $"Full Grid Viewer : DB : [{tmp}]";
+				fgviewer . Refresh ( );
+			}
 		}
 	}
 	//private void ButtonTesting_MouseMove ( object sender , MouseEventArgs e )

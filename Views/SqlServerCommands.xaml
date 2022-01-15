@@ -9,6 +9,7 @@
          mc:Ignorable="d"
 	  Loaded="Window_Loaded"
 	  MouseRightButtonUp="Window_MouseRightButtonUp"
+	  MouseMove="IsMouseMove"
 	  PreviewKeyDown="Window_PreviewKeyDown"
 	  WindowStartupLocation="CenterScreen"
 	  ResizeMode="CanResizeWithGrip"
@@ -65,7 +66,7 @@
 				<Setter.Value>
 					<ControlTemplate TargetType="{x:Type Thumb}">
 						<Border x:Name="rectangle" 
-								Height="{TemplateBinding Height}" 
+							Height="{TemplateBinding Height}" 
 							SnapsToDevicePixels="True"
 							CornerRadius="0"
 							Width="{TemplateBinding Width}" />
@@ -597,7 +598,6 @@
 			<!--// Db Tables combo-->
 			<ComboBox x:Name="DbToCopyCombo" 
 					Background="{StaticResource Green2}"
-					BorderThickness="0"
 					Height="20"
 					ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle1}" 			    
 					IsEditable="False"   
@@ -605,10 +605,11 @@
 					MouseDoubleClick="DbToCopyCombo_MouseDoubleClick"
 					Margin="98,38,26,12" 
 					OverridesDefaultStyle="False"	   			
-					PreviewMouseLeftButtonDown="DbToCopyCombo_PreviewMouseLeftButtonDn"
+					PreviewMouseRightButtonUp="DbToCopyCombo_PreviewMouseRightButtonUp"
 					SelectedItem="0"	  			   
 					SelectionChanged="DbToCopyCombo_SelectionChanged"
-					Template="{StaticResource ComboBoxEditableTemplate}" Width="106"/>
+					Template="{StaticResource ComboBoxEditableTemplate}" Width="106"
+					ToolTip="Right click in Combo to show data in Grid Viewer..."/>
 
 
 			<TextBlock x:Name="textBlock_Copy" 
@@ -652,8 +653,7 @@
 		<ComboBox x:Name="CookiesCombo" 
 			Background="{StaticResource Blue0}"			    
 			Foreground="{StaticResource Red5}"
-			BorderThickness="0"
-			    MinWidth="200"
+		    MinWidth="200"
 			Grid.Row="2"
 			Grid.Column="2"
 			Grid.ColumnSpan="2"
@@ -963,7 +963,6 @@
 			  PreviewMouseLeftButtonUp="DbToCopy_PreviewMouseLeftButtonUp"
 			  VerticalContentAlignment="Center"
 			  Margin="3,5,0,5"
-			  Text="spLoadFullDetails" 
 			  TextWrapping="Wrap" 
 			   Visibility="Collapsed"
 			  Width="92" />
@@ -1021,9 +1020,10 @@
 			Width="140" 
 			   />
 
-		<Button  x:Name="XXXXX"
+		<Button  x:Name="FullGridView"
 			Background="{StaticResource Red5}"
-			Content="XXXXXX"
+			   Click="FullGridView_Click"
+			Content="Full Grid Viewer"
 			Foreground="{StaticResource Yellow1}" 
 			Grid.Column="4"
 			Grid.Row="5"
@@ -1098,7 +1098,7 @@
 					AlternatingRowBackground="{StaticResource Cyan8}"
 					AutoGenerateColumns="True"
 					Background="{StaticResource Blue6}"
-					BorderBrush="#9AFF0000"		 	
+					BorderBrush="Red"		 	
 					CanUserAddRows="False"
 					CanUserDeleteRows="False"
 					CanUserResizeColumns="true"
@@ -1197,10 +1197,9 @@
 			PreviewKeyDown="GridData_Display_PreviewKeyDown"
 			Margin="3,10,24,0"
 			Padding="8"
-			Panel.ZIndex="3"			   
+			Panel.ZIndex="1"			   
 			MouseDoubleClick="GridData_Display_MouseDoubleClick"
 			TextAlignment="Left"
-			Text="spLoadFullDetails" 
 			TextWrapping="NoWrap" 
 			ToolTipService.HasDropShadow="true"
 			ToolTipService.InitialShowDelay="1500"
@@ -1405,7 +1404,6 @@
 		<!--MenuAttachedProperties control all dropdown items-->
 		<Menu x:Name="Mainmenu" 
 			Background="Black"		
-			BorderThickness="0"
 			Grid.Column="1" 
 			Grid.ColumnSpan="3"
 			Height="30"
@@ -1418,7 +1416,6 @@
 			local:MenuAttachedProperties.MenuFontSize="14"
 			local:MenuAttachedProperties.MenuFontWeight="Normal"
 			local:MenuAttachedProperties.MenuItemBorderColor="{StaticResource Black0}"
-			local:MenuAttachedProperties.MenuItemBorderThickness="0"
 			local:MenuAttachedProperties.MenuItemHeight ="24"
 			local:MenuAttachedProperties.MenuItemMargin="0"
 			local:MenuAttachedProperties.MenuDropdownWidth ="200"
@@ -1432,7 +1429,6 @@
 			<!--// Foreground controls MAIN menu items foreground color-->
 			<MenuItem  Header="Options" 
 				Background="Black"
-				BorderThickness="0"
 				Foreground="{StaticResource White0}"
 				Click="Option1_Click"
 				FontSize="16" 
@@ -1449,9 +1445,6 @@
 					</MenuItem.Icon>
 				</MenuItem>
 
-				<!--Template="{StaticResource MenuItemControlTemplate1}">-->
-				<!--<Image Source="/icons/cursor-arrow.png"
-						  Height="40" Width="40"/>-->
 				<MenuItem Header="Refresh Both Dropdowns" 
 					Click="RefreshLists_Click"
 					FontSize="16" 
@@ -1482,7 +1475,6 @@
 			</MenuItem>
 			<MenuItem Header="Info!" 
 				Background="Black"
-				BorderThickness="0"
 				Foreground="{StaticResource Orange3}"
 				Click="info_Click"
 				FontSize="16" 
@@ -1490,7 +1482,6 @@
 				Style="{StaticResource MenuItemStyle1}"
 				Width="55"/>
 			<MenuItem Header="Help ?" 
-				BorderThickness="0"
 				Background="Black"
 				Foreground="{StaticResource Green2}"
 				Click="Help_Click"
@@ -1499,7 +1490,6 @@
 				Style="{StaticResource MenuItemStyle1}" 
 				Width="60"/>
 			<MenuItem Header="Exit..." 
-				BorderThickness="0"
 				Background="Black"
 				Foreground="{StaticResource Red1}"
 				Click="Exit_Click"
@@ -1603,7 +1593,7 @@
 
 		<Button  x:Name="TextViewerBtn"
 			Click="ShowTextViewer"
-			Content="Toggle Text View"
+			Content="Show Text View"
 			FontSize="14"
 			Foreground="{StaticResource TextWhiteToBlackHorizontal4}"
 			Grid.Column="4" 

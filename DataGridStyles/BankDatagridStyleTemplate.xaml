@@ -144,8 +144,8 @@
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
                               <!--<Setter Property="Background" Value="{StaticResource Red1}" />-->
-                              <Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green4}"/>
-                              <Setter Property="Foreground" Value="{StaticResource Black0}" />
+                              <Setter Property="Background" Value="DarkGreen"/>
+                              <Setter Property="Foreground" Value="{StaticResource White0}" />
                         </MultiDataTrigger.Setters>
                   </MultiDataTrigger>
 
@@ -285,8 +285,8 @@
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
                               <!--<Setter Property="Background" Value="{StaticResource Red1}" />-->
-                              <Setter Property="Background" Value="{Binding Converter={StaticResource Resource2BrushConvert}, ConverterParameter=Magenta4}"/>
-                              <Setter Property="Foreground" Value="{StaticResource Black0}" />
+                              <Setter Property="Background" Value="{Binding Converter={StaticResource Resource2BrushConvert}, ConverterParameter=Magenta0}"/>
+                              <Setter Property="Foreground" Value="{StaticResource White0}" />
                         </MultiDataTrigger.Setters>
                   </MultiDataTrigger>
 

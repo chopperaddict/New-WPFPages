@@ -34,14 +34,23 @@ namespace WPFPages . Views
 				EventControl . BankDataLoaded += EventControl_BankDataLoaded;
 				Utils . LoadBankDbGeneric ( bvm: SqlBankcollection , Notify: true , maxrecords: 200 );
 				Mouse . OverrideCursor = System . Windows . Input . Cursors . Arrow;
-				MouseMove += Utils . Grab_MouseMove;
+				MouseMove += Grab_MouseMove;
 				KeyDown += Window_PreviewKeyDown;
 			}
 		}
+		private void Grab_MouseMove ( object sender , MouseEventArgs e )
+		{
+			if ( e . LeftButton == MouseButtonState . Pressed )
+				Utils . Grab_MouseMove ( sender , e );
+			e . Handled = true;
+		}
+
 		private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )
 		{
 			if ( e . Key == Key . F11 )
 			{
+				var pos = Mouse . GetPosition ( this);
+				Utils . Grab_Object ( sender , pos );
 				if ( Utils . ControlsHitList . Count == 0 )
 					return;
 				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );

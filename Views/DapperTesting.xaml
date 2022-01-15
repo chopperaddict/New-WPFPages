@@ -7,7 +7,7 @@
         xmlns:ctrl="clr-namespace:WPFPages.UserControls"
         mc:Ignorable="d"
   	  ResizeMode="CanResizeWithGrip"
- 
+ 	  MouseMove="ChecksMouseMove"
 	  Loaded="Window_Loaded"
         Title="Dapper Db Testing using various Methods incl. M$SQL Stored Procedures" 
 	  Height="860" Width="1200"

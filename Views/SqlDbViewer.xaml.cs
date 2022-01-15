@@ -355,6 +355,12 @@ namespace WPFPages
 		{
 			// dummy constructor fpr pre=loading
 		}
+		private void ChecksMouseMove ( object sender , MouseEventArgs e )
+		{
+			e . Handled = true;
+			if ( e . RightButton == MouseButtonState . Pressed )
+				return;
+		}
 
 		//Dummy Constructor for Event handlers
 		//*************************************************************************************************************//
@@ -533,8 +539,15 @@ namespace WPFPages
 			IsLoading = false;
 			if ( WaitMessage . Visibility == Visibility . Visible )
 				WaitMessage . Visibility = Visibility . Collapsed;
-			MouseMove += Utils . Grab_MouseMove;
+			MouseMove += Grab_MouseMove;
 		}
+		private void Grab_MouseMove ( object sender , MouseEventArgs e )
+		{
+			if ( e . LeftButton == MouseButtonState . Pressed )
+				Utils . Grab_MouseMove ( sender , e );
+			e . Handled = true;
+		}
+
 
 		public DragDropEffects DragEffects = new DragDropEffects ( );
 
@@ -6802,6 +6815,7 @@ namespace WPFPages
 			{
 				IsLeftButtonDown = true;
 			}
+			//e . Handled = true;
 
 		}
 

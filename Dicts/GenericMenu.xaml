@@ -134,87 +134,9 @@
 					Value="{Binding Path=(local1:MenuAttachedProperties.MenuFontSize) ,
 					RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
 			</Trigger>
-
-			<!--Value="{Binding Path=(local1:MenuAttachedProperties.MenuItemBackground) ,
-					RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>-->
-
-			<!--<Trigger Property="IsHighlighted" Value="False">
-				<Setter TargetName="templateRoot" 
-                            Property="Background" 
-                            Value="Orange"/>-->
-				<!--Value="{Binding (local1:MenuAttachedProperties.MenuItemSelectedBackground) ,
-                            RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>-->
-
-				<!--<Setter TargetName="menuHeaderContainer"
-                            Property="TextBlock.Foreground" 
-                            Value="{Binding Path=(local1:MenuAttachedProperties.MenuItemSelectedForeground) ,
-                            RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
-				<Setter TargetName="menuHeaderContainer" 
-                            Property="TextBlock.FontSize" 
-                            Value="{Binding Path=(local1:MenuAttachedProperties.MenuFontSize) ,
-                            RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
-				--><!--<Setter TargetName="templateRoot" Property="TextElement.Foreground" Value="{StaticResource White0}" />--><!--
-				<Setter TargetName="menuHeaderContainer" 
-                            Property="TextBlock.FontWeight" 
-                            Value="{Binding Path=(local1:MenuAttachedProperties.MenuFontWeight) ,
-                            RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>-->
-			<!--</Trigger>-->
-			<!--// This Colors the MenuIten's Background when Mouse is over it-->
-			<!--<Trigger Property="IsHighlighted" Value="false">
-				<Setter TargetName="templateRoot" 
-                            Property="TextElement.Foreground" 
-                            Value="{StaticResource Black3}"/>
-				<Setter TargetName="templateRoot" 
-                            Property="Background" 
-                            Value="{StaticResource HorizontalGreenGradient}"/>-->
-
-
-					<!--Value="{Binding (local1:MenuAttachedProperties.MenuItemSelectedBackground) ,
-                            RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>-->
-				
-				<!--<Setter TargetName="menuHeaderContainer"
-                            Property="TextBlock.Foreground" 
-                            Value="{Binding Path=(local1:MenuAttachedProperties.MenuItemSelectedForeground) ,
-                            RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
-				<Setter TargetName="menuHeaderContainer" 
-                            Property="TextBlock.FontSize" 
-                            Value="{Binding Path=(local1:MenuAttachedProperties.MenuFontSize) ,
-                            RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
-				--><!--<Setter TargetName="templateRoot" Property="TextElement.Foreground" Value="{StaticResource White0}" />--><!--
-				<Setter TargetName="menuHeaderContainer" 
-                            Property="TextBlock.FontWeight" 
-                            Value="{Binding Path=(local1:MenuAttachedProperties.MenuFontWeight) ,
-                            RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>-->
-			<!--</Trigger>-->
-
-			<!--Menu item is Disabled-->
-			<!--<Trigger Property="IsHighlighted" Value="False">
-				<Setter TargetName="templateRoot" Property="Background" Value="{StaticResource  HorizontalGreenGradient}" />
-				<Setter TargetName="Glyph" Property="Fill" Value="{StaticResource Menu.Disabled.Foreground}" />
-			</Trigger>-->
-			<!--<MultiTrigger>
-				<MultiTrigger.Conditions>
-					<Condition Property="IsHighlighted" Value="false"/>
-				</MultiTrigger.Conditions>
-				<Setter TargetName="templateRoot" Property="Background" Value="{StaticResource HorizontalGreenGradient}" />
-				<Setter TargetName="templateRoot" Property="BorderBrush" Value="{StaticResource White0}" />
-			</MultiTrigger>
-			<MultiTrigger>
-				<MultiTrigger.Conditions>
-					<Condition Property="IsHighlighted" Value="True"/>
-				</MultiTrigger.Conditions>
-				<Setter TargetName="templateRoot" Property="Background" Value="{StaticResource HorizontalBlueGradient}" />
-				<Setter TargetName="templateRoot" Property="BorderBrush" Value="{StaticResource Black0}" />
-			</MultiTrigger>
-			<MultiTrigger>
-				<MultiTrigger.Conditions>
-					<Condition Property="IsHighlighted" Value="True"/>
-					<Condition Property="IsEnabled" Value="False"/>
-				</MultiTrigger.Conditions>
-				<Setter TargetName="templateRoot" Property="Background" Value="{StaticResource MenuItem.Highlight.Disabled.Background}" />
-				<Setter TargetName="templateRoot" Property="BorderBrush" Value="{StaticResource MenuItem.Highlight.Disabled.Border}" />
-			</MultiTrigger>-->
-		</ControlTemplate.Triggers>
+			</ControlTemplate.Triggers>
 	</ControlTemplate>
+
+
 
 </ResourceDictionary>

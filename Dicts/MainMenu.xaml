@@ -3,8 +3,7 @@
 
 	xmlns:local="clr-namespace:WPFPages.Views">
 
-	<!--// Menu colors and style/Templates-->
-
+	
 	<!--Standard menu item seperator-->
 	<Style x:Key="Menu_Separator" TargetType="{x:Type Separator}">
 		<Setter Property="Margin" Value="0,0,0,0" />
@@ -21,71 +20,6 @@
 		</Setter>
 	</Style>
 
-	<!--#region solid color brushes-->
-	<SolidColorBrush x:Key="White0" Color="#ffffff" />
-	<SolidColorBrush x:Key="White1" Color="#eeeeee" />
-	<SolidColorBrush x:Key="White2" Color="#D6FFFFFF" />
-	<SolidColorBrush x:Key="White3" Color="#8AFFFFFF" />
-	<SolidColorBrush x:Key="White4" Color="#61FFFFFF" />
-
-	<SolidColorBrush x:Key="Black0" Color="#000000" />
-	<SolidColorBrush x:Key="Black1" Color="#222222" />
-	<SolidColorBrush x:Key="Black2" Color="#333333" />
-	<SolidColorBrush x:Key="Black3" Color="#444444" />
-	<SolidColorBrush x:Key="Black4" Color="#555555" />
-
-	<SolidColorBrush x:Key="Gray0" Color="#605E60" />
-	<SolidColorBrush x:Key="Gray1" Color="#858485" />
-	<SolidColorBrush x:Key="Gray2" Color="#A9A9AA" />
-	<SolidColorBrush x:Key="Gray3" Color="#CAC9CB" />
-	<SolidColorBrush x:Key="Gray4" Color="#EFEEEF" />
-
-	<SolidColorBrush x:Key="Orange0" Color="#F89B05" />
-	<SolidColorBrush x:Key="Orange1" Color="#F9AB2E" />
-	<SolidColorBrush x:Key="Orange2" Color="#F9BC59" />
-	<SolidColorBrush x:Key="Orange3" Color="#FACF8A" />
-	<SolidColorBrush x:Key="Orange4" Color="#F9E3C0" />
-
-
-	<SolidColorBrush x:Key="Yellow4" Color="#FFFFFF00" />
-	<SolidColorBrush x:Key="Yellow3" Color="#FFFFCB00" />
-	<SolidColorBrush x:Key="Yellow2" Color="#FFFFA400" />
-	<SolidColorBrush x:Key="Yellow1" Color="#86FFA100" />
-	<SolidColorBrush x:Key="Yellow0" Color="#86FF7400" />
-
-	<SolidColorBrush x:Key="Green0" Color="Green" />
-	<SolidColorBrush x:Key="Green1" Color="#57FA2F" />
-	<SolidColorBrush x:Key="Green2" Color="#79FB59" />
-	<SolidColorBrush x:Key="Green3" Color="#A5FB90" />
-	<SolidColorBrush x:Key="Green4" Color="#CEFCC3" />
-
-
-	<SolidColorBrush x:Key="Red0" Color="Red" />
-	<SolidColorBrush x:Key="Red1" Color="#Fa5F67" />
-	<SolidColorBrush x:Key="Red2" Color="#FD8F67" />
-	<SolidColorBrush x:Key="Red3" Color="#FAB197" />
-	<SolidColorBrush x:Key="Red4" Color="#FBD7CA" />
-
-
-	<SolidColorBrush x:Key="Cyan0" Color="Cyan" />
-	<SolidColorBrush x:Key="Cyan1" Color="#35F6FB" />
-	<SolidColorBrush x:Key="Cyan2" Color="#6AF7FB" />
-	<SolidColorBrush x:Key="Cyan3" Color="#9AF8FB" />
-	<SolidColorBrush x:Key="Cyan4" Color="#CCFAFB" />
-
-
-	<SolidColorBrush x:Key="Blue0" Color="Blue" />
-	<SolidColorBrush x:Key="Blue1" Color="#344DFD" />
-	<SolidColorBrush x:Key="Blue2" Color="#6578FD" />
-	<SolidColorBrush x:Key="Blue3" Color="#96A3FB" />
-	<SolidColorBrush x:Key="Blue4" Color="#7fbff0" />
-
-	<SolidColorBrush x:Key="Magenta0" Color="Magenta" />
-	<SolidColorBrush x:Key="Magenta1" Color="#E136FB" />
-	<SolidColorBrush x:Key="Magenta2" Color="#E976FC" />
-	<SolidColorBrush x:Key="Magenta3" Color="#EE90FD" />
-	<SolidColorBrush x:Key="Magenta4" Color="#F4C6FB" />
-	<!--#endregion solid color brushes-->
 
 	<!--Styles for menuitems-->
 	<Style x:Key="MenuItemRed" TargetType="{x:Type MenuItem}">

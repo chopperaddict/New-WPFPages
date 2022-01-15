@@ -13,10 +13,13 @@ using System . Windows . Input;
 using System . Windows . Media;
 using System . Windows . Media . Converters;
 using System . Windows . Media . Imaging;
+using System . Windows . Shapes;
 
 using WPFPages . AttachedProperties;
 using WPFPages . Converts;
 using WPFPages . Views;
+
+using static System . Net . Mime . MediaTypeNames;
 
 namespace WPFPages . Views
 {
@@ -26,6 +29,9 @@ namespace WPFPages . Views
 	public partial class Msgbox : Window
 	{
 		System . Drawing . Image image { set; get; }
+		public static string Iconstring { get; set; }
+		//public Thickness bordersize { get; set; }
+		//public Thickness borderSizeDefault { get; set; }
 
 		#region rowdata
 
@@ -36,32 +42,44 @@ namespace WPFPages . Views
 
 		#endregion rowdata
 
-		#region buttondata
+		#region button text data Properties
 		private string Btn1Text { get; set; }
 		private string Btn2Text { get; set; }
 		private string Btn3Text { get; set; }
 		private string Btn4Text { get; set; }
-		private Brush Borderbrush { get; set; }
+
+
+		#endregion buttondata
+
+		#region General declarations (Brushes and button arrays)
+		//private Brush Borderbrush { get; set; }
+		//private Brush BorderbrushDefault { get; set; }
+		//static Brush Btnbackground;               // Std button Background
+		//static Brush Btnforeground;               // Std button Foreground
+		//static Brush BtnMbackground;        // Mouseover button Background
+		//static Brush BtnMforeground;        // Mouseover button Foreground
+		//static Brush DefBtnbackground;        // Defaullt Button Background
+		//static Brush DefBtnforeground;         // Default Button Foreground
+
 
 		private int[] btnsarray = new int[4];
 		private string [ ] btnstextarray = { "","","",""};
 
-		static Brush Btnbackground;               // Std button Background
-		static Brush Btnforeground;               // Std button Foreground
-		static Brush BtnMbackground;        // Mouseover button Background
-		static Brush BtnMforeground;        // Mouseover button Foreground
-		static Brush DefBtnbackground;        // Defaullt Button Background
-		static Brush DefBtnforeground;         // Default Button Foreground
-		static Brush bordercolor;                       // Default Button border color
-
-		#endregion buttondata
-
 		private bool  IsTabbing=false;
-		private int  DefaultButton = 0;
 		private int  CurrentButton = 0;
+		private int  DefaultButton = 0;
 		private Border DefBorder;
 		private bool isShiftDown = false;
 		private int TabPass=0;
+
+		#endregion General declarations
+
+		#region keyhits
+		public static string key1 { get; set; }
+		public static string key2 { get; set; }
+		public static string key3 { get; set; }
+		public static string key4 { get; set; }
+		#endregion keyhits
 
 		#region Setup
 		public Msgbox ( ) { }
@@ -111,15 +129,6 @@ namespace WPFPages . Views
 				);
 			DlgInput . MsgboxWin = this;
 		}
-		//private void ConfigureCurrentColors ( )
-		//{
-		//	//Setup our attached properties from DlgInput structure
-		//	SetValue( BackGroundProperty, DlgInput . bground );
-		//	SetValue( ForegroundProperty, DlgInput . bforeground );
-		//	SetValue ( MouseoverForeGroundProperty, DlgInput . mousefground );
-		//	SetValue ( MouseoverBackGroundProperty, DlgInput . mousebground );
-		//	SetValue (  BorderSizeProperty, DlgInput . border );
-		//}
 		private void LoadWindow (
 			string caption ,
 			string string1 ,
@@ -139,8 +148,12 @@ namespace WPFPages . Views
 				)
 		{
 			// get data for current configuration parameters from disk file
-			ReadMsgboxData ( );
+
+			ReadMsgboxData ( 1 );
+			ReadMsgboxData ( 2 );
 			CheckForInitialDefaultSettings ( );
+			Iconstring = iconstring;
+			DlgInput . MsgboxWin = this;
 			btnsarray [ 0 ] = Btn1;
 			btnsarray [ 1 ] = Btn2;
 			btnsarray [ 2 ] = Btn3;
@@ -152,19 +165,31 @@ namespace WPFPages . Views
 				{
 					case 0:
 						if ( btn1Text != "" )
+						{
 							btnstextarray [ indx++ ] = btn1Text;
+							key1 = btn1Text . Substring ( 0 , 1 ) . ToUpper ( );
+						}
 						break;
 					case 1:
 						if ( btn2Text != "" )
+						{
 							btnstextarray [ indx++ ] = btn2Text;
+							key2 = btn2Text . Substring ( 0 , 1 ) . ToUpper ( );
+						}
 						break;
 					case 2:
 						if ( btn3Text != "" )
+						{
 							btnstextarray [ indx++ ] = btn3Text;
+							key3 = btn3Text . Substring ( 0 , 1 ) . ToUpper ( );
+						}
 						break;
 					case 3:
 						if ( btn4Text != "" )
+						{
 							btnstextarray [ indx++ ] = btn4Text;
+							key4 = btn4Text . Substring ( 0 , 1 ) . ToUpper ( );
+						}
 						break;
 				}
 			}
@@ -172,14 +197,65 @@ namespace WPFPages . Views
 			// set up the buttons text
 			if ( caption != "" )
 				Caption . Text = caption;
-			if ( btn1Text != "" )
+
+			#region setup button text
+			if ( btn1Text != "" ) // OK
+			{
 				Btn1Text = btn1Text;
-			if ( btn2Text != "" )
+				key1 = btn1Text . Substring ( 0 , 1 );
+				btnstextarray [ 0 ] = btn1Text;
+			}
+			else
+			{
+				Btn1Text = "Ok";
+				btn1Text = Btn1Text;
+				key1 = "O";
+				btnstextarray [ 0 ] = Btn1Text;
+			}
+
+			if ( btn2Text != "" )   // YES`
+			{
 				Btn2Text = btn2Text;
-			if ( btn3Text != "" )
+				key2 = btn2Text . Substring ( 0 , 1 );
+				btnstextarray [ 1 ] = btn2Text;
+			}
+			else
+			{
+				Btn2Text = "Yes";
+				btn2Text = Btn2Text;
+				key2 = "Y";
+				btnstextarray [ 1 ] = Btn2Text;
+			}
+
+			if ( btn3Text != "" )   // NO``
+			{
 				Btn3Text = btn3Text;
-			if ( btn4Text != "" )
+				key3 = btn3Text . Substring ( 0 , 1 );
+				btnstextarray [ 2 ] = btn3Text;
+			}
+			else
+			{
+				Btn3Text = "No";
+				btn3Text = Btn3Text;
+				key3 = "N";
+				btnstextarray [ 2 ] = Btn3Text;
+			}
+
+			if ( btn4Text != "" )         // Cancel
+			{
 				Btn4Text = btn4Text;
+				key4 = btn4Text . Substring ( 0 , 1 );
+				btnstextarray [ 3 ] = btn4Text;
+			}
+			else
+			{
+				Btn4Text = "Cancel";
+				btn4Text = Btn4Text;
+				key4 = "C";
+				btnstextarray [ 3 ] = Btn4Text;
+			}
+
+			#endregion setup button text
 
 			CurrentButton = defButton;
 			DefaultButton = CurrentButton;
@@ -194,7 +270,10 @@ namespace WPFPages . Views
 
 			//Set Title bar
 			this . Title = title == "" ? this . Title : title;
-
+			Button1 . Visibility = Visibility . Collapsed;
+			Button2 . Visibility = Visibility . Collapsed;
+			Button3 . Visibility = Visibility . Collapsed;
+			Button4 . Visibility = Visibility . Collapsed;
 			// now decide which buttons are to be shown from a total of 4
 			for ( int i = 0 ; i < 4 ; i++ )
 			{
@@ -218,43 +297,96 @@ namespace WPFPages . Views
 						break;
 				}
 			}
-			CheckForFinalDefaultSettings ( iconstring );
-			this . MouseWheel += Custom_MouseWheel;
-			MouseMove += Utils . Grab_MouseMove;
-			KeyDown += Window_PreviewKeyDown;
-		}
-		private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )
-		{
-			if ( e . Key == Key . F11 )
+			// Check  for iconstring !!
+			CheckForFinalDefaultSettings ( Iconstring );
+			string path = "";
+			// sort out the icon
+			string icostr = Iconstring . ToUpper ( );
+			if ( icostr . Contains ( "EXCLAIM" ) || icostr . Contains ( "GREEN" ) )
+				HiliteBorder . BorderBrush = FindResource ( "Green6" ) as SolidColorBrush;
+			
+			else if ( icostr  . Contains ( "ERROR" ) || icostr . Contains ( "RED" ))
 			{
-				if ( Utils . ControlsHitList . Count == 0 )
-					return;
-				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
+				HiliteBorder . BorderBrush = FindResource ( "Red6" ) as SolidColorBrush;
+				Caption.Foreground = FindResource ( "White0" ) as SolidColorBrush;
 			}
+			
+			else if ( icostr . Contains ( "WARN" ) || icostr . Contains ( "YELLOW" ) )
+				HiliteBorder . BorderBrush = FindResource ( "Yellow0" ) as SolidColorBrush;
+			
+			else if ( icostr . Contains ( "INFO" ) || icostr . Contains ( "BLUE" ))
+				HiliteBorder . BorderBrush = FindResource ( "Blue6" ) as SolidColorBrush;
+
+			Caption . Background = HiliteBorder . BorderBrush;
+//			BoxIcon . Source = new BitmapImage ( new Uri ( Iconstring , UriKind . RelativeOrAbsolute ) );
+//			BoxIcon . UpdateLayout ( );
+
+			//if ( icostr . Contains ( "INFO" ) || icostr. ToUpper ( ) . Contains ( "EXCLAIM" ) )
+			//	Iconstring = "INFO";
+			//else if ( icostr . Contains ( "WARN" ) )
+			//	Iconstring = "WARN";
+			//else if ( icostr . Contains ( "ERROR" ) )
+			//	Iconstring = "INFOERROR";
+//			SetupCaptionColor ( Iconstring );
+//			BoxIcon . Visibility = Visibility . Visible;
+
+			this . MouseWheel += Custom_MouseWheel;
+			MouseMove += Grab_MouseMove;
+			KeyDown += Window_PreviewKeyDown;
+//			BoxIcon . Visibility = Visibility . Visible;
 		}
 
+		private void SetupCaptionColor ( string errtype )
+		{
+			if ( errtype . ToUpper ( ) . Contains ( "ERROR" ) )
+				Caption . Background = new SolidColorBrush ( Colors . Red );
+			else if ( errtype . ToUpper ( ) . Contains ( "INFO" ) )
+				Caption . Background = FindResource( "Green6") as SolidColorBrush; 
+			else if ( errtype . ToUpper ( ) . Contains ( "WARN" ) )
+				Caption . Background = new SolidColorBrush ( Colors . Orange );
+		}
+
+
+		#endregion Setup
+
 		//Set up the basic Dlg colors etc
+		#region initialization
 		public void CheckForInitialDefaultSettings ( )
 		{
 
 			Console . WriteLine ( $"Processing CheckForInitialDefaultSettings in Msgbox.cs...." );
 			if ( DlgInput . UseDarkMode )
 			{
-				DlgInput . dlgbackground = "#FF000000" . ToSolidBrush ( );
-				DlgInput . Btnborder = FindResource ( "Yellow1" ) as Brush;
-				DlgInput . mouseforeground = FindResource ( "White0" ) as Brush;
-				DlgInput . btnbackground = FindResource ( "Blue1" ) as Brush;
-				DlgInput . btnforeground = FindResource ( "White0" ) as Brush;
+				// always set these fr dark mode
+				DlgInput . dlgbackground = "#F5374340" . ToSolidBrush ( );         // off Black
+				DlgInput . dlgforeground = FindResource ( "White0" ) as Brush;
 				if ( DlgInput . Btnborder == null )
-					DlgInput . Btnborder = "#E9FFF100" . ToSolidBrush ( ); // Yellow
-				DlgInput . mousebackground = FindResource ( "Yellow1" ) as Brush;
+					DlgInput . Btnborder = FindResource ( "Yellow1" ) as Brush;
+				if ( DlgInput . Btnmouseforeground == null )
+					DlgInput . Btnmouseforeground = FindResource ( "White0" ) as Brush;
+				if ( DlgInput . btnbackground == null )
+					DlgInput . btnbackground = FindResource ( "Red1" ) as Brush;
+				if ( DlgInput . btnforeground == null )
+					DlgInput . btnforeground = FindResource ( "White0" ) as Brush;
+				//				DlgInput . Btnborder = "#FD09CACE" . ToSolidBrush ( ); // Cyan
+
+				//DlgInput . Btnborder = FindResource ( "Yellow1" ) as Brush;
+				//DlgInput . dlgbackground = "#FF000000" . ToSolidBrush ( );
+				//DlgInput . mouseforeground = FindResource ( "White0" ) as Brush;
+				//if ( DlgInput . btnforeground == null )
+				//	DlgInput . btnforeground = FindResource ( "White0" ) as Brush;
+				//if ( DlgInput . Btnborder == null )
+				//	DlgInput . Btnborder = FindResource ( "White0" ) as Brush;
+				//if ( DlgInput . mousebackground == null )
+				//	DlgInput . mousebackground = FindResource ( "Black3" ) as Brush;
 			}
 			else
 			{
+				// Set defaults in case the config file is missng/corrupted
 				if ( DlgInput . dlgbackground == null )
 					DlgInput . dlgbackground = FindResource ( "White6" ) as Brush;
-				if ( DlgInput . mouseforeground == null )
-					DlgInput . mouseforeground = FindResource ( "Black0" ) as Brush;
+				if ( DlgInput . Btnmouseforeground == null )
+					DlgInput . Btnmouseforeground = FindResource ( "Black0" ) as Brush;
 				//DlgInput . border = FindResource ( "Black0" ) as Brush;
 				if ( DlgInput . btnbackground == null )
 					DlgInput . btnbackground = FindResource ( "Red1" ) as Brush;
@@ -262,38 +394,63 @@ namespace WPFPages . Views
 					DlgInput . btnforeground = FindResource ( "White0" ) as Brush;
 				if ( DlgInput . Btnborder == null )
 					DlgInput . Btnborder = FindResource ( "White0" ) as Brush;
-				if ( DlgInput . mousebackground == null )
-					DlgInput . mousebackground = FindResource ( "Black3" ) as Brush;
+				if ( DlgInput . Btnmousebackground == null )
+					DlgInput . Btnmousebackground = FindResource ( "Black3" ) as Brush;
 			}
-			Btnbackground = DlgInput . btnbackground;
-			Btnforeground = DlgInput . btnforeground;
-			BtnMbackground = DlgInput . mousebackground;
-			BtnMforeground = DlgInput . mouseforeground;
-			DefBtnbackground = DlgInput . defbtnbackground;
-			DefBtnforeground = DlgInput . defbtnforeground;
-			bordercolor = DlgInput . Btnborder;
+			//Borderbrush = DlgInput . Btnborder;
+			//BorderBrush = DlgInput . Btnborder;
+			//Btnbackground = DlgInput . btnbackground;
+			//Btnforeground = DlgInput . btnforeground;
+			//// mouse over colors
+			//BtnMbackground = DlgInput . Btnmousebackground;
+			//BtnMforeground = DlgInput . Btnmouseforeground;
 
-			Background = DlgInput . dlgbackground;
+			//DefBtnbackground = DlgInput . defbtnbackground;
+			//DefBtnforeground = DlgInput . defbtnforeground;
+
+			this . Background = DlgInput . dlgbackground;
 			BoxGrid . Background = DlgInput . dlgbackground;
 
 			Row1 . Foreground = DlgInput . dlgforeground;
 			Row2 . Foreground = DlgInput . dlgforeground;
 			Row3 . Foreground = DlgInput . dlgforeground;
+			if ( DlgInput . UseDarkMode )
+			{
+				// special background for Dark mode
+				Row1 . Background = DlgInput . dlgbackground;
+				Row2 . Background = DlgInput . dlgbackground;
+				Row3 . Background = DlgInput . dlgbackground;
+				//				Caption . Background = DlgInput . dlgbackground;
+				// Dialog box main text color
+				Row1 . Foreground = DlgInput . dlgforeground;
+				Row2 . Foreground = DlgInput . dlgforeground;
+				Row3 . Foreground = DlgInput . dlgforeground;
+			}
+			else
+			{
+				// Dialog box main text color
+				Row1 . Foreground = DlgInput . dlgforeground;
+				Row2 . Foreground = DlgInput . dlgforeground;
+				Row3 . Foreground = DlgInput . dlgforeground;
+			}
 
 			Button1 . Background = DlgInput . btnbackground;
 			Button2 . Background = DlgInput . btnbackground;
 			Button3 . Background = DlgInput . btnbackground;
 			Button4 . Background = DlgInput . btnbackground;
 
-			Button1 . BorderBrush = DlgInput . Btnborder;
-			Button2 . BorderBrush = DlgInput . Btnborder;
-			Button3 . BorderBrush = DlgInput . Btnborder;
-			Button4 . BorderBrush = DlgInput . Btnborder;
+			BorderBrush = DlgInput . BtnborderDark;
+			Button1 . BorderBrush = DlgInput . BtnborderDark;
+			Button2 . BorderBrush = DlgInput . BtnborderDark;
+			Button3 . BorderBrush = DlgInput . BtnborderDark;
+			Button4 . BorderBrush = DlgInput . BtnborderDark;
 
-			Button1 . BorderThickness = DlgInput . BorderSize;
-			Button2 . BorderThickness = DlgInput . BorderSize;
-			Button3 . BorderThickness = DlgInput . BorderSize;
-			Button4 . BorderThickness = DlgInput . BorderSize;
+			//defaullt buttons
+			Button1 . BorderThickness = DlgInput . BorderSizeNormal;
+			Button3 . BorderThickness = DlgInput . BorderSizeNormal;
+			Button2 . BorderThickness = DlgInput . BorderSizeNormal;
+			Button4 . BorderThickness = DlgInput . BorderSizeNormal;
+
 
 			Button1Text . Foreground = DlgInput . btnforeground;
 			Button2Text . Foreground = DlgInput . btnforeground;
@@ -306,30 +463,31 @@ namespace WPFPages . Views
 			Button4 . Refresh ( );
 			this . Refresh ( );
 		}
-		private void CheckForFinalDefaultSettings ( string iconstring )
+		private void CheckForFinalDefaultSettings ( string Iconstring )
 		{
-			if ( DlgInput . UseIcon && iconstring == "" )
+			if ( DlgInput . UseIcon && Iconstring == "" )
 			{
 				if ( DlgInput . iconstring != "" )
-					iconstring = DlgInput . iconstring;
+					Iconstring = DlgInput . iconstring;
 				else
 					DlgInput . iconstring = "\\icons\\check-mark-icon-5375.png";
-				BoxIcon . Source = new BitmapImage ( new Uri ( iconstring , UriKind . Relative ) );
+				BoxIcon . Source = new BitmapImage ( new Uri ( Iconstring , UriKind . Relative ) );
 				BoxIcon . Visibility = Visibility . Visible;
 			}
-			else if ( DlgInput . UseIcon && iconstring != "" )
+			else if ( DlgInput . UseIcon && Iconstring != "" )
 			{
-				BoxIcon . Source = new BitmapImage ( new Uri ( iconstring , UriKind . Relative ) );
+				BoxIcon . Source = new BitmapImage ( new Uri ( Iconstring , UriKind . Relative ) );
 				BoxIcon . Visibility = Visibility . Visible;
+				BoxIcon . Height = 85;
+				BoxIcon . Width = 85;
 			}
-			else
-			{
+			else if ( DlgInput . UseIcon == false)
 				BoxIcon . Visibility = Visibility . Collapsed;
-				//Wrappanel . GridColumn = 1;
-			}
+			else
+				BoxIcon . Visibility = Visibility . Collapsed;
 		}
 
-		#endregion Setup
+		#endregion initialization
 
 		#region main button color handling
 		/// <summary>
@@ -346,34 +504,34 @@ namespace WPFPages . Views
 			}
 			if ( Btn >= 0 && Btn <= 4 )
 			{
-				if ( Btn == 1 )   // OK Button
+				if ( Btn == 1 )   // OK Button  && DEFAULT button
 				{
-					if ( Button1Text != null )
-						Button1Text . Text = Button1Text . Text == "" ? Button1Text . Text : "OK";
+					if ( Btn1Text != null )
+						Button1Text . Text = Btn1Text != "" ? Btn1Text : "OK";
 					if ( DefaultButton == Btn )
 						DefBorder = Button1;
 					UpdateButtonX ( Btn , Button1 , false );
 				}
 				else if ( Btn == 2 )  // YES Button
 				{
-					if ( Button2Text != null )
-						Button2Text . Text = Button2Text . Text == "" ? Button2Text . Text : "Yes";
+					if ( Btn2Text != null )
+						Button2Text . Text = Btn2Text != "" ? Btn2Text : "Yes";
 					if ( DefaultButton == Btn )
 						DefBorder = Button2;
 					UpdateButtonX ( Btn , Button2 , false );
 				}
 				else if ( Btn == 3 )   // NO Button
 				{
-					if ( Button3Text != null )
-						Button3Text . Text = Button3Text . Text == "" ? Button3Text . Text : "No";
+					if ( Btn3Text != null )
+						Button3Text . Text = Btn3Text != "" ? Btn3Text : "No";
 					if ( DefaultButton == Btn )
 						DefBorder = Button3;
 					UpdateButtonX ( Btn , Button3 , false );
 				}
 				else if ( Btn == 4 )   // CANCEL Button
 				{
-					if ( Button4Text != null )
-						Button4Text . Text = Button4Text . Text == "" ? Button4Text . Text : "Cancel";
+					if ( Btn4Text != null )
+						Button4Text . Text = Btn4Text != "" ? Btn4Text : "Cancel";
 					if ( DefaultButton == Btn )
 						DefBorder = Button4;
 					UpdateButtonX ( Btn , Button4 , false );
@@ -426,9 +584,9 @@ namespace WPFPages . Views
 						TabPass = 0;
 				}
 			}
-			else
+			else             // Not tabbing
 			{
-				if ( CurrentButton == btn && DefaultButton == btn )
+				if ( CurrentButton == btn && DefaultButton == btn )                 // Def
 					SetBtnStatus ( btn , Btn , true , IsTabbing ? false : IsMouseOver );
 				else if ( CurrentButton == btn && DefaultButton != btn )
 					SetBtnStatus ( btn , Btn , false , IsTabbing ? true : IsMouseOver );
@@ -443,130 +601,121 @@ namespace WPFPages . Views
 				Btn . UpdateLayout ( );
 			}
 		}
+		// Handle each buttons visual effcts
 		private void SetBtnStatus ( int btnNum , Border Btn , bool isdef , bool ismouseover )
 		{
 			Thickness th = new Thickness();
 			if ( IsTabbing )
 			{
+				//************************//
+				// NORMAL BUTTONS
+				//************************//
 				if ( isdef == false )
 				{     // Leaving a normal button, Reset to standard colors ?
 					if ( TabPass == 1 )
 					{
-						// Resetting from being  the focused button
-						Btn . Background = Btnbackground;
+						// Resetting to Normal from being  the focused button
+						Btn . Background = DlgInput . Btnmousebackground;
+						Btn . BorderBrush = DlgInput . Btnborder;
 						SetButtonForeground ( Btn , btnNum == DefaultButton , ismouseover );
 						// mouse is over button
-						th . Left = 2;
-						th . Top = 1;
-						th . Right = 2;
-						th . Bottom = 5;
+						Btn . BorderThickness = DlgInput . BorderSizeNormal;
 					}
 					else if ( TabPass == 2 )
 					{
 						// Setting up focus of NEW  Default button
-						Btn . Background = DefBtnbackground;
+						Btn . Background = DlgInput . defbtnbackground;
+						Btn . BorderBrush = DlgInput . Btnborder;
 						SetButtonForeground ( Btn , btnNum == DefaultButton , ismouseover );
 						// mouse is over button
-						th . Left = 2;
-						th . Top = 1;
-						th . Right = 2;
-						th . Bottom = 5;
-						//th . Left = 0;
-						//th . Top = 0;
-						//th . Right = 0;
-						//th . Bottom = 0;
+						Btn . BorderThickness = DlgInput . BorderSizeDefault;
 					}
 				}
 				else
 				{
 					// LEAVING a default button due to keystroke
-					//Set back to DEFAULT setting
+					//Set back to NON DEFAULT setting
 					if ( TabPass == 1 )
 					{
-						Btn . Background = Btnbackground;
+						Btn . Background = DlgInput . btnbackground;
+						Btn . BorderBrush = DlgInput . Btnborder;
 						SetButtonForeground ( Btn , false , ismouseover );
-						th . Left = 2;
-						th . Top = 1;
-						th . Right = 2;
-						th . Bottom = 5;
+						Btn . BorderThickness = DlgInput . BorderSizeDefault;
 					}
 					else
 					{
-						Btn . Background = DefBtnbackground;
+						Btn . Background = DlgInput . btnbackground;
+						Btn . BorderBrush = DlgInput . Btnborder;
 						SetButtonForeground ( Btn , btnNum == DefaultButton , ismouseover );
-						th . Left = 2;
-						th . Top = 1;
-						th . Right = 2;
-						th . Bottom = 5;
+						Btn . BorderThickness = DlgInput . BorderSizeDefault;
 					}
 				}
-				Btn . BorderThickness = th;
 			}
 			else if ( ismouseover )
 			{
+				//**************************//
+				// DEFAULT  BUTTONS
+				//**************************//
 				if ( isdef )
 				{
-					// Only used by DEFAULT  button
-					Btn . Background = BtnMbackground;
+					// Only used by DEFAULT  button  when mouse is over it 
+					if ( DlgInput . UseDarkMode )
+					{
+						Btn . Background = DlgInput . mousebackgroundDark;
+						Btn . BorderBrush = DlgInput . Btnborder;
+						Button1Text . Foreground = DlgInput . mouseforegroundDark;
+					}
+					else
+					{
+						Btn . Background = DlgInput . Btnmousebackground;
+						Btn . BorderBrush = DlgInput . Btnborder;
+						Button1Text . Foreground = DlgInput .Btnmouseforeground;
+					}
+					//Btn . Background = DlgInput . defbtnbackground;
 					SetButtonForeground ( Btn , btnNum == DefaultButton , ismouseover );
 					if ( ismouseover )
 					{
-						// mousehas entered and is over a Default button
-						th . Left = 2;
-						th . Top = 1;
-						th . Right = 2;
-						th . Bottom = 2;
+						// mouse has entered and is over a Default button
+						Btn . BorderThickness = DlgInput . BorderSizeDefault;
 					}
 					else
 					{
 						// mouse has left Default button
-						// This is the  DEFAULT BUTTONs standard setting
-						th . Left = 2;
-						th . Top = 2;
-						th . Right = 2;
-						th . Bottom = 5;
+						// This is the  DEFAULT BUTTON standard setting
+						Btn . BorderThickness = DlgInput . BorderSizeNormal;
 					}
 				}
 				else
 				{
 					// Mouse ENTERING a non default button
-					//WORKING
-					// NOT default button, so it is probably a mouseover entry  ?
-					Btn . Background = BtnMbackground;
+					//WORKING					
+					Btn . Background = DlgInput . Btnmousebackground;
+					Btn . BorderBrush = DlgInput . Btnborder;
+					Button1Text . Foreground = DlgInput . Btnmouseforeground;
 					SetButtonForeground ( Btn , btnNum == DefaultButton , ismouseover );
-					th . Left = 1;
-					th . Top = 3;
-					th . Right = 1;
-					th . Bottom = 1;
+					Btn . BorderThickness = DlgInput . BorderSizeDefault;
 				}
-				Btn . BorderThickness = th;
 			}
 			else
 			{
+				// Not Mouse over
 				//Called when mouse leaves button
 				if ( isdef == false )
 				{
 					// Mouse EXITING a non default button
 					//WORKING
-					Btn . Background = Btnbackground;
+					Btn . Background = DlgInput . btnbackground;
+					Btn . BorderBrush = DlgInput . BtnborderDark;
 					SetButtonForeground ( Btn , btnNum == DefaultButton , ismouseover );
-					th . Left = 1;
-					th . Top = 1;
-					th . Right = 1;
-					th . Bottom = 5;
-					Btn . BorderThickness = th;
+					Btn . BorderThickness = DlgInput . BorderSizeNormal;
 				}
 				else
 				{
-					// ?????
-					// is the default button
-					Btn . Background = DefBtnbackground;
+					//It  is the default button
+					Btn . Background = DlgInput . defbtnbackground;
+					Btn . BorderBrush = DlgInput . Btnborder;
 					SetButtonForeground ( Btn , btnNum == DefaultButton , ismouseover );
-					th . Left = 2;
-					th . Top = 2;
-					th . Right = 2;
-					th . Bottom = 5;
-					Btn . BorderThickness = th;
+					Btn . BorderThickness = DlgInput . BorderSizeNormal;
 				}
 			}
 			Btn . UpdateLayout ( );
@@ -579,127 +728,95 @@ namespace WPFPages . Views
 				if ( DefaultButton == 0 )
 				{
 					// We are just resetting to normal
-					Button1Text . Foreground = Btnforeground;
+					Button1Text . Foreground = DlgInput . Btnmouseforeground;
+
 				}
 				else if ( DefaultButton == 1 )
-					{
-						// IS the defaullt button
-						if ( ismouseover )
-					{
-						Button1Text . Foreground = BtnMforeground;
-					}
+				{
+					// IS the defaullt button
+					if ( ismouseover )
+						Button1Text . Foreground = DlgInput . Btnmouseforeground;
 					else
-					{
-						Button1Text . Foreground = DefBtnforeground;
-					}
+						Button1Text . Foreground = DlgInput . defbtnforeground;
 				}
 				else
 				{
 					// Not the defaullt button
 					if ( ismouseover )
-					{
-						Button1Text . Foreground = BtnMforeground;
-					}
+						Button1Text . Foreground = DlgInput . defbtnforeground;
 					else
-					{
-						Button1Text . Foreground = Btnforeground;
-					}
+						Button1Text . Foreground = DlgInput . btnforegroundDark;
 				}
 			}
-			if ( brdr . Name . Contains ( "2" ) )
+			else if ( brdr . Name . Contains ( "2" ) )
 			{
 				if ( DefaultButton == 0 )
-				{
-					// We are just resetting to normal
-					Button2Text . Foreground = Btnforeground;
+				{     // We are just resetting to normal
+					Button2Text . Foreground = DlgInput . Btnmouseforeground;
 				}
 				else if ( DefaultButton == 2 )
 				{
 					// IS the defaullt button
 					if ( ismouseover )
-					{
-						Button2Text . Foreground = DefBtnforeground;
-					}
+						Button2Text . Foreground = DlgInput . defbtnforeground;
 					else
-					{
-						Button2Text . Foreground = DefBtnforeground;
-					}
+						Button2Text . Foreground = DlgInput . Btnmouseforeground;
 				}
 				else
 				{
 					// Not the defaullt button
 					if ( ismouseover )
-					{
-						Button2Text . Foreground = BtnMforeground;
-					}
+						Button2Text . Foreground = DlgInput . Btnmouseforeground;
 					else
-					{
-						Button2Text . Foreground = Btnforeground;
-					}
+						Button2Text . Foreground = DlgInput . btnforegroundDark;
 				}
 			}
-			if ( brdr . Name . Contains ( "3" ) )
+			else if ( brdr . Name . Contains ( "3" ) )
 			{
 				if ( DefaultButton == 0 )
 				{
 					// We are just resetting to normal
-					Button3Text . Foreground = Btnforeground;
+					Button3Text . Foreground = DlgInput . Btnmouseforeground;
 				}
 				else if ( DefaultButton == 3 )
 				{
 					// IS the defaullt button
 					if ( ismouseover )
-					{
-						Button3Text . Foreground = BtnMforeground;
-					}
+						Button3Text . Foreground = DlgInput . defbtnforeground;
 					else
-					{
-						Button3Text . Foreground = DefBtnforeground;
-					}
+						Button3Text . Foreground = DlgInput . btnforeground;
 				}
 				else
 				{
 					// Not the defaullt button
 					if ( ismouseover )
-					{
-						Button3Text . Foreground = BtnMforeground;
-					}
+						Button3Text . Foreground = DlgInput . Btnmouseforeground;
 					else
-					{
-						Button3Text . Foreground = Btnforeground;
-					}
+						Button3Text . Foreground = DlgInput . btnforegroundDark;
 				}
 			}
-			if ( brdr . Name . Contains ( "4" ) )
+			else if ( brdr . Name . Contains ( "4" ) )
 			{
 				if ( DefaultButton == 0 )
 				{
 					// We are just resetting to normal
-					Button4Text . Foreground = Btnforeground;
+					Button4Text . Foreground = DlgInput . btnforeground;
 				}
 				else if ( DefaultButton == 4 )
 				{
 					// IS the defaullt button
 					if ( ismouseover )
-					{
-						Button4Text . Foreground = DefBtnforeground;
-					}
+						Button4Text . Foreground = DlgInput . defbtnforeground;
 					else
-					{
-						Button4Text . Foreground = DefBtnforeground;
-					}
+						Button4Text . Foreground = DlgInput . btnforeground;
 				}
 				else
 				{
 					// Not the defaullt button
 					if ( ismouseover )
-					{
-						Button4Text . Foreground = BtnMforeground;
-					}
+						Button4Text . Foreground = DlgInput . Btnmouseforeground;
 					else
-					{
-						Button4Text . Foreground = Btnforeground;
-					}
+						Button4Text . Foreground = DlgInput . btnforegroundDark;
 				}
 			}
 			return;
@@ -1051,7 +1168,7 @@ namespace WPFPages . Views
 
 				if ( Button1 . Visibility == Visibility . Visible )
 				{
-					CurrentButton = 1;					
+					CurrentButton = 1;
 					UpdateButtonX ( 1 , Button1 , IsTabbing );
 					changed = true;
 					Button1 . Focus ( );
@@ -1134,7 +1251,26 @@ namespace WPFPages . Views
 					Button4_ProcessCancel ( null , null );
 				e . Handled = true;
 			}
-			if ( e . Key == Key . LeftShift || e . Key == Key . RightShift )
+			// Check for Hot keys
+			Key key = e . Key;
+			string currkey  =key . ToString ( );
+			if ( currkey . ToUpper ( ) == key1 )
+			{
+				Button1_ProcessOK ( null , null );
+			}
+			else if ( currkey . ToUpper ( ) == key2 )
+			{
+				Button2_ProcessYes ( null , null );
+			}
+			else if ( currkey . ToUpper ( ) == key3 )
+			{
+				Button3_ProcessNo ( null , null );
+			}
+			else if ( currkey . ToUpper ( ) == key4 )
+			{
+				Button4_ProcessCancel ( null , null );
+			}
+			else if ( e . Key == Key . LeftShift || e . Key == Key . RightShift )
 			{
 				if ( e . IsDown )
 					isShiftDown = true;
@@ -1279,155 +1415,7 @@ namespace WPFPages . Views
 			RoutedEventArgs newEventArgs = new RoutedEventArgs(Msgbox.ProcessCancelEvent);
 			RaiseEvent ( newEventArgs );
 		}
-		#endregion RoutedEvents
 
-		#region NOT USED
-
-		//NOT USED
-		private int GetNextActiveButton ( int active )
-		{
-			int newbtn = 0;
-			for ( int x = 0 ; x < 4 ; x++ )
-			{
-				if ( btnsarray [ x ] == active && x < 4 )
-				{
-					for ( int y = x + 1 ; y < 4 ; y++ )
-					{
-						if ( btnsarray [ y ] != 0 )
-							newbtn = y;
-						break;
-					}
-					if ( newbtn != 0 )
-						break;
-				}
-			}
-
-			return btnsarray [ newbtn ];
-		}
-		//NOT USED
-		private void SetNextBtn ( int nextbtn )
-		{
-			//if ( nextbtn == 1 )
-			//{
-			//	Button1 . IsDefault = true;
-			//	UpdateButtonX ( Button1border , Button1 );
-			//}
-			//else if ( nextbtn == 2 )
-			//{
-			//	Button2 . IsDefault = true;
-			//	UpdateButtonX ( Button2border , Button2 );
-			//}
-			//else if ( nextbtn == 3 )
-			//{
-			//	Button3 . IsDefault = true;
-			//	UpdateButtonX ( Button3border , Button3 );
-			//}
-			//else if ( nextbtn == 4 )
-			//{
-			//	Button4 . IsDefault = true;
-			//	UpdateButtonX ( Button4border , Button4 );
-			//}
-		}
-		#endregion NOT USED
-
-		private void Window_Deactivated ( object sender , EventArgs e )
-		{
-			this . Deactivated += ( s , e ) => this . Activate ( );
-		}
-
-		#region DP's
-
-		public Brush DlgBackGround
-		{
-			get { return ( Brush ) GetValue ( DlgBackGroundProperty ); }
-			set { SetValue ( DlgBackGroundProperty , value ); }
-		}
-
-		// Using a DependencyProperty as the backing store for BackGround.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty DlgBackGroundProperty =
-			DependencyProperty.Register("DlgBackGround", typeof(Brush), typeof(Msgbox), new PropertyMetadata((Brush)default),DlgBackgroundChanged);
-
-		private static bool DlgBackgroundChanged ( object value )
-		{
-			Console . WriteLine ( $"DP : DlgBackground set to {value}" );
-			return true;
-		}
-
-		public Brush DlgForeGround
-		{
-			get { return ( Brush ) GetValue ( DlgForeGroundProperty ); }
-			set { SetValue ( DlgForeGroundProperty , value ); }
-		}
-
-		// Using a DependencyProperty as the backing store for DlgForeGround.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty DlgForeGroundProperty =
-			DependencyProperty.Register("DlgForeGround", typeof(Brush ), typeof(Msgbox), new PropertyMetadata(new SolidColorBrush (Colors.Black)));
-
-		public Brush BtnBackGround
-		{
-			get { return ( Brush ) GetValue ( BtnBackGroundProperty ); }
-			set { SetValue ( BtnBackGroundProperty , value ); }
-		}
-		// Using a DependencyProperty as the backing store for bkground.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BtnBackGroundProperty =
-			DependencyProperty.Register("BtnBackGround", typeof(Brush), typeof(Msgbox), new PropertyMetadata(new SolidColorBrush (Colors.Violet)), BtnBackgroundChanged);
-
-		private static bool BtnBackgroundChanged ( object value )
-		{
-			Console . WriteLine ( $"DP : BtnBackground set to {value}" );
-			return true;
-		}
-
-		public Brush BtnForeGround
-		{
-			get { return ( Brush ) GetValue ( BtnForeGroundProperty ); }
-			set { SetValue ( BtnForeGroundProperty , value ); }
-		}
-		// Using a DependencyProperty as the backing store for ForeGround.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BtnForeGroundProperty =
-			DependencyProperty.Register("BtnForeGround", typeof(Brush), typeof(Msgbox), new PropertyMetadata(new SolidColorBrush (Colors.White)));
-
-		public Brush MouseoverBackGround
-		{
-			get { return ( Brush ) GetValue ( MouseoverBackGroundProperty ); }
-			set { SetValue ( MouseoverBackGroundProperty , value ); }
-		}
-		// Using a DependencyProperty as the backing store for MouseoverBackGround.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty MouseoverBackGroundProperty =
-			DependencyProperty.Register("MouseoverBackGround", typeof(Brush), typeof(Msgbox), new PropertyMetadata(new SolidColorBrush (Colors.Green)));
-
-		public Brush MouseoverForeGround
-		{
-			get { return ( Brush ) GetValue ( MouseoverForeGroundProperty ); }
-			set { SetValue ( MouseoverForeGroundProperty , value ); }
-		}
-		// Using a DependencyProperty as the backing store for MouseoverForeGround.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty MouseoverForeGroundProperty =
-			DependencyProperty.Register("MouseoverForeGround", typeof(Brush), typeof(Msgbox), new PropertyMetadata(new SolidColorBrush (Colors.White)));
-
-		public Brush BorderColor
-		{
-			get { return ( Brush ) GetValue ( BorderColorProperty ); }
-			set { SetValue ( BorderColorProperty , value ); }
-		}
-		// Using a DependencyProperty as the backing store for BorderColor.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BorderColorProperty =
-			DependencyProperty.Register("BorderColor", typeof(Brush), typeof(Msgbox), new PropertyMetadata((Brush)default));
-
-		public Thickness BorderSize
-		{
-			get { return ( Thickness ) GetValue ( BorderSizeProperty ); }
-			set { SetValue ( BorderSizeProperty , value ); }
-		}
-
-		// Using a DependencyProperty as the backing store for BorderSize.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BorderSizeProperty =
-			DependencyProperty.Register("BorderSize", typeof(Thickness ), typeof(Msgbox), new PropertyMetadata((Thickness )default));
-
-
-		#endregion DP's
-
-		#region routed events
 		protected virtual void RaiseMouseWheelEvent ( )
 		{
 			RoutedEventArgs args = new RoutedEventArgs(CustomWheelEvent);
@@ -1446,10 +1434,15 @@ namespace WPFPages . Views
 			add { AddHandler(CustomWheelEvent, value); }
 			remove { RemoveHandler(CustomWheelEvent, value); }
 		}
-		#endregion routed events
+
+		#endregion RoutedEvents
 
 
-		private void Custom_MouseWheel ( object sender , RoutedEventArgs e )
+		private void Window_Deactivated ( object sender , EventArgs e )
+		{
+			this . Deactivated += ( s , e ) => this . Activate ( );
+		}
+   		private void Custom_MouseWheel ( object sender , RoutedEventArgs e )
 		{
 			RaiseMouseWheelEvent ( );
 		}
@@ -1511,7 +1504,7 @@ namespace WPFPages . Views
 		private void Button_MouseLeave ( object sender , MouseEventArgs e )
 		{
 			Border b = sender as Border;
-			b . Background = Btnbackground;
+			b . Background = DlgInput . btnbackground;
 			b . UpdateLayout ( );
 			TabPass = 2;
 			if ( b == DefBorder )
@@ -1524,7 +1517,8 @@ namespace WPFPages . Views
 		#endregion button mouseover handlers
 
 		#region Load data
-		private void ReadMsgboxData ( )
+		// Read configuration in from disk fie
+		private void ReadMsgboxData ( int mode )
 		{
 			SolidColorBrush sb;
 			string input = File . ReadAllText ( @"Messageboxes.dat" );
@@ -1532,81 +1526,166 @@ namespace WPFPages . Views
 			int indx= 0;
 			foreach ( var item in fields )
 			{
-				switch ( indx++ )
+				if ( mode == 1 )
 				{
-					case 0:
-						DlgInput . dlgbackground = Utils . GetNewBrush ( item );
-						SetCurrentValue ( Msgbox . DlgBackGroundProperty , DlgInput . dlgbackground );
-						break;
-					case 1:
-						DlgInput . dlgforeground = Utils . GetNewBrush ( item );
-						SetCurrentValue ( Msgbox . DlgForeGroundProperty , DlgInput . dlgforeground );
-						break;
-					case 2:
-						DlgInput . btnbackground = Utils . GetNewBrush ( item );
-						SetCurrentValue ( Msgbox . BtnBackGroundProperty , DlgInput . btnbackground );
-						break;
-					case 3:
-						DlgInput . btnforeground = Utils . GetNewBrush ( item );
-						SetCurrentValue ( Msgbox . BtnForeGroundProperty , DlgInput . btnforeground );
-						break;
-					case 4:
-						DlgInput . Btnborder = Utils . GetNewBrush ( item );
-						SetCurrentValue ( Msgbox . BorderColorProperty , DlgInput . Btnborder );
-						break;
-					case 5:
-						DlgInput . mousebackground = Utils . GetNewBrush ( item );
-						SetCurrentValue ( Msgbox . MouseoverBackGroundProperty , DlgInput . mousebackground );
-						break;
-					case 6:
-						DlgInput . mouseforeground = Utils . GetNewBrush ( item );
-						SetCurrentValue ( Msgbox . MouseoverForeGroundProperty , DlgInput . mouseforeground );
-						break;
-					case 7:
-						DlgInput . defbtnbackground = Utils . GetNewBrush ( item );
-						//SetCurrentValue ( Msgbox . MouseoverForeGroundProperty , DlgInput . mouseforeground );
-						break;
-					case 8:
-						DlgInput . defbtnforeground = Utils . GetNewBrush ( item );
-						//SetCurrentValue ( Msgbox . MouseoverForeGroundProperty , DlgInput . mouseforeground );
-						break;
+					string[] flds =  fields[9].Split(',');
+					DlgInput . BorderSizeNormal = new Thickness ( Convert . ToInt32 ( flds [ 0 ] ) , Convert . ToInt32 ( flds [ 1 ] ) , Convert . ToInt32 ( flds [ 2 ] ) , Convert . ToInt32 ( flds [ 3 ] ) );
+					return;
+				}
+
+				if ( DlgInput . UseDarkMode == false )
+				{
+					switch ( indx++ )
+					{
+						case 0:
+							DlgInput . dlgbackground = Utils . GetNewBrush ( item );
+							break;
+						case 1:
+							DlgInput . dlgforeground = Utils . GetNewBrush ( item );
+							break;
+						case 2:
+							DlgInput . btnbackground = Utils . GetNewBrush ( item );
+							break;
+						case 3:
+							DlgInput . btnforeground = Utils . GetNewBrush ( item );
+							break;
+						case 4:
+							DlgInput . Btnborder = Utils . GetNewBrush ( item );
+							break;
+						case 5:
+							DlgInput . Btnmousebackground = Utils . GetNewBrush ( item );
+							break;
+						case 6:
+							DlgInput . Btnmouseforeground = Utils . GetNewBrush ( item );
+							break;
+						case 7:
+							DlgInput . defbtnbackground = Utils . GetNewBrush ( item );
+							break;
+						case 8:
+							DlgInput . defbtnforeground = Utils . GetNewBrush ( item );
+							break;
+						case 10:
+							DlgInput . UseIcon = item == "T" ? true : false;
+							break;
+						case 9:
+							string[] flds = item.Split(',');
+							DlgInput . BorderSizeNormal = new Thickness ( Convert . ToInt32 ( flds [ 0 ] ) , Convert . ToInt32 ( flds [ 1 ] ) , Convert . ToInt32 ( flds [ 2 ] ) , Convert . ToInt32 ( flds [ 3 ] ) );
+							break;
+						case 11:
+							DlgInput . isClean = item == "T" ? true : false;
+							break;
+						case 12:
+							DlgInput . UseDarkMode = item . Contains ( "DMY" ) ? true : false;
+							break;
+						case 21:
+							flds = item . Split ( ',' );
+							DlgInput . BorderSizeDefault = new Thickness ( Convert . ToInt32 ( flds [ 0 ] ) , Convert . ToInt32 ( flds [ 1 ] ) , Convert . ToInt32 ( flds [ 2 ] ) , Convert . ToInt32 ( flds [ 3 ] ) );
+							break;
+						case 24:
+							if ( item == "" )
+								Row1 . FontSize = 13;
+							else
+								Row1 . FontSize = Convert . ToDouble ( item );
+								Row2 . FontSize = Convert . ToDouble ( item );
+							break;
+						case 25:
+							if ( item == "" )
+								Row3 . FontSize = 13;
+							else
+								Row3 . FontSize = Convert . ToDouble ( item );
+							break;
+					}
+				}
+				else
+				{
+					switch ( indx++ )
+					{
+						case 0:
+							DlgInput . dlgbackground = Utils . GetNewBrush ( item );
+							break;
+						case 1:
+							DlgInput . dlgforeground = Utils . GetNewBrush ( item );
+							break;
+						case 9:
+							string[] flds = item.Split(',');
+							DlgInput . BorderSizeNormal = new Thickness ( Convert . ToInt32 ( flds [ 0 ] ) , Convert . ToInt32 ( flds [ 1 ] ) , Convert . ToInt32 ( flds [ 2 ] ) , Convert . ToInt32 ( flds [ 3 ] ) );
+							break;
+						case 10:
+							DlgInput . UseIcon = item == "T" ? true : false;
+							break;
+						case 11:
+							DlgInput . isClean = item == "T" ? true : false;
+							break;
+						case 12:
+							DlgInput . UseDarkMode = item . Contains ( "DMY" ) ? true : false;
+							break;
+						case 13:
+							DlgInput . BtnborderDark = Utils . GetNewBrush ( item );
+							break;
+						case 14:
+							DlgInput . btnbackground = Utils . GetNewBrush ( item );
+							break;
+						case 15:
+							DlgInput . btnforeground = Utils . GetNewBrush ( item );
+							break;
+						case 16:
+							DlgInput . Btnborder = Utils . GetNewBrush ( item );
+							break;
+						case 17:
+							DlgInput . Btnmousebackground = Utils . GetNewBrush ( item );
+							break;
+						case 18:
+							DlgInput . Btnmouseforeground = Utils . GetNewBrush ( item );
+							break;
+						case 19:
+							DlgInput . defbtnbackground = Utils . GetNewBrush ( item );
+							break;
+						case 20:
+							DlgInput . defbtnforeground = Utils . GetNewBrush ( item );
+							break;
+						case 21:
+							flds = item . Split ( ',' );
+							Thickness th = new Thickness ( Convert . ToInt32 ( flds [ 0 ] ) , Convert . ToInt32 ( flds [ 1 ] ) , Convert . ToInt32 ( flds [ 2 ] ) , Convert . ToInt32 ( flds [ 3 ] ) );
+							DlgInput . BorderSizeDefault = th;
+							break;
+						case 24:
+							if ( item == "" )
+							{
+								Row1 . FontSize = 13;
+								Row2 . FontSize = 13;
+							}
+							else
+							{
+								Row1 . FontSize = Convert . ToDouble ( item );
+								Row2 . FontSize = Convert . ToDouble ( item );
+							}
+							break;
+						case 25:      
+							if ( item == "" )
+								Row3 . FontSize = 13;
+							else
+								Row3 . FontSize = Convert . ToDouble ( item );
+							break;
+					}
 				}
 			}
 
 
 			Console . WriteLine ( $"MsgBox  configuraton : Data read in from disk ....\n"
-				+ "DlgInput Data\n"
-				+ $"Dlg background :			[{DlgInput . dlgbackground}]\n"
-				+ $"Dlg foreground :			[{DlgInput . dlgforeground}]\n"
-				+ $"Btn Background :			[{DlgInput . btnbackground}]\n"
-				+ $"Btn Foreground :			[{DlgInput . btnforeground}]\n"
-				+ $"Btn Border :				[{DlgInput . Btnborder}]\n"
-				+ $"Btn Mouseover Background :	[{DlgInput . mousebackground}]\n"
-				+ $"Btn Mouseover Foreground :	[{DlgInput . mouseforeground}]\n"
-				+ $"Btn DefBackground :			[{DlgInput . defbtnbackground}]\n"
-				+ $"Btn DefForeground :			[{DlgInput . defbtnforeground}]\n"
-				+ $"Btn Border Size :			[{DlgInput . BorderSize . Top}, {DlgInput . BorderSize . Left},{DlgInput . BorderSize . Right},{DlgInput . BorderSize . Bottom}],\n\n"
+						+ "DlgInput Data\n"
+						+ $"Dlg background :			[{DlgInput . dlgbackground}]\n"
+						+ $"Dlg foreground :			[{DlgInput . dlgforeground}]\n"
+						+ $"Btn Background :			[{DlgInput . btnbackground}]\n"
+						+ $"Btn Foreground :			[{DlgInput . btnforeground}]\n"
+						+ $"Btn Border :				[{DlgInput . Btnborder}]\n"
+						+ $"Btn Mouseover Background :	[{DlgInput . Btnmousebackground}]\n"
+						+ $"Btn Mouseover Foreground :	[{DlgInput . Btnmouseforeground}]\n"
+						+ $"Btn DefBackground :			[{DlgInput . defbtnbackground}]\n"
+						+ $"Btn DefForeground :			[{DlgInput . defbtnforeground}]\n"
+						+ $"Btn Border Size :			[{DlgInput . BorderSizeNormal . Top}, {DlgInput . BorderSizeNormal . Left},{DlgInput . BorderSizeNormal . Right},{DlgInput . BorderSizeNormal . Bottom}],\n"
+						+ $"Def Btn Border Size :			[{DlgInput . BorderSizeDefault . Top}, {DlgInput . BorderSizeDefault . Left},{DlgInput . BorderSizeDefault . Right},{DlgInput . BorderSizeDefault . Bottom}],\n\n"
+						);
 
-				+ "DP Data\n"
-				+ $"Dlg background :			[{GetValue ( Msgbox . DlgBackGroundProperty )}]\n"
-				+ $"Dlg foreground :			[{GetValue ( Msgbox . DlgForeGroundProperty )}]\n"
-				+ $"Btn Background :			[{GetValue ( Msgbox . BtnBackGroundProperty )}]\n"
-				+ $"Btn Foreground :			[{GetValue ( Msgbox . BtnForeGroundProperty )}]\n"
-				+ $"Btn Border :				[{GetValue ( Msgbox . BorderColorProperty )}]\n\n"
-				+ $"Btn Mouseover Background :	[{GetValue ( Msgbox . MouseoverBackGroundProperty )}]\n"
-				+ $"Btn Mouseover Foreground :	[{GetValue ( Msgbox . MouseoverForeGroundProperty )}]\n" );
-
-			updateVars ( );
-		}
-
-		public static void updateVars ( )
-		{
-			Btnbackground = DlgInput . btnbackground;
-			Btnforeground = DlgInput . btnforeground;
-			BtnMbackground = DlgInput . mousebackground;
-			BtnMforeground = DlgInput . mouseforeground;
-			DefBtnbackground = DlgInput . defbtnbackground;
-			DefBtnforeground = DlgInput . defbtnforeground;
 		}
 
 		#endregion Load data
@@ -1631,32 +1710,236 @@ namespace WPFPages . Views
 		#region NOT IN USE
 		private void msgbox_Loaded ( object sender , RoutedEventArgs e )
 		{
-
-			//DefaultButton . Focus ( );
-			//if ( DefaultButton == Button1 )
-			//{
-			//	Button2 . Focus ( );
-			//	Button1 . Focus ( );
-			//}
-			//if ( DefaultButton == Button2 )
-			//{
-			//	Button3 . Focus ( );
-			//	Button2 . Focus ( );
-			//}
-			//if ( DefaultButton == Button3 )
-			//{
-			//	Button4 . Focus ( );
-			//	Button3 . Focus ( );
-			//}
-			//if ( DefaultButton == Button4 )
-			//{
-			//	Button3 . Focus ( );
-			//	Button4 . Focus ( );
-			//}
+			// liit widht/height for OK only short message version
+			int textlen = Row1.Text.Length + Row2.Text.Length;
+			if ( textlen < 250 && Row2 . Text == "" )
+			{
+				// just one row of text	 < 250 chars
+				//if ( Row1 . FontSize > 13 )
+				//{
+				Row1 . Height = 90;
+				switch ( Row1 . FontSize )
+				{
+					case 9:  
+						Row1 . Height = 45;
+						Row2 . Height = 10;
+						this . Height = 100;
+						this . Width = 365;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -60 , right: 0 , bottom: 0 );
+						break;
+					case 10:  
+						Row1 . Height = 45;
+						Row2 . Height = 10;
+						this . Height = 100;
+						this . Width = 365;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -60 , right: 0 , bottom: 0 );
+						break;
+					case 11:      
+						Row1 . Height = 45;
+						Row2 . Height = 10;
+						this . Height = 120;
+						this . Width = 385;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -60 , right: 0 , bottom: 0 );
+						break;
+					case 12:  
+						Row1 . Height = 50;
+						Row2 . Height = 10;
+						this . Height = 120;
+						this . Width = 400;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -60 , right: 0 , bottom: 0 );
+						break;
+					case 13: 
+						Row1 . Height = 55;
+						Row2 . Height = 10;
+						this . Height = 130;
+						this . Width = 440;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -60 , right: 0 , bottom: 0 );
+						break;   
+					case 14:
+						Row1 . Height = 60;
+						Row2 . Height = 10;
+						this . Height = 150;
+						this . Width = 525;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -65 , right: 0 , bottom: 0 );
+						break;
+					case 15:  
+						Row1 . Height = 70;
+						Row2 . Height = 10;
+						this . Height = 160;
+						this . Width = 610;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -65 , right: 0 , bottom: 0 );
+						break;  // OK
+						Row1 . Height = 70;
+						Row2 . Height = 10;
+						this . Height = 160;
+						this . Width = 600;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -65 , right: 0 , bottom: 0 );
+						break;
+					case 17:   
+						Row1 . Height = 90;
+						Row2 . Height = 10;
+						this . Height = 180;
+						this . Width = 575;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -65 , right: 0 , bottom: 0 );
+						break;
+					case 18:       
+						Row1 . Height = 90;
+						Row2 . Height = 10;
+						this . Height = 200;
+						this . Width = 750;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -40 , right: 0 , bottom: 0 );
+						break;
+					case 19:   
+						Row1 . Height = 90;
+						Row2 . Height = 10;
+						this . Height = 200;
+						this . Width = 750;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -40 , right: 0 , bottom: 0 );
+						break;
+					case 20:       
+						Row1 . Height = 90;
+						Row2 . Height = 10;
+						this . Height = 200;
+						this . Width = 750;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -40 , right: 0 , bottom: 0 );
+						break;
+					case 21:
+						this . Height = 250;
+						this . Width = 535;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -60 , right: 0 , bottom: 0 );
+						break;
+				}
+			}
+			else if ( textlen < 250 && Row2 . Text != "" )
+			{
+				// just one row of text	 < 250 chars
+				//if ( Row1 . FontSize > 13 )
+				//{
+				Row1 . Height = 90;
+				switch ( Row1 . FontSize )
+				{
+					case 9:	// OK
+						Row1 . Height = 35;
+						Row2 . Height = 20;
+						this . Height = 260;
+						this . Width = 465;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: 0 , right: 0 , bottom: 0 );
+						break;
+					case 10:
+						Row1 . Height = 35;
+						Row2 . Height = 40;
+						this . Height = 260;
+						this . Width = 485;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: 0 , right: 0 , bottom: 0 );
+						break;
+					case 11:
+						Row1 . Height = 45;
+						Row2 . Height = 30;
+						Row3 . Height = 30;
+						this . Height = 265;
+						this . Width = 465;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -105 , right: 0 , bottom: 0 );
+						break;
+					case 12:
+						Row1 . Height = 45;
+						Row2 . Height = 30;
+						Row3 . Height = 30;
+						this . Height = 265;
+						this . Width = 475;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -10 , right: 0 , bottom: 0 );
+						break;
+					case 13:
+						Row1 . Height = 55;
+						Row2 . Height = 40;
+						Row3 . Height = 40;
+						this . Height = 265;
+						this . Width = 505;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -10 , right: 0 , bottom: 0 );
+						break;
+					case 14:	// OK
+						Row1 . Height = 65;
+						Row2 . Height = 40;
+						Row3 . Height = 40;
+						this . Height = 265;
+						this . Width = 535;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -10 , right: 0 , bottom: 0 );
+						break;
+					case 15:
+						Row1 . Height = 80;
+						Row2 . Height = 40;
+						Row3 . Height = 40;
+						this . Height = 265;
+						this . Width = 560;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -5 , right: 0 , bottom: 0 );
+						break;  // OK
+					case 16:
+						Row1 . Height = 80;
+						Row2 . Height = 40;
+						Row3 . Height = 40;
+						this . Height = 255;
+						this . Width = 580;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -5 , right: 0 , bottom: 0 );
+						break;
+					case 17:
+						Row1 . Height = 80;
+						Row2 . Height = 40;
+						Row3 . Height = 40;
+						this . Height = 285;
+						this . Width = 560;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -5 , right: 0 , bottom: 0 );
+						break;
+					case 18:
+						Row1 . Height = 80;
+						Row2 . Height =60;
+						Row3 . Height = 40;
+						this . Height = 325;
+						this . Width = 570;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -5 , right: 0 , bottom: 0 );
+						break;
+					case 19:
+						Row1 . Height = 80;
+						Row2 . Height = 60;
+						Row3 . Height = 40;
+						this . Height = 325;
+						this . Width = 570;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -5 , right: 0 , bottom: 0 );
+						break;
+					case 20:
+						Row1 . Height = 80;
+						Row2 . Height = 60;
+						Row3 . Height = 40;
+						this . Height = 345;
+						this . Width = 590;
+						BtnWrap . Margin = new Thickness ( left: 0 , top:10 , right: 0 , bottom: 0 );
+						break;
+					case 21:
+						Row1 . Height = 80;
+						Row2 . Height = 60;
+						Row3 . Height = 40;
+						this . Height = 350;
+						this . Width = 620;
+						BtnWrap . Margin = new Thickness ( left: 0 , top: -5 , right: 0 , bottom: 0 );
+						break;
+				}
+			}
+			else
+			{
+				Row1 . Height = 90;
+				Row2 . Height = 60;
+				this . Height = 300;
+				this . Width = 465;
+				// Move buttons up in dialog ?
+				//				BoxGridRow6 . Height = 65;
+				Thickness th = BtnWrap . Margin;
+				th.Top = -15;
+				BtnWrap . Margin = th;
+				
+			}
 		}
 
 		#endregion NOT IN USE
 
+		#region Focus support
 		// Temporary method to set focus to a button
 		private void Button1_PreviewMouseRightButtonUp ( object sender , MouseButtonEventArgs e )
 		{
@@ -1678,8 +1961,9 @@ namespace WPFPages . Views
 			Button4 . Focus ( );
 			CurrentButton = 4;
 		}
+		#endregion Focus support
 
-
+		#region button actions
 		private void Border1_ProcessOK ( object sender , KeyEventArgs e )
 		{
 			Button1_ProcessOK ( null , null );
@@ -1698,6 +1982,165 @@ namespace WPFPages . Views
 		{
 			Button4_ProcessCancel ( null , null );
 		}
+		#endregion button actions
+
+		#region Mouse movement
+		private void ChecksMouseMove ( object sender , MouseEventArgs e )
+		{
+			e . Handled = true;
+			if ( e . RightButton == MouseButtonState . Pressed )
+				return;
+		}
+
+		private void Grab_MouseMove ( object sender , MouseEventArgs e )
+		{
+			if ( e . LeftButton == MouseButtonState . Pressed )
+				Utils . Grab_MouseMove ( sender , e );
+			e . Handled = true;
+		}
+		#endregion Mouse movement
+
+		private void Window_PreviewKeyDown ( object sender , KeyEventArgs e )
+		{
+			if ( e . Key == Key . F11 )
+			{
+				var pos = Mouse . GetPosition ( this);
+				Utils . Grab_Object ( sender , pos );
+				if ( Utils . ControlsHitList . Count == 0 )
+					return;
+				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
+			}
+		}
+		public void UpdateDialog ( )
+		{
+			// Dialog settings
+			BoxGrid . Background = DlgInput . dlgbackground;
+			//			Caption . Background = DlgInput . dlgbackground;
+			Row1 . Background = DlgInput . dlgbackground;
+			Row2 . Background = DlgInput . dlgbackground;
+			Row1 . Foreground = DlgInput . dlgforeground;
+			Row2 . Foreground = DlgInput . dlgforeground;
+
+			#region Button update colors
+			//Button settings
+			if ( DefBorder != Button1 )
+			{
+				Button1 . Background = DlgInput . btnbackground;
+				Button1Text . Foreground = DlgInput . btnforeground;
+			}
+			else
+			{
+				Button1 . Background = DlgInput . defbtnbackground;
+				Button1Text . Foreground = DlgInput . defbtnforeground;
+			}
+			Button1 . BorderBrush = DlgInput . Btnborder;
+
+			if ( DefBorder != Button2 )
+			{
+				Button2 . Background = DlgInput . btnbackground;
+				Button2Text . Foreground = DlgInput . btnforeground;
+			}
+			else
+			{
+				Button2 . Background = DlgInput . defbtnbackground;
+				Button2Text . Foreground = DlgInput . defbtnforeground;
+			}
+			Button2 . BorderBrush = DlgInput . Btnborder;
+			if ( DefBorder != Button3 )
+			{
+				Button3 . Background = DlgInput . btnbackground;
+				Button3Text . Foreground = DlgInput . btnforeground;
+			}
+			else
+			{
+				Button3 . Background = DlgInput . defbtnbackground;
+				Button3Text . Foreground = DlgInput . defbtnforeground;
+			}
+			Button3 . BorderBrush = DlgInput . Btnborder;
+			if ( DefBorder != Button4 )
+			{
+				Button4 . Background = DlgInput . btnbackground;
+				Button4Text . Foreground = DlgInput . btnbackground;
+			}
+			else
+			{
+				Button4 . Background = DlgInput . defbtnbackground;
+				Button4Text . Foreground = DlgInput . defbtnforeground;
+			}
+			Button4 . BorderBrush = DlgInput . Btnborder;
+			Button2 . Refresh ( );
+			Button3 . Refresh ( );
+			Button4 . Refresh ( );
+
+			#endregion Button update colors
+
+			this . UpdateLayout ( );
+			this . Refresh ( );
+		}
+
+		private void msgbox_SizeChanged ( object sender , SizeChangedEventArgs e )
+		{
+			Size  size = e.NewSize;
+			if ( size . Width >= this . MaxWidth )
+			{
+				e . Handled = true;
+				return;
+			}
+			if ( size . Height >= this . MaxHeight )
+			{
+				e . Handled = true;
+				return;
+			}
+		}
+
+		#region NOT USED
+
+		//NOT USED
+		private int GetNextActiveButton ( int active )
+		{
+			int newbtn = 0;
+			for ( int x = 0 ; x < 4 ; x++ )
+			{
+				if ( btnsarray [ x ] == active && x < 4 )
+				{
+					for ( int y = x + 1 ; y < 4 ; y++ )
+					{
+						if ( btnsarray [ y ] != 0 )
+							newbtn = y;
+						break;
+					}
+					if ( newbtn != 0 )
+						break;
+				}
+			}
+
+			return btnsarray [ newbtn ];
+		}
+		//NOT USED
+		private void SetNextBtn ( int nextbtn )
+		{
+			//if ( nextbtn == 1 )
+			//{
+			//	Button1 . IsDefault = true;
+			//	UpdateButtonX ( Button1border , Button1 );
+			//}
+			//else if ( nextbtn == 2 )
+			//{
+			//	Button2 . IsDefault = true;
+			//	UpdateButtonX ( Button2border , Button2 );
+			//}
+			//else if ( nextbtn == 3 )
+			//{
+			//	Button3 . IsDefault = true;
+			//	UpdateButtonX ( Button3border , Button3 );
+			//}
+			//else if ( nextbtn == 4 )
+			//{
+			//	Button4 . IsDefault = true;
+			//	UpdateButtonX ( Button4border , Button4 );
+			//}
+		}
+		#endregion NOT USED
 	}
 }
 

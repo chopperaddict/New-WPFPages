@@ -38,8 +38,14 @@ namespace WPFPages
 			{
 				DoDragMove ( );
 			};
-			MouseMove += Utils . Grab_MouseMove;
+			MouseMove += Grab_MouseMove;
 			KeyDown += Window_PreviewKeyDown;
+		}
+		private void Grab_MouseMove ( object sender , MouseEventArgs e )
+		{
+			if ( e . LeftButton == MouseButtonState . Pressed )
+				Utils . Grab_MouseMove ( sender , e );
+			e . Handled = true;
 		}
 
 
@@ -47,6 +53,8 @@ namespace WPFPages
 		{
 			if ( e . Key == Key . F11 )
 			{
+				var pos = Mouse . GetPosition ( this);
+				Utils . Grab_Object ( sender , pos );
 				if ( Utils . ControlsHitList . Count == 0 )
 					return;
 				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );

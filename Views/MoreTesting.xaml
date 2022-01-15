@@ -13,6 +13,7 @@
  x:Name="Moretesting"
       Title="Hit Ctrl F8 to break..." 
         Loaded="Moretesting_Loaded"
+	  MouseMove="ChecksMouseMove"
       Height="600" 
       Width="866">
 
@@ -108,12 +109,12 @@
                         </Setter.Value>
                   </Setter>
             </Style>
-            <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
+            <!--<SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
             <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#a826A0Da"/>
             <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#3DDADADA"/>
             <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#FFDADADA"/>
             <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#3D26A0DA"/>
-            <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FF26A0DA"/>
+            <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FF26A0DA"/>-->
 
             <!--<SolidColorBrush x:Key="fground" Color="Black"/>-->
 

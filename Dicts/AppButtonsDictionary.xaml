@@ -225,6 +225,70 @@
 		</Style.Triggers>
 	</Style>
 
+
+	<Style x:Key="RoundedButton" TargetType="Button">
+		<!--  Default layout  -->
+		<Setter Property="OverridesDefaultStyle" Value="true" />
+		<!--  These defaults can be overriden by the Button Code in the design  -->
+		<Setter Property="Height" Value="50" />
+		<Setter Property="Width" Value="150" />
+		<Setter Property="BorderBrush" Value="White" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="FontSize" Value="20" />
+		<Setter Property="FontWeight" Value="DemiBold" />
+		<Setter Property="Background" Value="Transparent"/>
+		<!--
+			Lets change the Border as well but use the colors
+			defined in the Buttons declaration in the xaml code
+		-->
+		<Setter Property="Control.Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Button}">
+					<Border
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="10">
+						<!--
+							MOST IMPORTANT the ContentPresenter lives here and displays our
+							"Content" text correctly NB: Interestingly, it is in the BORDER which
+							is the Outermost part of a buttons "design" as shown very clearly in
+							the Visual Tree so that is where I need to put it with other controls
+							
+							V.Tree shows that inside the ContentPresenter is a StackPanel that
+							actually contains the Contents text
+						-->
+						<ContentPresenter
+							Margin="2"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							RecognizesAccessKey="True" />
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+
+		<!--  No need to handle those pesky Triggers  -->
+		<!--<Style.Triggers>
+			<Trigger Property="IsMouseOver" Value="True">
+				<Setter Property="Foreground" Value="Black" />
+				<Setter Property="Background">
+					<Setter.Value>
+						<LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+							<GradientStop Offset="2" Color="DarkRed" />
+							<GradientStop Offset="0.55" Color="#C67928" />
+							<GradientStop Offset="0.25" Color="Orange" />
+						</LinearGradientBrush>
+					</Setter.Value>
+				</Setter>
+			</Trigger>
+			<Trigger Property="IsPressed" Value="True">
+				<Setter Property="Foreground" Value="OrangeRed" />
+				<Setter Property="Background" Value="White" />
+			</Trigger>
+		</Style.Triggers>-->
+	</Style>
+
 	<!--  Handles TextBlocks using Wingdings font family only  -->
 	<Style x:Key="WingDingStyle" TargetType="TextBlock">
 		<Setter Property="OverridesDefaultStyle" Value="true" />

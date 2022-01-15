@@ -283,7 +283,7 @@ namespace WPFPages . ViewModels
 									result = ex . Message;
 									errormsg = result;
 								}
-								if( errormsg  == "")
+								if ( errormsg == "" )
 									errormsg = $"DYNAMIC:{fldcount}";
 								return;
 							}
@@ -299,7 +299,7 @@ namespace WPFPages . ViewModels
 							//***************************************************************************************************************//
 
 							if ( reslt != null )
-							{   								
+							{
 								//Although this is duplicated  with the one above we CANNOT make it a method()
 								int dictcount = 0;
 								int fldcount = 0;
@@ -583,7 +583,7 @@ namespace WPFPages . ViewModels
 		/// <param name="SqlCommand"></param>
 		/// <param name="err"></param>
 		/// <returns>List 'of string'</returns>
-		
+
 		public static List<string> LoadStringDbData ( ObservableCollection<SelectionEntry> collection ,
 			string SqlCommand ,
 			out string err )
@@ -3019,6 +3019,115 @@ namespace WPFPages . ViewModels
 		}
 		#endregion  Standard Customer Db Update Method
 
+
+		#region  Save All / Update Generic table Method
+		public static bool SaveGenericDb (
+			GenericClass gclass ,
+			string DbName = "" )
+		{
+			// Works very well 27/10/21
+
+			//CAUTION THIS ONLY WORKS FOR TABLES WITH FIELD1 - FIELD20 STRUCTURE (GENERIC TABLE)
+			string SqlCommand = "" ;
+			bool result = true;
+			int indexer = 0;
+			string ConString = ( string ) Properties . Settings . Default [ "BankSysConnectionString" ];
+			CustomerViewModel cvm = new CustomerViewModel ( );
+
+			if ( DbName == "" )
+				DbName = "GenericTable";
+
+			using ( IDbConnection connection = new SqlConnection ( ConString ) )
+			{
+				try
+				{
+					string fld1 = gclass.field1;
+					string fld2 = gclass.field2;
+					string fld3 = gclass.field3;
+					SqlCommand = $" Insert into  {DbName} (FIELD1, FIELD2, FIELD3, FIELD4, FIELD5, FIELD6, FIELD7, FIELD8, FIELD9, FIELD10, FIELD11, FIELD12, FIELD13, FIELD14, FIELD15, FIELD16, FIELD17, FIELD18, FIELD19, FIELD20)" +
+						$" VALUES ('{fld1}', '{fld2}', '{fld3}', '{gclass . field4}', '{gclass . field5}', '{gclass . field6}', '{gclass . field7}', '{gclass . field8}', '{gclass . field9}', '{gclass . field10}'," +
+						$"'{gclass . field11}', '{gclass . field12}', '{gclass . field13}', '{gclass . field14}', '{gclass . field15}', '{gclass . field16}', '{gclass . field17}', '{gclass . field18}', '{gclass . field19}', '{gclass . field20}' )";
+					
+					// GO	AHEAD and INSERT new record into generic table 'GENERICxxxxx'
+					connection . Execute ( @SqlCommand );												  
+				}
+				catch ( Exception ex )
+				{
+					Console . WriteLine ( $"SQL DAPPER {DbName} Update error : {ex . Message}', {ex . Data}" );
+					result = false;
+				}
+				finally
+				{
+					if ( result )
+						Console . WriteLine ( $"SQL [{DbName . ToUpper ( )}] Db Updated using DAPPER successfuly" );
+				}
+			}
+			return result;
+		}
+
+		public static bool UpdateGenericDb (
+			GenericClass gclass ,
+			string DbName = "" )
+		{
+			// Works very well 27/10/21
+			string SqlCommand = "" ;
+			bool result = true;
+			int indexer = 0;
+			string ConString = ( string ) Properties . Settings . Default [ "BankSysConnectionString" ];
+			CustomerViewModel cvm = new CustomerViewModel ( );
+
+			if ( DbName == "" )
+				DbName = "GenericTable";
+
+			using ( IDbConnection connection = new SqlConnection ( ConString ) )
+			{
+				try
+				{
+					for ( int x = 0 ; x < 20 ; x++ )
+					{
+						var parameters = new
+						{
+							field1 = gclass.field1,
+							field2= gclass.field2,
+							field3= gclass.field3,
+							field4= gclass.field4,
+							field5= gclass.field5,
+							field6= gclass.field6,
+							field7= gclass.field7,
+							field8= gclass.field8,
+							field9= gclass.field9,
+							field10= gclass.field10,
+							field11= gclass.field11,
+							field12= gclass.field12,
+							field13= gclass.field13,
+							field14= gclass.field14,
+							field15= gclass.field15,
+							field16= gclass.field16,
+							field17= gclass.field17,
+							field18= gclass.field18,
+							field19= gclass.field19,
+							field20= gclass.field20
+						} ;
+						SqlCommand = $" Update  {DbName} set field2=@field2, field3=@field3, field4=@field4, field5=@field5, field6=@field6, field7=@field7, field8=@field8, field9=@field9, field10=@field10, " +
+							$"field11=@field11, field12=@field12, field13=@field13, field14=@field14, field15=@field15, field16=@field16, field17=@field17, field18=@field18, field19=@field19, field20=@field20  where field1=@field1";
+						connection . Execute ( @SqlCommand , parameters );
+					}
+				}
+				catch ( Exception ex )
+				{
+					Console . WriteLine ( $"SQL DAPPER {DbName} Update error : {ex . Message}, {ex . Data}" );
+					result = false;
+				}
+				finally
+				{
+					if ( result )
+						Console . WriteLine ( $"SQL [{DbName . ToUpper ( )}] Db Updated using DAPPER successfuly" );
+				}
+			}
+			return result;
+		}
+		#endregion  Update Generic table Method
+
 		#region   Customer record Db Update Method
 
 		public static bool UpdateSingleCustomersDb (
@@ -3673,8 +3782,9 @@ namespace WPFPages . ViewModels
 					string str = "";
 					foreach ( var item in dat )
 					{
-						str = item . Substring ( 12 );
-						DbData . Add ( str );
+						str = item?.Substring ( 12 );
+						if ( str != null )
+							DbData . Add ( str );
 					}
 				}
 			}

@@ -47,8 +47,22 @@ namespace WPFPages . Views
 			//t1 . Start ( );
 			//Debug . WriteLine ( t1 . ThreadState . ToString ( ) );
 			LoadNorthWindData ( );
-			MouseMove += Utils . Grab_MouseMove;
+			MouseEventHandler grab_MouseMove = Grab_MouseMove;
+			MouseMove += grab_MouseMove;
 			KeyDown += Window_PreviewGrabKeyDown;
+		}
+		private void ChecksMouseMove ( object sender , MouseEventArgs e )
+		{
+			e . Handled = true;
+			if ( e . RightButton == MouseButtonState . Pressed )
+				return;
+		}
+
+		private void Grab_MouseMove ( object sender , MouseEventArgs e )
+		{
+			if ( e . LeftButton == MouseButtonState . Pressed )
+				Utils . Grab_MouseMove ( sender , e );
+			e . Handled = true;
 		}
 
 
@@ -56,6 +70,8 @@ namespace WPFPages . Views
 		{
 			if ( e . Key == Key . F11 )
 			{
+				var pos = Mouse . GetPosition ( this);
+				Utils . Grab_Object ( sender , pos );
 				if ( Utils . ControlsHitList . Count == 0 )
 					return;
 				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
@@ -82,7 +98,6 @@ namespace WPFPages . Views
 			CustomersGrid . Items . Clear ( );
 			CustomersGrid . ItemsSource = nwc2;
 
-			MouseMove += Utils . Grab_MouseMove;
 			KeyDown += Window_PreviewKeyDown;
 			CustomersGrid . SelectedIndex = 0;
 
@@ -92,6 +107,8 @@ namespace WPFPages . Views
 		{
 			if ( e . Key == Key . F11 )
 			{
+				var pos = Mouse . GetPosition ( this);
+				Utils . Grab_Object ( sender , pos );
 				if ( Utils . ControlsHitList . Count == 0 )
 					return;
 				Utils . Grabscreen ( this , Utils . ControlsHitList [ 0 ] . VisualHit , null , sender as Control );
