@@ -48,7 +48,7 @@ namespace WPFPages . Views
 		public static ObservableCollection<DetailsViewModel> dvm = new ObservableCollection<DetailsViewModel>();
 		private bool IsGenericListResult = false;
 		private List<string> genericlist = new List<string>   ();
-		private string ActiveLoadMethod = "USESDAPPERSTDPROCEDURES";
+		private string ActiveLoadMethod = "USESDAPPERSTDDIRECTLY";
 		public  DispatcherTimer timer = new DispatcherTimer();
 		private bool UseAsyncLoading = true;
 		private int startsecs = 0;
@@ -144,9 +144,9 @@ namespace WPFPages . Views
 			BankDb . Text = "BANKACCOUNT";
 			CustDb . Text = "CUSTOMER";
 			DetDb . Text = "SECACCOUNTS";
-			UseStdDapper . IsChecked = true;
-			UseDapperStoredProc . IsChecked = false;
-			UseStoredProc . IsChecked = false;
+            UseStdADO . IsChecked = true;
+            UseDapperStandard . IsChecked = false;
+            UseStoredProc . IsChecked = false;
 			CurrBank . Content = BankDb . Text . ToUpper ( );
 			CurrCust . Content = CustDb . Text . ToUpper ( );
 			CurrDet . Content = DetDb . Text . ToUpper ( );
@@ -389,6 +389,7 @@ namespace WPFPages . Views
 		//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 		private async void LoadDbs ( )
 		{
+			
 			args [ 0 ] = 0;
 			args [ 1 ] = 0;
 			args [ 2 ] = 0;
@@ -520,34 +521,31 @@ namespace WPFPages . Views
 			sqlh . UpdateAllDb ( "DETAILS" , e );
 		}
 		//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-		private void UseStdDapper_Click ( object sender , RoutedEventArgs e )
+		private void UseAdoWithDapper_Click ( object sender , RoutedEventArgs e )
 		{
-			Flags . USESDAPPERSTDPROCEDURES = false;
+			Flags . USESDAPPERSTDDIRECTLY = false;
 			Flags . USEDAPPERWITHSTOREDPROCEDURE = false;
 			Flags . USEADOWITHSTOREDPROCEDURES = true;
-			UseDapperStoredProc . IsChecked = false;
+			UseDapperStandard . IsChecked = false;
 			UseStoredProc . IsChecked = false;
 			e . Handled = true;
-		}
-		//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+		}		//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 		private void UseStoredProc_Click ( object sender , RoutedEventArgs e )
 		{
-			Flags . USESDAPPERSTDPROCEDURES = false;
+			Flags . USESDAPPERSTDDIRECTLY = false;
 			Flags . USEDAPPERWITHSTOREDPROCEDURE = true;
 			Flags . USEADOWITHSTOREDPROCEDURES = false;
-			UseDapperStoredProc . IsChecked = false;
-			UseStdDapper . IsChecked = false;
+			UseDapperStandard . IsChecked = false;
+            UseStdADO . IsChecked = false;
 			e . Handled = true;
-		}
-
-		//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-		private void UseDapperStoredProc_Click ( object sender , RoutedEventArgs e )
+		}		//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+		private void UseDapperStd_Click ( object sender , RoutedEventArgs e )
 		{
-			Flags . USESDAPPERSTDPROCEDURES = true;
+			Flags . USESDAPPERSTDDIRECTLY = true;
 			Flags . USEADOWITHSTOREDPROCEDURES = false;
 			Flags . USEDAPPERWITHSTOREDPROCEDURE = false;
 			UseStoredProc . IsChecked = false;
-			UseStdDapper . IsChecked = false;
+			UseStdADO . IsChecked = false;
 			e . Handled = true;
 		}
 

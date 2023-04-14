@@ -388,7 +388,7 @@ namespace WPFPages
 			InitializeComponent ( );
 			Flags . USEDAPPERWITHSTOREDPROCEDURE = false;
 			Flags . USEADOWITHSTOREDPROCEDURES = false;
-			Flags . USESDAPPERSTDPROCEDURES = true;
+			Flags . USESDAPPERSTDDIRECTLY = true;
 			//			sqldbForm = this;
 			ThisViewer = this;
 			SubscribeToEvents ( );
@@ -417,7 +417,7 @@ namespace WPFPages
 			IsViewerLoaded = false;
 			Flags . USEDAPPERWITHSTOREDPROCEDURE = false;
 			Flags . USEADOWITHSTOREDPROCEDURES = false;
-			Flags . USESDAPPERSTDPROCEDURES = true;
+			Flags . USESDAPPERSTDDIRECTLY = true;
 			InitializeComponent ( );
 			this . Tag = ( Guid ) Guid . NewGuid ( );
 			CurrentDb = caller;
@@ -450,7 +450,7 @@ namespace WPFPages
 			IsLoading = true;
 			Flags . USEDAPPERWITHSTOREDPROCEDURE = false;
 			Flags . USEADOWITHSTOREDPROCEDURES = false;
-			Flags . USESDAPPERSTDPROCEDURES = true;
+			Flags . USESDAPPERSTDDIRECTLY = true;
 			LoadData ( CurrentDb );
 
 			ResetMenuBarStatus ( );

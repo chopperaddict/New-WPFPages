@@ -19,8 +19,7 @@ using System . Windows . Media;
 using System . Windows . Media . Imaging;
 
 using WPFPages . ViewModels;
-using UtilityLibraries;
-using WPFLibrary2021;
+
 using static Microsoft . SqlServer . Management . Sdk . Sfc . RequestObjectInfo;
 using System . Windows . Documents;
 using System . Security . AccessControl;
@@ -91,7 +90,7 @@ namespace WPFPages . Views
 		private void Window_Loaded ( object sender , RoutedEventArgs e )
 		//********************************************************************************************************************************************************************************//
 		{
-			var v = StringLib.StartsWithUpper ( "gsdfgdgfhd" );
+			//var v = StringLib.StartsWithUpper ( "gsdfgdgfhd" );
 			string[] tmp;
 			DataContext = this;
 			Library1 . SetupWindowDrag ( this );

@@ -1020,13 +1020,15 @@
 				Grid.Row="3" 
 				Height="83" 
 				HorizontalContentAlignment="Center"
+				HorizontalAlignment="Right"
 				IsTabStop="True"
 				ItemContainerStyle="{StaticResource _ColumnsListBoxItemStyle}"				
 				SelectedIndex="0"						
 				SelectionChanged="Columns_SelectionChanged"
 				VerticalContentAlignment="Center" 
 				Visibility="Visible" 
-				Margin="943,0,0,0" 
+				Margin="0,0,-5,0" 
+				Width="30"
 				VerticalAlignment="Center" />
 		<!--#endregion Bank Data Grid-->
 

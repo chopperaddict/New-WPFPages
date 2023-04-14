@@ -79,7 +79,7 @@
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="Background" Value="{StaticResource Green7}" />
-                    <Setter Property="Foreground" Value="{StaticResource White0}" />
+                    <Setter Property="Foreground" Value="{StaticResource Black0}" />
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
 

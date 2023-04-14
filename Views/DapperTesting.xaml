@@ -483,9 +483,9 @@
 
 		<!--#region Data recovery options-->
 
-		<RadioButton x:Name="UseStdDapper" 
-			  Click="UseStdDapper_Click"
-			  Content="Use Standard A.D.O Query() Method (DbReader)" 
+		<RadioButton x:Name="UseStdADO" 
+			  Click="UseAdoWithDapper_Click"
+			  Content="Use A.D.O Query() via Dapper S.P.  (DbReader)" 
 			  FontSize="14"
 			  Foreground="{StaticResource White0}"
 			  Grid.Column="1"
@@ -508,16 +508,8 @@
 			Height="32" 
 			Width="265" Grid.RowSpan="2" />
 
-		<TextBlock
-			Foreground="Red" 
-			Grid.Row="4"
-			Padding="0 0 10 0"
-			Text="Select an item then Right Click it   (in closed Combo) to load into Grid :-"
-			TextAlignment="Left"
-			TextWrapping="Wrap" Margin="0,43,365,67" HorizontalAlignment="Right" Width="208" Grid.Column="1"
-			/>
-		<RadioButton x:Name="UseDapperStoredProc" 
-			Click="UseDapperStoredProc_Click"
+		<RadioButton x:Name="UseDapperStandard" 
+			Click="UseDapperStd_Click"
 			Content="Use Dapper Directly (No Stored Procedure)" 
 			FontSize="14"
 			Foreground="{StaticResource White0}"
@@ -530,6 +522,15 @@
 			VerticalAlignment="Bottom" 
 			Width="325" />
 		<!--#endregion Data recovery options-->
+		
+		<TextBlock
+			Foreground="Red" 
+			Grid.Row="4"
+			Padding="0 0 10 0"
+			Text="Select an item then Right Click it   (in closed Combo) to load into Grid :-"
+			TextAlignment="Left"
+			TextWrapping="Wrap" Margin="0,43,365,67" HorizontalAlignment="Right" Width="208" Grid.Column="1"
+			/>
 
 		<!--#region Data Entry fields-->
 		<TextBox x:Name="BankDb" 

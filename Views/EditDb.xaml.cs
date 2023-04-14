@@ -11,7 +11,7 @@ using System . Windows . Data;
 using System . Windows . Input;
 using System . Windows . Media;
 
-using WPFLibrary2021;
+
 using WPFPages . ViewModels;
 
 namespace WPFPages . Views

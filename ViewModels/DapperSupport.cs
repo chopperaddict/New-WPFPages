@@ -926,19 +926,19 @@ namespace WPFPages . ViewModels
 			}
 
 			//// make sure order by clause is correctly formatted
-			//if ( Orderby . Trim ( ) != "" )
-			//{
-			//	if ( Orderby . ToUpper ( ) . Contains ( "ORDER BY " ) == false )
-			//	{
-			//		Orderby = " Order by " + Orderby;
-			//	}
-			//}
+			if ( Orderby . Trim ( ) != "" )
+			{
+				if ( Orderby . ToUpper ( ) . Contains ( "ORDER BY " ) == false )
+				{
+					Orderby = " Order by " + Orderby;
+				}
+			}
 
-			//if ( Conditions != "" )
-			//{
-			//	if ( Conditions . ToUpper ( ) . Contains ( "WHERE" ) == false )
-			//		Conditions = " Where " + Conditions;
-			//}
+			if ( Conditions != "" )
+			{
+				if ( Conditions . ToUpper ( ) . Contains ( "WHERE" ) == false )
+					Conditions = " Where " + Conditions;
+			}
 
 			if ( Flags . USEADOWITHSTOREDPROCEDURES )
 			{
@@ -949,53 +949,52 @@ namespace WPFPages . ViewModels
 				string Con = ( string ) Properties . Settings . Default [ "BankSysConnectionString" ];
 				SqlConnection sqlCon=null;
 
-				// Works with default command 31/10/21
-				// works with Records limited 31/10/21
-				// works with Selection conditions limited 31/10/21
-				// works with Sort conditions 31/10/21
-				try
-				{
-					using ( sqlCon = new SqlConnection ( Con ) )
-					{
-						SqlCommand sql_cmnd;
-						sqlCon . Open ( );
-						if ( SqlCommand != "" )
-							sql_cmnd = new SqlCommand ( SqlCommand , sqlCon );
-						else
-						{
-							sql_cmnd = new SqlCommand ( "dbo.spLoadBankAccountComplex " , sqlCon );
-
-							sql_cmnd . CommandType = CommandType . StoredProcedure;
-							// Now handle parameters
-							sql_cmnd . Parameters . AddWithValue ( "@Arg1" , SqlDbType . NVarChar ) . Value = DbNameToLoad;
-							if ( args == null )
-								args = dummyargs;
-							if ( args . Length > 0 )
-							{
-								if ( args [ 2 ] > 0 )
-								{
-									string limits = $" Top ({args[2]}) ";
-									sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = limits;
-								}
-								else
-									sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = " * ";
-							}
-							else
-								sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = " * ";
-
-							Conditions = Conditions . Contains ( "where " ) ? Conditions . Substring ( 6 ) : Conditions;
-							sql_cmnd . Parameters . AddWithValue ( "@Arg3" , SqlDbType . NVarChar ) . Value = Conditions;
-							Orderby = Orderby . Contains ( "Order by" ) ? Orderby . Substring ( 9 ) : Orderby;
-							sql_cmnd . Parameters . AddWithValue ( "@Arg4" , SqlDbType . NVarChar ) . Value = Orderby;
-						}
-						var sqlDr = sql_cmnd . ExecuteReader ( );
+                // Works with default command 31/10/21
+                // works with Records limited 31/10/21
+                // works with Selection conditions limited 31/10/21
+                // works with Sort conditions 31/10/21
+                try
+                {
+                    // non async method
+                    using ( sqlCon = new SqlConnection ( Con ) )
+                    {
+                        SqlCommand sql_cmnd;
+                        sqlCon . Open ( );
+                        Orderby = Orderby . Contains ( "Order by" ) ? Orderby . Substring ( 9 ) : Orderby;
+                        Conditions = Conditions . Contains ( "where " ) ? Conditions . Substring ( 6 ) : Conditions;
+                        if ( SqlCommand != "" )
+                            sql_cmnd = new SqlCommand ( SqlCommand , sqlCon );
+                        else
+                        {
+                            //sql_cmnd = new SqlCommand ( "dbo.spLoadBank" , sqlCon );
+                            sql_cmnd = new SqlCommand ( "dbo.spLoadMultiBankAccountsOnly" , sqlCon );
+                            sql_cmnd . CommandType = CommandType . StoredProcedure;
+                            // Now handle parameters
+                            sql_cmnd . Parameters . AddWithValue ( "@Arg1" , SqlDbType . NVarChar ) . Value = DbNameToLoad;
+                            if ( args == null )
+                                args = dummyargs;
+                            if ( args . Length > 0 )
+                            {
+                                if ( args [ 2 ] > 0 )
+                                {
+                                    string limits = $" Top ({args [ 2 ]}) ";
+                                    sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = limits;
+                                }
+                            }
+                            Orderby = Orderby . Contains ( "Order by" ) ? Orderby . Substring ( 9 ) : Orderby;
+                            if ( Orderby != "" )
+                                sql_cmnd . Parameters . AddWithValue ( "@Arg4" , SqlDbType . NVarChar ) . Value = Orderby . Trim ( );
+                            if ( Conditions != "" )
+                                sql_cmnd . Parameters . AddWithValue ( "@Arg3" , SqlDbType . NVarChar ) . Value = Conditions;
+                        }
+                        var sqlDr = sql_cmnd . ExecuteReader ( );
 						while ( sqlDr . Read ( ) )
 						{
-							bvm . Id = int . Parse ( sqlDr [ "ID" ] . ToString ( ) );
+							//bvm . Id = int . Parse ( sqlDr [ "Id" ] . ToString ( ) );
 							bvm . CustNo = sqlDr [ "CustNo" ] . ToString ( );
 							bvm . BankNo = sqlDr [ "BankNo" ] . ToString ( );
 							bvm . AcType = int . Parse ( sqlDr [ "ACTYPE" ] . ToString ( ) );
-							bvm . Balance = Decimal . Parse ( sqlDr [ "BALANCE" ] . ToString ( ) );
+							//bvm . Balance = Decimal . Parse ( sqlDr [ "BALANCE" ] . ToString ( ) );
 							bvm . IntRate = Decimal . Parse ( sqlDr [ "INTRATE" ] . ToString ( ) );
 							bvm . ODate = DateTime . Parse ( sqlDr [ "ODATE" ] . ToString ( ) );
 							bvm . CDate = DateTime . Parse ( sqlDr [ "CDATE" ] . ToString ( ) );
@@ -1031,8 +1030,9 @@ namespace WPFPages . ViewModels
 							{
 								Orderby = Orderby . Contains ( "Order by" ) ? Orderby . Substring ( 9 ) : Orderby;
 								Conditions = Conditions . Contains ( "where " ) ? Conditions . Substring ( 6 ) : Conditions;
-								SqlCommand = $"spLoadBankAccountComplex";
-								var Args = new { Arg1 = "" , Arg2 = " " , Arg3= "" , Arg4= "" };
+                                //SqlCommand = $"spLoadBank";
+                                SqlCommand = $"spLoadMultiBankAccountsOnly";
+                                var Args = new { Arg1 = "" , Arg2 = " " , Arg3= "" , Arg4= "" };
 								if ( args [ 2 ] == 0 )
 									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" , Arg4 = $"{ Orderby}" };
 								else if ( args [ 2 ] > 0 )
@@ -1055,7 +1055,7 @@ namespace WPFPages . ViewModels
 								Console . WriteLine ( $"BANK  DB ERROR : {ex . Message}" );
 							}
 						}
-						else if ( Flags . USESDAPPERSTDPROCEDURES == true )
+						else if ( Flags . USESDAPPERSTDDIRECTLY == true )
 						{
 							//====================================
 							// Use standard DAPPER code to load Bank data
@@ -1222,6 +1222,7 @@ namespace WPFPages . ViewModels
 				// works with Sort conditions 31/10/21
 				try
 				{
+					// non async method
 					using ( sqlCon = new SqlConnection ( Con ) )
 					{
 						SqlCommand sql_cmnd;
@@ -1232,8 +1233,9 @@ namespace WPFPages . ViewModels
 							sql_cmnd = new SqlCommand ( SqlCommand , sqlCon );
 						else
 						{
-							sql_cmnd = new SqlCommand ( "dbo.spLoadBankAccountComplex " , sqlCon );
-							sql_cmnd . CommandType = CommandType . StoredProcedure;
+                            //sql_cmnd = new SqlCommand ( "dbo.spLoadBank" , sqlCon );
+                            sql_cmnd = new SqlCommand ( "dbo.spLoadMultiBankAccountsOnly" , sqlCon );
+                            sql_cmnd . CommandType = CommandType . StoredProcedure;
 							// Now handle parameters
 							sql_cmnd . Parameters . AddWithValue ( "@Arg1" , SqlDbType . NVarChar ) . Value = DbNameToLoad;
 							if ( args == null )
@@ -1242,22 +1244,18 @@ namespace WPFPages . ViewModels
 							{
 								if ( args [ 2 ] > 0 )
 								{
-									string limits = $" Top ({args[2]}) ";
+									string limits = $" Top ({args [ 2 ]}) ";
 									sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = limits;
 								}
-								//								else
-								//									sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = " * ";
 							}
-							//							else
-							//								sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = " * ";
-
 							Orderby = Orderby . Contains ( "Order by" ) ? Orderby . Substring ( 9 ) : Orderby;
 							if ( Conditions != "" )
 								sql_cmnd . Parameters . AddWithValue ( "@Arg3" , SqlDbType . NVarChar ) . Value = Conditions;
 							if ( Orderby != "" )
 								sql_cmnd . Parameters . AddWithValue ( "@Arg4" , SqlDbType . NVarChar ) . Value = Orderby . Trim ( );
 						}
-						var sqlDr = sql_cmnd . ExecuteReader ( );
+                        // load bank types - non async method
+                        var sqlDr = sql_cmnd . ExecuteReader ( );
 						while ( sqlDr . Read ( ) )
 						{
 							bvm . Id = int . Parse ( sqlDr [ "ID" ] . ToString ( ) );
@@ -1300,8 +1298,9 @@ namespace WPFPages . ViewModels
 							try
 							{
 								var Args = new { Arg1 = "" , Arg2 = " " , Arg3= "" , Arg4= "" };
-								SqlCommand = $"spLoadBankAccountComplex";
-								if ( args [ 2 ] == 0 )
+                                //SqlCommand = $"spLoadBank";
+                                SqlCommand = $"spLoadMultiBankAccountsOnly";
+                                if ( args [ 2 ] == 0 )
 									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" , Arg4 = $"{ Orderby}" };
 								else if ( args [ 2 ] > 0 )
 									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $"{Orderby}" };
@@ -1323,7 +1322,7 @@ namespace WPFPages . ViewModels
 								Console . WriteLine ( $"BANK  DB ERROR : {ex . Message}" );
 							}
 						}
-						else if ( Flags . USESDAPPERSTDPROCEDURES == true )
+						else if ( Flags . USESDAPPERSTDDIRECTLY == true )
 						{
 							//====================================
 							// Use standard DAPPER code to load Bank data
@@ -1638,20 +1637,20 @@ namespace WPFPages . ViewModels
 				}
 			}
 
-			//// make sure order by clause is correctly formatted
-			//if ( Orderby . Trim ( ) != "" )
-			//{
-			//	if ( Orderby . ToUpper ( ) . Contains ( "ORDER BY " ) == false )
-			//	{
-			//		Orderby = " Order by " + Orderby;
-			//	}
-			//}
+			// make sure order by clause is correctly formatted
+			if ( Orderby . Trim ( ) != "" )
+			{
+				if ( Orderby . ToUpper ( ) . Contains ( "ORDER BY " ) == false )
+				{
+					Orderby = " Order by " + Orderby;
+				}
+			}
 
-			//if ( Conditions != "" )
-			//{
-			//	if ( Conditions . ToUpper ( ) . Contains ( "WHERE" ) == false )
-			//		Conditions = " Where " + Conditions;
-			//}
+			if ( Conditions != "" )
+			{
+				if ( Conditions . ToUpper ( ) . Contains ( "WHERE" ) == false )
+					Conditions = " Where " + Conditions;
+			}
 			if ( Flags . GETMULTIACCOUNTS )
 			{
 
@@ -1673,35 +1672,37 @@ namespace WPFPages . ViewModels
 				// works with Sort conditions 31/10/21
 				try
 				{
-					using ( sqlCon = new SqlConnection ( Con ) )
-					{
-						SqlCommand sql_cmnd;
-						sqlCon . Open ( );
-						if ( SqlCommand != "" )
-							sql_cmnd = new SqlCommand ( SqlCommand , sqlCon );
-						else
-						{
-							sql_cmnd = new SqlCommand ( "dbo.spLoadCustomersComplex " , sqlCon );
-							sql_cmnd . CommandType = CommandType . StoredProcedure;
-							sql_cmnd . Parameters . AddWithValue ( "@Arg1" , SqlDbType . NVarChar ) . Value = DbNameToLoad;
-							if ( args == null )
-								args = dummyargs;
-							if ( args . Length > 0 )
-							{
-								if ( args [ 2 ] > 0 )
-								{
-									string limits = $" Top ({args[2]}) ";
-									sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = limits;
-								}
-								else
-									sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = " * ";
-							}
-							else
-								sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = " * ";
-
-							sql_cmnd . Parameters . AddWithValue ( "@Arg3" , SqlDbType . NVarChar ) . Value = Conditions;
-							sql_cmnd . Parameters . AddWithValue ( "@Arg4" , SqlDbType . NVarChar ) . Value = Orderby;
-						}
+                    using ( sqlCon = new SqlConnection ( Con ) )
+                    {
+                        SqlCommand sql_cmnd;
+                        sqlCon . Open ( );
+                        Orderby = Orderby . Contains ( "Order by" ) ? Orderby . Substring ( 9 ) : Orderby;
+                        Conditions = Conditions . Contains ( "where " ) ? Conditions . Substring ( 6 ) : Conditions;
+                        if ( SqlCommand != "" )
+                            sql_cmnd = new SqlCommand ( SqlCommand , sqlCon );
+                        else
+                        {
+                            //sql_cmnd = new SqlCommand ( "dbo.spLoadBank" , sqlCon );
+                            sql_cmnd = new SqlCommand ( "dbo.spLoadFullCustomer" , sqlCon );
+                            sql_cmnd . CommandType = CommandType . StoredProcedure;
+                            // Now handle parameters
+                            sql_cmnd . Parameters . AddWithValue ( "@Arg1" , SqlDbType . NVarChar ) . Value = DbNameToLoad;
+                            if ( args == null )
+                                args = dummyargs;
+                            if ( args . Length > 0 )
+                            {
+                                if ( args [ 2 ] > 0 )
+                                {
+                                    string limits = $" Top ({args [ 2 ]}) ";
+                                    sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = limits;
+                                }
+                            }
+                            Orderby = Orderby . Contains ( "Order by" ) ? Orderby . Substring ( 9 ) : Orderby;
+                            if ( Conditions != "" )
+                                sql_cmnd . Parameters . AddWithValue ( "@Arg3" , SqlDbType . NVarChar ) . Value = Conditions;
+                            if ( Orderby != "" )
+                                sql_cmnd . Parameters . AddWithValue ( "@Arg4" , SqlDbType . NVarChar ) . Value = Orderby . Trim ( );
+                        }
 						// Handle  max records, if any
 						var sqlDr = sql_cmnd . ExecuteReader ( );
 						while ( sqlDr . Read ( ) )
@@ -1747,8 +1748,9 @@ namespace WPFPages . ViewModels
 						try
 						{
 							var Args = new { Arg1 = "" , Arg2 = " " , Arg3= "" , Arg4= "" };
-							SqlCommand = $"spLoadCustomersComplex";
-							if ( args [ 2 ] == 0 )
+                            SqlCommand = $"spLoadFullCustomer";
+                            //SqlCommand = $"spLoadCustomersComplex";
+                            if ( args [ 2 ] == 0 )
 								Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" , Arg4 = $"{ Orderby}" };
 							else if ( args [ 2 ] > 0 )
 								Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $"{Orderby}" };
@@ -1776,7 +1778,7 @@ namespace WPFPages . ViewModels
 							Console . WriteLine ( $"CUSTOMER DB ERROR : {ex . Message}" );
 						}
 					}
-					else if ( Flags . USESDAPPERSTDPROCEDURES == true )
+					else if ( Flags . USESDAPPERSTDDIRECTLY == true )
 					{
 						try
 						{
@@ -1966,7 +1968,7 @@ namespace WPFPages . ViewModels
 							sql_cmnd = new SqlCommand ( SqlCommand , sqlCon );
 						else
 						{
-							sql_cmnd = new SqlCommand ( "dbo.spLoadCustomersComplex " , sqlCon );
+							sql_cmnd = new SqlCommand ( "dbo.spLoadFullCustomer" , sqlCon );
 							sql_cmnd . CommandType = CommandType . StoredProcedure;
 							sql_cmnd . Parameters . AddWithValue ( "@Arg1" , SqlDbType . NVarChar ) . Value = DbNameToLoad;
 							if ( args == null )
@@ -2028,42 +2030,42 @@ namespace WPFPages . ViewModels
 					{
 						try
 						{
-							//var Args = new { DbName = "" , Arg = " " , Conditions = "" , SortBy = "" };
-							//List<CustomerViewModel>  result = new List<CustomerViewModel>();
-							//if ( SqlCommand == "" )
-							//{
-							//	SqlCommand = $"spLoadCustomersComplex";
-							//	if ( args [ 2 ] == 0 )
-							//		Args = new { DbName = $"{DbNameToLoad}" , Arg = $" * " , Conditions = $"{Conditions}" , SortBy = $"{ Orderby}" };
-							//	else if ( args [ 2 ] > 0 )
-							//		Args = new { DbName = $"{DbNameToLoad}" , Arg = $"Top ({args [ 2 ] . ToString ( )}) * " , Conditions = $"{Conditions}" , SortBy = $"{Orderby}" };
-							//	// This syntax WORKS CORRECTLY
-							//}
-							var Args = new { Arg1 = "" , Arg2 = " " , Arg3= "" , Arg4= "" };
-							//List<CustomerViewModel>  result = new List<CustomerViewModel>();
+							var Args = new { DbName = "" , Arg = " " , Conditions = "" , SortBy = "" };
+							List<CustomerViewModel>  result = new List<CustomerViewModel>();
 							if ( SqlCommand == "" )
 							{
 								SqlCommand = $"spLoadCustomersComplex";
 								if ( args [ 2 ] == 0 )
-									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" , Arg4 = $"{ Orderby}" };
+									Args = new { DbName = $"{DbNameToLoad}" , Arg = $" * " , Conditions = $"{Conditions}" , SortBy = $"{ Orderby}" };
 								else if ( args [ 2 ] > 0 )
-									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $" {Orderby}" };
-								if ( SqlCommand == "" )
-								{
-									if ( args [ 2 ] == 0 )
-										Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" , Arg4 = $"{ Orderby}" };
-									else if ( args [ 2 ] > 0 )
-										Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $"{Orderby}" };
-									// This syntax WORKS CORRECTLY
-								}
+									Args = new { DbName = $"{DbNameToLoad}" , Arg = $"Top ({args [ 2 ] . ToString ( )}) * " , Conditions = $"{Conditions}" , SortBy = $"{Orderby}" };
+								// This syntax WORKS CORRECTLY
 							}
+							//var Args = new { Arg1 = "" , Arg2 = " " , Arg3= "" , Arg4= "" };
+							////List<CustomerViewModel>  result = new List<CustomerViewModel>();
+							//if ( SqlCommand == "" )
+							//{
+							//	SqlCommand = $"spLoadCustomersComplex";
+							//	if ( args [ 2 ] == 0 )
+							//		Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" , Arg4 = $"{ Orderby}" };
+							//	else if ( args [ 2 ] > 0 )
+							//		Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $" {Orderby}" };
+							//	if ( SqlCommand == "" )
+							//	{
+							//		if ( args [ 2 ] == 0 )
+							//			Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" , Arg4 = $"{ Orderby}" };
+							//		else if ( args [ 2 ] > 0 )
+							//			Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $"{Orderby}" };
+							//		// This syntax WORKS CORRECTLY
+							//	}
+							//}
 
 							//***************************************************************************************************************//
-							var result = db . Query<CustomerViewModel> ( SqlCommand , Args , null , false , null , CommandType . StoredProcedure ) . ToList ( );
+							List<CustomerViewModel>  customerresult = db . Query<CustomerViewModel> ( SqlCommand , Args , null , false , null , CommandType . StoredProcedure ) . ToList ( );
 							//***************************************************************************************************************//
 
-							Console . WriteLine ( result );
-							foreach ( var item in result )
+							Console . WriteLine ( customerresult );
+							foreach ( var item in customerresult )
 							{
 								cvmcollection . Add ( item );
 							}
@@ -2074,7 +2076,7 @@ namespace WPFPages . ViewModels
 							Console . WriteLine ( $"CUSTOMER DB ERROR : {ex . Message}" );
 						}
 					}
-					else if ( Flags . USESDAPPERSTDPROCEDURES == true )
+					else if ( Flags . USESDAPPERSTDDIRECTLY == true )
 					{
 						try
 						{
@@ -2342,44 +2344,47 @@ namespace WPFPages . ViewModels
 				// works with Sort conditions 31/10/21
 				try
 				{
-					using ( sqlCon = new SqlConnection ( Con ) )
-					{
-						SqlCommand sql_cmnd;
-						sqlCon . Open ( );
-						if ( SqlCommand != "" )
-							sql_cmnd = new SqlCommand ( SqlCommand , sqlCon );
-						else
-						{
-							sql_cmnd = new SqlCommand ( "dbo.spLoadDetailsComplex " , sqlCon );
-							sql_cmnd . CommandType = CommandType . StoredProcedure;
-							sql_cmnd . Parameters . AddWithValue ( "@Arg1" , SqlDbType . NVarChar ) . Value = DbNameToLoad;
-							if ( args == null )
-								args = dummyargs;
-							if ( args . Length > 0 )
-							{
-								if ( args [ 2 ] > 0 )
-								{
-									string limits = $" Top ({args[2]}) ";
-									sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = limits;
-								}
-								else
-									sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = " * ";
-							}
-							else
-								sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = " * ";
-
-							sql_cmnd . Parameters . AddWithValue ( "@Arg3" , SqlDbType . NVarChar ) . Value = Conditions;
-							sql_cmnd . Parameters . AddWithValue ( "@Arg4" , SqlDbType . NVarChar ) . Value = Orderby;
-						}
-						// Handle  max records, if any
-						var sqlDr = sql_cmnd . ExecuteReader ( );
+                    using ( sqlCon = new SqlConnection ( Con ) )
+                    {
+                        SqlCommand sql_cmnd;
+                        sqlCon . Open ( );
+                        Orderby = Orderby . Contains ( "Order by" ) ? Orderby . Substring ( 9 ) : Orderby;
+                        Conditions = Conditions . Contains ( "where " ) ? Conditions . Substring ( 6 ) : Conditions;
+                        if ( SqlCommand != "" )
+                            sql_cmnd = new SqlCommand ( SqlCommand , sqlCon );
+                        else
+                        {
+                            //sql_cmnd = new SqlCommand ( "dbo.spLoadBank" , sqlCon );
+                            sql_cmnd = new SqlCommand ( "dbo.spLoadMultiBankAccountsOnly" , sqlCon );
+                            sql_cmnd . CommandType = CommandType . StoredProcedure;
+                            // Now handle parameters
+                            sql_cmnd . Parameters . AddWithValue ( "@Arg1" , SqlDbType . NVarChar ) . Value = DbNameToLoad;
+                            if ( args == null )
+                                args = dummyargs;
+                            if ( args . Length > 0 )
+                            {
+                                if ( args [ 2 ] > 0 )
+                                {
+                                    string limits = $" Top ({args [ 2 ]}) ";
+                                    sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = limits;
+                                }
+                            }
+                            Orderby = Orderby . Contains ( "Order by" ) ? Orderby . Substring ( 9 ) : Orderby;
+                            if ( Conditions != "" )
+                                sql_cmnd . Parameters . AddWithValue ( "@Arg3" , SqlDbType . NVarChar ) . Value = Conditions;
+                            if ( Orderby != "" )
+                                sql_cmnd . Parameters . AddWithValue ( "@Arg4" , SqlDbType . NVarChar ) . Value = Orderby . Trim ( );
+                        }
+                        // Handle  max records, if any
+                        var sqlDr = sql_cmnd . ExecuteReader ( );
 						while ( sqlDr . Read ( ) )
 						{
-							dvmi . Id = int . Parse ( sqlDr [ "ID" ] . ToString ( ) );
+							dvmi . Id = int . Parse ( sqlDr [ "Id" ] . ToString ( ) );
 							dvmi . CustNo = sqlDr [ "CustNo" ] . ToString ( );
-							dvmi . BankNo = sqlDr [ "BankNo" ] . ToString ( );
-							dvmi . AcType = int . Parse ( sqlDr [ "ACTYPE" ] . ToString ( ) );
-							dvmi . Balance = Decimal . Parse ( sqlDr [ "BALANCE" ] . ToString ( ) );
+                            dvmi . BankNo = sqlDr [ "BankNo" ] . ToString ( );
+                            dvmi . Balance= Decimal . Parse ( sqlDr [ "Balance" ] . ToString ( ) );
+                            dvmi . AcType = int . Parse ( sqlDr [ "ACTYPE" ] . ToString ( ) );
+							//dvmi . Balance = Decimal . Parse ( sqlDr [ "BALANCE" ] . ToString ( ) );
 							dvmi . IntRate = Decimal . Parse ( sqlDr [ "INTRATE" ] . ToString ( ) );
 							dvmi . ODate = DateTime . Parse ( sqlDr [ "ODATE" ] . ToString ( ) );
 							dvmi . CDate = DateTime . Parse ( sqlDr [ "CDATE" ] . ToString ( ) );
@@ -2418,18 +2423,19 @@ namespace WPFPages . ViewModels
 							//	// This syntax WORKS CORRECTLY
 							//}
 							//							List<DetailsViewModel>  result = new List<DetailsViewModel>();
-							var Args = new { Arg1 = "" , Arg2 = " " , Arg3= "" , Arg4= "" };
-							SqlCommand = $"spLoadDetailsComplex";
+							var Args = new { Arg1 = "" , Arg2 = " " , Arg3= "" };
+							SqlCommand = "spLoadBank";
+							//SqlCommand = $"spLoadDetailsComplex";
 							if ( args [ 2 ] == 0 )
-								Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" , Arg4 = $"{ Orderby}" };
+								Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" };// , Arg4 = $"{Orderby}" };
 							else if ( args [ 2 ] > 0 )
-								Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $"{Orderby}" };
+								Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" };// , Arg4 = $"{Orderby}" };
 							if ( SqlCommand == "" )
 							{
 								if ( args [ 2 ] == 0 )
-									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" , Arg4 = $"{ Orderby}" };
+									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" };// , Arg4 = $"{Orderby}" };
 								else if ( args [ 2 ] > 0 )
-									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $"{Orderby}" };
+									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" };// , Arg4 = $"{Orderby}" };
 								// This syntax WORKS CORRECTLY
 							}
 							//***************************************************************************************************************//
@@ -2448,7 +2454,7 @@ namespace WPFPages . ViewModels
 							Console . WriteLine ( $"DETAILS DB ERROR : {ex . Message}" );
 						}
 					}
-					else if ( Flags . USESDAPPERSTDPROCEDURES == true )
+					else if ( Flags . USESDAPPERSTDDIRECTLY == true )
 					{
 
 						try
@@ -2601,19 +2607,19 @@ namespace WPFPages . ViewModels
 			}
 
 			//// make sure order by clause is correctly formatted
-			//if ( Orderby . Trim ( ) != "" )
-			//{
-			//	if ( Orderby . ToUpper ( ) . Contains ( "ORDER BY " ) == false )
-			//	{
-			//		Orderby = " Order by " + Orderby;
-			//	}
-			//}
+			if ( Orderby . Trim ( ) != "" )
+			{
+				if ( Orderby . ToUpper ( ) . Contains ( "ORDER BY " ) == false )
+				{
+					Orderby = " Order by " + Orderby;
+				}
+			}
 
-			//if ( Conditions != "" )
-			//{
-			//	if ( Conditions . ToUpper ( ) . Contains ( "WHERE" ) == false )
-			//		Conditions = " Where " + Conditions;
-			//}
+			if ( Conditions != "" )
+			{
+				if ( Conditions . ToUpper ( ) . Contains ( "WHERE" ) == false )
+					Conditions = " Where " + Conditions;
+			}
 			if ( DbNameToLoad == "" )
 				DbNameToLoad = "SecAccounts";
 
@@ -2642,7 +2648,8 @@ namespace WPFPages . ViewModels
 							sql_cmnd = new SqlCommand ( SqlCommand , sqlCon );
 						else
 						{
-							sql_cmnd = new SqlCommand ( "dbo.spLoadDetailsComplex " , sqlCon );
+                            sql_cmnd = new SqlCommand ( "spLoadMultiBankAccountsOnly" , sqlCon );
+                            //sql_cmnd = new SqlCommand ( "dbo.spLoadDetailsComplex " , sqlCon );
 							sql_cmnd . CommandType = CommandType . StoredProcedure;
 							sql_cmnd . Parameters . AddWithValue ( "@Arg1" , SqlDbType . NVarChar ) . Value = DbNameToLoad;
 							if ( args == null )
@@ -2651,17 +2658,17 @@ namespace WPFPages . ViewModels
 							{
 								if ( args [ 2 ] > 0 )
 								{
-									string limits = $" Top ({args[2]}) ";
+									string limits = $" Top ({args [ 2 ]}) ";
 									sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = limits;
 								}
-								else
-									sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = " * ";
+								//else
+								//	sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = " * ";
 							}
 							else
 								sql_cmnd . Parameters . AddWithValue ( "@Arg2" , SqlDbType . NVarChar ) . Value = " * ";
 
 							sql_cmnd . Parameters . AddWithValue ( "@Arg3" , SqlDbType . NVarChar ) . Value = Conditions;
-							sql_cmnd . Parameters . AddWithValue ( "@Arg4" , SqlDbType . NVarChar ) . Value = Orderby;
+							//sql_cmnd . Parameters . AddWithValue ( "@Arg4" , SqlDbType . NVarChar ) . Value = Orderby;
 						}
 						// Handle  max records, if any
 						var sqlDr = sql_cmnd . ExecuteReader ( );
@@ -2703,19 +2710,20 @@ namespace WPFPages . ViewModels
 							var Args = new { Arg1 = "" , Arg2 = " " , Arg3= "" , Arg4= "" };
 							if ( SqlCommand == "" )
 							{
-								SqlCommand = $"spLoadDetailsComplex";
-								if ( args [ 2 ] == 0 )
-									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" , Arg4 = $"{ Orderby}" };
-								else if ( args [ 2 ] > 0 )
-									Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $"{Orderby}" };
-								if ( SqlCommand == "" )
-								{
-									if ( args [ 2 ] == 0 )
-										Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" , Arg4 = $"{ Orderby}" };
-									else if ( args [ 2 ] > 0 )
-										Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $"{Orderby}" };
-									// This syntax WORKS CORRECTLY
-								}
+                                SqlCommand = "spGetMultiAccounts";
+                                //SqlCommand = $"spLoadDetailsComplex";
+        //                        if ( args [ 2 ] == 0 )
+								//	Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" , Arg4 = $"{ Orderby}" };
+								//else if ( args [ 2 ] > 0 )
+								//	Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $"{Orderby}" };
+								//if ( SqlCommand == "" )
+								//{
+								//	if ( args [ 2 ] == 0 )
+								//		Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"" , Arg3 = $"{Conditions}" , Arg4 = $"{ Orderby}" };
+								//	else if ( args [ 2 ] > 0 )
+								//		Args = new { Arg1 = $"{DbNameToLoad}" , Arg2 = $"Top ({args [ 2 ] . ToString ( )}) " , Arg3 = $"{Conditions}" , Arg4 = $"{Orderby}" };
+								//	// This syntax WORKS CORRECTLY
+								//}
 							}
 
 							//***************************************************************************************************************//
@@ -2734,7 +2742,7 @@ namespace WPFPages . ViewModels
 							Console . WriteLine ( $"DETAILS DB ERROR : {ex . Message}" );
 						}
 					}
-					else if ( Flags . USESDAPPERSTDPROCEDURES == true )
+					else if ( Flags . USESDAPPERSTDDIRECTLY == true )
 					{
 						try
 						{

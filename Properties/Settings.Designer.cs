@@ -12,7 +12,7 @@ namespace WPFPages.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.10.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.5.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -25,7 +25,8 @@ namespace WPFPages.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = 'C:\USERS\IANCH\APPDATA\LOCAL\MICROSOFT\MICROSOFT SQL SERVER LOCAL DB\INSTANCES\MSSQLLOCALDB\IAN1.MDF'; Integrated Security = True; Connect Timeout = 30; Encrypt = False; TrustServerCertificate = False; ApplicationIntent = ReadWrite; MultiSubnetFailover = False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server=DESKTOP-BEQTQ1J;Database=IAN1;Integrated Security=True;Encrypt=False;User " +
+            "Id=DESKTOP-BEQTQ1J\\ianch;")]
         public string ConnectionString {
             get {
                 return ((string)(this["ConnectionString"]));
@@ -34,7 +35,8 @@ namespace WPFPages.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"Data Source=DINO-PC;Initial Catalog=""C:\USERS\IANCH\APPDATA\LOCAL\MICROSOFT\MICROSOFT SQL SERVER LOCAL DB\INSTANCES\MSSQLLOCALDB\IAN1.MDF"";Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server=DESKTOP-BEQTQ1J;Database=IAN1;Integrated Security=True;Encrypt=False;User " +
+            "Id=DESKTOP-BEQTQ1J\\ianch;")]
         public string BankSysConnectionString {
             get {
                 return ((string)(this["BankSysConnectionString"]));
@@ -46,7 +48,8 @@ namespace WPFPages.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"Data Source=DINO-PC; Initial Catalog = 'C:\USERS\IANCH\APPDATA\LOCAL\MICROSOFT\MICROSOFT SQL SERVER LOCAL DB\INSTANCES\MSSQLLOCALDB\IAN1.MDF';  Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server=DESKTOP-BEQTQ1J;Database=IAN1;Integrated Security=True;Encrypt=False;User " +
+            "Id=DESKTOP-BEQTQ1J\\ianch;")]
         public string backupbanksysstring {
             get {
                 return ((string)(this["backupbanksysstring"]));
@@ -214,20 +217,6 @@ namespace WPFPages.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=C:\\WPFPAGES2-RECOVERED\\BIN\\DEB" +
-            "UG\\NORTHWND.MDF;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustS" +
-            "erverCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False")]
-        public string Setting {
-            get {
-                return ((string)(this["Setting"]));
-            }
-            set {
-                this["Setting"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\WPFPages2-Recovered")]
         public string AppRoot {
             get {
@@ -238,11 +227,23 @@ namespace WPFPages.Properties {
             }
         }
         
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server=localhost\\MSSQLSERVER01;Database=master;Trusted_Connection=True;")]
+        public string NewMSSQLServerconectionstring {
+            get {
+                return ((string)(this["NewMSSQLServerconectionstring"]));
+            }
+            set {
+                this["NewMSSQLServerconectionstring"] = value;
+            }
+        }
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\ian1.mdf;Inte" +
-            "grated Security=True;Connect Timeout=30")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server=DESKTOP-BEQTQ1J;Database=IAN1;Integrated Security=True;Encrypt=False;User " +
+            "Id=DESKTOP-BEQTQ1J\\ianch;")]
         public string LocalDataConnectionString {
             get {
                 return ((string)(this["LocalDataConnectionString"]));
@@ -258,28 +259,6 @@ namespace WPFPages.Properties {
         public string NorthwindConnectionString {
             get {
                 return ((string)(this["NorthwindConnectionString"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=C:\USERS\IANCH\APPDATA\LOCAL\MICROSOFT\VISUALSTUDIO\16.0_0827B8C0\DESIGNER\CACHE\1928924530X86DD\NWND.MDF;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False")]
-        public string NorthwindConnectionStringold {
-            get {
-                return ((string)(this["NorthwindConnectionStringold"]));
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Server=localhost\\MSSQLSERVER01;Database=master;Trusted_Connection=True;")]
-        public string NewMSSQLServerconectionstring {
-            get {
-                return ((string)(this["NewMSSQLServerconectionstring"]));
-            }
-            set {
-                this["NewMSSQLServerconectionstring"] = value;
             }
         }
     }

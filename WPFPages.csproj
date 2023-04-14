@@ -579,6 +579,7 @@
     <Compile Include="Views\Triggers.xaml.cs">
       <DependentUpon>Triggers.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Library1.cs" />
     <Page Include="DataGridStyles\CustomerDatagridStyleTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

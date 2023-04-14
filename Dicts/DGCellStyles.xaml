@@ -130,7 +130,6 @@
 
 				<!--###  UNFOCUSED OPTIONS ###-->
 
-
 			<!--// NOT FOCUSED, SELECTED,  MOUSEOVER / TRUE-->
 			<MultiDataTrigger>
 				<MultiDataTrigger.Conditions>
@@ -173,7 +172,7 @@
 					<MultiDataTrigger.Setters>
 						<!--<Setter Property="Background" Value="{StaticResource Red1}" />-->
 						<Setter Property="Background" Value="{Binding Converter={StaticResource UniversalConvert}, ConverterParameter=Green7}"/>
-						<Setter Property="Foreground" Value="{StaticResource White0}" />
+						<Setter Property="Foreground" Value="{StaticResource Black0}" />
 					</MultiDataTrigger.Setters>
 				</MultiDataTrigger>
 

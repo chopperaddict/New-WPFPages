@@ -22,7 +22,7 @@ namespace WPFPages
 
 	public static class Flags
 	{
-		public static bool USESDAPPERSTDPROCEDURES=false;
+		public static bool USESDAPPERSTDDIRECTLY=false;
 		public static bool USEADOWITHSTOREDPROCEDURES=true;
 		public static bool USEDAPPERWITHSTOREDPROCEDURE=false;
 		public static bool GETMULTIACCOUNTS = false;
